@@ -22,11 +22,6 @@ export default function Page() {
             <CheckoutForm />
           </CardContent>
         </Card>
-        <Card>
-          <CardContent>
-            <CardDescription>Payment form here</CardDescription>
-          </CardContent>
-        </Card>
       </div>
       <div className="col-span-2">
         <Card className="w-full">

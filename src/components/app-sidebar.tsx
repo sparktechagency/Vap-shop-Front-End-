@@ -66,10 +66,10 @@ const data = {
           title: "Associations",
           url: "/admin/users/associations",
         },
-        {
-          title: "Verification",
-          url: "/admin/users/verification",
-        },
+        // {
+        //   title: "Verification",
+        //   url: "/admin/users/verification",
+        // },
         {
           title: "Suspensions & Bans",
           url: "/admin/users/suspensions-bans",

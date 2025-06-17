@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,10 +17,10 @@ import { z } from "zod";
 
 const formSchema = z.object({
   fullname: z.string({ required_error: "Please input your full name" }),
-  email: z.string().optional(),
+  email: z.string(),
   phone: z.string().optional(),
-  location: z.string().optional(),
-  address: z.string().optional(),
+  dob: z.string(),
+  address: z.string(),
 });
 
 export default function CheckoutForm() {
@@ -29,7 +30,7 @@ export default function CheckoutForm() {
       fullname: "",
       email: "",
       phone: "",
-      location: "",
+      dob: "",
       address: "",
     },
   });
@@ -80,30 +81,18 @@ export default function CheckoutForm() {
         />
         <FormField
           control={form.control}
-          name="phone"
+          name="dob"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone number</FormLabel>
+              <FormLabel>Date of Birth</FormLabel>
               <FormControl>
-                <Input placeholder="(optional)" type="tel" {...field} />
+                <Input placeholder="(optional)" type="date" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input placeholder="Your Location" type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="address"
@@ -117,6 +106,11 @@ export default function CheckoutForm() {
             </FormItem>
           )}
         />
+        <p className="text-sm">
+          Note: Your order request will be sent to <b>VooPoo</b>.
+        </p>
+
+        <Button>Send order request</Button>
       </form>
     </Form>
   );
