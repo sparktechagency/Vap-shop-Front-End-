@@ -1,11 +1,15 @@
 "use client";
 import React from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { MapPinIcon, SearchIcon } from "lucide-react";
+import { MapPinIcon, SearchIcon, StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { Card } from "./card";
+import Image from "next/image";
+import Namer from "../core/internal/namer";
+import Dotter from "./dotter";
 export default function Searcher({
   className,
   ...props
@@ -72,7 +76,49 @@ export default function Searcher({
             >
               <div className="col-span-3 w-full h-full !pr-4 !space-y-4 overflow-auto overflow-x-hidden">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="h-[100px] w-full border rounded" />
+                  <div
+                    key={i}
+                    className="h-[100px] w-full border rounded p-2! flex flex-row gap-2!"
+                  >
+                    <Card className="aspect-square rounded !p-1">
+                      <Image
+                        src={
+                          selectedSearch === "shops"
+                            ? "/image/icon/store.png"
+                            : selectedSearch === "brands"
+                            ? "/image/icon/brand.jpg"
+                            : selectedSearch === "products"
+                            ? "/image/shop/item.jpg"
+                            : "/image/icon/user.jpeg"
+                        }
+                        height={124}
+                        width={124}
+                        className="h-full w-full object-cover rounded animate-in"
+                        alt="icon"
+                      />
+                    </Card>
+                    <div className="flex-1 h-full flex flex-col justify-between items-baseline">
+                      <Namer
+                        name="Vape Juice Deport"
+                        type="store"
+                        isVerified
+                        size="sm"
+                      />
+                      <div className="flex flex-row items-center gap-1 sm:gap-2 text-muted-foreground">
+                        <StarIcon
+                          fill="#ee8500"
+                          stroke=""
+                          className="w-4 h-4"
+                        />{" "}
+                        {4.9}
+                      </div>
+                      <div className="flex flex-row justify-start items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                        <p className="truncate">BROOKLYN, New York</p>
+                        <Dotter />
+                        <div className="whitespace-nowrap">4 mi</div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
 

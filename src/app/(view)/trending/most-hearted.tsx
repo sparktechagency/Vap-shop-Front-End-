@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 export default function MostHearted() {
   const dataAd = {
@@ -79,7 +80,9 @@ export default function MostHearted() {
         {/* Content for Most Hearted Products */}
 
         {Array.from({ length: 8 }).map((_, i) => (
-          <ProductCard data={dataAd} key={i} />
+          <Link href="/brands/brand/product" key={i}>
+            <ProductCard data={dataAd} />
+          </Link>
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12 text-center">
@@ -87,7 +90,9 @@ export default function MostHearted() {
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {Array.from({ length: 50 }).map((_, i) => (
-          <ProductCard data={data} key={i} />
+          <Link href="/brands/brand/product" key={i}>
+            <ProductCard data={data} />
+          </Link>
         ))}
       </div>
       <div className="!mt-[100px]">
