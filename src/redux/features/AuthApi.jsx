@@ -19,20 +19,23 @@ const AuthApi = api.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
+
+    // it will take otp
     verifyemail: builder.mutation({
-      query: ({ otp, body = {} }) => ({
-        url: `/verify-email?otp=${otp}`,
+      query: (body) => ({
+        url: `/verify-email`,
         method: "POST",
         body,
       }),
       invalidatesTags: ["user"],
     }),
 
-    resetpassword: builder.mutation({
-      query: ({ email, body = {} }) => ({
-        url: `/resentOtp?email=${email}`,
+    //it will take a email to varify
+    resendotp: builder.mutation({
+      query: (body) => ({
+        url: `/resend-otp`,
         method: "POST",
-        body: body,
+        body,
       }),
       invalidatesTags: ["user"],
     }),
@@ -46,6 +49,7 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
+    //getLogin user
     getOwnprofile: builder.query({
       query: () => ({
         url: `/user`,
@@ -60,7 +64,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useVerifyemailMutation,
-  useResetpasswordMutation,
+  useResendotpMutation,
   useCreateNewpasswordMutation,
   useGetOwnprofileQuery,
 } = AuthApi;

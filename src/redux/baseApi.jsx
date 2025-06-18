@@ -13,7 +13,7 @@ export const api = createApi({
         headers.set("Authorization", `Bearer ${token}`);
         headers.set("Accept", `*/*`);
         // headers.set("Content-Type", `application/json`);
-        headers.set("Access-Control-Allow-Origin", `*/*`);
+        // headers.set("Access-Control-Allow-Origin", `*/*`);
       }
       return headers;
     },
