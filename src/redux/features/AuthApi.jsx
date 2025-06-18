@@ -49,6 +49,13 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
+    countys: builder.query({
+      query: () => ({
+        url: `/get-all-countries`,
+        method: "GET",
+      }),
+    }),
+
     //getLogin user
     getOwnprofile: builder.query({
       query: () => ({
@@ -67,4 +74,5 @@ export const {
   useResendotpMutation,
   useCreateNewpasswordMutation,
   useGetOwnprofileQuery,
+  useCountysQuery,
 } = AuthApi;
