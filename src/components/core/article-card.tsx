@@ -13,6 +13,7 @@ import {
   Copy,
   Facebook,
   Link2,
+  MailIcon,
   MessageCircle,
   Share2,
   Twitter,
@@ -115,8 +116,8 @@ export default function ArticleCard() {
         </button>
         <Dialog>
           <DialogTrigger asChild>
-            <button className="w-full text-xs md:text-base py-4 rounded-lg">
-              <Share2 className="size-3 md:size-5 mr-1 md:mr-2" />
+            <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors text-xs md:text-base">
+              <Share2 className="size-3 md:size-5 mr-1! md:mr-2!" />
               Share
             </button>
           </DialogTrigger>
@@ -216,7 +217,7 @@ export default function ArticleCard() {
                     }}
                     className="justify-center gap-2"
                   >
-                    <Share2 className="size-4" />
+                    <MailIcon />
                     Email
                   </Button>
                 </div>

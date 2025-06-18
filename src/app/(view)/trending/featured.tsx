@@ -11,13 +11,18 @@ import {
 } from "@/components/ui/select";
 import ArticleCard from "@/components/core/article-card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 export default function Featured() {
   return (
     <>
       <div className="!my-12 grid grid-cols-1 md:flex justify-between items-center gap-4">
         <div className="md:flex gap-4 w-full grid">
-          <Button variant="special">Post an Article</Button>
-          <Button>My Articles</Button>
+          <Button variant="special" asChild>
+            <Link href="trending/my-articles/post">Post an Article</Link>
+          </Button>
+          <Button asChild>
+            <Link href="trending/my-articles">My Articles</Link>
+          </Button>
         </div>
 
         <Select>
