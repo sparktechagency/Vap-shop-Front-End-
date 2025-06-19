@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import {
   Tabs,
@@ -9,8 +11,13 @@ import MostHearted from "./most-hearted";
 import MostFollowers from "./most-followers";
 import MostRated from "./most-rated";
 import Featured from "./featured";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function TabsTriggerer() {
+  const searchParams = useSearchParams();
+
+  const title = searchParams.get('title');
+  console.log('title', title);
   return (
     <div className="container !py-10">
       <Tabs defaultValue="hearted">
