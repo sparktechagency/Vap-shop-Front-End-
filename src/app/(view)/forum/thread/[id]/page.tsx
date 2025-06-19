@@ -1,8 +1,12 @@
+'use client';
 import React from "react";
-import Threader from "./threder";
+import Threader from "../threder";
 import GoBack from "@/components/core/internal/go-back";
+import { useParams } from "next/navigation";
 
 export default function Page() {
+  const { id } = useParams();
+
   return (
     <main className="!py-12 !px-2 md:!px-[7%]">
       <GoBack />
@@ -26,7 +30,7 @@ export default function Page() {
         </ul>
       </div>
       <div className="">
-        <Threader />
+        <Threader id={JSON.stringify(id)} />
       </div>
     </main>
   );
