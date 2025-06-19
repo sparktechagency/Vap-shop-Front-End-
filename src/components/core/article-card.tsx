@@ -38,6 +38,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ArticleCard() {
   const [copied, setCopied] = useState(false);
@@ -111,9 +112,11 @@ export default function ArticleCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6">
-        <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors text-xs md:text-base">
-          Review Article
-        </button>
+        <Link href="/trending/article">
+          <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors text-xs md:text-base">
+            View Article
+          </button>
+        </Link>
         <Dialog>
           <DialogTrigger asChild>
             <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors text-xs md:text-base">

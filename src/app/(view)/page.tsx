@@ -1,19 +1,25 @@
-'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import SliderWithSkeleton, { SliderSkeleton } from "@/components/SliderWithSkeleton";
+import SliderWithSkeleton, {
+  SliderSkeleton,
+} from "@/components/SliderWithSkeleton";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import Link from "next/link";
 
 export default function Home() {
-  const { data: categorys, isLoading: isCategoriesLoading } = useGetallCategorysQuery();
+  const { data: categorys, isLoading: isCategoriesLoading } =
+    useGetallCategorysQuery();
 
-  const trendingCategories = categorys?.data?.map((category: any) => category.name) || [
+  const trendingCategories = categorys?.data?.map(
+    (category: any) => category.name
+  ) || [
     "Pod Systems",
     "Mod Kits",
     "Disposable Vapes",
     "Nicotine Pouches",
     "E-Liquids",
-    "Coils & Pods"
+    "Coils & Pods",
   ];
 
   if (isCategoriesLoading) {

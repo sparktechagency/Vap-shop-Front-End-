@@ -38,7 +38,10 @@ export default function Page() {
                   className="w-full text-foreground bg-background hover:bg-zinc-200 dark:hover:bg-zinc-900"
                   asChild
                 >
-                  <Link href={`/register?as=${x.role}`}>
+                  <Link
+                    href={`/register?as=${x.role}`}
+                    className="text-foreground!"
+                  >
                     Register as {x.role}
                   </Link>
                 </Button>
