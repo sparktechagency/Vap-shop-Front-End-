@@ -1,7 +1,7 @@
 import { api } from "../../baseApi";
 export const forumApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getForum: builder.query({
+    getForum: builder.query<any, void>({
       query: () => `/forum-group?show_front=1`,
     }),
 
