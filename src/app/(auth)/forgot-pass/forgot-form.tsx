@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useResendotpMutation } from "@/redux/features/AuthApi";
 
-
 interface ForgotFormData {
   email: string;
 }
@@ -33,11 +32,7 @@ export function ForgotForm({
     formState: { errors },
   } = useForm<ForgotFormData>();
 
-
-
-
   const onSubmit = async (data: ForgotFormData) => {
-
     const formdata = {
       email: data.email,
     };
@@ -52,8 +47,11 @@ export function ForgotForm({
       } else {
         toast.error(response.message || "Failed to send OTP");
       }
-    } catch (error) {
-      toast.error(error.data?.message || "Failed to send OTP. Please try again.");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(
+        error.data?.message || "Failed to send OTP. Please try again."
+      );
       console.error("Resend OTP error:", error);
     }
   };
@@ -92,11 +90,7 @@ export function ForgotForm({
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Sending OTP..." : "Send OTP"}
               </Button>
             </div>

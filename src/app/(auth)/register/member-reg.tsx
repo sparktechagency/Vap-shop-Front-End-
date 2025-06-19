@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ export default function MemberRegister({
     reset,
   } = useForm<RegisterFormData>({
     defaultValues: {
-      role: "2", // Assuming 2 is the role for members
+      role: "2",
     },
   });
 
@@ -55,7 +56,6 @@ export default function MemberRegister({
     }
 
     try {
-      // Convert date format if needed (assuming backend expects MM/DD/YYYY)
       const formattedData = {
         first_name: data.first_name,
         last_name: data.last_name,
@@ -69,9 +69,9 @@ export default function MemberRegister({
       };
 
       const response = await register(formattedData).unwrap();
-      console.log("Registration response:", response);
+
       if (response?.ok) {
-        toast.success(response?.message, "Registration successful!");
+        toast.success(response?.message || "Registration successful!");
         router.push("/verify-otp?isregistared=true");
         reset({
           first_name: "",
@@ -85,14 +85,14 @@ export default function MemberRegister({
           role: "2",
           terms: false,
         });
+      } else {
+        toast.error(response?.message || "Registration failed!");
       }
-      if (!response?.ok) {
-        toast.error(response?.message, "Registration failed!");
-      }
-      // You might want to redirect to login or dashboard here
-    } catch (error) {
-      toast.error(error?.data?.message, "Registration failed. Please try again.");
-      console.error("Registration error:", error);
+    } catch (err: any) {
+      const message =
+        err?.data?.message || "Registration failed. Please try again.";
+      toast.error(message);
+      console.error("Registration error:", err);
     }
   };
 
@@ -118,7 +118,9 @@ export default function MemberRegister({
                       id="first_name"
                       type="text"
                       required
-                      {...formRegister("first_name", { required: "First name is required" })}
+                      {...formRegister("first_name", {
+                        required: "First name is required",
+                      })}
                     />
                     {errors.first_name && (
                       <span className="text-red-500 text-sm">
@@ -132,7 +134,9 @@ export default function MemberRegister({
                       id="last_name"
                       type="text"
                       required
-                      {...formRegister("last_name", { required: "Last name is required" })}
+                      {...formRegister("last_name", {
+                        required: "Last name is required",
+                      })}
                     />
                     {errors.last_name && (
                       <span className="text-red-500 text-sm">
@@ -148,7 +152,9 @@ export default function MemberRegister({
                       id="dob"
                       type="date"
                       required
-                      {...formRegister("dob", { required: "Date of birth is required" })}
+                      {...formRegister("dob", {
+                        required: "Date of birth is required",
+                      })}
                     />
                     {errors.dob && (
                       <span className="text-red-500 text-sm">
@@ -164,7 +170,9 @@ export default function MemberRegister({
                       id="address"
                       type="text"
                       required
-                      {...formRegister("address", { required: "Address is required" })}
+                      {...formRegister("address", {
+                        required: "Address is required",
+                      })}
                     />
                     {errors.address && (
                       <span className="text-red-500 text-sm">
@@ -240,7 +248,9 @@ export default function MemberRegister({
                   </div>
                   <div className="col-span-2 grid gap-2">
                     <div className="flex items-center">
-                      <Label htmlFor="password_confirmation">Confirm Password</Label>
+                      <Label htmlFor="password_confirmation">
+                        Confirm Password
+                      </Label>
                     </div>
                     <Input
                       id="password_confirmation"
@@ -249,7 +259,8 @@ export default function MemberRegister({
                       {...formRegister("password_confirmation", {
                         required: "Please confirm your password",
                         validate: (value) =>
-                          value === watch("password") || "Passwords don't match",
+                          value === watch("password") ||
+                          "Passwords don't match",
                       })}
                     />
                     {errors.password_confirmation && (
@@ -262,7 +273,9 @@ export default function MemberRegister({
                   <div className="flex flex-row justify-end items-center gap-2">
                     <Checkbox
                       id="terms"
-                      {...formRegister("terms", { required: "You must accept the terms" })}
+                      {...formRegister("terms", {
+                        required: "You must accept the terms",
+                      })}
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
@@ -277,7 +290,11 @@ export default function MemberRegister({
                     </span>
                   )}
                   <div className="col-span-2 flex flex-row justify-center items-center">
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
                       {isLoading ? "Creating account..." : "Create an account"}
                     </Button>
                   </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../baseApi";
 
 const AuthApi = api.injectEndpoints({
@@ -59,7 +60,7 @@ const AuthApi = api.injectEndpoints({
     //getLogin user
     getOwnprofile: builder.query<any, void>({
       query: () => ({
-        url: `/user`,
+        url: `/me`,
         method: "GET",
       }),
       providesTags: ["user"],

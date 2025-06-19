@@ -18,8 +18,23 @@ import Searcher from "../ui/searcher";
 import MobileMenu from "./mobile-menu";
 import CartDrawer from "../cart-drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useEffect, useState } from "react";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import { UserData } from "@/lib/types/apiTypes";
 
-export default function Navbar() {
+export default function Navbar({ token }: { token: string | undefined }) {
+  const [user, setUser] = useState<UserData | null>(null);
+  const { data, isLoading } = useGetOwnprofileQuery();
+  useEffect(() => {
+    if (token) {
+      if (data) {
+        console.log(data);
+
+        setUser(data.data);
+      }
+    }
+  }, [data, token]);
+
   return (
     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
       <div className="h-1/2 flex flex-row justify-between items-center gap-4">
@@ -53,35 +68,37 @@ export default function Navbar() {
               )
             )}
           </div>
-          <div className="hidden lg:flex flex-row justify-end items-center gap-2">
-            {/* {navActions.map((action, i) =>
-              action.asChild ? (
-                <Button key={i} variant={action.variant} asChild>
-                  <Link href={action.href}>{action.label}</Link>
+          {!isLoading && (
+            <div className="hidden lg:flex flex-row justify-end items-center gap-2">
+              {user ? (
+                <Button variant="outline" asChild>
+                  <Link href="/me">
+                    <Avatar className="size-6">
+                      <AvatarImage src={user.avatar} className="object-cover" />
+                      <AvatarFallback className="text-xs font-bold uppercase">
+                        {user.full_name?.slice(0, 1)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {user.first_name}
+                  </Link>
                 </Button>
               ) : (
-                <Link key={i} href={action.href}>
-                  <Button variant={action.variant} size={action.size}>
-                    {action.icon || action.label}
-                  </Button>
-                </Link>
-              )
-            )} */}
-            <Button variant="outline" asChild>
-              <Link href="/me">
-                <Avatar className="size-6">
-                  <AvatarImage
-                    src="/image/icon/user.jpeg"
-                    className="object-cover"
-                  />
-                  <AvatarFallback className="text-sm font-bold">
-                    R
-                  </AvatarFallback>
-                </Avatar>
-                Raven
-              </Link>
-            </Button>
-          </div>
+                navActions.map((action, i) =>
+                  action.asChild ? (
+                    <Button key={i} variant={action.variant} asChild>
+                      <Link href={action.href}>{action.label}</Link>
+                    </Button>
+                  ) : (
+                    <Link key={i} href={action.href}>
+                      <Button variant={action.variant} size={action.size}>
+                        {action.icon || action.label}
+                      </Button>
+                    </Link>
+                  )
+                )
+              )}
+            </div>
+          )}
           <div className="lg:hidden">
             <MobileMenu />
           </div>

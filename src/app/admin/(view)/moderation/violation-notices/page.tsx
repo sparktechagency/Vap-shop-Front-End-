@@ -8,6 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Namer from "@/components/core/internal/namer";
+import { CardDescription } from "@/components/ui/card";
 
 export default function Page() {
   return (
@@ -44,7 +56,49 @@ export default function Page() {
               ryan234@email.com
             </div>
             <div className="text-sm font-semibold">Date: 23-04-2024</div>
-            <Button>View Notice</Button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>View Notice</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle></DialogTitle>
+                </DialogHeader>
+                <div className="">
+                  <div className="flex flex-row justify-start items-center gap-4">
+                    <Avatar className="size-20">
+                      <AvatarImage
+                        src="/image/icon/user.jpeg"
+                        className="object-cover"
+                      />
+                      <AvatarFallback>JS</AvatarFallback>
+                    </Avatar>
+                    <div className="">
+                      <Namer type="member" name="Jay Smith" />
+                      <p className="text-xs text-muted-foreground">
+                        jaysmith@email.com
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm font-semibold mt-8! mb-4!">
+                    Report reason:
+                  </p>
+                  <CardDescription className="">
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Magni corrupti et, veniam perspiciatis, tenetur qui pariatur
+                    magnam velit odit natus eos adipisci dolore eius! Illum vero
+                    ex enim saepe? Veniam!
+                  </CardDescription>
+                  <DialogFooter>
+                    <Button>Ban User</Button>
+                    <DialogClose asChild>
+                      <Button variant="link">Cancel</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         ))}
       </div>

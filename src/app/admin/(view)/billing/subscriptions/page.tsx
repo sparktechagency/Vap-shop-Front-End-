@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 export default function page() {
@@ -29,18 +30,20 @@ export default function page() {
               </li>
             </ul>
             <div className="w-full grid grid-cols-2 gap-4">
-              <button className="text-foreground border-2 border-foreground !p-3 rounded-lg text-sm">
-                Edit Subscription
-              </button>
-              <button className="text-destructive border-2 !p-3  border-destructive rounded-lg text-sm">
+              <Button className="" asChild>
+                <Link href="subscriptions/edit">Edit Subscription</Link>
+              </Button>
+              <Button className="" variant="destructive">
                 Delete Subscription
-              </button>
+              </Button>
             </div>
           </Card>
         ))}
       </div>
-      <Button className="fixed bottom-10 right-10">
-        <PlusIcon /> Add Subscription
+      <Button className="fixed bottom-10 right-10" asChild>
+        <Link href="subscriptions/add">
+          <PlusIcon /> Add Subscription
+        </Link>
       </Button>
     </div>
   );
