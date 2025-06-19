@@ -1,34 +1,18 @@
+'use client'
 import ProductCarousel from "@/components/product-carousel";
+import { useGetHomeBannerQuery } from "@/redux/features/Home/HomePageApi";
 import Link from "next/link";
 
 export default function Home() {
-  const slides = [
-    {
-      id: 1,
-      image: "/image/home/car3.png",
-      alt: "ARGUS Z2 Product",
-    },
-    {
-      id: 2,
-      image: "/image/home/car2.png",
-      alt: "ARGUS Z2 Side View",
-    },
-    {
-      id: 3,
-      image: "/image/home/car2.png",
-      alt: "ARGUS Z2 Features",
-    },
-    {
-      id: 4,
-      image: "/image/home/car1.png",
-      alt: "ARGUS Z2 Colors",
-    },
-    {
-      id: 5,
-      image: "/image/home/car3.png",
-      alt: "ARGUS Z2 Usage",
-    },
-  ];
+  const { data: sliderData } = useGetHomeBannerQuery();
+  console.log("products", sliderData);
+  const slides = sliderData?.data?.map(slider => ({
+    id: slider.id,
+    image: slider.image,
+    alt: `Slider Image ${slider.id}`
+  })) || [];
+
+  console.log("slides", slides);
   return (
     <>
       <header className="w-screen !py-12">

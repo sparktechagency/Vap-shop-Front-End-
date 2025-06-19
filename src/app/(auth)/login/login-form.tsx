@@ -17,6 +17,8 @@ import { FormEvent } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+import Cookies from "js-cookie";
+
 export function LoginForm({
   className,
   ...props
@@ -32,11 +34,14 @@ export function LoginForm({
     try {
       const response = await login({ email, password }).unwrap();
       if (response.ok) {
+
         toast.success(response.message || "Login successful");
         router.push("/");
+        Cookies.set("token", response.data.access_token);
       }
       // Handle successful login (e.g., redirect)
     } catch (error) {
+      toast.error(error?.data?.message || "Login failed. Please try again.");
       // Handle error (e.g., show error message)
       console.error("Login failed:", error);
     }
