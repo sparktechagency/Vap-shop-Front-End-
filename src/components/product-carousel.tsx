@@ -41,7 +41,6 @@ export default function ProductCarousel({
   }, [api]);
 
 
-  console.log('mysldiklsf', slides);
   return (
     <div className="w-full">
       <Carousel
