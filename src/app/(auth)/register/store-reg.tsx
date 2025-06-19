@@ -215,8 +215,21 @@ export default function StoreRegister({
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
+<<<<<<< HEAD
+<<<<<<< HEAD
+                          {countriesResponse?.data?.map((country) => (
+                            <SelectItem
+                              key={country.id}
+                              value={country.id.toString()}
+                            >
+=======
                           {countriesResponse?.data?.map((country: Country) => (
                             <SelectItem key={country.id} value={country.id.toString()}>
+>>>>>>> 03af8389dc3dabff3b7f2d562ae91e719500c08b
+=======
+                          {countriesResponse?.data?.map((country: Country) => (
+                            <SelectItem key={country.id} value={country.id.toString()}>
+>>>>>>> 4218488389d1508d83df255a1c44e57699663ca2
                               {country.name}
                             </SelectItem>
                           ))}
