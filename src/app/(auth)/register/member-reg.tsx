@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ export default function MemberRegister({
     reset,
   } = useForm<RegisterFormData>({
     defaultValues: {
-      role: "2", // Assuming 2 is the role for members
+      role: "2",
     },
   });
 
@@ -55,7 +56,6 @@ export default function MemberRegister({
     }
 
     try {
-      // Convert date format if needed (assuming backend expects MM/DD/YYYY)
       const formattedData = {
         first_name: data.first_name,
         last_name: data.last_name,
@@ -69,9 +69,9 @@ export default function MemberRegister({
       };
 
       const response = await register(formattedData).unwrap();
-      console.log("Registration response:", response);
+
       if (response?.ok) {
-        toast.success(response?.message, "Registration successful!");
+        toast.success(response?.message || "Registration successful!");
         router.push("/verify-otp?isregistared=true");
         reset({
           first_name: "",
@@ -85,17 +85,14 @@ export default function MemberRegister({
           role: "2",
           terms: false,
         });
+      } else {
+        toast.error(response?.message || "Registration failed!");
       }
-      if (!response?.ok) {
-        toast.error(response?.message, "Registration failed!");
-      }
-      // You might want to redirect to login or dashboard here
-    } catch (error) {
-      toast.error(
-        error?.data?.message,
-        "Registration failed. Please try again."
-      );
-      console.error("Registration error:", error);
+    } catch (err: any) {
+      const message =
+        err?.data?.message || "Registration failed. Please try again.";
+      toast.error(message);
+      console.error("Registration error:", err);
     }
   };
 

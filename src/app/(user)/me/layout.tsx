@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <Navbar />
+      <Navbar token={undefined} />
       <main className="w-full">
         <div
           className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative"

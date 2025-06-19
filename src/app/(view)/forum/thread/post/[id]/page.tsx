@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import CommentCard from "@/components/core/comment-card";
 import GoBack from "@/components/core/internal/go-back";
 import LoadingScletion from "@/components/LoadingScletion";
@@ -7,7 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useCreatecommentMutation, useGetThreadDetailsByIdQuery } from "@/redux/features/Forum/ForumApi";
+import {
+  useCreatecommentMutation,
+  useGetThreadDetailsByIdQuery,
+} from "@/redux/features/Forum/ForumApi";
 import { useParams } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
@@ -36,7 +39,7 @@ interface Group {
 
 interface Comment {
   id: number;
-  comment: string;  // Changed from 'body' to match your data
+  comment: string; // Changed from 'body' to match your data
   user_id: number;
   thread_id: number;
   parent_id: number | null;
@@ -62,29 +65,29 @@ interface ThreadDetails {
 
 export default function Page() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError, error, refetch } = useGetThreadDetailsByIdQuery(id);
-  const [createcomment, { isLoading: isCommentLoading }] = useCreatecommentMutation();
-  const [comment, setComment] = React.useState('');
+  const { data, isLoading, isError, refetch } =
+    useGetThreadDetailsByIdQuery(id);
+  const [createcomment, { isLoading: isCommentLoading }] =
+    useCreatecommentMutation();
+  const [comment, setComment] = React.useState("");
   const handleComment = async () => {
     if (!comment) return;
     try {
       const res = await createcomment({
         thread_id: Number(id),
-        comment
-      })
-      console.log('res', res);
+        comment,
+      });
+      console.log("res", res);
       if (res?.data?.ok) {
-        toast.success('Comment created successfully');
-        setComment('');
+        toast.success("Comment created successfully");
+        setComment("");
         refetch();
       }
-
     } catch (error) {
-      console.log('error', error);
-      toast.error('Failed to create comment');
+      console.log("error", error);
+      toast.error("Failed to create comment");
     }
-
-  }
+  };
   if (isLoading) {
     return <LoadingScletion />;
   }
@@ -99,7 +102,7 @@ export default function Page() {
 
   const thread = data?.data as ThreadDetails;
 
-  console.log('thread', thread);
+  console.log("thread", thread);
   return (
     <main className="!my-12 !px-4 lg:!px-[7%] !space-y-12">
       <GoBack />
@@ -109,15 +112,15 @@ export default function Page() {
             <Avatar className="size-26">
               <AvatarImage src={thread.user?.avatar} />
               <AvatarFallback>
-                {thread.user?.first_name?.charAt(0) || 'U'}
+                {thread.user?.first_name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div className="!h-full flex flex-col justify-center">
               <h3 className="text-base md:text-xl font-bold">
-                {thread.user?.full_name || 'Unknown User'}
+                {thread.user?.full_name || "Unknown User"}
               </h3>
               <div className="!space-x-2 !space-y-2">
-                <Badge>{thread.user?.role_label || 'User'}</Badge>
+                <Badge>{thread.user?.role_label || "User"}</Badge>
                 {thread.user?.avg_rating ? (
                   <Badge variant="special">
                     {thread.user.avg_rating.toFixed(1)} ★
@@ -141,7 +144,9 @@ export default function Page() {
             {thread.body}
           </p>
           <div className="mt-2 text-sm text-muted-foreground">
-            {thread.views} view{thread.views !== 1 ? 's' : ''} • {thread.total_replies} comment{thread.total_replies !== 1 ? 's' : ''}
+            {thread.views} view{thread.views !== 1 ? "s" : ""} •{" "}
+            {thread.total_replies} comment
+            {thread.total_replies !== 1 ? "s" : ""}
           </div>
         </CardContent>
       </Card>
@@ -151,7 +156,8 @@ export default function Page() {
             Group: {thread.group?.title}
           </h3>
           <p className="text-xs text-muted-foreground">
-            {thread.group?.total_threads} threads • {thread.group?.total_comments} comments
+            {thread.group?.total_threads} threads •{" "}
+            {thread.group?.total_comments} comments
           </p>
         </CardContent>
       </Card>
@@ -163,7 +169,9 @@ export default function Page() {
           placeholder="what's on your mind??"
           className="text-xs sm:text-sm lg:text-base"
         />
-        <Button onClick={handleComment}>{isCommentLoading ? 'Loading...' : 'Comment'}</Button>
+        <Button onClick={handleComment}>
+          {isCommentLoading ? "Loading..." : "Comment"}
+        </Button>
       </div>
       <Card>
         <CardContent className="!space-y-4">

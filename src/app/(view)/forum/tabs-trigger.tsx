@@ -1,4 +1,5 @@
-'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import React from "react";
 import {
@@ -9,7 +10,6 @@ import {
 } from "@/components/custom-tabs";
 import VapeTalk from "./vape-talk";
 import { useGetForumQuery } from "@/redux/features/Forum/ForumApi";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 // import { ExclamationTriangleIcon, ReloadIcon } from "lucide-react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
@@ -20,7 +20,7 @@ export default function TabsTriggererForum() {
   const { data, isLoading, isError, error, refetch } = useGetForumQuery();
 
   if (isLoading) {
-    return <LoadingScletion />
+    return <LoadingScletion />;
   }
 
   if (isError) {
@@ -41,7 +41,9 @@ export default function TabsTriggererForum() {
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Error loading forum data</AlertTitle>
           <AlertDescription>
-            {error?.message || 'Failed to load forum discussions. Please try again.'}
+            {(error as any)?.data?.message ||
+              (error as any)?.error ||
+              "Failed to load forum discussions. Please try again."}
           </AlertDescription>
           <Button
             variant="outline"

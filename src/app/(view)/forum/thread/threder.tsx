@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import ForumCard from "@/components/core/forum-card";
 import LoadingScletion from "@/components/LoadingScletion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,10 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetallThredsByGropIdQuery } from "@/redux/features/Forum/ForumApi";
-import { Title } from "@radix-ui/react-dialog";
-import { AlertTriangle, PaintbrushIcon, RefreshCw } from "lucide-react";
+import { AlertTriangle, PaintbrushIcon } from "lucide-react";
 import React from "react";
-
 
 // Define the type for your thread data based on the API response
 interface Thread {
@@ -35,19 +34,19 @@ interface Thread {
 }
 
 // Define the type for the API response
-interface ThreadsResponse {
-  ok: boolean;
-  message: string;
-  data: {
-    current_page: number;
-    data: Thread[];
-    per_page: number;
-    total: number;
-  };
-}
+// interface ThreadsResponse {
+//   ok: boolean;
+//   message: string;
+//   data: {
+//     current_page: number;
+//     data: Thread[];
+//     per_page: number;
+//     total: number;
+//   };
+// }
 
 export default function Threader({ id }: { id: string }) {
-  console.log('id', id);
+  console.log("id", id);
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(8);
   const { data, isLoading } = useGetallThredsByGropIdQuery({
@@ -56,20 +55,18 @@ export default function Threader({ id }: { id: string }) {
     per_page: perPage,
   });
 
-  console.log('data', data);
+  console.log("data", data);
   if (isLoading) {
     return <LoadingScletion />;
   }
 
-
-
   // Transform API data to match ForumCardType
   const transformThreadToCardData = (thread: Thread): ForumCardType => ({
     title: thread.title,
-    date: new Date(thread.created_at).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    date: new Date(thread.created_at).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     }),
     secondaryA: `Replies: ${thread.total_replies}`,
     secondaryB: `Views: ${thread.views}`,
@@ -103,28 +100,37 @@ export default function Threader({ id }: { id: string }) {
           </Select>
         </CardHeader>
 
-        {data ? data?.data?.data?.map((thread: Thread) => (<ForumCard key={thread.id} data={transformThreadToCardData(thread)} to={`/forum/thread/post/${thread.id}`} />)) :
-
+        {data ? (
+          data?.data?.data?.map((thread: Thread) => (
+            <ForumCard
+              key={thread.id}
+              data={transformThreadToCardData(thread)}
+              to={`/forum/thread/post/${thread.id}`}
+            />
+          ))
+        ) : (
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Alert!</AlertTitle>
             <AlertDescription>Data not found</AlertDescription>
           </Alert>
-        }
+        )}
       </Card>
 
       {/* Add pagination controls if needed */}
       <div className="flex justify-between items-center">
         <Button
           disabled={page === 1}
-          onClick={() => setPage(p => Math.max(p - 1, 1))}
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
         >
           Previous
         </Button>
-        <span>Page {page} of {data?.data.last_page}</span>
+        <span>
+          Page {page} of {data?.data.last_page}
+        </span>
         <Button
           disabled={page >= (data?.data.last_page || 1)}
-          onClick={() => setPage(p => p + 1)}
+          onClick={() => setPage((p) => p + 1)}
         >
           Next
         </Button>

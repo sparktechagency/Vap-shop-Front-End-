@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -34,13 +35,12 @@ export function LoginForm({
     try {
       const response = await login({ email, password }).unwrap();
       if (response.ok) {
-
         toast.success(response.message || "Login successful");
         router.push("/");
         Cookies.set("token", response.data.access_token);
       }
       // Handle successful login (e.g., redirect)
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error?.data?.message || "Login failed. Please try again.");
       // Handle error (e.g., show error message)
       console.error("Login failed:", error);

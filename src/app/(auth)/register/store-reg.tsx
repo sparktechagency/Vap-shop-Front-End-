@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,7 @@ export default function StoreRegister({
   const handleCountryChange = (countryId: string) => {
     setSelectedCountryId(countryId);
     const selectedCountry = countriesResponse?.data?.find(
-      (c) => c.id.toString() === countryId
+      (c: { id: { toString: () => string } }) => c.id.toString() === countryId
     );
     setRegions(selectedCountry?.regions || []);
     setValue("region_id", ""); // Reset region when country changes
@@ -201,13 +202,11 @@ export default function StoreRegister({
                   </div>
 
                   {/* Country and Region Selection */}
-                 {/* Country and Region Selection */}
+                  {/* Country and Region Selection */}
                   <div className="grid grid-cols-2 gap-4 w-full">
- 
                     <div className="grid gap-2 w-full">
                       <Label htmlFor="country">Country</Label>
                       <Select
- 
                         onValueChange={handleCountryChange}
                         disabled={isLoadingCountries}
                       >
@@ -215,21 +214,11 @@ export default function StoreRegister({
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                          {countriesResponse?.data?.map((country) => (
+                          {countriesResponse?.data?.map((country: Country) => (
                             <SelectItem
                               key={country.id}
                               value={country.id.toString()}
                             >
-=======
-                          {countriesResponse?.data?.map((country: Country) => (
-                            <SelectItem key={country.id} value={country.id.toString()}>
->>>>>>> 03af8389dc3dabff3b7f2d562ae91e719500c08b
-=======
-                          {countriesResponse?.data?.map((country: Country) => (
-                            <SelectItem key={country.id} value={country.id.toString()}>
->>>>>>> 4218488389d1508d83df255a1c44e57699663ca2
                               {country.name}
                             </SelectItem>
                           ))}
@@ -239,27 +228,36 @@ export default function StoreRegister({
                     <div className="grid gap-2 w-full">
                       <Label htmlFor="region">Region</Label>
                       <Select
- 
                         onValueChange={(value) => setValue("region_id", value)}
                         disabled={!selectedCountryId || regions.length === 0}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder={regions.length ? "Select region" : "Select country first"} />
+                          <SelectValue
+                            placeholder={
+                              regions.length
+                                ? "Select region"
+                                : "Select country first"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {regions.map((region) => (
-                            <SelectItem key={region.id} value={region.id.toString()}>
+                            <SelectItem
+                              key={region.id}
+                              value={region.id.toString()}
+                            >
                               {region.name} ({region.code})
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       {errors.region_id && (
-                        <span className="text-red-500 text-sm">Please select a region</span>
+                        <span className="text-red-500 text-sm">
+                          Please select a region
+                        </span>
                       )}
                     </div>
                   </div>
- 
 
                   {/* Address Information */}
                   <div className="grid gap-2">

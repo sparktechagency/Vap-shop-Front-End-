@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,9 @@ export default function AssosRegister({
         toast.error(response?.message || "Registration failed!");
       }
     } catch (error: any) {
-      toast.error(error?.data?.message || "Registration failed. Please try again.");
+      toast.error(
+        error?.data?.message || "Registration failed. Please try again."
+      );
       console.error("Registration error:", error);
     }
   };
@@ -100,10 +103,14 @@ export default function AssosRegister({
                     <Input
                       id="name"
                       type="text"
-                      {...formRegister("name", { required: "Association name is required" })}
+                      {...formRegister("name", {
+                        required: "Association name is required",
+                      })}
                     />
                     {errors.name && (
-                      <span className="text-red-500 text-sm">{errors.name.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.name.message}
+                      </span>
                     )}
                   </div>
 
@@ -113,10 +120,14 @@ export default function AssosRegister({
                     <Input
                       id="address"
                       type="text"
-                      {...formRegister("address", { required: "Address is required" })}
+                      {...formRegister("address", {
+                        required: "Address is required",
+                      })}
                     />
                     {errors.address && (
-                      <span className="text-red-500 text-sm">{errors.address.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.address.message}
+                      </span>
                     )}
                   </div>
 
@@ -135,7 +146,9 @@ export default function AssosRegister({
                       })}
                     />
                     {errors.email && (
-                      <span className="text-red-500 text-sm">{errors.email.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.email.message}
+                      </span>
                     )}
                   </div>
 
@@ -153,7 +166,9 @@ export default function AssosRegister({
                       })}
                     />
                     {errors.phone && (
-                      <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.phone.message}
+                      </span>
                     )}
                   </div>
 
@@ -172,23 +187,30 @@ export default function AssosRegister({
                       })}
                     />
                     {errors.password && (
-                      <span className="text-red-500 text-sm">{errors.password.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.password.message}
+                      </span>
                     )}
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="password_confirmation">Confirm Password</Label>
+                    <Label htmlFor="password_confirmation">
+                      Confirm Password
+                    </Label>
                     <Input
                       id="password_confirmation"
                       type="password"
                       {...formRegister("password_confirmation", {
                         required: "Please confirm your password",
                         validate: (value) =>
-                          value === watch("password") || "Passwords don't match",
+                          value === watch("password") ||
+                          "Passwords don't match",
                       })}
                     />
                     {errors.password_confirmation && (
-                      <span className="text-red-500 text-sm">{errors.password_confirmation.message}</span>
+                      <span className="text-red-500 text-sm">
+                        {errors.password_confirmation.message}
+                      </span>
                     )}
                   </div>
 
@@ -196,7 +218,9 @@ export default function AssosRegister({
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="terms"
-                      {...formRegister("terms", { required: "You must accept the terms" })}
+                      {...formRegister("terms", {
+                        required: "You must accept the terms",
+                      })}
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
@@ -206,7 +230,9 @@ export default function AssosRegister({
                     </Label>
                   </div>
                   {errors.terms && (
-                    <span className="text-red-500 text-sm">{errors.terms.message}</span>
+                    <span className="text-red-500 text-sm">
+                      {errors.terms.message}
+                    </span>
                   )}
 
                   {/* Submit Button */}
