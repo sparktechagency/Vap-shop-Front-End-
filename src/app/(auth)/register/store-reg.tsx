@@ -41,6 +41,10 @@ interface StoreRegisterFormData {
   terms: boolean;
 }
 
+interface Country {
+  id: string;
+  name: string;
+}
 export default function StoreRegister({
   className,
   ...props
@@ -208,11 +212,16 @@ export default function StoreRegister({
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
+<<<<<<< HEAD
                           {countriesResponse?.data?.map((country) => (
                             <SelectItem
                               key={country.id}
                               value={country.id.toString()}
                             >
+=======
+                          {countriesResponse?.data?.map((country: Country) => (
+                            <SelectItem key={country.id} value={country.id.toString()}>
+>>>>>>> 03af8389dc3dabff3b7f2d562ae91e719500c08b
                               {country.name}
                             </SelectItem>
                           ))}

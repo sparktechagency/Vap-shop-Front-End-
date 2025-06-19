@@ -36,7 +36,7 @@ const slides = [
 const mockData: BrandType = {
   id: "1",
   image: "/image/shop/brand.webp",
-  type: "ad",
+  type: "normal",
   storeName: "SMOK",
   isVerified: true,
   location: {
