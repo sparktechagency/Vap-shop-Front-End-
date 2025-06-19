@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { Trash2Icon } from "lucide-react";
+import Link from "next/link";
 export default function Page() {
   return (
     <div className="h-full w-full !p-6">
@@ -63,9 +64,11 @@ export default function Page() {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-6">
-              <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors">
-                Review Article
-              </button>
+              <Link href="/trending/article">
+                <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors">
+                  View Article
+                </button>
+              </Link>
               <button className=" bg-destructive w-full !py-4 rounded-lg outline-0 dark:outline-2 flex justify-center items-center text-background dark:text-foreground dark:bg-secondary cursor-pointer  dark:hover:!bg-card">
                 <Trash2Icon className="!mr-2" /> Delete
               </button>

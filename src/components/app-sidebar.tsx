@@ -81,10 +81,10 @@ const data = {
       url: "/admin/business",
       icon: BriefcaseBusinessIcon,
       items: [
-        {
-          title: "Approvals",
-          url: "/admin/business/approvals",
-        },
+        // {
+        //   title: "Approvals",
+        //   url: "/admin/business/approvals",
+        // },
         {
           title: "Listing Editor",
           url: "/admin/business/listing-editor",
@@ -112,10 +112,10 @@ const data = {
           title: "Trending & Featured",
           url: "/admin/moderation/trending-featured",
         },
-        {
-          title: "Disputes & Tickets",
-          url: "/admin/moderation/disputes-tickets",
-        },
+        // {
+        //   title: "Disputes & Tickets",
+        //   url: "/admin/moderation/disputes-tickets",
+        // },
         {
           title: "Articles",
           url: "/admin/moderation/articles",

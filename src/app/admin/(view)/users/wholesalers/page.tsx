@@ -30,6 +30,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Namer from "@/components/core/internal/namer";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 const users = [
   { id: "43656", username: "Raven", email: "raven@gmail.com", role: "Brand" },
@@ -75,6 +76,13 @@ const users = [
 export default function Page() {
   return (
     <div className="h-full w-full !p-8 flex flex-col justify-between items-end border rounded-2xl">
+      <div className="w-full grid grid-cols-2">
+        <div className="flex gap-4">
+          <Input placeholder="Search here" />
+          <Button>Search</Button>
+        </div>
+        <div className="flex flex-row justify-end items-center"></div>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -186,6 +194,11 @@ export default function Page() {
                             </TableRow>
                           </TableBody>
                         </Table>
+                      </div>
+                      <div className="w-full col-span-3">
+                        <Button className="w-full" variant="destructive">
+                          Ban User
+                        </Button>
                       </div>
                     </div>
                   </DialogContent>
