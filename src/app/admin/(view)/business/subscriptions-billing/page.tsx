@@ -17,6 +17,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Namer from "@/components/core/internal/namer";
 const users = [
   { id: "43656", username: "Raven", email: "raven@mail.com", role: "Brand" },
   { id: "43656", username: "Eve", email: "eve@email", role: "Customer" },
@@ -57,7 +66,7 @@ export default function Page() {
       <div className="!mt-12">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
+            <TableRow className="">
               <TableHead className="w-[100px] font-medium">User ID</TableHead>
               <TableHead className="font-medium">Username</TableHead>
               <TableHead className="font-medium">Email</TableHead>
@@ -73,14 +82,73 @@ export default function Page() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell className="text-right">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="bg-zinc-900 text-white hover:bg-zinc-800"
-                  >
-                    <Eye className="mr-2 h-4 w-4" />
-                    View
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="bg-zinc-900 text-white hover:bg-zinc-800"
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        View
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="!max-w-[40dvw]">
+                      <DialogHeader>
+                        <DialogTitle></DialogTitle>
+                      </DialogHeader>
+                      <div className="flex flex-row justify-start items-center gap-4">
+                        <Avatar className="size-20">
+                          <AvatarImage
+                            src="/image/icon/user.jpeg"
+                            className="object-cover"
+                          />
+                          <AvatarFallback>JS</AvatarFallback>
+                        </Avatar>
+                        <div className="">
+                          <Namer type="member" name="Jay Smith" />
+                          <p className="text-xs text-muted-foreground">
+                            jaysmith@email.com
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-row justify-between items-center text-sm">
+                        <p>Followers: 24k</p>
+                        <p>Following: 24k</p>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Review Count:</p>
+                        </div>
+                        <div className="bg-primary text-background dark:text-foreground text-center text-xs flex justify-center items-center-safe col-span-4 !p-2">
+                          476 reviews
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Subscription information:</p>
+                        </div>
+                        <div className="text-xs flex justify-center items-center-safe col-span-4 !p-2">
+                          <Table>
+                            <TableHeader className="text-xs">
+                              <TableRow>
+                                <TableHead>Subscription</TableHead>
+                                <TableHead>Started since</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody className="!text-xs">
+                              <TableRow>
+                                <TableCell className="">
+                                  📊 Business Intelligence Tools
+                                </TableCell>
+                                <TableCell>29-04-2025</TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             ))}
