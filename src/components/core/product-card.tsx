@@ -1,9 +1,16 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
 import { Button } from "../ui/button";
 import { HeartIcon } from "lucide-react";
+import Link from "next/link";
 
-export default function ProductCard({ data }: { data: ProductType }) {
+export default function ProductCard({
+  data,
+  manage,
+}: {
+  data: ProductType;
+  manage?: boolean;
+}) {
   return (
     <Card className="!p-0 !gap-0 shadow-sm">
       <div
@@ -13,7 +20,7 @@ export default function ProductCard({ data }: { data: ProductType }) {
         {data.type === "ad" && (
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
-        <div className="absolute bottom-2 right-2 flex">
+        <div className="absolute bottom-2 right-2 flex z-50">
           <Button
             className="!text-sm"
             variant="ghost"
@@ -35,6 +42,16 @@ export default function ProductCard({ data }: { data: ProductType }) {
           <span>{data.note}</span>
         </div>
       </CardContent>
+      {manage && (
+        <CardFooter className="p-4! grid grid-cols-2 gap-4">
+          <Button variant="special" asChild>
+            <Link href="/me/manage/ad-request">Ad request</Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/brands/brand/product">View</Link>
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
