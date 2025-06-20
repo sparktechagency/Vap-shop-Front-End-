@@ -13,14 +13,72 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { LinkList, navActions, navActionsBasic } from "./core-values/navlinks";
+import { navActions, navActionsBasic } from "./core-values/navlinks";
 import Searcher from "../ui/searcher";
 import MobileMenu from "./mobile-menu";
 import CartDrawer from "../cart-drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
-import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import {
+  useGetFavouriteQuery,
+  useGetOwnprofileQuery,
+} from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
+import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
+
+export const LinkList = [
+  {
+    title: "Trending",
+    icon: <LayoutGridIcon />,
+    target: "/trending",
+  },
+  {
+    title: "Forum",
+    icon: <NotebookIcon />,
+    target: "/forum",
+  },
+  // {
+  //   title: "Subscriptions",
+  //   icon: <BadgeDollarSignIcon />,
+  //   target: "/subscriptions",
+  // },
+  {
+    title: "Brands",
+    icon: <ChevronDown />,
+    dropdown: {
+      main: [{ label: "All brands", to: "/brands" }],
+      sub: {
+        title: "My Favourite Brands",
+        items: [
+          { label: "All brands", to: "/brands" },
+          { label: "All brands", to: "/brands" },
+          { label: "All brands", to: "/brands" },
+          { label: "All brands", to: "/brands" },
+          { label: "All brands", to: "/brands" },
+          { label: "All brands", to: "/brands" },
+        ],
+      },
+    },
+  },
+  {
+    title: "Stores",
+    icon: <ChevronDown />,
+    dropdown: {
+      main: [{ label: "All stores", to: "/stores" }],
+      sub: {
+        title: "My Favourite Stores",
+        items: [
+          // { label: "All stores", to: "/stores" },
+          // { label: "All stores", to: "/stores" },
+          // { label: "All stores", to: "/stores" },
+          // { label: "All stores", to: "/stores" },
+          // { label: "All stores", to: "/stores" },
+          // { label: "All stores", to: "/stores" },
+        ],
+      },
+    },
+  },
+];
 
 export default function Navbar({ token }: { token: string | undefined }) {
   const [user, setUser] = useState<UserData | null>(null);
@@ -29,8 +87,14 @@ export default function Navbar({ token }: { token: string | undefined }) {
     if (token) {
       if (data) {
         console.log(data);
-
         setUser(data.data);
+        data?.data?.favourite_store_list?.map(
+          (x: { full_name: string; id: string }) =>
+            LinkList[3].dropdown?.sub.items.push({
+              label: x?.full_name,
+              to: "#",
+            })
+        );
       }
     }
   }, [data, token]);

@@ -50,7 +50,7 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
-    countys: builder.query<any, void>({
+    countys: builder.query({
       query: () => ({
         url: `/get-all-countries`,
         method: "GET",
@@ -61,6 +61,14 @@ const AuthApi = api.injectEndpoints({
     getOwnprofile: builder.query<any, void>({
       query: () => ({
         url: `/me`,
+        method: "GET",
+      }),
+      providesTags: ["user"],
+    }),
+
+    getFavourite: builder.query({
+      query: (typeID) => ({
+        url: `/favourite?role=${typeID}`,
         method: "GET",
       }),
       providesTags: ["user"],
@@ -76,4 +84,5 @@ export const {
   useCreateNewpasswordMutation,
   useGetOwnprofileQuery,
   useCountysQuery,
+  useGetFavouriteQuery,
 } = AuthApi;
