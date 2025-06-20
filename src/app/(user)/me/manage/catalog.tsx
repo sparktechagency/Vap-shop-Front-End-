@@ -9,7 +9,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Link from "next/link";
 
 export default function Catalog() {
   const data = {
@@ -23,9 +22,7 @@ export default function Catalog() {
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {Array.from({ length: 12 }).map((_, i) => (
-          <Link href={"/me/manage/view"} key={i}>
-            <ProductCard data={data} />
-          </Link>
+          <ProductCard data={data} manage key={i} />
         ))}
       </div>
       <div className="!mt-[100px]">

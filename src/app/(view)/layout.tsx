@@ -10,6 +10,9 @@ export default async function RootLayout({
   const cookiesStore = await cookies();
   const token = cookiesStore.get("token")?.value;
 
+  // const res = await fetch("https://10.0.80.13/api/me");
+  // console.log(res);
+
   return (
     <>
       <Navbar token={token} />

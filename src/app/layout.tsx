@@ -6,6 +6,7 @@ import MagicButton from "@/components/magic-button";
 import { Suspense } from "react";
 // import { Provider } from 'react-redux'
 import StoreProvider from "@/components/StoreProvider";
+import AgePopup from "@/components/core/age-popup";
 
 export const metadata: Metadata = {
   title: "Vape Shop Maps",
@@ -32,6 +33,7 @@ export default function RootLayout({
           </Suspense>
           <Toaster />
           <MagicButton />
+          <AgePopup />
         </ThemeProvider>
       </body>
     </html>
