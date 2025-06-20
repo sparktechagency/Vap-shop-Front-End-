@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +38,7 @@ export function ResetForm({
     try {
       const response = await createNewPassword({
         password: data.password,
-        password_confirmation: data.password_confirmation
+        password_confirmation: data.password_confirmation,
       }).unwrap();
       console.log("Password reset response:", response);
       if (response.ok) {
@@ -74,8 +75,8 @@ export function ResetForm({
                     required: "Password is required",
                     minLength: {
                       value: 8,
-                      message: "Password must be at least 8 characters"
-                    }
+                      message: "Password must be at least 8 characters",
+                    },
                   })}
                 />
                 {errors.password && (
@@ -86,7 +87,9 @@ export function ResetForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password_confirmation">Confirm Password</Label>
+                  <Label htmlFor="password_confirmation">
+                    Confirm Password
+                  </Label>
                 </div>
                 <Input
                   id="password_confirmation"
@@ -95,7 +98,7 @@ export function ResetForm({
                   {...register("password_confirmation", {
                     required: "Please confirm your password",
                     validate: (value) =>
-                      value === watch("password") || "Passwords don't match"
+                      value === watch("password") || "Passwords don't match",
                   })}
                 />
                 {errors.password_confirmation && (
@@ -104,11 +107,7 @@ export function ResetForm({
                   </span>
                 )}
               </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Resetting..." : "Save Password"}
               </Button>
             </div>

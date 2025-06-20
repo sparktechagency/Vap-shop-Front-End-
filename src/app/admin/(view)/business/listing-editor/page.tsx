@@ -19,15 +19,14 @@ import {
 import { Eye } from "lucide-react";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import Namer from "@/components/core/internal/namer";
 const users = [
   { id: "43656", username: "Raven", email: "raven@mail.com", role: "Brand" },
   { id: "43656", username: "Eve", email: "eve@email", role: "Customer" },
@@ -95,25 +94,95 @@ export default function Page() {
                         View
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="!max-w-[40dvw]">
                       <DialogHeader>
-                        <DialogTitle className="flex flex-row items-center gap-3 !text-sm">
-                          <Avatar>
-                            <AvatarImage src="/image/icon/brand.jpg" />
-                            <AvatarFallback>UI</AvatarFallback>
-                          </Avatar>
-                          SMOK
-                        </DialogTitle>
+                        <DialogTitle></DialogTitle>
                       </DialogHeader>
-                      <DialogDescription>
-                        Datas about the account
-                      </DialogDescription>
-                      <DialogFooter>
-                        <Button variant="destructive">Ban</Button>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                      </DialogFooter>
+                      <div className="flex flex-row justify-start items-center gap-4">
+                        <Avatar className="size-20">
+                          <AvatarImage
+                            src="/image/icon/user.jpeg"
+                            className="object-cover"
+                          />
+                          <AvatarFallback>JS</AvatarFallback>
+                        </Avatar>
+                        <div className="">
+                          <Namer type="member" name="Jay Smith" />
+                          <p className="text-xs text-muted-foreground">
+                            jaysmith@email.com
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-row justify-between items-center text-sm">
+                        <p>Followers: 24k</p>
+                        <p>Following: 24k</p>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Top Favourite Brands:</p>
+                        </div>
+                        <div className="grid grid-cols-4 gap-3 col-span-4">
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Top Favourite Stores:</p>
+                        </div>
+                        <div className="grid grid-cols-4 gap-3 col-span-4">
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                          <Badge>SMOK</Badge>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Review Count:</p>
+                        </div>
+                        <div className="bg-primary text-background dark:text-foreground text-center text-xs flex justify-center items-center-safe col-span-4 !p-2">
+                          476 reviews
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7">
+                        <div className="col-span-3 text-sm font-semibold">
+                          <p>Order information:</p>
+                        </div>
+                        <div className="text-xs flex justify-center items-center-safe col-span-4 !p-2">
+                          <Table>
+                            <TableHeader className="text-xs">
+                              <TableRow>
+                                <TableHead>Purchased</TableHead>
+                                <TableHead>From</TableHead>
+                                <TableHead>Received</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody className="!text-xs">
+                              <TableRow>
+                                <TableCell className="">
+                                  Geek Vape Aegis..
+                                </TableCell>
+                                <TableCell>GEEK VAPE</TableCell>
+                                <TableCell>29-04-2025</TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <div className="w-full col-span-3">
+                          <Button className="w-full" variant="destructive">
+                            Ban User
+                          </Button>
+                        </div>
+                      </div>
                     </DialogContent>
                   </Dialog>
                 </TableCell>

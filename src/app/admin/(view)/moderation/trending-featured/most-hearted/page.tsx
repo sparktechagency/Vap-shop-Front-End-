@@ -45,7 +45,7 @@ export default function Page() {
           <Button>Remove</Button>
         </div>
       ))}
-      <h2 className="text-2xl font-bold">Most Hearted Products List</h2>
+      {/* <h2 className="text-2xl font-bold">Most Hearted Products List</h2>
       {Array.from({ length: 16 }).map((_, i) => (
         <div
           className="w-full rounded-2xl flex flex-row justify-between items-center border !p-4"
@@ -61,7 +61,7 @@ export default function Page() {
           <div className="text-sm font-semibold">Date: 23-04-2024</div>
           <Button>Remove</Button>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }

@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +30,7 @@ export function OTPForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const searchParams = useSearchParams();
-  const isFromRegistration = searchParams?.get('isregistared') === 'true';
+  const isFromRegistration = searchParams?.get("isregistared") === "true";
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
   const router = useRouter();
 
@@ -46,17 +47,17 @@ export function OTPForm({
 
       if (response.ok) {
         // Store the token securely
-        Cookies.set('token', response.data.access_token);
+        Cookies.set("token", response.data.access_token);
 
         toast.success(response.message || "Verification successful");
 
         // Determine redirect based on registration status
         if (isFromRegistration) {
           // For registration flow - go to homepage
-          router.push('/');
+          router.push("/");
         } else {
           // For password reset flow - go to reset password
-          router.push('/reset-password');
+          router.push("/reset-password");
         }
 
         // Refresh to ensure proper state update
@@ -65,7 +66,9 @@ export function OTPForm({
         toast.error(response.message || "Verification failed");
       }
     } catch (error: any) {
-      toast.error(error.data?.message || "Verification failed. Please try again.");
+      toast.error(
+        error.data?.message || "Verification failed. Please try again."
+      );
       console.error("Verification error:", error);
     }
   };
@@ -89,8 +92,8 @@ export function OTPForm({
                     required: "OTP is required",
                     minLength: {
                       value: 6,
-                      message: "Please enter all 6 digits"
-                    }
+                      message: "Please enter all 6 digits",
+                    },
                   })}
                   onChange={(value) => setValue("otp", value)}
                 >
@@ -112,11 +115,7 @@ export function OTPForm({
                   </span>
                 )}
               </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Verifying..." : "Verify OTP"}
               </Button>
             </div>

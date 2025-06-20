@@ -43,7 +43,7 @@ export default function Page() {
           <Button>Remove</Button>
         </div>
       ))}
-      <h2 className="text-2xl font-bold">Most Followers Products List</h2>
+      {/* <h2 className="text-2xl font-bold">Most Followers Products List</h2>
       {Array.from({ length: 16 }).map((_, i) => (
         <div
           className="w-full rounded-2xl flex flex-row justify-between items-center border !p-4"
@@ -57,7 +57,7 @@ export default function Page() {
           <div className="text-sm font-semibold">Followers: 45k</div>
           <Button variant="special">View Shop</Button>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }

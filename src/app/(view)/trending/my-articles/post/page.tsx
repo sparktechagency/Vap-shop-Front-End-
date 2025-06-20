@@ -2,7 +2,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
-
 import { Editor } from "primereact/editor";
 import { Button } from "@/components/ui/button";
 export default function Featured() {
@@ -16,7 +15,10 @@ export default function Featured() {
           <Label>Article Title:</Label>
           <Input />
           <Label>Article Title:</Label>
-          <Editor className=""></Editor>
+          <Editor
+            className=""
+            style={{ height: "50dvh", borderRadius: "5px" }}
+          />
           <Button>Post Article</Button>
         </div>
       </main>
