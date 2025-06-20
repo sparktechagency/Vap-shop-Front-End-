@@ -189,6 +189,7 @@ export default function ProductReviewCard({
                   </p>
                 </div>
               </div>
+
               <DialogFooter className="border-t !pt-4">
                 <div className="w-full flex flex-row gap-3">
                   <Input placeholder="Write your reply..." className="flex-1" />

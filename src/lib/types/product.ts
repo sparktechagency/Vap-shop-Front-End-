@@ -5,6 +5,10 @@ export interface ProductType {
   note: string;
   price?: string;
   type?: "ad" | string;
+  discount?: string;
+  hearts?: number;
+  rating?: string;
+  reviews?: number;
 }
 
 export interface BrandType {

@@ -23,10 +23,10 @@ export default function ProductCard({
         <div className="absolute bottom-2 right-2 flex z-50">
           <Button
             className="!text-sm"
-            variant="ghost"
-            // size="icon"
+            variant="outline"
+          // size="icon"
           >
-            408
+            {data?.hearts || 0}
             <HeartIcon className="!text-4xl size-5" />
           </Button>
         </div>
