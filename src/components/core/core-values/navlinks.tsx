@@ -1,67 +1,9 @@
 import {
   // BadgeDollarSignIcon,
-  ChevronDown,
-  LayoutGridIcon,
-  NotebookIcon,
   // HeartIcon,
   BellIcon,
 } from "lucide-react";
 import { JSX } from "react";
-
-export const LinkList = [
-  {
-    title: "Trending",
-    icon: <LayoutGridIcon />,
-    target: "/trending",
-  },
-  {
-    title: "Forum",
-    icon: <NotebookIcon />,
-    target: "/forum",
-  },
-  // {
-  //   title: "Subscriptions",
-  //   icon: <BadgeDollarSignIcon />,
-  //   target: "/subscriptions",
-  // },
-  {
-    title: "Brands",
-    icon: <ChevronDown />,
-    dropdown: {
-      main: [{ label: "All brands", to: "/brands" }],
-      sub: {
-        title: "My Favourite Brands",
-        items: [
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-        ],
-      },
-    },
-  },
-  {
-    title: "Stores",
-    icon: <ChevronDown />,
-    dropdown: {
-      main: [{ label: "All stores", to: "/stores" }],
-      sub: {
-        title: "My Favourite Stores",
-        items: [
-          { label: "All stores", to: "/stores" },
-          { label: "All stores", to: "/stores" },
-          { label: "All stores", to: "/stores" },
-          { label: "All stores", to: "/stores" },
-          { label: "All stores", to: "/stores" },
-          { label: "All stores", to: "/stores" },
-        ],
-      },
-    },
-  },
-];
-
 export interface NavActionsType {
   icon?: JSX.Element;
   variant:
