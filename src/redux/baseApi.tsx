@@ -22,4 +22,4 @@ export const api = createApi({
   endpoints: () => ({}),
 });
 
-export const imageUrl = "https://10.0.80.13";
+export const imageUrl = "http://10.0.80.13";
