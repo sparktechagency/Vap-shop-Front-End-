@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
 import {
   Select,
   SelectContent,
@@ -25,7 +26,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  first_name: z.string().min(2),
+  last_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
   favBrands: z.array(z.string().min(1)).length(6),
@@ -36,7 +38,8 @@ export default function EditForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      first_name: "",
+      last_name: "",
       email: "",
       phone: "",
       favBrands: Array(6).fill(""),
@@ -63,10 +66,23 @@ export default function EditForm() {
         {/* Basic fields */}
         <FormField
           control={control}
-          name="username"
+          name="first_name"
           render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Full name</FormLabel>
+            <FormItem>
+              <FormLabel>First name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="last_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter your name" {...field} />
               </FormControl>
