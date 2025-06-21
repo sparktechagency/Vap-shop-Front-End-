@@ -2,15 +2,12 @@ import { api } from "@/redux/baseApi";
 
 export const brandApis = api.injectEndpoints({
   endpoints: (builder) => ({
-    // followOrUnfollowBrand: builder.mutation({
-    //   query: (id) => ({
-    //     url: `/follow?following_id=${id}`,
-    //     method: "POST",
-    //   }),
-    // }),
+    getallBrands: builder.query<any, void>({
+      query: () => `/get-all-store-brand-wholesaler?type=brand`,
+    })
   }),
 });
 
 export const {
-  // useFollowOrUnfollowBrandMutation
+  useGetallBrandsQuery
 } = brandApis;
