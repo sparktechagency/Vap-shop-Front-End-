@@ -23,9 +23,9 @@ export default function MostHearted() {
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {Array.from({ length: 12 }).map((_, i) => (
-          <Link href="/brands/brand/product" key={i}>
-            <ProductCard data={data} />
-          </Link>
+
+          <ProductCard key={i} data={data} />
+
         ))}
       </div>
       <div className="!mt-[100px]">
