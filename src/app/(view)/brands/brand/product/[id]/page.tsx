@@ -202,19 +202,20 @@ export default function Page() {
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {product?.data?.related_products?.slice(0, 4).map((relatedProduct: any) => (
-            <Link href={`/brands/brand/product/${relatedProduct.id}`} key={relatedProduct.id}>
-              <ProductCard
-                data={{
-                  image: relatedProduct.product_image || "/image/shop/item.jpg",
-                  title: relatedProduct.product_name,
-                  category: relatedProduct.category?.name || "Product",
-                  note: `$${parseFloat(relatedProduct.product_price).toFixed(2)}`,
-                  discount: relatedProduct.product_discount,
-                  hearts: relatedProduct.total_heart,
-                  rating: parseFloat(relatedProduct.average_rating || "0").toFixed(1)
-                }}
-              />
-            </Link>
+
+            <ProductCard
+              key={relatedProduct.id}
+              data={{
+                image: relatedProduct.product_image || "/image/shop/item.jpg",
+                title: relatedProduct.product_name,
+                category: relatedProduct.category?.name || "Product",
+                note: `$${parseFloat(relatedProduct.product_price).toFixed(2)}`,
+                discount: relatedProduct.product_discount,
+                hearts: relatedProduct.total_heart,
+                rating: parseFloat(relatedProduct.average_rating || "0").toFixed(1)
+              }}
+            />
+
           ))}
         </div>
       </div>
