@@ -1,10 +1,11 @@
 'use client';
 
-import React from "react";
+import React, { useState } from "react";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquareMoreIcon, Share2Icon } from "lucide-react";
+import { MessageSquareMoreIcon, Share2Icon, CopyIcon, MailIcon } from "lucide-react";
+import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
 import {
   Accordion,
@@ -14,9 +15,24 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
-import { useParams, useSearchParams } from "next/navigation";
-import { useTrendingProductDetailsByIdQuery } from "@/redux/features/Trending/TrendingApi";
+import { useParams } from "next/navigation";
+import { useFollowBrandMutation, useTrendingProductDetailsByIdQuery, useUnfollowBrandMutation } from "@/redux/features/Trending/TrendingApi";
 import LoadingScletion from "@/components/LoadingScletion";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  EmailShareButton,
+} from "react-share";
 
 const accordionData = [
   {
@@ -63,21 +79,110 @@ const accordionData = [
   },
 ];
 
+interface ShareButtonsProps {
+  url: string;
+  title: string;
+}
+
+const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
+  return (
+    <div className="flex justify-center gap-4 pt-4">
+      <FacebookShareButton
+        url={url}
+        hashtag="#vapeshopmaps"
+      >
+        <Button variant="outline" size="icon">
+          <FaFacebook className="h-5 w-5 text-blue-600" />
+        </Button>
+      </FacebookShareButton>
+      <TwitterShareButton url={url} title={title}>
+        <Button variant="outline" size="icon">
+          <FaTwitter className="h-5 w-5 text-blue-400" />
+        </Button>
+      </TwitterShareButton>
+      <LinkedinShareButton url={url} title={title}>
+        <Button variant="outline" size="icon">
+          <FaLinkedin className="h-5 w-5 text-blue-700" />
+        </Button>
+      </LinkedinShareButton>
+      <EmailShareButton url={url} subject={title}>
+        <Button variant="outline" size="icon">
+          <MailIcon className="h-5 w-5 text-gray-600" />
+        </Button>
+      </EmailShareButton>
+    </div>
+  );
+};
+
 export default function Page() {
   const params = useParams();
   const id = params.id;
-
-  const { data: product, isLoading } = useTrendingProductDetailsByIdQuery(id as any);
-  console.log('product', product);
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { data: product, isLoading, refetch } = useTrendingProductDetailsByIdQuery(id as any);
+  const [followOrUnfollowBrand, { isLoading: isFollowing }] = useFollowBrandMutation();
+  const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
+  console.log("product", product);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <LoadingScletion />
       </div>
-    )
+    );
   }
 
-  // Format price with discount if available
+  const handleFollow = async (id: string) => {
+    try {
+      const response = await followOrUnfollowBrand(id).unwrap();
+      console.log("Toggled follow/unfollow for brand:", response);
+      if (response.ok) {
+        toast.success(response.message || "Followed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      console.error("Error toggling follow:", error);
+      toast.error(error?.data?.message || "Failed to follow");
+    }
+  };
+
+  const handleUnfollow = async (id: string) => {
+    try {
+      const response = await unfollowBrand(id).unwrap();
+      console.log("Toggled follow/unfollow for brand:", response);
+      if (response.ok) {
+        toast.success(response.message || "Unfollowed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      console.error("Error toggling follow:", error);
+      toast.error(error?.data?.message || "Failed to unfollow");
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy link");
+    }
+  };
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: product?.data?.product_name || "Check out this product",
+        url: currentUrl,
+      });
+    } catch (err) {
+      console.log("Native share not supported, falling back to dialog");
+      setIsShareDialogOpen(true);
+    }
+  };
+
   const formatPrice = () => {
     if (!product) return "$0.00";
     const price = parseFloat(product?.data?.product_price);
@@ -97,11 +202,9 @@ export default function Page() {
     return `$${price.toFixed(2)}`;
   };
 
-  // Update accordion content with product FAQs if available
   const getAccordionData = () => {
     const updatedAccordionData = [...accordionData];
 
-    // Update How to Use section with product FAQs
     const howToUseIndex = updatedAccordionData.findIndex(item => item.id === "how-to-use");
     if (howToUseIndex !== -1 && product?.product_faqs?.length) {
       updatedAccordionData[howToUseIndex].content = (
@@ -133,19 +236,19 @@ export default function Page() {
         <div className="flex !py-4 gap-4 ">
           <Avatar className="size-24 border">
             <AvatarImage src={product?.data?.user?.avatar || "/image/icon/brand.jpg"} alt={`${product?.data?.user?.avatar} Brand Logo`} />
-
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
-            <Namer
-              name={product?.data?.user?.full_name || "Brand"}
-              isVerified
-              type="brand"
-              size="xl"
-            />
+            <Link href={`/brands/brand/${product?.data?.user?.id}`} className="text-black hover:text-[#3a3a3a] underline">
+              <Namer
+                name={product?.data?.user?.full_name || "Brand"}
+                isVerified
+                type="brand"
+                size="xl"
+              /></Link>
           </div>
           <div className="flex-1 h-24 flex flex-row justify-end items-center gap-4">
             <p className="font-semibold text-sm">
-              {product.user?.total_followers?.toLocaleString() || "0"} followers
+              {product?.data?.user?.total_followers?.toLocaleString() || "0"} followers
             </p>
             <Button variant="outline" className="!text-sm font-extrabold">
               B2B
@@ -153,10 +256,47 @@ export default function Page() {
             <Button variant="outline" size="icon">
               <MessageSquareMoreIcon />
             </Button>
-            <Button variant="outline">Follow</Button>
-            <Button variant="outline" size="icon">
-              <Share2Icon />
-            </Button>
+            {
+              product?.data?.user?.is_following ? (
+                <Button onClick={() => handleUnfollow(product?.data?.user?.id)} variant="outline">{isUnFollowing ? "UnFollowing..." : "UnFollow"}</Button>
+              ) : (
+                <Button onClick={() => handleFollow(product?.data?.user?.id)} variant="outline">{isFollowing ? "Following..." : "Follow"}</Button>
+              )
+            }
+
+            <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={handleNativeShare} variant="outline" size="icon">
+                  <Share2Icon />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Share this product</DialogTitle>
+                </DialogHeader>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Input
+                      value={currentUrl}
+                      readOnly
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="px-3"
+                    onClick={copyToClipboard}
+                  >
+                    <span className="sr-only">Copy</span>
+                    <CopyIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <ShareButtons
+                  url={currentUrl}
+                  title={product?.data?.product_name || "Check out this product"}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
@@ -202,9 +342,9 @@ export default function Page() {
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {product?.data?.related_products?.slice(0, 4).map((relatedProduct: any) => (
-
             <ProductCard
               key={relatedProduct.id}
+              link={`${relatedProduct.id}`}
               data={{
                 image: relatedProduct.product_image || "/image/shop/item.jpg",
                 title: relatedProduct.product_name,
@@ -215,7 +355,6 @@ export default function Page() {
                 rating: parseFloat(relatedProduct.average_rating || "0").toFixed(1)
               }}
             />
-
           ))}
         </div>
       </div>

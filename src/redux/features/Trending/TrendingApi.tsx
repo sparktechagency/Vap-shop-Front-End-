@@ -8,9 +8,27 @@ export const trendingApi = api.injectEndpoints({
     }),
     trendingProductDetailsById: builder.query<any, void>({
       query: (id) => `/get-product/${id}?role=3`,
+      providesTags: ["tranding"],
+
     }),
+
+    followBrand: builder.mutation({
+      query: (id) => ({
+        url: `/follow?following_id=${id}`,
+        method: "POST",
+        invalidatesTags: ["tranding"],
+      }),
+
+    }),
+    unfollowBrand: builder.mutation({
+      query: (id) => ({
+        url: `/unfollow?following_id=${id}`,
+        method: "POST",
+        invalidatesTags: ["tranding"],
+      }),
+    })
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation } =
   trendingApi;

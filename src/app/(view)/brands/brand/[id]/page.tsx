@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquareMoreIcon, Share2Icon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import TabsTriggerer from "./tabs-trigger";
+import TabsTriggerer from "../tabs-trigger";
 
 export default function Page() {
   return (
