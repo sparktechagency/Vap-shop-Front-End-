@@ -28,7 +28,7 @@ export default async function RootLayout({
 
   return (
     <>
-      <Navbar token={undefined} />
+      <Navbar />
       <main className="w-full">
         <div
           className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative"

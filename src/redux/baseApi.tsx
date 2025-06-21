@@ -1,3 +1,4 @@
+import { BASE_API_ENDPOINT } from "@/lib/config/data";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import Cookies from "js-cookie";
@@ -5,7 +6,7 @@ import Cookies from "js-cookie";
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://10.0.80.13/api/",
+    baseUrl: BASE_API_ENDPOINT,
     prepareHeaders: (headers) => {
       const token = Cookies.get("token");
       console.log("tokenFromBaseApi", token);

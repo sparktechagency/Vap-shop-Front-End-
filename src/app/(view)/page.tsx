@@ -42,7 +42,14 @@ export default function Home() {
       </div>
     );
   }
-
+  const categoryImageSet = [
+    "/image/home/kits.webp",
+    "/image/home/disposables.webp",
+    "/image/home/eliquids.webp",
+    "/image/home/brands.webp",
+    "/image/home/nic.webp",
+    "/image/home/accessories.webp",
+  ];
   return (
     <>
       <header className="w-screen !py-12">
@@ -60,7 +67,7 @@ export default function Home() {
                     <div
                       className="size-20 lg:size-[150px] xl:size-[220px] rounded-3xl border bg-cover bg-center bg-no-repeat overflow-hidden"
                       style={{
-                        backgroundImage: `url('/image/home/trend1.webp')`,
+                        backgroundImage: `url(${categoryImageSet[i]})`,
                       }}
                     />
                     <div className="w-full text-center font-semibold !pt-4 text-xs sm:text-sm md:text-xl">

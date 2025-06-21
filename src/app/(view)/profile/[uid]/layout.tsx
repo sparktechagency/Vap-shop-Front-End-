@@ -1,23 +1,22 @@
 import { Suspense } from "react";
-import Navbar from "@/components/core/navbar";
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
-import Footer from "@/components/core/footer";
 import ProfileLayoutShell from "./_me/profile-layout-shell";
 import SkeletonMe from "./_me/skeleton-me";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ uid: string }>;
 }) {
+  const uid = (await params).uid;
   return (
     <>
-      <Navbar />
       <Suspense fallback={<SkeletonMe />}>
-        <ProfileLayoutShell>{children}</ProfileLayoutShell>
+        <ProfileLayoutShell id={uid}>{children}</ProfileLayoutShell>
       </Suspense>
       <MobileProfileNavigation />
-      <Footer />
     </>
   );
 }
