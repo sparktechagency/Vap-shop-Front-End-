@@ -1,14 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/components/core/product-card";
 import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -23,7 +15,7 @@ import Link from "next/link";
 import { useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
 
 export default function MostHearted() {
-  const { data: mosthartedproducts, isLoading } = useMosthartedProductQuery();
+  const { data: mosthartedproducts } = useMosthartedProductQuery();
 
   console.log("mosthartedproducts", mosthartedproducts);
 
@@ -34,14 +26,6 @@ export default function MostHearted() {
     note: "93.1% THC",
     type: "ad",
   };
-
-  const data = {
-    image: "/image/shop/item.jpg",
-    title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-    category: "PODS",
-    note: "93.1% THC",
-  };
-
   return (
     <>
       <div className="w-full flex justify-end items-center gap-6 !my-12">
@@ -85,9 +69,7 @@ export default function MostHearted() {
         {/* Content for Most Hearted Products */}
 
         {Array.from({ length: 8 }).map((_, i) => (
-          <Link href="/brands/brand/product" key={i}>
-            <ProductCard data={dataAd} />
-          </Link>
+          <ProductCard data={dataAd} link={`/brands/brand/product/1`} key={i} />
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12 text-center">
@@ -95,18 +77,18 @@ export default function MostHearted() {
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {mosthartedproducts?.data?.map((product: any) => (
-          <Link href={`/brands/brand/product/${product.id}`} key={product.id}>
-            <ProductCard
-              data={{
-                image: product.product_image || "/image/shop/item.jpg",
-                title: product.product_name,
-                category: product.category_id?.toString() || "PODS",
-                note: `${product.product_price}$`,
-                discount: product.product_discount,
-                hearts: product.total_heart
-              }}
-            />
-          </Link>
+          <ProductCard
+            data={{
+              image: product.product_image || "/image/shop/item.jpg",
+              title: product.product_name,
+              category: product.category_id?.toString() || "PODS",
+              note: `${product.product_price}$`,
+              discount: product.product_discount,
+              hearts: product.total_heart,
+            }}
+            link={`/brands/brand/product/${product.id}`}
+            key={product.id}
+          />
         ))}
       </div>
     </>

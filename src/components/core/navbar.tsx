@@ -19,10 +19,7 @@ import MobileMenu from "./mobile-menu";
 import CartDrawer from "../cart-drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
-import {
-  useGetFavouriteQuery,
-  useGetOwnprofileQuery,
-} from "@/redux/features/AuthApi";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 
@@ -50,12 +47,7 @@ export const LinkList = [
       sub: {
         title: "My Favourite Brands",
         items: [
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
-          { label: "All brands", to: "/brands" },
+          // { label: "All brands", to: "/brands" },
         ],
       },
     },
@@ -69,35 +61,43 @@ export const LinkList = [
         title: "My Favourite Stores",
         items: [
           // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
         ],
       },
     },
   },
 ];
 
-export default function Navbar({ token }: { token: string | undefined }) {
+export default function Navbar() {
   const [user, setUser] = useState<UserData | null>(null);
-  const { data, isLoading } = useGetOwnprofileQuery();
+  const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
+  const { data, isLoading, refetch } = useGetOwnprofileQuery();
+
   useEffect(() => {
-    if (token) {
-      if (data) {
-        console.log(data);
-        setUser(data.data);
-        data?.data?.favourite_store_list?.map(
-          (x: { full_name: string; id: string }) =>
-            LinkList[3].dropdown?.sub.items.push({
-              label: x?.full_name,
-              to: "#",
-            })
-        );
-      }
+    if (data) {
+      console.log(data);
+      setUser(data.data);
+
+      const updated = [...LinkList];
+      updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
+        (x: { full_name: string; id: string }) => ({
+          label: x.full_name,
+          to: "#",
+        })
+      );
+      updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
+        (x: { full_name: string; id: string }) => ({
+          label: x.full_name,
+          to: "#",
+        })
+      );
+      setLinkListDynamic(updated); // linkListDynamic should be a state variable
     }
-  }, [data, token]);
+  }, [data]);
+  useEffect(() => {
+    if (document.cookie.includes("token")) {
+      refetch();
+    }
+  }, []);
 
   return (
     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
@@ -170,7 +170,7 @@ export default function Navbar({ token }: { token: string | undefined }) {
       </div>
       <Searcher className="flex-1 block lg:hidden" />
       <div className="lg:h-1/2 grid sm:flex grid-cols-2 flex-row justify-start items-center !py-1 sm:!py-4">
-        {LinkList.map((link, index) =>
+        {linkListDynamic.map((link, index) =>
           link.dropdown ? (
             <DropdownMenu key={index}>
               <DropdownMenuTrigger asChild>
@@ -187,18 +187,22 @@ export default function Navbar({ token }: { token: string | undefined }) {
                     <Link href={item.to}>{item.label}</Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    {link.dropdown.sub.title}
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    {link.dropdown.sub.items.map((subItem, subIdx) => (
-                      <DropdownMenuItem key={`sub-${subIdx}`} asChild>
-                        <Link href={subItem.to}>{subItem.label}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                {link.dropdown.sub.items.length != 0 && (
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      {link.dropdown.sub.title}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      {link.dropdown.sub.items.map(
+                        (subItem: { to: string; label: string }, subIdx) => (
+                          <DropdownMenuItem key={`sub-${subIdx}`} asChild>
+                            <Link href={subItem.to}>{subItem.label}</Link>
+                          </DropdownMenuItem>
+                        )
+                      )}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

@@ -50,7 +50,7 @@ const AuthApi = api.injectEndpoints({
       invalidatesTags: ["user"],
     }),
 
-    countys: builder.query({
+    countys: builder.query<any, void>({
       query: () => ({
         url: `/get-all-countries`,
         method: "GET",
