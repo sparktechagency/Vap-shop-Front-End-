@@ -30,9 +30,11 @@ export function OTPForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const searchParams = useSearchParams();
-  const isFromRegistration = searchParams?.get("isregistared") === "true";
+  const isFromRegistration = searchParams?.get("isregistared");
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
   const router = useRouter();
+
+  console.log(isFromRegistration);
 
   const {
     register,
@@ -41,27 +43,22 @@ export function OTPForm({
     formState: { errors },
   } = useForm<OTPFormData>();
 
+  // onSubmit function...
   const onSubmit = async (data: OTPFormData) => {
     try {
       const response = await verifyEmail({ otp: data.otp }).unwrap();
 
       if (response.ok) {
-        // Store the token securely
         Cookies.set("token", response.data.access_token);
-
-        toast.success(response.message || "Verification successful");
-
-        // Determine redirect based on registration status
-        if (isFromRegistration) {
-          // For registration flow - go to homepage
+        if (isFromRegistration === "true") {
+          toast.success(response.message || "Verification successful! Welcome.");
           router.push("/");
         } else {
-          // For password reset flow - go to reset password
+          toast.success(
+            response.message || "Email verified. You can now reset your password."
+          );
           router.push("/reset-password");
         }
-
-        // Refresh to ensure proper state update
-        router.refresh();
       } else {
         toast.error(response.message || "Verification failed");
       }
@@ -72,6 +69,7 @@ export function OTPForm({
       console.error("Verification error:", error);
     }
   };
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
