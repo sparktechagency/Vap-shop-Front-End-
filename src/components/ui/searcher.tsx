@@ -103,6 +103,9 @@ export default function Searcher({
             className="border-none outline-none !ring-0 !bg-background text-xs text-foreground! md:text-base !pl-1 sm:!pl-2"
             placeholder="California, PA"
             value={locationInput}
+            onFocus={() => {
+              setSearchFocus(true);
+            }}
             onChange={(e) => setLocationInput(e.target.value)}
           />
         </div>

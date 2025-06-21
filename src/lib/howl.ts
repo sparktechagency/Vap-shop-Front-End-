@@ -1,3 +1,5 @@
+import { BASE_API_ENDPOINT } from "./config/data";
+
 interface Howl {
   link: string;
   method?: "get" | "post" | "delete" | "put" | "patch";
@@ -100,7 +102,7 @@ export default async function howl({
     }
 
     // Make the request using fetch
-    const call = await fetch("" + link, {
+    const call = await fetch(`${BASE_API_ENDPOINT + link}`, {
       method: method.toUpperCase(),
       mode,
       cache,
