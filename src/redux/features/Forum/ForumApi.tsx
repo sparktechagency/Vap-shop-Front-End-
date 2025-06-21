@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../baseApi";
 export const forumApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -6,7 +7,8 @@ export const forumApi = api.injectEndpoints({
     }),
 
     getallThredsByGropId: builder.query({
-      query: ({ page, per_page, id }) => `/forum-thread/?group_id=${id}&per_page=${per_page}&page=${page}`,
+      query: ({ page, per_page, id }) =>
+        `/forum-thread/?group_id=${id}&per_page=${per_page}&page=${page}`,
     }),
 
     getThreadDetailsById: builder.query({
@@ -19,8 +21,13 @@ export const forumApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
-    })
+    }),
   }),
 });
 
-export const { useGetForumQuery, useGetallThredsByGropIdQuery, useGetThreadDetailsByIdQuery, useCreatecommentMutation } = forumApi;
+export const {
+  useGetForumQuery,
+  useGetallThredsByGropIdQuery,
+  useGetThreadDetailsByIdQuery,
+  useCreatecommentMutation,
+} = forumApi;
