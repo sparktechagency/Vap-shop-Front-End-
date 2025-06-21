@@ -19,10 +19,7 @@ import MobileMenu from "./mobile-menu";
 import CartDrawer from "../cart-drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
-import {
-  useGetFavouriteQuery,
-  useGetOwnprofileQuery,
-} from "@/redux/features/AuthApi";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 
@@ -68,11 +65,6 @@ export const LinkList = [
       sub: {
         title: "My Favourite Stores",
         items: [
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
-          // { label: "All stores", to: "/stores" },
           // { label: "All stores", to: "/stores" },
         ],
       },
