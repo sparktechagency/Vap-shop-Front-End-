@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquareMoreIcon, SettingsIcon } from "lucide-react";
+import { FlagIcon, MessageSquareMoreIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
@@ -65,6 +65,9 @@ export default async function ProfileLayoutShell({
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-2 md:gap-4 !mt-6 md:!mt-8">
+              <Button variant="outline" size="icon">
+                <FlagIcon />
+              </Button>
               <Button
                 // size="icon"
                 variant="outline"

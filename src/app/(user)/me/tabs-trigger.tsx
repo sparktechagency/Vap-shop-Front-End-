@@ -1,3 +1,5 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   Tabs,
@@ -10,82 +12,76 @@ import TopBrands from "./top-brands";
 import LatestRevs from "./latest-revs";
 import Inbox from "./inbox";
 import Groups from "./groups";
-import { useUser } from "@/context/userContext";
 import About from "./about";
 import Catalog from "./catalog";
 import Announcement from "./announcement";
 import Post from "./post";
 import Feed from "./feed";
+import { useUser } from "@/context/userContext";
+
+const tabComponents: Record<string, React.ReactNode> = {
+  "top-stores": <TopStores />,
+  "top-brands": <TopBrands />,
+  reviews: <LatestRevs />,
+  post: <Post />,
+  feed: <Feed />,
+  inbox: <Inbox />,
+  "create-group": <Groups />,
+  announcement: <Announcement />,
+  catalog: <Catalog />,
+  about: <About />,
+};
 
 export default function TabsTriggerer() {
-  const { role } = useUser() || {};
-  const isMember = parseInt(role) === 6;
+  const my = useUser() || {};
+  const role = parseInt(my.role);
+  const isMember = role === 6;
+
+  const allTabs = [
+    { value: "top-stores", label: "Top 6 Stores", visible: isMember },
+    { value: "top-brands", label: "Top 6 Brands", visible: isMember },
+    { value: "post", label: "Post", visible: true },
+    { value: "feed", label: "Feed", visible: true },
+    {
+      value: "announcement",
+      label: "Announcement",
+      visible: !isMember && role !== 2,
+    },
+    { value: "reviews", label: "Latest Reviews", visible: isMember },
+    { value: "inbox", label: "Inbox", visible: true },
+    { value: "create-group", label: "Create a group", visible: true },
+    {
+      value: "catalog",
+      label: "Catalog",
+      visible: !isMember && role !== 2,
+    },
+    {
+      value: "about",
+      label: "About",
+      visible: !isMember,
+    },
+  ];
 
   return (
     <div className="container !py-10 lg:!p-10">
       <Tabs defaultValue="top-stores">
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
-          {isMember && (
-            <>
-              <TabsTrigger value="top-stores">Top 6 Stores</TabsTrigger>
-              <TabsTrigger value="top-brands">Top 6 Brands</TabsTrigger>
-            </>
-          )}
-          <TabsTrigger value="post">Post</TabsTrigger>
-          <TabsTrigger value="feed">Feed</TabsTrigger>
-          {!isMember && parseInt(role) != 2 && (
-            <TabsTrigger value="announcement">Announcement</TabsTrigger>
-          )}
-          {isMember && (
-            <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
-          )}
-          <TabsTrigger value="inbox">Inbox</TabsTrigger>
-          <TabsTrigger value="create-group">Create a group</TabsTrigger>
-          {!isMember && (
-            <>
-              {parseInt(role) != 2 && (
-                <TabsTrigger value="catalog">Catalog</TabsTrigger>
-              )}
-              <TabsTrigger value="about">About</TabsTrigger>
-            </>
-          )}
+          {allTabs
+            .filter((tab) => tab.visible)
+            .map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
         </TabsList>
 
-        {isMember && (
-          <>
-            <TabsContent value="top-stores">
-              <TopStores />
+        {allTabs
+          .filter((tab) => tab.visible)
+          .map((tab) => (
+            <TabsContent key={tab.value} value={tab.value}>
+              {React.cloneElement(tabComponents[tab.value] as any, { my })}
             </TabsContent>
-            <TabsContent value="top-brands">
-              <TopBrands />
-            </TabsContent>
-            <TabsContent value="reviews">
-              <LatestRevs />
-            </TabsContent>
-          </>
-        )}
-
-        <TabsContent value="post">
-          <Post />
-        </TabsContent>
-        <TabsContent value="feed">
-          <Feed />
-        </TabsContent>
-        <TabsContent value="inbox">
-          <Inbox />
-        </TabsContent>
-        <TabsContent value="announcement">
-          <Announcement />
-        </TabsContent>
-        <TabsContent value="create-group">
-          <Groups />
-        </TabsContent>
-        <TabsContent value="catalog">
-          <Catalog />
-        </TabsContent>
-        <TabsContent value="about">
-          <About />
-        </TabsContent>
+          ))}
       </Tabs>
     </div>
   );
