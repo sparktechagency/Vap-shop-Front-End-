@@ -10,7 +10,7 @@ import {
   Share2Icon,
 } from "lucide-react";
 import React from "react";
-import TabsTriggerer from "./tabs-trigger";
+import TabsTriggerer from "../tabs-trigger";
 import Dotter from "@/components/ui/dotter";
 import Link from "next/link";
 
