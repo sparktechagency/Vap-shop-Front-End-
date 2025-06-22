@@ -258,7 +258,7 @@ export default function Page() {
             </Button>
             {
               product?.data?.user?.is_following ? (
-                <Button onClick={() => handleUnfollow(product?.data?.user?.id)} variant="outline">{isUnFollowing ? "UnFollowing..." : "UnFollow"}</Button>
+                <Button onClick={() => handleUnfollow(product?.data?.user?.id)} variant="outline">{isUnFollowing ? "Unfollowing..." : "Unfollow"}</Button>
               ) : (
                 <Button onClick={() => handleFollow(product?.data?.user?.id)} variant="outline">{isFollowing ? "Following..." : "Follow"}</Button>
               )

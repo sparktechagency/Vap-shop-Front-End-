@@ -9,6 +9,8 @@ export interface ProductType {
   hearts?: number;
   rating?: string;
   reviews?: number;
+  id?: number;
+  is_hearted?: boolean;
 }
 
 export interface BrandType {

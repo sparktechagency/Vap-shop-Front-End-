@@ -1,3 +1,5 @@
+'use client';
+
 import ProductCard from "@/components/core/product-card";
 import React from "react";
 import {
@@ -10,45 +12,57 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import Link from "next/link";
+import { useGetMostHurtedBrandQuery } from "@/redux/features/brand/brandApis";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function MostHearted() {
-  const data = {
-    image: "/image/shop/item.jpg",
-    title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-    category: "PODS",
-    note: "93.1% THC",
-  };
+export default function MostHearted({ id }: any) {
+  const { data: brandData, isLoading } = useGetMostHurtedBrandQuery(id as any);
+  const products = brandData?.data?.products?.data || [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-64 w-full rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!products.length) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">No products found</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-        {Array.from({ length: 12 }).map((_, i) => (
+        {products.map((product: any) => {
+          const productData = {
+            image: product.product_image || "/image/shop/item.jpg",
+            title: product.product_name,
+            category: `$${product.product_price}`,
+            note: `${product.average_rating}★ (${product.total_heart} hearts)`,
+            hearts: product.total_heart,
+            is_hearted: product.is_hearted,
+            id: product.id,
+            slug: product.slug
+          };
 
-          <ProductCard key={i} data={data} />
+          return (
+            <ProductCard
+              key={product.id}
+              data={productData}
+              link={`/brands/brand/product/${product.id}`}
+            />
+          );
+        })}
+      </div>
 
-        ))}
-      </div>
-      <div className="!mt-[100px]">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+
     </>
   );
 }

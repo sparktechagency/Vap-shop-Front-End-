@@ -12,7 +12,7 @@ import Inbox from "./inbox";
 import About from "./about";
 import Groups from "./groups";
 
-export default function TabsTriggerer() {
+export default function TabsTriggerer({ id }: any) {
   return (
     <div className="!py-10">
       <Tabs defaultValue="hearted">
@@ -27,10 +27,10 @@ export default function TabsTriggerer() {
         </TabsList>
 
         <TabsContent value="hearted">
-          <MostHearted />
+          <MostHearted id={id} />
         </TabsContent>
         <TabsContent value="catalog">
-          <Catalog />
+          <Catalog id={id} />
         </TabsContent>
         <TabsContent value="announcement">
           <Announcement />

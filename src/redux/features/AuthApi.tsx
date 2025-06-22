@@ -63,7 +63,7 @@ const AuthApi = api.injectEndpoints({
         url: `/me`,
         method: "GET",
       }),
-      providesTags: ["user"],
+      providesTags: ["user", "brand"],
     }),
 
     getFavourite: builder.query({
