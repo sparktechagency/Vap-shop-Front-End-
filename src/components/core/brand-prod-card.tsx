@@ -51,7 +51,7 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
               </AvatarFallback>
             </Avatar>
             <div>
-              <Link href={`/brands/${data.id}`}>
+              <Link href={`/brands/brand/${data.id}`}>
                 <Namer type="brand" name={data.storeName} isVerified={data.isVerified} />
               </Link>
               <div className="flex items-center gap-2 mt-1">

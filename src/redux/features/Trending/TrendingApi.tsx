@@ -16,15 +16,16 @@ export const trendingApi = api.injectEndpoints({
       query: (id) => ({
         url: `/follow?following_id=${id}`,
         method: "POST",
-        invalidatesTags: ["tranding"],
+        invalidatesTags: ["tranding", "brand"],
       }),
 
     }),
+
     unfollowBrand: builder.mutation({
       query: (id) => ({
         url: `/unfollow?following_id=${id}`,
         method: "POST",
-        invalidatesTags: ["tranding"],
+        invalidatesTags: ["tranding", "brand"],
       }),
     })
   }),

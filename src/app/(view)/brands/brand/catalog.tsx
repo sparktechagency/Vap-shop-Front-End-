@@ -9,43 +9,89 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useGetBrandDetailsByIdQuery } from "@/redux/features/brand/brandApis";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Catalog() {
-  const data = {
-    image: "/image/shop/item.jpg",
-    title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-    category: "PODS",
-    note: "93.1% THC",
-  };
+export default function Catalog({ id }: any) {
+  const { data: catalog, isLoading } = useGetBrandDetailsByIdQuery(id as any);
+  const products = catalog?.data?.products?.data || [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-64 w-full rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!products.length) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">No products found in catalog</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <ProductCard data={data} key={i} />
-        ))}
+        {products.map((product: any) => {
+          const productData = {
+            image: product.product_image || "/image/shop/item.jpg",
+            title: product.product_name,
+            category: `$${product.product_price}`,
+            note: `${product.average_rating}★ (${product.total_heart} hearts)`,
+            price: product.product_price,
+            discount: product.product_discount,
+            hearts: product.total_heart,
+            rating: product.average_rating,
+            reviews: product.hearts_count,
+          };
+
+          return (
+            <ProductCard
+              key={product.id}
+              data={productData}
+              link={`/brands/brand/product/${product.id}`}
+            />
+          );
+        })}
       </div>
-      <div className="!mt-[100px]">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+
+      {catalog?.data?.products?.last_page > 1 && (
+        <div className="!mt-[100px]">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={catalog.data.products.prev_page_url ? `?page=${catalog.data.products.current_page - 1}` : "#"}
+                  className={!catalog.data.products.prev_page_url ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+
+              {Array.from({ length: catalog.data.products.last_page }).map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href={`?page=${i + 1}`}
+                    isActive={i + 1 === catalog.data.products.current_page}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  href={catalog.data.products.next_page_url ? `?page=${catalog.data.products.current_page + 1}` : "#"}
+                  className={!catalog.data.products.next_page_url ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </>
   );
 }
