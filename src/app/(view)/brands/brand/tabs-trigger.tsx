@@ -45,7 +45,7 @@ export default function TabsTriggerer({ id }: any) {
           <About />
         </TabsContent>
         <TabsContent value="groups">
-          <Groups />
+          <Groups id={id} />
         </TabsContent>
       </Tabs>
     </div>

@@ -20,8 +20,7 @@ export default function Page() {
   const { data: brandDetails, isLoading, refetch } = useGetBrandDetailsByIdQuery(id as any);
   const [followOrUnfollowBrand, { isLoading: isFollowing }] = useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
-  const { data: mosthurtedBrands, isLoading: isMostHurtedloading } = useGetMostHurtedBrandQuery(id as any);
-  const mostHutedBrands = mosthurtedBrands?.data?.products?.data
+
 
   const user = brandDetails?.data?.user;
 
@@ -76,7 +75,7 @@ export default function Page() {
     }
   };
 
-  if (isLoading || isMostHurtedloading) {
+  if (isLoading) {
     return (
       <main className="!py-12 !p-4 lg:!px-[7%]">
         <div className="">

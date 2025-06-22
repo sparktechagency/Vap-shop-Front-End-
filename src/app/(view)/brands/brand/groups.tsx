@@ -7,33 +7,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetBrandGroupQuery } from "@/redux/features/brand/brandApis";
+import { useGetallThredsByGropIdQuery } from "@/redux/features/Forum/ForumApi";
 import Link from "next/link";
 import React from "react";
-const data = {
-  title: "New Members: Introduce Yourself!",
-  new: true,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
-const diffData = {
-  title: "New Members: Introduce Yourself!",
-  new: false,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
-export default function Groups() {
+
+
+export default function Groups({ id }: any) {
+
+  const { data: groupData, isLoading, isError, error } = useGetBrandGroupQuery(id as any);
+  console.log('groupData', groupData);
+
+  if (isLoading) {
+    return <div className=" !my-6">
+      {[...Array(4)].map((_, i) => (
+        <Skeleton key={i} className="h-64 w-full rounded-lg mb-4" />
+      ))}
+    </div>
+  }
+
+
+  if (isError) {
+    console.log('error', error);
+  }
+
   return (
     <div className="!mt-12">
       <Card className="gap-0 !pt-0 overflow-hidden">
-        <CardHeader className="flex justify-between items-center bg-secondary !p-6">
-          <Link
-            href="/forum/thread"
-            className="text-sm underline hover:text-secondary-foreground/80"
-          >
-            Create a group
-          </Link>
+        <CardHeader className="flex justify-end items-center bg-secondary !p-6">
+
           <Select>
             <SelectTrigger className="md:w-[180px]">
               <SelectValue placeholder="Filter" className="bg-background" />
@@ -44,16 +47,10 @@ export default function Groups() {
             </SelectContent>
           </Select>
         </CardHeader>
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
+        {groupData.data?.data.map((group: any) => (
+          <ForumCard key={group.id} data={group} />
+        ))}
+
       </Card>
     </div>
   );

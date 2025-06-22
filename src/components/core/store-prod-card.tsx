@@ -19,7 +19,7 @@ export default function StoreProdCard({ data }: { data: BrandType }) {
             🔥
           </div>
         )}
-        <Link href="/stores/store">
+        <Link href={`/stores/store/${data.id}`}>
           <div className="bg-background/70 h-full w-full opacity-0 hover:opacity-60 focus:opacity-60 hover:backdrop-blur-xs transition-all z-0">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 text-foreground hover:scale-125 transition-transform cursor-pointer text-sm sm:text-base">
               <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" /> View
