@@ -6,7 +6,6 @@ import { navLinks } from "./navLinks";
 
 import Footer from "@/components/core/footer";
 import Navbar from "@/components/core/navbar";
-import { headers } from "next/headers";
 import { PenBoxIcon } from "lucide-react";
 import {
   Dialog,
@@ -22,10 +21,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headerList = headers();
-  const pathname = (await headerList).get("x-current-path");
-  console.log(pathname);
-
   return (
     <>
       <Navbar />

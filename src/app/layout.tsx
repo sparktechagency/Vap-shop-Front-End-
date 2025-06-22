@@ -7,8 +7,8 @@ import { Suspense } from "react";
 // import { Provider } from 'react-redux'
 import StoreProvider from "@/components/StoreProvider";
 import AgePopup from "@/components/core/age-popup";
-import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+// import { cookies } from "next/headers";
+// import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Vape Shop Maps",
@@ -21,11 +21,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = (await cookies()).get("token")?.value;
-
-  if (!token) {
-    return notFound();
-  }
+  // const token = (await cookies()).get("token")?.value;
 
   return (
     <html lang="en" suppressHydrationWarning>

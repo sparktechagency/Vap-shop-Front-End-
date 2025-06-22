@@ -26,7 +26,6 @@ function RegistrationContent() {
       return <MemberRegister />;
   }
 }
-
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading registration form...</div>}>
