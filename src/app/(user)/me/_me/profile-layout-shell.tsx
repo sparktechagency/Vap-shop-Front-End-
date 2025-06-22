@@ -2,12 +2,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MessageSquareMoreIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
-import { navLinks } from "../navLinks";
+import {
+  AssosiationnavLinks,
+  BrandnavLinks,
+  StorenavLinks,
+  UsernavLinks,
+  WholesalernavLinks,
+} from "../navLinks";
 import React from "react";
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import { UserData } from "@/lib/types/apiTypes";
+import UserProvider from "@/components/userProvider";
 export default async function ProfileLayoutShell({
   children,
 }: Readonly<{
@@ -17,6 +24,24 @@ export default async function ProfileLayoutShell({
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;
+
+  function getNavs() {
+    switch (parseInt(my.role)) {
+      case 2:
+        return AssosiationnavLinks;
+      case 3:
+        return BrandnavLinks;
+      case 4:
+        return WholesalernavLinks;
+      case 5:
+        return StorenavLinks;
+      case 6:
+        return UsernavLinks;
+      default:
+        return AssosiationnavLinks;
+    }
+  }
+  getNavs();
 
   return (
     <>
@@ -38,7 +63,7 @@ export default async function ProfileLayoutShell({
 
         <div className="grid grid-cols-1 md:grid-cols-10">
           <div className="hidden md:flex col-span-2 border-r flex-col justify-start !p-6">
-            {navLinks.map((x, i) => (
+            {getNavs().map((x, i) => (
               <Link
                 href={x.to}
                 key={i}
@@ -95,12 +120,14 @@ export default async function ProfileLayoutShell({
               {/* <Button variant="outline">Follow this account</Button>
 <Button variant="outline">Block this account</Button> */}
               <Button variant="outline" asChild>
-                <Link href={`/profile?uid=${my.id}`}>Preview Profile</Link>
+                <Link href={`/profile/${my.id}`}>Preview Profile</Link>
               </Button>
               {/* <Button variant="outline">Settings</Button> */}
             </div>
 
-            <div className="">{children}</div>
+            <div className="">
+              <UserProvider user={my}>{children}</UserProvider>
+            </div>
           </div>
         </div>
       </main>

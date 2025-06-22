@@ -9,11 +9,15 @@ import {
 import { PenBoxIcon } from "lucide-react";
 import React, { Suspense } from "react";
 import DropOff from "../../../components/core/drop-off";
-import UserEditForm from "./edit-form";
+import UserEditForm from "./user-edit-form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cookies } from "next/headers";
 import howl from "@/lib/howl";
 import { UserData } from "@/lib/types/apiTypes";
+import StoreEditForm from "./store-edit-form";
+import AssociationEditForm from "./assos-edit-form";
+import BrandEditForm from "./brand-edit-form";
+import WholesalerEditForm from "./wholesaler-edit-form";
 
 export default async function Page() {
   const token = (await cookies()).get("token")?.value;
@@ -40,7 +44,7 @@ export default async function Page() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Update Profile picture</DialogTitle>
+                  <DialogTitle>Update Profile Image</DialogTitle>
                 </DialogHeader>
                 <div className="">
                   <DropOff />
@@ -55,7 +59,23 @@ export default async function Page() {
           </h1>
           <hr />
           <div className="!py-12">
-            <UserEditForm />
+            {(() => {
+              const role = parseInt(my.role);
+              switch (role) {
+                case 2:
+                  return <AssociationEditForm />;
+                case 3:
+                  return <BrandEditForm />;
+                case 4:
+                  return <WholesalerEditForm />;
+                case 5:
+                  return <StoreEditForm />;
+                case 6:
+                  return <UserEditForm />;
+                default:
+                  return null;
+              }
+            })()}
           </div>
         </div>
       </div>
