@@ -1,4 +1,3 @@
-"use client";
 import TabsTriggerer from "./tabs-trigger";
 
 export default function Page() {
