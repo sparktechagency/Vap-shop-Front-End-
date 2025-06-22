@@ -19,7 +19,7 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
         }}
       >
         {/* {data.type === "premium" && (
-          <Badge variant="premium" className="absolute top-2 left-2 z-10">
+          <Badge variant="premium" className="absolute top-2 left-2 z-10">00
             Premium
           </Badge>
         )} */}
@@ -55,7 +55,13 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
                 <Namer type="brand" name={data.storeName} isVerified={data.isVerified} />
               </Link>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-xs text-muted-foreground">{data.location.city}</p>
+                {/* <p className="text-xs text-muted-foreground">{data.location.city}</p> */}
+
+                {data.totalFollowers !== undefined && (
+                  <div className="text-xs text-muted-foreground">
+                    {data.totalFollowers} followers
+                  </div>
+                )}
                 {data.isFollowing && (
                   <Badge variant="outline" className="text-xs py-0.5 px-1.5">
                     Following
@@ -78,19 +84,6 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
             )}
           </div>
         </div>
-
-        {data.totalFollowers !== undefined && (
-          <div className="text-xs text-muted-foreground">
-            {data.totalFollowers} followers
-          </div>
-        )}
-
-        {data.isOpen && (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="h-2 w-2 rounded-full bg-green-500"></span>
-            <span>Open until {data.closingTime}</span>
-          </div>
-        )}
       </div>
     </div>
   );
