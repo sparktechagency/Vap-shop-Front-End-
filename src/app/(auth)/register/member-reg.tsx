@@ -45,7 +45,7 @@ export default function MemberRegister({
     reset,
   } = useForm<RegisterFormData>({
     defaultValues: {
-      role: "2",
+      role: "6",
     },
   });
 

@@ -34,7 +34,7 @@ const formSchema = z.object({
   favStores: z.array(z.string().min(1)).length(6),
 });
 
-export default function EditForm() {
+export default function UserEditForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
