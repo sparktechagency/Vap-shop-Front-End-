@@ -29,7 +29,7 @@ export default function Groups() {
       <Card className="gap-0 !pt-0 ">
         <CardHeader className="flex justify-between items-center bg-secondary !p-6 rounded-xl">
           <Link
-            href="/forum/thread"
+            href="/forum/create"
             className="text-sm underline hover:text-secondary-foreground/80"
           >
             Create a group

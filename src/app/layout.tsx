@@ -7,6 +7,7 @@ import { Suspense } from "react";
 // import { Provider } from 'react-redux'
 import StoreProvider from "@/components/StoreProvider";
 import AgePopup from "@/components/core/age-popup";
+import Image from "next/image";
 // import { cookies } from "next/headers";
 // import { notFound } from "next/navigation";
 
@@ -35,7 +36,19 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={<>Just a second..</>}>
+          <Suspense
+            fallback={
+              <main className="h-dvh w-dvw flex flex-col justify-center items-center gap-4">
+                <Image
+                  height={124}
+                  width={124}
+                  src="/image/VSM_VAPE.svg"
+                  alt="logo"
+                  className="animate-pulse size-34"
+                />
+              </main>
+            }
+          >
             <StoreProvider>{children}</StoreProvider>
           </Suspense>
           <Toaster />
