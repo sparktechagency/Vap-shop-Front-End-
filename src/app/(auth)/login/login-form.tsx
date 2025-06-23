@@ -34,10 +34,15 @@ export function LoginForm({
 
     try {
       const response = await login({ email, password }).unwrap();
+      console.log('login response', response);
       if (response.ok) {
         toast.success(response.message || "Login successful");
-        router.push("/");
         Cookies.set("token", response.data.access_token);
+        if (response?.data?.user?.role === 1) {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/");
+        }
       }
       // Handle successful login (e.g., redirect)
     } catch (error: any) {

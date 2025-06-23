@@ -59,7 +59,6 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
   );
 }
 
-
 function isNewGroup(createdAt: string): boolean {
 
   const createdDate = new Date(createdAt);
