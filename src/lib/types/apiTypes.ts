@@ -9,7 +9,7 @@ export interface Address {
   longitude: number | null;
   created_at: string;
   updated_at: string;
-  region?: any | null; // only present in main user address
+  region?: any | null;
 }
 
 export interface FavouriteEntity {

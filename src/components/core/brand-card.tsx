@@ -1,20 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import { EyeIcon, HeartIcon, StarIcon } from "lucide-react";
 import Link from "next/link";
-import { BrandType } from "@/lib/types/product";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Namer from "./internal/namer";
 import { Badge } from "@/components/ui/badge";
 
-export default function BrandProdCard({ data }: { data: BrandType }) {
+export default function BrandProdCard({ data }: { data: any }) {
   return (
     <div className="!p-0 !gap-0 shadow-sm rounded-lg border overflow-hidden">
       <div
         className="w-full aspect-square bg-center bg-no-repeat bg-cover relative transition-all"
         style={{
-          backgroundImage: `url('${data.image}')`,
+          backgroundImage: `url('${data.avatar}')`,
           backgroundColor: "#f5f5f5",
         }}
       >
@@ -33,34 +33,32 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
         </Link>
 
         <Button
-          className="absolute bottom-2 right-2 bg-background hover:bg-secondary dark:hover:bg-zinc-800 text-foreground"
+          className="absolute bottom-2 right-2 bg-background hover:bg-secondary dark:hover:bg-zinc-800 text-foreground size-8 sm:size-10"
           variant="default"
           size="icon"
         >
           <HeartIcon
-            className={`text-foreground ${
-              data.isFollowing ? "fill-foreground" : ""
-            }`}
+            className={`${
+              data.is_favourite ? "text-destructive" : "text-foreground"
+            } w-4 h-4 sm:w-5 sm:h-5`}
+            fill={data.is_favourite ? "#e7000b" : ""}
+            stroke={data.is_favourite ? "" : "currentColor"}
           />
         </Button>
       </div>
 
-      <div className="!p-4 space-y-2 bg-white dark:bg-gray-900">
-        <div className="flex justify-between items-start gap-4">
+      <div className="!p-4 space-y-2 bg-white dark:bg-background">
+        <div className="flex justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <Avatar className="size-10 border">
-              <AvatarImage src={data.image} />
+              <AvatarImage src={data.avatar} />
               <AvatarFallback>
-                {data.storeName.slice(0, 2).toUpperCase()}
+                {data?.full_name?.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
               <Link href={`/brands/brand/${data.id}`}>
-                <Namer
-                  type="brand"
-                  name={data.storeName}
-                  isVerified={data.isVerified}
-                />
+                <Namer type="brand" name={data.full_name} isVerified={true} />
               </Link>
               <div className="flex items-center gap-2 mt-1">
                 {/* <p className="text-xs text-muted-foreground">{data.location.city}</p> */}
@@ -81,13 +79,13 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
 
           <div className="flex items-center gap-1 text-sm">
             <StarIcon fill="#ee8500" stroke="#ee8500" className="size-4" />
-            <span>{data.rating.value.toFixed(1)}</span>
-            {data.rating.reviews > 0 && (
+            <span>{data.avg_rating}</span>
+            {parseInt(data.avg_rating) > 0 && (
               <Link
                 href={`/brands/${data.id}#reviews`}
                 className="text-muted-foreground hover:text-primary text-xs"
               >
-                ({data.rating.reviews})
+                ({data.total_reviews})
               </Link>
             )}
           </div>
