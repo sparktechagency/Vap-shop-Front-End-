@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
 import { MessagesSquareIcon } from "lucide-react";
 import Link from "next/link";
@@ -21,16 +22,18 @@ interface ForumCardProps {
   to?: string;
 }
 
-export default function ForumCard({ data, to }: ForumCardProps) {
+export default function ForumCard({ data, to }: ForumCardProps | any) {
   // Format the date to be more readable
-  const formattedDate = new Date(data?.created_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+  const formattedDate = new Date(data?.created_at).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 
   // Determine if the group is new (created within the last 7 days)
-  const isNew = (new Date().getTime() - new Date(data?.created_at).getTime()) < (7 * 24 * 60 * 60 * 1000);
+  const isNew =
+    new Date().getTime() - new Date(data?.created_at).getTime() <
+    7 * 24 * 60 * 60 * 1000;
 
   return (
     <Link href={to ? to : `/forum/group/${data?.id}`}>
