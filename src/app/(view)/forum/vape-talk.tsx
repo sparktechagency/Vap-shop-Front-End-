@@ -36,7 +36,7 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
     <div className="!py-12">
 
       <Card className="gap-0">
-        {forumGroups.map((group) => (
+        {forumGroups?.map((group) => (
           <ForumCard
             key={group.id}
             data={{
