@@ -40,13 +40,6 @@ export default function Searcher({
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: locations } = useGetCountriesQuery();
-
-  useEffect(() => {
-    if (locations) {
-      console.log(locations.data);
-    }
-  }, [locations]);
-
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (

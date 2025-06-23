@@ -2,7 +2,6 @@ import Link from "next/link";
 import React from "react";
 
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
-import { navLinks } from "./navLinks";
 
 import Footer from "@/components/core/footer";
 import Navbar from "@/components/core/navbar";
@@ -15,12 +14,43 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DropOff from "@/components/core/drop-off";
-
+import {
+  AssosiationnavLinks,
+  BrandnavLinks,
+  StorenavLinks,
+  UsernavLinks,
+  WholesalernavLinks,
+} from "./navLinks";
+import { UserData } from "@/lib/types/apiTypes";
+import howl from "@/lib/howl";
+import { cookies } from "next/headers";
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = (await cookies()).get("token")?.value;
+  const call = await howl({ link: "me", token });
+
+  const my: UserData = call.data;
+
+  function getNavs() {
+    switch (parseInt(my.role)) {
+      case 2:
+        return AssosiationnavLinks;
+      case 3:
+        return BrandnavLinks;
+      case 4:
+        return WholesalernavLinks;
+      case 5:
+        return StorenavLinks;
+      case 6:
+        return UsernavLinks;
+      default:
+        return AssosiationnavLinks;
+    }
+  }
+  getNavs();
   return (
     <>
       <Navbar />
@@ -53,7 +83,7 @@ export default async function RootLayout({
 
         <div className="grid grid-cols-1 md:grid-cols-10">
           <div className="hidden md:flex col-span-2 border-r flex-col justify-start !p-6">
-            {navLinks.map((x, i) => (
+            {getNavs().map((x, i) => (
               <Link
                 href={x.to}
                 key={i}

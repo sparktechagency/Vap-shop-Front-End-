@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export const LinkList = [
   {
@@ -34,11 +35,6 @@ export const LinkList = [
     icon: <NotebookIcon />,
     target: "/forum",
   },
-  // {
-  //   title: "Subscriptions",
-  //   icon: <BadgeDollarSignIcon />,
-  //   target: "/subscriptions",
-  // },
   {
     title: "Brands",
     icon: <ChevronDown />,
@@ -71,28 +67,64 @@ export default function Navbar() {
   const [user, setUser] = useState<UserData | null>(null);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
   const { data, isLoading, refetch } = useGetOwnprofileQuery();
+  const pathname = usePathname();
+
+  function reData() {
+    setUser(data.data);
+    const updated = [...LinkList];
+    updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
+      (x: { full_name: string; id: string }) => ({
+        label: x.full_name,
+        to: "#",
+      })
+    );
+    updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
+      (x: { full_name: string; id: string }) => ({
+        label: x.full_name,
+        to: "#",
+      })
+    );
+    setLinkListDynamic(updated); // linkListDynamic should be a state variable
+  }
+
+  useEffect(() => {
+    if (document.cookie.includes("token")) {
+      refetch().then((res) => {
+        if (!("error" in res) && res.data) {
+          setUser(res.data.data);
+          const updated = [...LinkList];
+          updated[3].dropdown!.sub.items =
+            res.data.data.favourite_store_list.map(
+              (x: { full_name: string; id: string }) => ({
+                label: x.full_name,
+                to: "#",
+              })
+            );
+          updated[2].dropdown!.sub.items =
+            res.data.data.favourite_brand_list.map(
+              (x: { full_name: string; id: string }) => ({
+                label: x.full_name,
+                to: "#",
+              })
+            );
+          setLinkListDynamic(updated);
+        } else {
+          setUser(null); // in case user is not logged in
+          setLinkListDynamic(LinkList);
+        }
+      });
+    } else {
+      setUser(null);
+      setLinkListDynamic(LinkList);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-      setUser(data.data);
-
-      const updated = [...LinkList];
-      updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
-        (x: { full_name: string; id: string }) => ({
-          label: x.full_name,
-          to: "#",
-        })
-      );
-      updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
-        (x: { full_name: string; id: string }) => ({
-          label: x.full_name,
-          to: "#",
-        })
-      );
-      setLinkListDynamic(updated); // linkListDynamic should be a state variable
+      reData();
     }
   }, [data]);
+
   useEffect(() => {
     if (document.cookie.includes("token")) {
       refetch();
