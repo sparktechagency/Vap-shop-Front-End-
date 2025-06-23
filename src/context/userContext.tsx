@@ -1,4 +1,3 @@
-// context/userContext.tsx
 "use client";
 import { createContext, useContext } from "react";
 import { UserData } from "@/lib/types/apiTypes";
