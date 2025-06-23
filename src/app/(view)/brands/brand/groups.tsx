@@ -48,7 +48,20 @@ export default function Groups({ id }: any) {
           </Select>
         </CardHeader>
         {groupData.data?.data.map((group: any) => (
-          <ForumCard key={group.id} data={group} />
+          <ForumCard key={group.id} data={{
+            id: group.id,
+            title: group.title,
+            description: group.description,
+            user_id: group.user_id,
+            created_at: group.created_at,
+            updated_at: group.updated_at,
+            threads_count: group.threads_count,
+            total_threads: group.total_threads,
+            total_comments: group.total_comments,
+            date: group.date
+
+
+          }} />
         ))}
 
       </Card>

@@ -1,5 +1,6 @@
 import ForumCard from "@/components/core/forum-card";
 import { Card } from "@/components/ui/card";
+import { group } from "console";
 import React from "react";
 
 interface ForumGroup {
@@ -18,6 +19,7 @@ interface VapeTalkProps {
 }
 
 export default function VapeTalk({ forumGroups }: VapeTalkProps) {
+  console.log("forumGroups", forumGroups);
   if (!forumGroups || forumGroups.length === 0) {
     return (
       <div className="!py-12">
@@ -32,16 +34,22 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
 
   return (
     <div className="!py-12">
+
       <Card className="gap-0">
         {forumGroups.map((group) => (
           <ForumCard
             key={group.id}
             data={{
+              id: group.id,
               title: group.title,
-              new: isNewGroup(group.created_at),
-              secondaryA: `${group.total_threads} Threads`,
-              secondaryB: `${group.total_comments} Comments`,
-              date: formatDate(group.created_at),
+              description: group.description,
+              user_id: group.user_id,
+              created_at: group.created_at,
+              updated_at: group.updated_at,
+              threads_count: group.total_threads,
+              total_threads: group.total_threads,
+              total_comments: group.total_comments,
+              date: group.created_at,
             }}
             to={`/forum/thread/${group.id}`}
           />
