@@ -27,6 +27,7 @@ export const api = createApi({
     "notification",
     "tranding",
     "brand",
+    "post",
   ],
   endpoints: () => ({}),
 });

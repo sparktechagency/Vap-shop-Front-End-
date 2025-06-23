@@ -7,9 +7,12 @@ import { Card, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -19,7 +22,9 @@ import {
 } from "@/components/ui/select";
 import { useGetallThredsByGropIdQuery } from "@/redux/features/Forum/ForumApi";
 import { AlertTriangle, PaintbrushIcon } from "lucide-react";
+import { Editor } from "primereact/editor";
 import React from "react";
+import PostCreate from "./post-create";
 
 // Define the type for your thread data based on the API response
 interface Thread {
@@ -82,8 +87,11 @@ export default function Threader({ id }: { id: string }) {
               <PaintbrushIcon /> Post a thread
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogTitle></DialogTitle>
+          <DialogContent className="min-w-[80dvw]! min-h-fit flex flex-col">
+            <DialogHeader className="border-b pb-6!">
+              <DialogTitle className="text-sm!">Post a new thread</DialogTitle>
+            </DialogHeader>
+            <PostCreate />
           </DialogContent>
         </Dialog>
       </div>

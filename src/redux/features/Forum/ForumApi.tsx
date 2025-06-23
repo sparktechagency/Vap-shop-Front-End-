@@ -15,6 +15,10 @@ export const forumApi = api.injectEndpoints({
       query: (id) => `/forum-thread/${id}`,
     }),
 
+    getDashboardForum: builder.query({
+      query: ({ id }) => `/forum-group?&user_id=${id}`,
+    }),
+
     createcomment: builder.mutation({
       query: (body) => ({
         url: `/forum-comment`,
@@ -30,4 +34,5 @@ export const {
   useGetallThredsByGropIdQuery,
   useGetThreadDetailsByIdQuery,
   useCreatecommentMutation,
+  useGetDashboardForumQuery,
 } = forumApi;

@@ -1,4 +1,4 @@
-import ForumCard from "@/components/core/forum-card";
+"use client";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
   Select,
@@ -7,23 +7,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUser } from "@/context/userContext";
+import { useGetDashboardForumQuery } from "@/redux/features/Forum/ForumApi";
 import Link from "next/link";
 import React from "react";
-const data = {
-  title: "New Members: Introduce Yourself!",
-  new: true,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
-const diffData = {
-  title: "New Members: Introduce Yourself!",
-  new: false,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
 export default function Groups() {
+  const my = useUser();
+
+  const { data, isLoading } = useGetDashboardForumQuery({ id: my.id });
+
+  if (!isLoading) {
+    console.log(data);
+  }
   return (
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">
@@ -44,16 +39,7 @@ export default function Groups() {
             </SelectContent>
           </Select>
         </CardHeader>
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
+        {/* {!isLoading && <ForumCard data={data.data[0]} to="/forum/thread" />} */}
       </Card>
     </div>
   );

@@ -10,13 +10,13 @@ import {
 import TopStores from "./top-stores";
 import TopBrands from "./top-brands";
 import LatestRevs from "./latest-revs";
-import Inbox from "./inbox";
+// import Inbox from "./inbox";
 import Groups from "./groups";
 import About from "./about";
 import Catalog from "./catalog";
 import Announcement from "./announcement";
 import Post from "./post";
-import Feed from "./feed";
+// import Feed from "./feed";
 import { useUser } from "@/context/userContext";
 
 const tabComponents: Record<string, React.ReactNode> = {
@@ -24,8 +24,8 @@ const tabComponents: Record<string, React.ReactNode> = {
   "top-brands": <TopBrands />,
   reviews: <LatestRevs />,
   post: <Post />,
-  feed: <Feed />,
-  inbox: <Inbox />,
+  feed: <Post />,
+  // inbox: <Inbox />,
   "create-group": <Groups />,
   announcement: <Announcement />,
   catalog: <Catalog />,
@@ -48,7 +48,7 @@ export default function TabsTriggerer() {
       visible: !isMember && role !== 2,
     },
     { value: "reviews", label: "Latest Reviews", visible: isMember },
-    { value: "inbox", label: "Inbox", visible: true },
+    // { value: "inbox", label: "Inbox", visible: true },
     { value: "create-group", label: "Create a group", visible: true },
     {
       value: "catalog",
