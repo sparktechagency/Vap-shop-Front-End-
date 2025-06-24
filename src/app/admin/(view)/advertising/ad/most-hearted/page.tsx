@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React from "react";
@@ -20,6 +21,8 @@ export default function Page() {
   })
 
   console.log('data', data);
+
+  if (isLoading) return <div>Loading...</div>
 
   return (
     <div className="h-full w-full flex flex-col justify-start items-baseline !p-12 gap-6">
