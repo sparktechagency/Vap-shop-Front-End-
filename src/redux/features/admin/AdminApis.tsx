@@ -50,6 +50,11 @@ export const adminApis = api.injectEndpoints({
             invalidatesTags: ["slider"],
         }),
 
+        getallAddRequest: builder.query<any, { page: number; per_page: number; type: string }>({
+            query: ({ page, per_page, type }) =>
+                `/admin/get-all-ad-requests?page=${page}&per_page=${per_page}&type=${type}`,
+        }),
+
 
 
     }),
@@ -63,4 +68,5 @@ export const {
     useGetAdminSlidersQuery,
     useCreateAdminSliderMutation,
     useDeleteAdminSliderMutation,
+    useGetallAddRequestQuery,
 } = adminApis;

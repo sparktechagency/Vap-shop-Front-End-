@@ -9,7 +9,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { useGetallAddRequestQuery } from "@/redux/features/admin/AdminApis";
 export default function Page() {
+  const [page, setPage] = React.useState(1);
+  const per_page = 8;
+  const { data, isLoading } = useGetallAddRequestQuery({
+    page,
+    per_page,
+    type: "products",
+  })
+
+  console.log('data', data);
+
   return (
     <div className="h-full w-full flex flex-col justify-start items-baseline !p-12 gap-6">
       <div className="w-full grid grid-cols-2">
