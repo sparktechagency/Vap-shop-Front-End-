@@ -177,9 +177,9 @@ export default function Page() {
           <Button>Add review</Button>
         </div>
         <div className="w-full flex flex-col justify-start items-start gap-6 !mt-6">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {/* {Array.from({ length: 6 }).map((_, i) => (
             <ReviewCard key={i} />
-          ))}
+          ))} */}
         </div>
       </div>
       <div className="!px-4 lg:!px-[7%] !py-20">

@@ -17,7 +17,7 @@ export default function Page() {
   const { setTheme } = useTheme();
   return (
     <div className="!p-6">
-      <h1 className="text-3xl !pb-4">Reviews</h1>
+      <h1 className="text-3xl !pb-4">Settings</h1>
       <Separator />
       <div className="!my-12 !space-y-6">
         <div className="">

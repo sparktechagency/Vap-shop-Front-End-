@@ -1,10 +1,17 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import React, { useState } from "react";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquareMoreIcon, Share2Icon, CopyIcon, MailIcon } from "lucide-react";
+import {
+  MessageSquareMoreIcon,
+  Share2Icon,
+  CopyIcon,
+  MailIcon,
+} from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
 import {
@@ -16,7 +23,11 @@ import {
 import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
 import { useParams } from "next/navigation";
-import { useFollowBrandMutation, useTrendingProductDetailsByIdQuery, useUnfollowBrandMutation } from "@/redux/features/Trending/TrendingApi";
+import {
+  useFollowBrandMutation,
+  useTrendingProductDetailsByIdQuery,
+  useUnfollowBrandMutation,
+} from "@/redux/features/Trending/TrendingApi";
 import LoadingScletion from "@/components/LoadingScletion";
 import { toast } from "sonner";
 import {
@@ -33,6 +44,7 @@ import {
   LinkedinShareButton,
   EmailShareButton,
 } from "react-share";
+import { Separator } from "@/components/ui/separator";
 
 const accordionData = [
   {
@@ -87,10 +99,7 @@ interface ShareButtonsProps {
 const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
   return (
     <div className="flex justify-center gap-4 pt-4">
-      <FacebookShareButton
-        url={url}
-        hashtag="#vapeshopmaps"
-      >
+      <FacebookShareButton url={url} hashtag="#vapeshopmaps">
         <Button variant="outline" size="icon">
           <FaFacebook className="h-5 w-5 text-blue-600" />
         </Button>
@@ -117,12 +126,18 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
 export default function Page() {
   const params = useParams();
   const id = params.id;
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { data: product, isLoading, refetch } = useTrendingProductDetailsByIdQuery(id as any);
-  const [followOrUnfollowBrand, { isLoading: isFollowing }] = useFollowBrandMutation();
-  const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
+  const {
+    data: product,
+    isLoading,
+    refetch,
+  } = useTrendingProductDetailsByIdQuery(id as any);
+  const [followOrUnfollowBrand, { isLoading: isFollowing }] =
+    useFollowBrandMutation();
+  const [unfollowBrand, { isLoading: isUnFollowing }] =
+    useUnfollowBrandMutation();
   console.log("product", product);
   if (isLoading) {
     return (
@@ -191,8 +206,12 @@ export default function Page() {
       const discountedPrice = price * (1 - discount);
       return (
         <>
-          <span className="line-through text-muted-foreground mr-2">${price.toFixed(2)}</span>
-          <span className="text-primary font-bold">${discountedPrice.toFixed(2)}</span>
+          <span className="line-through text-muted-foreground mr-2">
+            ${price.toFixed(2)}
+          </span>
+          <span className="text-primary font-bold">
+            ${discountedPrice.toFixed(2)}
+          </span>
           <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
             {product.product_discount} off
           </span>
@@ -205,7 +224,9 @@ export default function Page() {
   const getAccordionData = () => {
     const updatedAccordionData = [...accordionData];
 
-    const howToUseIndex = updatedAccordionData.findIndex(item => item.id === "how-to-use");
+    const howToUseIndex = updatedAccordionData.findIndex(
+      (item) => item.id === "how-to-use"
+    );
     if (howToUseIndex !== -1 && product?.product_faqs?.length) {
       updatedAccordionData[howToUseIndex].content = (
         <div>
@@ -235,20 +256,28 @@ export default function Page() {
       <div className="!px-4 lg:!px-[7%] !pb-12">
         <div className="flex !py-4 gap-4 ">
           <Avatar className="size-24 border">
-            <AvatarImage src={product?.data?.user?.avatar || "/image/icon/brand.jpg"} alt={`${product?.data?.user?.avatar} Brand Logo`} />
+            <AvatarImage
+              src={product?.data?.user?.avatar || "/image/icon/brand.jpg"}
+              alt={`${product?.data?.user?.avatar} Brand Logo`}
+            />
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
-            <Link href={`/brands/brand/${product?.data?.user?.id}`} className="text-black hover:text-[#3a3a3a] underline">
+            <Link
+              href={`/brands/brand/${product?.data?.user?.id}`}
+              className="text-black hover:text-[#3a3a3a] underline"
+            >
               <Namer
                 name={product?.data?.user?.full_name || "Brand"}
                 isVerified
                 type="brand"
                 size="xl"
-              /></Link>
+              />
+            </Link>
           </div>
           <div className="flex-1 h-24 flex flex-row justify-end items-center gap-4">
             <p className="font-semibold text-sm">
-              {product?.data?.user?.total_followers?.toLocaleString() || "0"} followers
+              {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
+              followers
             </p>
             <Button variant="outline" className="!text-sm font-extrabold">
               B2B
@@ -256,17 +285,32 @@ export default function Page() {
             <Button variant="outline" size="icon">
               <MessageSquareMoreIcon />
             </Button>
-            {
-              product?.data?.user?.is_following ? (
-                <Button onClick={() => handleUnfollow(product?.data?.user?.id)} variant="outline">{isUnFollowing ? "Unfollowing..." : "Unfollow"}</Button>
-              ) : (
-                <Button onClick={() => handleFollow(product?.data?.user?.id)} variant="outline">{isFollowing ? "Following..." : "Follow"}</Button>
-              )
-            }
+            {product?.data?.user?.is_following ? (
+              <Button
+                onClick={() => handleUnfollow(product?.data?.user?.id)}
+                variant="outline"
+              >
+                {isUnFollowing ? "Unfollowing..." : "Unfollow"}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => handleFollow(product?.data?.user?.id)}
+                variant="outline"
+              >
+                {isFollowing ? "Following..." : "Follow"}
+              </Button>
+            )}
 
-            <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+            <Dialog
+              open={isShareDialogOpen}
+              onOpenChange={setIsShareDialogOpen}
+            >
               <DialogTrigger asChild>
-                <Button onClick={handleNativeShare} variant="outline" size="icon">
+                <Button
+                  onClick={handleNativeShare}
+                  variant="outline"
+                  size="icon"
+                >
                   <Share2Icon />
                 </Button>
               </DialogTrigger>
@@ -276,10 +320,7 @@ export default function Page() {
                 </DialogHeader>
                 <div className="flex items-center space-x-2">
                   <div className="grid flex-1 gap-2">
-                    <Input
-                      value={currentUrl}
-                      readOnly
-                    />
+                    <Input value={currentUrl} readOnly />
                   </div>
                   <Button
                     type="button"
@@ -293,7 +334,9 @@ export default function Page() {
                 </div>
                 <ShareButtons
                   url={currentUrl}
-                  title={product?.data?.product_name || "Check out this product"}
+                  title={
+                    product?.data?.product_name || "Check out this product"
+                  }
                 />
               </DialogContent>
             </Dialog>
@@ -305,11 +348,10 @@ export default function Page() {
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
             {product?.data?.user?.full_name || "Brand"}
           </h1>
-          <div className="text-2xl font-bold !mb-4">
-            {formatPrice()}
-          </div>
+          <div className="text-2xl font-bold !mb-4">{formatPrice()}</div>
           <p className="text-muted-foreground !mb-8">
-            {product.product_description || "Premium product with excellent features."}
+            {product.product_description ||
+              "Premium product with excellent features."}
           </p>
           <div className="w-full lg:w-2/3">
             <Accordion type="single" collapsible>
@@ -341,21 +383,36 @@ export default function Page() {
           ?
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {product?.data?.related_products?.slice(0, 4).map((relatedProduct: any) => (
-            <ProductCard
-              key={relatedProduct.id}
-              link={`${relatedProduct.id}`}
-              data={{
-                image: relatedProduct.product_image || "/image/shop/item.jpg",
-                title: relatedProduct.product_name,
-                category: relatedProduct.category?.name || "Product",
-                note: `$${parseFloat(relatedProduct.product_price).toFixed(2)}`,
-                discount: relatedProduct.product_discount,
-                hearts: relatedProduct.total_heart,
-                rating: parseFloat(relatedProduct.average_rating || "0").toFixed(1)
-              }}
-            />
-          ))}
+          {product?.data?.related_products
+            ?.slice(0, 4)
+            .map((relatedProduct: any) => (
+              <ProductCard
+                key={relatedProduct.id}
+                link={`${relatedProduct.id}`}
+                data={{
+                  image: relatedProduct.product_image || "/image/shop/item.jpg",
+                  title: relatedProduct.product_name,
+                  category: relatedProduct.category?.name || "Product",
+                  note: `$${parseFloat(relatedProduct.product_price).toFixed(
+                    2
+                  )}`,
+                  discount: relatedProduct.product_discount,
+                  hearts: relatedProduct.total_heart,
+                  rating: parseFloat(
+                    relatedProduct.average_rating || "0"
+                  ).toFixed(1),
+                }}
+              />
+            ))}
+        </div>
+        <div className="my-12! flex justify-between items-center gap-6">
+          <Input /> <Button>Post review</Button>
+        </div>
+        <Separator />
+
+        <div className="">
+          <h3 className="text-3xl my-6!">Product Reviews</h3>
+          <div className="space-y-6!"></div>
         </div>
       </div>
     </main>

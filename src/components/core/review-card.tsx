@@ -1,4 +1,5 @@
 "use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,20 +20,41 @@ import Image from "next/image";
 
 interface ProductReviewCardProps {
   product?: {
+    id: number;
     name: string;
     image: string;
     price: string;
-    category: string;
+    category: {
+      id: number;
+      name: string;
+    };
+    slug: string;
+    role: number;
+    roleLabel: string;
+    isHearted: boolean;
+    totalHeart: number;
+    averageRating: string;
   };
   review?: {
-    title: string;
-    content: string;
+    id: number;
+    rating: number;
+    comment: string;
     date: string;
+    parentId: number | null;
   };
   reviewer?: {
+    id: number;
     name: string;
     avatar: string;
-    initials: string;
+    role: number;
+    roleLabel: string;
+    isFollowing: boolean;
+    totalFollowers: number;
+    totalFollowing: number;
+    avgRating: number;
+    totalReviews: number;
+    isFavourite: boolean;
+    isBanned: boolean;
   };
   stats?: {
     helpful: number;
@@ -41,32 +63,16 @@ interface ProductReviewCardProps {
 }
 
 export default function ProductReviewCard({
-  product = {
-    name: "Premium Wireless Headphones",
-    image: "/image/shop/item.jpg",
-    price: "$299.99",
-    category: "MOD",
-  },
-  review = {
-    title: "Exceptional sound quality and comfort",
-    content:
-      "These headphones exceeded my expectations in every way. The sound quality is crystal clear with deep bass and crisp highs. I've been using them for both music and work calls, and the noise cancellation is outstanding. The battery life easily lasts a full day of heavy use, and they're incredibly comfortable even during long sessions.",
-    date: "2 weeks ago",
-  },
-  reviewer = {
-    name: "Sarah Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    initials: "SJ",
-  },
-  stats = {
-    helpful: 47,
-    replies: 3,
-  },
-}: ProductReviewCardProps) {
-  const [helpful, setHelpful] = useState<boolean>(false);
-  const [helpfulCount, setHelpfulCount] = useState(stats.helpful);
+  data,
+}: {
+  data: ProductReviewCardProps;
+}) {
+  const { product, review, reviewer, stats } = data;
+  const [helpful, setHelpful] = useState(false);
+  const [helpfulCount, setHelpfulCount] = useState(stats?.helpful ?? 0);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [reply, setReply] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -80,43 +86,55 @@ export default function ProductReviewCard({
     );
   }
 
+  const handleReplySubmit = () => {
+    if (!reply.trim()) {
+      toast("Reply can't be empty.");
+      return;
+    }
+
+    // 🔧 Add reply submission logic here (API call, mutation etc.)
+    toast(`Reply sent: "${reply}"`);
+    setReply("");
+  };
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
       {/* Product Header */}
       <div className="border-b !p-4">
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <Image
-              src={product.image || "/placeholder.svg"}
-              height={600}
-              width={600}
-              alt={product.name}
-              className="w-20 h-20 rounded-lg object-cover border"
-            />
-          </div>
+          <Image
+            src={product?.image || "/placeholder.svg"}
+            height={600}
+            width={600}
+            alt={product?.name || "Product Image"}
+            className="w-20 h-20 rounded-lg object-cover border"
+          />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 !mb-1">
               <Badge variant="secondary" className="text-xs">
-                {product.category}
+                {product?.category?.name}
               </Badge>
             </div>
-            <h3 className="font-semibold text-base truncate">{product.name}</h3>
-            <p className="text-lg font-bold text-primary">{product.price}</p>
+            <h3 className="font-semibold text-base truncate">
+              {product?.name}
+            </h3>
+            <p className="text-lg font-bold text-primary">{product?.price}</p>
           </div>
         </div>
       </div>
 
       {/* Review Content */}
       <div className="!p-4">
-        {/* Rating and Title */}
-        <div className="!mb-3">
-          <div className="flex items-center gap-2 !mb-2"></div>
-          <h4 className="font-semibold text-base !mb-2">{review.title}</h4>
-        </div>
+        {review?.rating && (
+          <div className="!mb-3">
+            <h4 className="font-semibold text-base !mb-2">
+              ⭐ {review.rating}/5
+            </h4>
+          </div>
+        )}
 
-        {/* Review Text */}
         <p className="text-sm text-muted-foreground leading-relaxed !mb-4">
-          {review.content}
+          {review?.comment}
         </p>
 
         {/* Reviewer Info */}
@@ -124,16 +142,23 @@ export default function ProductReviewCard({
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8">
               <AvatarImage
-                src={reviewer.avatar || "/placeholder.svg"}
+                src={reviewer?.avatar || "/placeholder.svg"}
                 className="object-cover"
               />
               <AvatarFallback className="text-xs">
-                {reviewer.initials}
+                {reviewer?.name
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">{reviewer.name}</p>
-              <p className="text-xs text-muted-foreground">{review.date}</p>
+              <p className="text-sm font-medium">{reviewer?.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {review?.date
+                  ? new Date(review.date).toLocaleDateString()
+                  : "Unknown date"}
+              </p>
             </div>
           </div>
         </div>
@@ -150,7 +175,7 @@ export default function ProductReviewCard({
               setHelpful(newHelpful);
               setHelpfulCount((prev) => (newHelpful ? prev + 1 : prev - 1));
               toast(
-                `${newHelpful ? "Marked as helpful" : "Removed helpful mark"}`
+                `${newHelpful ? "Marked as helpful" : "Unmarked as helpful"}`
               );
             }}
             className="text-xs h-8 !px-3"
@@ -172,28 +197,34 @@ export default function ProductReviewCard({
             <DialogTrigger asChild>
               <Button variant="ghost" size="sm" className="text-xs h-8 !px-3">
                 <MessageCircle className="w-4 h-4 !mr-1" />
-                Reply ({stats.replies})
+                Reply ({stats?.replies ?? 0})
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
-              <DialogTitle>Reply to {reviewer.name}&apos;s review</DialogTitle>
+              <DialogTitle>Reply to {reviewer?.name}&apos;s review</DialogTitle>
               <DialogDescription className="text-sm">
-                Share your thoughts about this review or ask a question about
-                the product.
+                Share your thoughts or ask a question about the product.
               </DialogDescription>
               <div className="space-y-4">
                 <div className="!p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium !mb-1">{review.title}</p>
+                  <p className="text-sm font-medium !mb-1">
+                    {review?.rating ? `⭐ ${review.rating}/5` : ""}
+                  </p>
                   <p className="text-xs text-muted-foreground line-clamp-2">
-                    {review.content}
+                    {review?.comment}
                   </p>
                 </div>
               </div>
 
               <DialogFooter className="border-t !pt-4">
                 <div className="w-full flex flex-row gap-3">
-                  <Input placeholder="Write your reply..." className="flex-1" />
-                  <Button>Send</Button>
+                  <Input
+                    placeholder="Write your reply..."
+                    className="flex-1"
+                    value={reply}
+                    onChange={(e) => setReply(e.target.value)}
+                  />
+                  <Button onClick={handleReplySubmit}>Send</Button>
                 </div>
               </DialogFooter>
             </DialogContent>

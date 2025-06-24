@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import ForumCard from "@/components/core/forum-card";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -45,7 +46,9 @@ export default function Groups() {
             No Forum Found
           </p>
         ) : (
-          <ForumCard data={data?.data?.data[0]} to="/forum/thread" />
+          data?.data?.data.map((x: any) => (
+            <ForumCard key={x.id} data={x} to={`/forum/thread/${x.id}`} />
+          ))
         )}
       </Card>
     </div>
