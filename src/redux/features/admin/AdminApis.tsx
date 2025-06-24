@@ -29,22 +29,30 @@ export const adminApis = api.injectEndpoints({
 
         getAdminSliders: builder.query<any, void>({
             query: () => `/admin/slider`,
+            providesTags: ["slider"],
         }),
 
-        createAdminSlider: builder.mutation<any, { image: File }>({
-            query: (body) => ({
+        createAdminSlider: builder.mutation<any, FormData>({
+            query: (formData) => ({
                 url: `/admin/slider`,
                 method: "POST",
-                body,
+                body: formData,
             }),
+            invalidatesTags: ["slider"],
         }),
 
-        deleteAdminSlider: builder.mutation<any, { id: number }>({
-            query: (body) => ({
-                url: `/admin/slider/${body.id}`,
+
+        deleteAdminSlider: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/admin/slider/${id}`,
                 method: "DELETE",
-                body,
             }),
+            invalidatesTags: ["slider"],
+        }),
+
+        getallAddRequest: builder.query<any, { page: number; per_page: number; type: string }>({
+            query: ({ page, per_page, type }) =>
+                `/admin/get-all-ad-requests?page=${page}&per_page=${per_page}&type=${type}`,
         }),
 
 
@@ -57,5 +65,8 @@ export const {
     useBanAuserMutation,
     useGetallbandedusersQuery,
     useUnBanUserMutation,
-    useGetAdminSlidersQuery
+    useGetAdminSlidersQuery,
+    useCreateAdminSliderMutation,
+    useDeleteAdminSliderMutation,
+    useGetallAddRequestQuery,
 } = adminApis;

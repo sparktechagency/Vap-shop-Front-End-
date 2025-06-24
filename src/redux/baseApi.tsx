@@ -29,6 +29,7 @@ export const api = createApi({
     "brand",
     "post",
     "thread",
+    "slider",
   ],
   endpoints: () => ({}),
 });
