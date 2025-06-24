@@ -5,7 +5,13 @@ import LoadingScletion from "@/components/LoadingScletion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   useCreatecommentMutation,
@@ -14,6 +20,7 @@ import {
 import { useParams } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
+import SafeHtml from "./safeHtml";
 
 interface User {
   id: number;
@@ -138,17 +145,21 @@ export default function Page() {
         </CardHeader>
       </Card>
       <Card>
+        <CardHeader className="border-b">
+          <CardTitle>
+            <h2 className="text-lg font-bold">{thread.title}</h2>
+          </CardTitle>
+        </CardHeader>
         <CardContent>
-          <h2 className="text-lg font-bold">{thread.title}</h2>
-          <p className="text-xs md:text-sm lg:text-base text-muted-foreground">
-            {thread.body}
-          </p>
-          <div className="mt-2 text-sm text-muted-foreground">
+          <SafeHtml html={thread.body} />
+        </CardContent>
+        <CardFooter className="border-t">
+          <div className="mt-2! text-sm text-muted-foreground">
             {thread.views} view{thread.views !== 1 ? "s" : ""} •{" "}
             {thread.total_replies} comment
             {thread.total_replies !== 1 ? "s" : ""}
           </div>
-        </CardContent>
+        </CardFooter>
       </Card>
       <Card>
         <CardContent>

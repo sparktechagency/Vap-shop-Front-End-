@@ -28,6 +28,7 @@ export const api = createApi({
     "tranding",
     "brand",
     "post",
+    "thread",
   ],
   endpoints: () => ({}),
 });

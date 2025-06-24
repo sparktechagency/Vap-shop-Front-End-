@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -8,57 +9,87 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
+import { useCreateThreadMutation } from "@/redux/features/Forum/ForumApi";
+import { toast } from "sonner";
 
 const postSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
-  content: z.string().min(10, "Content must be at least 10 characters"),
+  body: z.string().min(10, "Content must be at least 10 characters"),
 });
 
 type PostFormData = z.infer<typeof postSchema>;
 
-export default function PostCreate() {
+export default function PostCreate({
+  id,
+  closer,
+}: {
+  id: string;
+  closer: () => void;
+}) {
+  const [createThread] = useCreateThreadMutation();
+  const [editorValue, setEditorValue] = useState("");
   const {
     register,
     handleSubmit,
-    formState: { errors },
     setValue,
+    formState: { errors },
   } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: "",
+      body: "",
+    },
   });
 
-  const [editorValue, setEditorValue] = useState("");
+  const onSubmit = async (data: PostFormData) => {
+    try {
+      const finalData = {
+        title: data.title,
+        body: data.body,
+        group_id: JSON.parse(id),
+      };
+      const res = await createThread(finalData).unwrap();
 
-  const onSubmit = (data: PostFormData) => {
-    console.log({ ...data, content: editorValue });
+      if (res?.ok) {
+        toast.success("Thread created successfully!");
+        setEditorValue("");
+        closer();
+      } else {
+        toast.error(res?.message || "Something went wrong.");
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to create thread.");
+      console.error("Create thread error:", err);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <Label htmlFor="title">Title:</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6!">
+      <div className="space-y-2!">
+        <Label htmlFor="title">Title</Label>
         <Input id="title" {...register("title")} />
         {errors.title && (
           <p className="text-sm text-red-500">{errors.title.message}</p>
         )}
       </div>
 
-      <div>
-        <Label>Forum Content:</Label>
+      <div className="space-y-2!">
+        <Label>Forum Content</Label>
         <Editor
           style={{ height: "300px" }}
           value={editorValue}
           onTextChange={(e) => {
-            const value = e.htmlValue ?? "";
-            setEditorValue(value);
-            setValue("content", value);
+            const html = e.htmlValue ?? "";
+            setEditorValue(html);
+            setValue("body", html, { shouldValidate: true });
           }}
         />
-        {errors.content && (
-          <p className="text-sm text-red-500">{errors.content.message}</p>
+        {errors.body && (
+          <p className="text-sm text-red-500">{errors.body.message}</p>
         )}
       </div>
 
-      <Button type="submit">Post forum</Button>
+      <Button type="submit">Post Forum</Button>
     </form>
   );
 }
