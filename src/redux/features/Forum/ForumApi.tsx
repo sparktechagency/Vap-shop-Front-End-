@@ -9,10 +9,19 @@ export const forumApi = api.injectEndpoints({
     getallThredsByGropId: builder.query({
       query: ({ page, per_page, id }) =>
         `/forum-thread/?group_id=${id}&per_page=${per_page}&page=${page}`,
+      providesTags: ["thread"],
     }),
 
     getThreadDetailsById: builder.query({
       query: (id) => `/forum-thread/${id}`,
+    }),
+    createThread: builder.mutation({
+      query: (body) => ({
+        url: `/forum-thread`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["thread"],
     }),
 
     getDashboardForum: builder.query({
@@ -26,6 +35,13 @@ export const forumApi = api.injectEndpoints({
         body,
       }),
     }),
+    createGroup: builder.mutation({
+      query: (body) => ({
+        url: "/forum-group",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -35,4 +51,6 @@ export const {
   useGetThreadDetailsByIdQuery,
   useCreatecommentMutation,
   useGetDashboardForumQuery,
+  useCreateGroupMutation,
+  useCreateThreadMutation,
 } = forumApi;
