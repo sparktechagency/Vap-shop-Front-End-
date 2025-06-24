@@ -29,22 +29,25 @@ export const adminApis = api.injectEndpoints({
 
         getAdminSliders: builder.query<any, void>({
             query: () => `/admin/slider`,
+            providesTags: ["slider"],
         }),
 
-        createAdminSlider: builder.mutation<any, { image: File }>({
-            query: (body) => ({
+        createAdminSlider: builder.mutation<any, FormData>({
+            query: (formData) => ({
                 url: `/admin/slider`,
                 method: "POST",
-                body,
+                body: formData,
             }),
+            invalidatesTags: ["slider"],
         }),
 
-        deleteAdminSlider: builder.mutation<any, { id: number }>({
-            query: (body) => ({
-                url: `/admin/slider/${body.id}`,
+
+        deleteAdminSlider: builder.mutation<any, { id: string }>({
+            query: ({ id }) => ({
+                url: `/admin/slider/${id}`,
                 method: "DELETE",
-                body,
             }),
+            invalidatesTags: ["slider"],
         }),
 
 
@@ -57,5 +60,7 @@ export const {
     useBanAuserMutation,
     useGetallbandedusersQuery,
     useUnBanUserMutation,
-    useGetAdminSlidersQuery
+    useGetAdminSlidersQuery,
+    useCreateAdminSliderMutation,
+    useDeleteAdminSliderMutation,
 } = adminApis;
