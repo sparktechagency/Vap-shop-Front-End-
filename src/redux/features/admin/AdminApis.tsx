@@ -27,6 +27,28 @@ export const adminApis = api.injectEndpoints({
                 `/admin/get-banned-users?per_page=${per_page}&page=${page}`,
         }),
 
+        getAdminSliders: builder.query<any, void>({
+            query: () => `/admin/slider`,
+        }),
+
+        createAdminSlider: builder.mutation<any, { image: File }>({
+            query: (body) => ({
+                url: `/admin/slider`,
+                method: "POST",
+                body,
+            }),
+        }),
+
+        deleteAdminSlider: builder.mutation<any, { id: number }>({
+            query: (body) => ({
+                url: `/admin/slider/${body.id}`,
+                method: "DELETE",
+                body,
+            }),
+        }),
+
+
+
     }),
 });
 
@@ -34,5 +56,6 @@ export const {
     useGetallusersQuery,
     useBanAuserMutation,
     useGetallbandedusersQuery,
-    useUnBanUserMutation
+    useUnBanUserMutation,
+    useGetAdminSlidersQuery
 } = adminApis;

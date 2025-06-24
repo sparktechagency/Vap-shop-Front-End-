@@ -85,10 +85,10 @@ const data = {
         //   title: "Approvals",
         //   url: "/admin/business/approvals",
         // },
-        {
-          title: "Listing Editor",
-          url: "/admin/business/listing-editor",
-        },
+        // {
+        //   title: "Listing Editor",
+        //   url: "/admin/business/listing-editor",
+        // },
         {
           title: "Subscriptions & Billing",
           url: "/admin/business/subscriptions-billing",
