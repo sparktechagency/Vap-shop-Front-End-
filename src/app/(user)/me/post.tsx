@@ -41,13 +41,11 @@ export default function Post() {
 
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
-      <>
-        <PostCard
-          key={index}
-          user={{ name: my.full_name ? my.full_name : "", avatar: my.avatar }}
-          data={post}
-        />
-      </>
+      <PostCard
+        key={post.id || index} // Prefer post.id if available
+        user={{ name: my.full_name ?? "", avatar: my.avatar }}
+        data={post}
+      />
     ));
 
   if (data) {

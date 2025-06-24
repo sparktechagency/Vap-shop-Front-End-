@@ -37,7 +37,7 @@ export default function Namer({
   }
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center text-foreground">
       <h3
         className={`font-extrabold ${
           size === "sm"
