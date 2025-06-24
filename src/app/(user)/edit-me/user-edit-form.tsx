@@ -15,13 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -30,8 +30,8 @@ const formSchema = z.object({
   last_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
-  favBrands: z.array(z.string().min(1)).length(6),
-  favStores: z.array(z.string().min(1)).length(6),
+  // favBrands: z.array(z.string().min(1)).length(6),
+  // favStores: z.array(z.string().min(1)).length(6),
 });
 
 export default function UserEditForm() {
@@ -42,8 +42,8 @@ export default function UserEditForm() {
       last_name: "",
       email: "",
       phone: "",
-      favBrands: Array(6).fill(""),
-      favStores: Array(6).fill(""),
+      // favBrands: Array(6).fill(""),
+      // favStores: Array(6).fill(""),
     },
   });
 
@@ -54,8 +54,8 @@ export default function UserEditForm() {
     // favBrands and favStores are arrays of 6 selected strings
   }
 
-  const brandOptions = ["Apple", "Nike", "Samsung"];
-  const storeOptions = ["Amazon", "Walmart", "Best Buy"];
+  // const brandOptions = ["Apple", "Nike", "Samsung"];
+  // const storeOptions = ["Amazon", "Walmart", "Best Buy"];
 
   return (
     <Form {...form}>
@@ -123,10 +123,10 @@ export default function UserEditForm() {
           )}
         />
 
-        <Separator className="col-span-2" />
+        {/* <Separator className="col-span-2" /> */}
 
         {/* Fav Stores Selects */}
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <FormLabel>Favorite Stores</FormLabel>
           {Array.from({ length: 6 }).map((_, index) => (
             <FormField
@@ -154,10 +154,10 @@ export default function UserEditForm() {
               )}
             />
           ))}
-        </div>
+        </div> */}
 
         {/* Fav Brands Selects */}
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <FormLabel>Favorite Brands</FormLabel>
           {Array.from({ length: 6 }).map((_, index) => (
             <FormField
@@ -185,8 +185,7 @@ export default function UserEditForm() {
               )}
             />
           ))}
-        </div>
-
+        </div> */}
         <Separator className="col-span-2" />
 
         {/* Submit button */}
