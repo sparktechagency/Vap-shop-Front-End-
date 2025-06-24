@@ -44,6 +44,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { Skeleton } from "./ui/skeleton";
 
 interface UserData {
     id: number;
@@ -123,7 +124,28 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     };
 
     if (isLoading) {
-        return <div className="flex justify-center items-center h-full">Loading...</div>;
+        return (
+            <div className="w-full space-y-2">
+                {/* Table Header Skeleton */}
+                <div className="flex justify-between px-4 py-2 bg-gray-100 rounded-md">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-24" />
+                </div>
+
+                {/* Table Rows Skeleton */}
+                {Array.from({ length: 10 }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="flex justify-between items-center px-4 py-3 border-b"
+                    >
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-24" />
+                    </div>
+                ))}
+            </div>
+        );
     }
 
     return (
