@@ -1,7 +1,8 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import ForumCard from "@/components/core/forum-card";
 import LoadingScletion from "@/components/LoadingScletion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
@@ -11,8 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,8 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetallThredsByGropIdQuery } from "@/redux/features/Forum/ForumApi";
-import { AlertTriangle, PaintbrushIcon } from "lucide-react";
-import { Editor } from "primereact/editor";
+import { PaintbrushIcon, MessageSquare, Users } from "lucide-react";
 import React from "react";
 import PostCreate from "./post-create";
 
@@ -51,7 +49,6 @@ interface Thread {
 // }
 
 export default function Threader({ id }: { id: string }) {
-  console.log("id", id);
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(8);
   const { data, isLoading } = useGetallThredsByGropIdQuery({
@@ -59,8 +56,8 @@ export default function Threader({ id }: { id: string }) {
     page,
     per_page: perPage,
   });
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  console.log("data", data);
   if (isLoading) {
     return <LoadingScletion />;
   }
@@ -78,10 +75,53 @@ export default function Threader({ id }: { id: string }) {
     new: false, // You can add logic to determine if a thread is new
   });
 
+  // Empty state component
+  const EmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-16! px-6! text-center">
+      <div className="relative mb-6!">
+        <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center">
+          <MessageSquare className="w-10 h-10 text-muted-foreground" />
+        </div>
+        <div className="absolute -top-1 -right-1 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+          <Users className="w-4 h-4 text-primary" />
+        </div>
+      </div>
+
+      <h3 className="text-xl font-semibold text-foreground mb-2!">
+        No threads yet
+      </h3>
+
+      <p className="text-muted-foreground mb-6! max-w-md">
+        This forum is waiting for its first discussion. Be the pioneer and start
+        a conversation that others can join!
+      </p>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogTrigger asChild>
+          <Button size="lg" className="gap-2">
+            <PaintbrushIcon className="w-4 h-4" />
+            Start the first thread
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="min-w-[80dvw]! min-h-fit flex flex-col">
+          <DialogHeader className="border-b pb-6!">
+            <DialogTitle className="text-sm!">Post a new thread</DialogTitle>
+          </DialogHeader>
+          <PostCreate id={id} closer={() => setDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <div className="mt-8! text-xs text-muted-foreground">
+        💡 Tip: Great discussions start with engaging questions or interesting
+        topics
+      </div>
+    </div>
+  );
+
   return (
     <div className="!space-y-6">
       <div className="flex justify-end">
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <PaintbrushIcon /> Post a thread
@@ -91,7 +131,7 @@ export default function Threader({ id }: { id: string }) {
             <DialogHeader className="border-b pb-6!">
               <DialogTitle className="text-sm!">Post a new thread</DialogTitle>
             </DialogHeader>
-            <PostCreate />
+            <PostCreate id={id} closer={() => setDialogOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
@@ -108,7 +148,7 @@ export default function Threader({ id }: { id: string }) {
           </Select>
         </CardHeader>
 
-        {data ? (
+        {data && data?.data?.data?.length > 0 ? (
           data?.data?.data?.map((thread: Thread) => (
             <ForumCard
               key={thread.id}
@@ -117,32 +157,30 @@ export default function Threader({ id }: { id: string }) {
             />
           ))
         ) : (
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Alert!</AlertTitle>
-            <AlertDescription>Data not found</AlertDescription>
-          </Alert>
+          <EmptyState />
         )}
       </Card>
 
       {/* Add pagination controls if needed */}
-      <div className="flex justify-between items-center">
-        <Button
-          disabled={page === 1}
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-        >
-          Previous
-        </Button>
-        <span>
-          Page {page} of {data?.data.last_page}
-        </span>
-        <Button
-          disabled={page >= (data?.data.last_page || 1)}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {data && data?.data?.data?.length > 0 && (
+        <div className="flex justify-between items-center">
+          <Button
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          >
+            Previous
+          </Button>
+          <span>
+            Page {page} of {data?.data.last_page}
+          </span>
+          <Button
+            disabled={page >= (data?.data.last_page || 1)}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

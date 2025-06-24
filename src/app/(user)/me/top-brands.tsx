@@ -33,7 +33,7 @@ export default function TopBrands() {
 
   if (favList.length === 0) {
     return (
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-sm text-muted-foreground">
         You have no favourite brands yet
       </p>
     );

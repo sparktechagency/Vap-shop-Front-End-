@@ -1,4 +1,5 @@
 "use client";
+import ForumCard from "@/components/core/forum-card";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
   Select,
@@ -39,7 +40,13 @@ export default function Groups() {
             </SelectContent>
           </Select>
         </CardHeader>
-        {/* {!isLoading && <ForumCard data={data.data[0]} to="/forum/thread" />} */}
+        {!data ? (
+          <p className="mt-6! flex justify-center items-center text-muted-foreground text-sm">
+            No Forum Found
+          </p>
+        ) : (
+          <ForumCard data={data?.data?.data[0]} to="/forum/thread" />
+        )}
       </Card>
     </div>
   );

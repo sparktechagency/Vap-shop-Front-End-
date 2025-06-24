@@ -23,7 +23,7 @@ export default function TopStores() {
 
   if (!isMember) {
     return (
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-sm text-muted-foreground">
         You don&apos;t have access to this
       </p>
     );
@@ -33,7 +33,7 @@ export default function TopStores() {
 
   if (favList.length === 0) {
     return (
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-sm text-muted-foreground">
         You have no favourite stores yet
       </p>
     );
