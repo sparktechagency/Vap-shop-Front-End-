@@ -49,8 +49,9 @@ export default async function ProfileLayoutShell({
         <div
           className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative"
           style={{
-            backgroundImage:
-              "linear-gradient(to top right, var(--background) 0%, rgba(128, 90, 213, 0.5) 40%, #331F60 100%)",
+            backgroundImage: my.cover_photo
+              ? `url('${my.cover_photo}')`
+              : "linear-gradient(to top right, var(--background) 0%, rgba(128, 90, 213, 0.5) 40%, #331F60 100%)",
           }}
         >
           <Avatar className="size-[120px] md:size-[220px] lg:size-[300px] absolute -bottom-[60px] md:-bottom-[110px] lg:-bottom-[150px] right-1/2 translate-x-1/2 md:translate-0 md:right-4 lg:right-[7%] border">

@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/components/core/product-card";
 import React from "react";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -66,26 +66,44 @@ export default function Catalog({ id }: any) {
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
-                  href={catalog.data.products.prev_page_url ? `?page=${catalog.data.products.current_page - 1}` : "#"}
-                  className={!catalog.data.products.prev_page_url ? "pointer-events-none opacity-50" : ""}
+                  href={
+                    catalog.data.products.prev_page_url
+                      ? `?page=${catalog.data.products.current_page - 1}`
+                      : "#"
+                  }
+                  className={
+                    !catalog.data.products.prev_page_url
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
                 />
               </PaginationItem>
 
-              {Array.from({ length: catalog.data.products.last_page }).map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    href={`?page=${i + 1}`}
-                    isActive={i + 1 === catalog.data.products.current_page}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              {Array.from({ length: catalog.data.products.last_page }).map(
+                (_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href={`?page=${i + 1}`}
+                      isActive={i + 1 === catalog.data.products.current_page}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
 
               <PaginationItem>
                 <PaginationNext
-                  href={catalog.data.products.next_page_url ? `?page=${catalog.data.products.current_page + 1}` : "#"}
-                  className={!catalog.data.products.next_page_url ? "pointer-events-none opacity-50" : ""}
+                  href={
+                    catalog.data.products.next_page_url
+                      ? `?page=${catalog.data.products.current_page + 1}`
+                      : "#"
+                  }
+                  className={
+                    !catalog.data.products.next_page_url
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }
                 />
               </PaginationItem>
             </PaginationContent>

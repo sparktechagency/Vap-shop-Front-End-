@@ -37,6 +37,13 @@ const MeApi = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    getPostLike: builder.query<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `/get-likes-by-post-id/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["post"],
+    }),
   }),
 });
 
@@ -45,4 +52,5 @@ export const {
   useGetPostsQuery,
   useCommentPostMutation,
   useGetCommentQuery,
+  useGetPostLikeQuery,
 } = MeApi;

@@ -42,29 +42,28 @@ export default function TabsTriggerer() {
     { value: "top-brands", label: "Top 6 Brands", visible: isMember },
     { value: "post", label: "Post", visible: true },
     { value: "feed", label: "Feed", visible: true },
-    {
-      value: "announcement",
-      label: "Announcement",
-      visible: !isMember && role !== 2,
-    },
     { value: "reviews", label: "Latest Reviews", visible: isMember },
     // { value: "inbox", label: "Inbox", visible: true },
-    { value: "create-group", label: "Create a group", visible: true },
+
     {
       value: "catalog",
       label: "Catalog",
       visible: !isMember && role !== 2,
     },
+    { value: "create-group", label: "Create a group", visible: true },
     {
       value: "about",
       label: "About",
       visible: !isMember,
     },
   ];
-
+  function getDefaultTab(role: number): string {
+    if (role === 6) return "top-stores";
+    return "post"; // fallback/default for other users
+  }
   return (
     <div className="container !py-10 lg:!p-10">
-      <Tabs defaultValue="top-stores">
+      <Tabs defaultValue={getDefaultTab(parseInt(my.role))}>
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
           {allTabs
             .filter((tab) => tab.visible)

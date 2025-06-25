@@ -45,6 +45,10 @@ import {
   EmailShareButton,
 } from "react-share";
 import { Separator } from "@/components/ui/separator";
+import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
+import ProductReviewCard from "@/components/core/review-card";
+import Reviewer from "./reviewer";
+import ReviewPost from "./review-post";
 
 const accordionData = [
   {
@@ -129,6 +133,7 @@ export default function Page() {
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
   const {
     data: product,
     isLoading,
@@ -346,7 +351,7 @@ export default function Page() {
       <div className="w-full grid grid-cols-1 lg:grid-cols-9 !py-12 bg-secondary dark:bg-zinc-900 !px-4 lg:!px-[7%] gap-8">
         <div className="col-span-1 lg:col-span-5">
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
-            {product?.data?.user?.full_name || "Brand"}
+            {product?.data?.product_name || "Brand"}
           </h1>
           <div className="text-2xl font-bold !mb-4">{formatPrice()}</div>
           <p className="text-muted-foreground !mb-8">
@@ -405,15 +410,10 @@ export default function Page() {
               />
             ))}
         </div>
-        <div className="my-12! flex justify-between items-center gap-6">
-          <Input /> <Button>Post review</Button>
-        </div>
+        <ReviewPost productId={product?.data?.id} />
         <Separator />
 
-        <div className="">
-          <h3 className="text-3xl my-6!">Product Reviews</h3>
-          <div className="space-y-6!"></div>
-        </div>
+        {product && <Reviewer product={product.data} />}
       </div>
     </main>
   );

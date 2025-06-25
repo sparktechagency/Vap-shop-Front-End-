@@ -20,6 +20,7 @@ export interface FavouriteEntity {
 }
 
 export interface UserData {
+  cover_photo: string;
   id: string;
   first_name: string;
   last_name: string | null;

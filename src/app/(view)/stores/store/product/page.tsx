@@ -14,7 +14,6 @@ import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
 import BuyMachine from "./buy-machine";
 import { Input } from "@/components/ui/input";
-import ReviewCard from "@/components/core/review-card";
 const data = {
   image: "/image/shop/item.jpg",
   title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
