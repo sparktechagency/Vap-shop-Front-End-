@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowBigUp, Loader2Icon, MessageCircle, Share2 } from "lucide-react";
+import {
+  ArrowBigUp,
+  Loader2Icon,
+  MessageCircle,
+  Send,
+  Share2,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +24,18 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import Image from "next/image";
+import {
+  useReplyReviewMutation,
+  useToggleLikeMutation,
+} from "@/redux/features/others/otherApi";
+import Namer from "./internal/namer";
 
 interface ProductReviewCardProps {
+  id: any;
+  product_image: string;
+  category: any;
+  product_name: string;
+  average_rating: string;
   product?: {
     id: number;
     name: string;
@@ -64,18 +81,30 @@ interface ProductReviewCardProps {
 
 export default function ProductReviewCard({
   data,
+  productData,
+  role,
 }: {
-  data: ProductReviewCardProps;
+  data: any;
+  productData: ProductReviewCardProps;
+  role: number;
 }) {
-  const { product, review, reviewer, stats } = data;
   const [helpful, setHelpful] = useState(false);
-  const [helpfulCount, setHelpfulCount] = useState(stats?.helpful ?? 0);
+  const [helpfulCount, setHelpfulCount] = useState(0);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [reply, setReply] = useState("");
+  const [likeIt] = useToggleLikeMutation();
+  const [liking, setLiking] = useState(false);
+  const [replier] = useReplyReviewMutation();
 
   useEffect(() => {
     setMounted(true);
+    if (data) {
+      if (data?.is_liked) {
+        setHelpful(true);
+      }
+      setHelpfulCount(parseInt(data?.like_count));
+    }
   }, []);
 
   if (!mounted) {
@@ -86,14 +115,30 @@ export default function ProductReviewCard({
     );
   }
 
-  const handleReplySubmit = () => {
+  const handleReplySubmit = async () => {
     if (!reply.trim()) {
       toast("Reply can't be empty.");
       return;
     }
 
+    try {
+      const finalizer = {
+        role,
+        product_id: productData?.id,
+        comment: reply,
+        parent_id: data.id,
+      };
+      const replied = await replier(finalizer).unwrap();
+      if (!replied.ok) {
+        toast.error("Couldn't reply to this review");
+      } else {
+        toast.success(`Replied to ${data?.user?.first_name}'s Review`);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+
     // 🔧 Add reply submission logic here (API call, mutation etc.)
-    toast(`Reply sent: "${reply}"`);
     setReply("");
   };
 
@@ -103,38 +148,40 @@ export default function ProductReviewCard({
       <div className="border-b !p-4">
         <div className="flex items-center gap-4">
           <Image
-            src={product?.image || "/placeholder.svg"}
+            src={productData?.product_image || "/placeholder.svg"}
             height={600}
             width={600}
-            alt={product?.name || "Product Image"}
+            alt={productData?.product_name || "Product Image"}
             className="w-20 h-20 rounded-lg object-cover border"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 !mb-1">
               <Badge variant="secondary" className="text-xs">
-                {product?.category?.name}
+                {productData?.category?.name}
               </Badge>
             </div>
             <h3 className="font-semibold text-base truncate">
-              {product?.name}
+              {productData?.product_name}
             </h3>
-            <p className="text-lg font-bold text-primary">{product?.price}</p>
+            {/* <p className="text-lg font-bold text-primary">
+              ${productData?.product_price}
+            </p> */}
           </div>
         </div>
       </div>
 
       {/* Review Content */}
       <div className="!p-4">
-        {review?.rating && (
+        {productData?.average_rating && (
           <div className="!mb-3">
             <h4 className="font-semibold text-base !mb-2">
-              ⭐ {review.rating}/5
+              ⭐ {parseFloat(productData?.average_rating).toFixed(1)}/5
             </h4>
           </div>
         )}
 
         <p className="text-sm text-muted-foreground leading-relaxed !mb-4">
-          {review?.comment}
+          {data?.comment}
         </p>
 
         {/* Reviewer Info */}
@@ -142,21 +189,21 @@ export default function ProductReviewCard({
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8">
               <AvatarImage
-                src={reviewer?.avatar || "/placeholder.svg"}
+                src={data?.user?.avatar || "/placeholder.svg"}
                 className="object-cover"
               />
               <AvatarFallback className="text-xs">
-                {reviewer?.name
+                {data?.user?.full_name
                   ?.split(" ")
-                  .map((n) => n[0])
+                  .map((n: any[]) => n[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">{reviewer?.name}</p>
+              <p className="text-sm font-medium">{data?.user.full_name}</p>
               <p className="text-xs text-muted-foreground">
-                {review?.date
-                  ? new Date(review.date).toLocaleDateString()
+                {data?.updated_at
+                  ? new Date(data?.updated_at).toLocaleDateString()
                   : "Unknown date"}
               </p>
             </div>
@@ -170,13 +217,41 @@ export default function ProductReviewCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              const newHelpful = !helpful;
-              setHelpful(newHelpful);
-              setHelpfulCount((prev) => (newHelpful ? prev + 1 : prev - 1));
-              toast(
-                `${newHelpful ? "Marked as helpful" : "Unmarked as helpful"}`
-              );
+            disabled={liking}
+            onClick={async () => {
+              if (liking) return; // prevent rapid double click
+              setLiking(true);
+
+              const nextHelpful = !helpful;
+              const nextCount = helpfulCount + (nextHelpful ? 1 : -1);
+
+              // Optimistic UI update
+              setHelpful(nextHelpful);
+              setHelpfulCount(nextCount);
+
+              try {
+                const res = await likeIt({ id: data?.id }).unwrap();
+
+                if (!res.ok) {
+                  // Revert UI if failed
+                  setHelpful(!nextHelpful);
+                  setHelpfulCount(helpfulCount);
+                  toast.error("Failed to mark this review");
+                } else {
+                  toast.success(
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${
+                      data?.user?.full_name
+                    }'s review as helpful`
+                  );
+                }
+              } catch {
+                // Revert on error
+                setHelpful(!nextHelpful);
+                setHelpfulCount(helpfulCount);
+                toast.error("Something went wrong. Please try again");
+              } finally {
+                setLiking(false);
+              }
             }}
             className="text-xs h-8 !px-3"
           >
@@ -197,23 +272,40 @@ export default function ProductReviewCard({
             <DialogTrigger asChild>
               <Button variant="ghost" size="sm" className="text-xs h-8 !px-3">
                 <MessageCircle className="w-4 h-4 !mr-1" />
-                Reply ({stats?.replies ?? 0})
+                Reply ({data?.replies_count})
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogTitle>Reply to {reviewer?.name}&apos;s review</DialogTitle>
+            <DialogContent className="sm:max-w-xl">
+              <DialogTitle>
+                Reply to {data?.user?.first_name}&apos;s review
+              </DialogTitle>
               <DialogDescription className="text-sm">
-                Share your thoughts or ask a question about the product.
+                {data?.comment}
               </DialogDescription>
-              <div className="space-y-4">
-                <div className="!p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium !mb-1">
-                    {review?.rating ? `⭐ ${review.rating}/5` : ""}
-                  </p>
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {review?.comment}
-                  </p>
-                </div>
+              <div className="space-y-4! border-t pt-4! h-[70dvh] overflow-y-auto overflow-x-hidden px-2!">
+                {data?.replies.map((x: any) => (
+                  <div className="!p-3 bg-muted rounded-lg" key={x.id}>
+                    <div className="flex justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={x.user.avatar} />
+                          <AvatarFallback>UI</AvatarFallback>
+                        </Avatar>
+                        <Namer
+                          type={String(x.user.role_label).toLowerCase()}
+                          size="sm"
+                          name={x.user.full_name}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(x?.updated_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="pt-3! text-muted-foreground text-xs">
+                      {x.comment}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               <DialogFooter className="border-t !pt-4">
@@ -221,10 +313,14 @@ export default function ProductReviewCard({
                   <Input
                     placeholder="Write your reply..."
                     className="flex-1"
+                    id="reply"
+                    name="reply"
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                   />
-                  <Button onClick={handleReplySubmit}>Send</Button>
+                  <Button variant="outline" onClick={handleReplySubmit}>
+                    <Send />
+                  </Button>
                 </div>
               </DialogFooter>
             </DialogContent>

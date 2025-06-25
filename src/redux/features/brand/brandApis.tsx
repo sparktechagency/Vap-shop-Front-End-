@@ -10,13 +10,13 @@ export const brandApis = api.injectEndpoints({
       providesTags: ["brand"],
     }),
     getMostHurtedBrand: builder.query<any, void>({
-      query: (id) => `/get/${id}/products?type=brand&is_most_hearted=1&per_page=8`,
+      query: (id) =>
+        `/get/${id}/products?type=brand&is_most_hearted=1&per_page=8`,
     }),
 
     getBrandGroup: builder.query<any, void>({
       query: (id) => `/forum-group?show_front=1&user_id=${id}`,
     }),
-
   }),
 });
 
@@ -24,5 +24,5 @@ export const {
   useGetallBrandsQuery,
   useGetBrandDetailsByIdQuery,
   useGetMostHurtedBrandQuery,
-  useGetBrandGroupQuery
+  useGetBrandGroupQuery,
 } = brandApis;
