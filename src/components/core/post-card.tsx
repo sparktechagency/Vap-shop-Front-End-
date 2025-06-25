@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowBigUp, MessageCircle, Share2 } from "lucide-react";
@@ -24,6 +24,7 @@ import {
   useGetCommentQuery,
 } from "@/redux/features/users/postApi";
 import Namer from "./internal/namer";
+import { usePostLikeMutation } from "@/redux/features/others/otherApi";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -37,10 +38,12 @@ export default function PostCard({
   user: { name: string; avatar: string };
 }) {
   const [liked, setLiked] = useState<boolean>(false);
+  const [liking, setLiking] = useState(false);
   const { resolvedTheme } = useTheme();
   const [comment] = useCommentPostMutation();
   const { data: comments, refetch } = useGetCommentQuery({ id: data.id });
-
+  const [likePost] = usePostLikeMutation();
+  const [totalLike, setTotalLike] = useState(0);
   type FormSchema = z.infer<typeof schema>;
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -49,32 +52,35 @@ export default function PostCard({
     },
   });
 
+  useEffect(() => {
+    if (data) {
+      console.log("Like count: ", data?.like_count);
+      setTotalLike(data?.like_count);
+      setLiked(data?.is_post_liked);
+    }
+  }, [data]);
   const onSubmit = async (values: FormSchema) => {
-    console.log("Message sent:", values.message);
     try {
       const response: { ok?: string } = await comment({
         post_id: data.id,
         comment: values.message,
       }).unwrap();
-      console.log(response);
+
       if (!response.ok) {
-        toast.error("SOmething went wrong!");
+        toast.error("Something went wrong!");
         return;
       }
+
       await refetch();
       toast.success("Commented successfully.");
+      form.reset();
     } catch (error: any) {
       toast.error(
         error?.data?.message || "Failed to comment. Please try again."
       );
       console.error("Comment failed:", error);
     }
-    form.reset();
   };
-
-  if (comments) {
-    console.log(comments.data.data);
-  }
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
@@ -101,26 +107,57 @@ export default function PostCard({
         <div className="!space-x-2">
           <Button
             variant="ghost"
-            onClick={() => {
-              toast(
-                `${liked ? "Removed like from" : "Liked"} ${data.name}s Post!!`
-              );
-              setLiked(!liked);
+            size="sm"
+            disabled={liking}
+            onClick={async () => {
+              if (liking) return;
+
+              const nextLiked = !liked;
+              const nextTotalLike = totalLike + (nextLiked ? 1 : -1);
+
+              // Optimistic UI update
+              setLiked(nextLiked);
+              setTotalLike(nextTotalLike);
+              setLiking(true);
+
+              try {
+                const res = await likePost({ id: data.id }).unwrap();
+
+                if (!res.ok) {
+                  throw new Error("Failed to update like status.");
+                }
+
+                toast.success(`${nextLiked ? "Liked" : "Unliked"} post!`);
+                refetch(); // optional: refresh from backend
+              } catch (err: any) {
+                // Revert optimistic update
+                setLiked(!nextLiked);
+                setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
+
+                toast.error(
+                  err?.data?.message ||
+                    "Something went wrong. Please try again."
+                );
+                console.error("Like error:", err);
+              } finally {
+                setLiking(false);
+              }
             }}
+            className="text-xs h-8 !px-3"
           >
             <ArrowBigUp
+              className="w-4 h-4 !mr-1"
               fill={
                 liked
                   ? resolvedTheme === "dark"
                     ? "#ffffff"
                     : "#191919"
-                  : resolvedTheme === "dark"
-                  ? "#191919"
-                  : "#ffffff"
+                  : "transparent"
               }
             />
-            11k
+            {totalLike}
           </Button>
+
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost">

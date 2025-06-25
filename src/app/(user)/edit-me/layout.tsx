@@ -1,19 +1,11 @@
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
 
 import Footer from "@/components/core/footer";
 import Navbar from "@/components/core/navbar";
-import { PenBoxIcon } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import DropOff from "@/components/core/drop-off";
+
 import {
   AssosiationnavLinks,
   BrandnavLinks,
@@ -24,6 +16,7 @@ import {
 import { UserData } from "@/lib/types/apiTypes";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";
+import CoverPhoto from "./_inner-component/cover-photo";
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -55,31 +48,15 @@ export default async function RootLayout({
     <>
       <Navbar />
       <main className="w-full">
-        <div
-          className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative"
-          style={{
-            backgroundImage:
-              "linear-gradient(to top right, var(--background) 0%, rgba(128, 90, 213, 0.5) 40%, #331F60 100%)",
-          }}
+        <Suspense
+          fallback={
+            <>
+              <div className="h-[250px] md:h-[350px] lg:h-[400px]"></div>
+            </>
+          }
         >
-          <div className="">
-            <Dialog>
-              <DialogTrigger asChild>
-                <div className="bg-background flex gap-2 absolute bottom-0 right-0 !p-2 border shadow items-center cursor-pointer text-sm">
-                  <PenBoxIcon className="size-4" /> Set a cover photo
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Update Cover photo</DialogTitle>
-                </DialogHeader>
-                <div className="">
-                  <DropOff />
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+          <CoverPhoto my={my} />
+        </Suspense>
 
         <div className="grid grid-cols-1 md:grid-cols-10">
           <div className="hidden md:flex col-span-2 border-r flex-col justify-start !p-6">
