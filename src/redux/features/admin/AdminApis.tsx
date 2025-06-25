@@ -50,10 +50,49 @@ export const adminApis = api.injectEndpoints({
             invalidatesTags: ["slider"],
         }),
 
+
+
+
+
+
+
+        // ADS MANAGEMENT APIS------------------------------------
+
         getallAddRequest: builder.query<any, { page: number; per_page: number; type: string }>({
             query: ({ page, per_page, type }) =>
                 `/admin/get-all-ad-requests?page=${page}&per_page=${per_page}&type=${type}`,
+            providesTags: ["ads"],
         }),
+
+        approveAdd: builder.mutation<any, { id: string, type: string, status: string, is_active: string }>({
+            query: ({ id, type, status, is_active }) => ({
+                url: `/admin/update-ad-request-status/${id}?status=${status}&type=${type}&is_active=${is_active}`,
+                method: "PUT",
+            }),
+            invalidatesTags: ["ads"],
+        }),
+        // ADS MANAGEMENT APIS------------------------------------
+
+
+
+        // ARTICLES APIS------------------------------------
+
+        getallArticles: builder.query<any, { page: number; per_page: number; search: string }>({
+            query: ({ page, per_page, search }) =>
+                `/admin/get-all-articles?page=${page}&per_page=${per_page}&search=${search}`,
+            providesTags: ["blog"],
+        }),
+
+        delteArical: builder.mutation<any, { id: number }>({
+            query: ({ id }) => ({
+                url: `/admin/delete/article/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["blog"],
+        }),
+
+        // ARTICLES APIS------------------------------------
+
 
 
 
@@ -69,4 +108,7 @@ export const {
     useCreateAdminSliderMutation,
     useDeleteAdminSliderMutation,
     useGetallAddRequestQuery,
+    useApproveAddMutation,
+    useGetallArticlesQuery,
+    useDelteAricalMutation
 } = adminApis;

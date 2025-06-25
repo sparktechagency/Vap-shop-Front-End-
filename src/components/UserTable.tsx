@@ -79,7 +79,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
 
     const { data, isLoading, refetch } = useGetallusersQuery({ page, per_page, role });
     const [banAuser, { isLoading: isBanning }] = useBanAuserMutation();
-    console.log('data', data);
+
     const filteredUsers = data?.data?.filter((user: UserData) =>
         user?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -111,15 +111,19 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
             const res = await banAuser({ id: selectedUser.id, _method: "PUT" }).unwrap();
             if (res?.ok) {
                 toast.success(res?.message || "User banned successfully");
+                // Reset states and refetch
                 setBanDialogOpen(false);
-                refetch();
-
+                setSelectedUser(null);
+                await refetch();
             } else {
                 toast.error(res?.message || "Failed to ban user");
             }
-
         } catch (error) {
             console.error("Failed to ban user", error);
+            toast.error("An error occurred while banning the user");
+        } finally {
+            setBanDialogOpen(false);
+            setSelectedUser(null);
         }
     };
 
@@ -259,14 +263,16 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
 
                                         <div className="w-full mt-4">
                                             <Button
-
                                                 className="w-full"
                                                 variant={user.is_banned ? "default" : "destructive"}
-                                                onClick={() => openBanDialog(user.id, user.is_banned)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openBanDialog(user.id, user.is_banned);
+                                                }}
                                                 disabled={user.is_banned || isBanning}
                                             >
                                                 {isBanning ? 'Processing...' :
-                                                    user.is_banned ? 'user is banned' : 'Ban User'}
+                                                    user.is_banned ? 'User is banned' : 'Ban User'}
                                             </Button>
                                         </div>
                                     </DialogContent>
@@ -279,7 +285,16 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
             </Table>
 
             {/* Ban/Unban Confirmation Dialog */}
-            <AlertDialog open={banDialogOpen} onOpenChange={setBanDialogOpen}>
+            <AlertDialog
+                open={banDialogOpen}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setBanDialogOpen(false);
+                        setSelectedUser(null);
+                    }
+                }}
+                key={selectedUser?.id || 'ban-dialog'}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -290,7 +305,12 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel onClick={() => {
+                            setBanDialogOpen(false);
+                            setSelectedUser(null);
+                        }}>
+                            Cancel
+                        </AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleBanUser}
                             disabled={isBanning}
