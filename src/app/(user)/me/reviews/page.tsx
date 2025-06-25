@@ -1,5 +1,5 @@
 "use client";
-import ReviewCard from "@/components/core/review-card";
+// import ReviewCard from "@/components/core/review-card";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
 
