@@ -108,10 +108,10 @@ const data = {
           title: "Reviews",
           url: "/admin/moderation/reviews",
         },
-        {
-          title: "Trending & Featured",
-          url: "/admin/moderation/trending-featured",
-        },
+        // {
+        //   title: "Trending & Featured",
+        //   url: "/admin/moderation/trending-featured",
+        // },
         // {
         //   title: "Disputes & Tickets",
         //   url: "/admin/moderation/disputes-tickets",

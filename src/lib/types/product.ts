@@ -16,7 +16,7 @@ export interface ProductType {
 export interface BrandType {
   id: string;
   image: string;
-  type: "normal" | "premium";
+  type: "normal" | "wholesaler" | "brand" | "store" | "ad";
   storeName: string;
   isVerified: boolean;
   location: {
@@ -31,4 +31,5 @@ export interface BrandType {
   closingTime: string;
   isFollowing?: boolean;
   totalFollowers?: number;
+  is_favourite?: boolean;
 }

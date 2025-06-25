@@ -12,12 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
-import { useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
+import { useGetproductsAdsQuery, useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
 
 export default function MostHearted() {
   const { data: mosthartedproducts } = useMosthartedProductQuery();
+  const { data: ProductsAds } = useGetproductsAdsQuery();
 
-  console.log("mosthartedproducts", mosthartedproducts);
+  console.log("ProductsAds", ProductsAds);
 
   const dataAd = {
     image: "/image/shop/item.jpg",
@@ -68,13 +69,25 @@ export default function MostHearted() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 !my-6">
         {/* Content for Most Hearted Products */}
 
-        {Array.from({ length: 8 }).map((_, i) => (
-          <ProductCard data={dataAd} link={`/brands/brand/product/1`} key={i} />
+
+        {ProductsAds?.data?.map((item: any, i: number) => (
+          <ProductCard data={
+            {
+              image: item?.product_image || "/image/shop/item.jpg",
+              title: item?.product_name,
+              category: item?.brand || "PODS",
+              note: `${item.product_price}$`,
+              discount: item.product_discount,
+              hearts: item.total_heart,
+              type: "ad",
+            }
+          } link={`/brands/brand/product/${item.id}`} key={i} />
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12 text-center">
         Top 50 Trending Products
       </h2>
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {mosthartedproducts?.data?.map((product: any) => (
           <ProductCard

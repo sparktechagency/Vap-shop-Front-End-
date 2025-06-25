@@ -127,7 +127,7 @@ export default function Page() {
   const paginationInfo = data?.data || {};
 
   return (
-    <div className="h-full w-full !p-8 flex flex-col justify-between items-end border rounded-2xl">
+    <div className="h-full w-full !p-8 flex flex-col  items-end border rounded-2xl">
       {/* Unban Confirmation Dialog */}
       <Dialog open={openUnbanDialog} onOpenChange={setOpenUnbanDialog}>
         <DialogContent className="sm:max-w-[425px]">
