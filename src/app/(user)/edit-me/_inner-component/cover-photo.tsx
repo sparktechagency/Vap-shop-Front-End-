@@ -87,7 +87,7 @@ export default function CoverPhoto({ my }: { my: UserData }) {
             <DialogTitle>Update Cover Photo</DialogTitle>
           </DialogHeader>
 
-          <DropOff onFileSelect={handleFileSelect} />
+          <DropOff onFileSelect={handleFileSelect} type="video" />
           {uploading && (
             <p className="text-center mt-2 text-sm">Uploading...</p>
           )}

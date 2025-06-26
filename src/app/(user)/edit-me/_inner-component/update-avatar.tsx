@@ -81,7 +81,7 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
             <DialogTitle>Update Profile Image</DialogTitle>
           </DialogHeader>
 
-          <DropOff onFileSelect={handleFileSelect} />
+          <DropOff onFileSelect={handleFileSelect} type="video" />
           {uploading && (
             <p className="text-center mt-2 text-sm">Uploading...</p>
           )}
