@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,6 +37,7 @@ import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import LocationPicker from "@/components/core/location-picker";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   store_name: z.string().min(2),
@@ -45,9 +46,18 @@ const formSchema = z.object({
   address: z.string().min(2),
   zipcode: z.string().min(2),
   region_id: z.string(),
+  latitude: z.string(),
+  longitude: z.string(),
 });
+interface LocationData {
+  lat: number;
+  lng: number;
+  address?: string;
+}
 
 export default function StoreEditForm({ my }: { my: UserData }) {
+  const [selectedLocationData, setSelectedLocationData] =
+    useState<LocationData | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,7 +79,22 @@ export default function StoreEditForm({ my }: { my: UserData }) {
     form.setValue("address", my?.address?.address ?? "");
     form.setValue("zipcode", my?.address?.zip_code ?? "");
     form.setValue("region_id", String(my?.address?.region_id ?? ""));
+    form.setValue("latitude", String(my?.address?.latitude ?? ""));
+    form.setValue("longitude", String(my?.address?.longitude ?? ""));
   }, []);
+
+  // 📍 Set lat/lng dynamically when location is picked
+  useEffect(() => {
+    if (selectedLocationData) {
+      const { lat, lng, address } = selectedLocationData;
+      form.setValue("latitude", String(lat));
+      form.setValue("longitude", String(lng));
+      form.setValue(
+        "address",
+        address?.split(",").slice(0, 3).join(",") ?? form.getValues("address")
+      );
+    }
+  }, [selectedLocationData]);
 
   const { control, handleSubmit } = form;
 
@@ -196,12 +221,74 @@ export default function StoreEditForm({ my }: { my: UserData }) {
         />
 
         <Separator className="col-span-2" />
-        <LocationPicker
-          onLocationSelect={(lat: any, lng: any) =>
-            console.log(`Selected location: ${lat}, ${lng}`)
-          }
-        />
+        <div className="col-span-2">
+          <LocationPicker
+            onLocationSelect={(locationData) => {
+              console.log("Selected location:", locationData);
+              setSelectedLocationData(locationData);
+            }}
+          />
+        </div>
+        {selectedLocationData && (
+          <Card className="w-full hidden">
+            <CardHeader>
+              <CardTitle className="text-lg">Selected Location</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3!">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Coordinates
+                </p>
+                <p className="font-mono text-sm">
+                  {selectedLocationData.lat.toFixed(6)},{" "}
+                  {selectedLocationData.lng.toFixed(6)}
+                </p>
+              </div>
+              {selectedLocationData.address && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Address
+                  </p>
+                  <p className="text-sm">
+                    {selectedLocationData.address
+                      .split(",")
+                      .slice(0, 2)
+                      .join(",")}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
         {/* Submit button */}
+        <FormField
+          control={control}
+          name="latitude"
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel>Latitude</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="longitude"
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel>Longitude</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="col-span-2">
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (

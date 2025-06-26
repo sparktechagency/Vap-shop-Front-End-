@@ -1,5 +1,8 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,10 +29,7 @@ import {
 } from "@/components/ui/select";
 
 interface StoreRegisterFormData {
-  first_name: string;
-  last_name: string;
   store_name: string;
-  brand_name: string;
   dob: string;
   email: string;
   phone: string;
@@ -46,6 +46,7 @@ interface Country {
   id: string;
   name: string;
 }
+
 export default function StoreRegister({
   className,
   ...props
@@ -94,10 +95,7 @@ export default function StoreRegister({
 
     try {
       const formattedData = {
-        first_name: data.first_name,
-        last_name: data.last_name,
         store_name: data.store_name,
-        brand_name: data.brand_name,
         dob: new Date(data.dob).toLocaleDateString("en-US"),
         email: data.email,
         phone: data.phone,
@@ -141,40 +139,6 @@ export default function StoreRegister({
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-6">
-                  {/* Personal Information */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="first_name">First Name</Label>
-                      <Input
-                        id="first_name"
-                        type="text"
-                        {...formRegister("first_name", {
-                          required: "First name is required",
-                        })}
-                      />
-                      {errors.first_name && (
-                        <span className="text-red-500 text-sm">
-                          {errors.first_name.message}
-                        </span>
-                      )}
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="last_name">Last Name</Label>
-                      <Input
-                        id="last_name"
-                        type="text"
-                        {...formRegister("last_name", {
-                          required: "Last name is required",
-                        })}
-                      />
-                      {errors.last_name && (
-                        <span className="text-red-500 text-sm">
-                          {errors.last_name.message}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
                   {/* Store Information */}
                   <div className="grid gap-2">
                     <Label htmlFor="store_name">Store Name</Label>
@@ -192,16 +156,6 @@ export default function StoreRegister({
                     )}
                   </div>
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="brand_name">Brand Name</Label>
-                    <Input
-                      id="brand_name"
-                      type="text"
-                      {...formRegister("brand_name")}
-                    />
-                  </div>
-
-                  {/* Country and Region Selection */}
                   {/* Country and Region Selection */}
                   <div className="grid grid-cols-2 gap-4 w-full">
                     <div className="grid gap-2 w-full">

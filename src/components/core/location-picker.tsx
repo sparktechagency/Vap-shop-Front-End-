@@ -10,53 +10,79 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MapPin, Check } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MapPin, Check, AlertCircle, Loader2 } from "lucide-react";
 
-// You'll need to add your Google Maps API key
-const GOOGLE_MAPS_API_KEY = "AIzaSyARXa6r8AXKRaoeWqyesQNBI8Y3EUEWSnY";
-
+interface LocationData {
+  lat: number;
+  lng: number;
+  address?: string;
+}
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 interface LocationPickerProps {
-  onLocationSelect?: (lat: number, lng: number) => void;
+  onLocationSelect?: (locationData: LocationData) => void;
   defaultLocation?: { lat: number; lng: number };
 }
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyARXa6r8AXKRaoeWqyesQNBI8Y3EUEWSnY"; // still needed to show the map (not for billing)
+
 export default function LocationPicker({
   onLocationSelect,
-  defaultLocation = { lat: 40.7128, lng: -74.006 }, // New York City default
+  defaultLocation = { lat: 40.7128, lng: -74.006 },
 }: LocationPickerProps) {
   const [open, setOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [map, setMap] = useState<any | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
+    null
+  );
+  const [, setMap] = useState<any | null>(null);
   const [marker, setMarker] = useState<any | null>(null);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
-  // Load Google Maps script
-  useEffect(() => {
-    if (!open) return;
-
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = initMap;
-    document.head.appendChild(script);
-
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
+  const loadGoogleMaps = () => {
+    return new Promise<void>((resolve, reject) => {
+      if (typeof window.google !== "undefined" && window.google.maps) {
+        resolve();
+        return;
       }
-    };
+
+      const existingScript = document.getElementById("google-maps");
+      if (existingScript) {
+        existingScript.addEventListener("load", () => resolve());
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+      script.id = "google-maps";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  };
+
+  useEffect(() => {
+    if (open) {
+      loadGoogleMaps().then(() => {
+        initMap();
+      });
+    }
   }, [open]);
 
   const initMap = () => {
-    if (!mapRef.current || !window.google) return;
+    if (!mapRef.current || !window.google?.maps) return;
 
     const location = selectedLocation || defaultLocation;
 
-    const mapOptions: any = {
+    const newMap = new window.google.maps.Map(mapRef.current, {
       center: location,
       zoom: 13,
       mapTypeControl: false,
@@ -70,27 +96,18 @@ export default function LocationPicker({
           stylers: [{ visibility: "off" }],
         },
       ],
-    };
+    });
 
-    const newMap = new window.google.maps.Map(mapRef.current, mapOptions);
     setMap(newMap);
 
-    // Add marker at current location if one exists
     if (selectedLocation) {
       addMarker(selectedLocation, newMap);
     }
 
-    // Add click listener to map
     newMap.addListener("click", (e: any) => {
-      if (e.latLng) {
-        const clickedLocation = {
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng(),
-        };
-
-        addMarker(clickedLocation, newMap);
-        setSelectedLocation(clickedLocation);
-      }
+      const clicked = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+      addMarker(clicked, newMap);
+      handleLocationChange(clicked);
     });
   };
 
@@ -98,12 +115,8 @@ export default function LocationPicker({
     location: { lat: number; lng: number },
     targetMap: any
   ) => {
-    // Remove existing marker if any
-    if (marker) {
-      marker.setMap(null);
-    }
+    if (marker) marker.setMap(null);
 
-    // Create new marker
     const newMarker = new window.google.maps.Marker({
       position: location,
       map: targetMap,
@@ -111,51 +124,95 @@ export default function LocationPicker({
       animation: window.google.maps.Animation.DROP,
     });
 
-    // Add drag end listener to update coordinates
     newMarker.addListener("dragend", () => {
-      const position = newMarker.getPosition();
-      if (position) {
-        const newLocation = {
-          lat: position.lat(),
-          lng: position.lng(),
-        };
-        setSelectedLocation(newLocation);
+      const pos = newMarker.getPosition();
+      if (pos) {
+        handleLocationChange({ lat: pos.lat(), lng: pos.lng() });
       }
     });
 
     setMarker(newMarker);
   };
 
+  const handleLocationChange = async (location: {
+    lat: number;
+    lng: number;
+  }) => {
+    setSelectedLocation({ ...location });
+    await fetchAddressFromNominatim(location);
+  };
+
+  const fetchAddressFromNominatim = async (location: {
+    lat: number;
+    lng: number;
+  }) => {
+    setIsLoadingAddress(true);
+    setAddressError(null);
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}`
+      );
+      if (!res.ok) throw new Error("Nominatim failed");
+
+      const data = await res.json();
+      const address = data?.display_name;
+
+      if (address) {
+        setSelectedLocation((prev) => (prev ? { ...prev, address } : null));
+      } else {
+        setAddressError("No address found.");
+      }
+    } catch (err) {
+      console.error("Nominatim error:", err);
+      setAddressError("Unable to retrieve address.");
+    } finally {
+      setIsLoadingAddress(false);
+    }
+  };
+
   const handleSelectLocation = () => {
     if (selectedLocation && onLocationSelect) {
-      onLocationSelect(selectedLocation.lat, selectedLocation.lng);
+      onLocationSelect(selectedLocation);
     }
     setOpen(false);
   };
 
-  const formatCoordinate = (value: number) => {
-    return value.toFixed(6);
+  const formatCoordinate = (value: number) => value.toFixed(6);
+
+  const resetState = () => {
+    setSelectedLocation(null);
+    setAddressError(null);
+    setIsLoadingAddress(false);
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) resetState();
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="w-full h-12 text-left justify-start"
+          className="w-full h-16 text-left justify-start overflow-hidden"
         >
-          <MapPin className="mr-3 h-5 w-5 text-muted-foreground" />
-          <div className="flex flex-col items-start">
-            <span className="font-medium">Select Location</span>
+          <MapPin className="mr-3! h-5 w-5 text-muted-foreground shrink-0" />
+          <div className="flex flex-col items-start overflow-hidden">
+            <span className="font-medium truncate w-full">Select Location</span>
             {selectedLocation && (
-              <span className="text-xs text-muted-foreground">
-                {formatCoordinate(selectedLocation.lat)},{" "}
-                {formatCoordinate(selectedLocation.lng)}
+              <span className="text-xs text-muted-foreground w-full truncate pr-2!">
+                {selectedLocation.address ||
+                  `${formatCoordinate(
+                    selectedLocation.lat
+                  )}, ${formatCoordinate(selectedLocation.lng)}`}
               </span>
             )}
           </div>
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[700px] max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -163,32 +220,65 @@ export default function LocationPicker({
             Choose Location
           </DialogTitle>
         </DialogHeader>
+
         <div className="space-y-4">
           <div
             ref={mapRef}
             className="h-[450px] w-full rounded-lg border border-border overflow-hidden"
           />
 
-          {selectedLocation && (
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-              <div className="space-y-1">
+          {selectedLocation ? (
+            <div className="space-y-4">
+              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
                 <p className="text-sm font-medium">Selected Coordinates</p>
                 <p className="text-xs text-muted-foreground font-mono">
                   {formatCoordinate(selectedLocation.lat)},{" "}
                   {formatCoordinate(selectedLocation.lng)}
                 </p>
-              </div>
-              <Button onClick={handleSelectLocation} className="gap-2">
-                <Check className="h-4 w-4" />
-                Confirm Location
-              </Button>
-            </div>
-          )}
 
-          {!selectedLocation && (
-            <div className="text-center py-4">
+                <p className="text-sm font-medium mt-3">Address</p>
+                {isLoadingAddress ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Skeleton className="h-4 w-full max-w-xs" />
+                  </div>
+                ) : selectedLocation.address ? (
+                  <p className="text-sm text-muted-foreground">
+                    {selectedLocation.address}
+                  </p>
+                ) : addressError ? (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      {addressError}
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">
+                    Address not available
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end">
+                <Button
+                  onClick={handleSelectLocation}
+                  className="gap-2"
+                  disabled={isLoadingAddress}
+                >
+                  <Check className="h-4 w-4" />
+                  Confirm Location
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
                 Click on the map to select a location
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                The address will be retrieved freely 🔓
               </p>
             </div>
           )}
