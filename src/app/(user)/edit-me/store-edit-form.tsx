@@ -16,13 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { UserData } from "@/lib/types/apiTypes";
@@ -67,6 +60,8 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       address: "",
       zipcode: "",
       region_id: "",
+      latitude: "", // ✅ was missing
+      longitude: "", // ✅ was missing
     },
   });
 
@@ -102,8 +97,8 @@ export default function StoreEditForm({ my }: { my: UserData }) {
     try {
       const res = await updateUser(values).unwrap();
 
-      toast.success("User updated successfully ✅");
-      console.log("User update response:", res);
+      toast.success("Storeupdated successfully ✅");
+      console.log("Store update response:", res);
     } catch (error: any) {
       const message =
         error?.data?.message || "Something went wrong. Please try again.";
