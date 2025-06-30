@@ -1,3 +1,5 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import DropOff from "@/components/core/drop-off";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +14,12 @@ export default function Page() {
       <div className="">
         <div className="grid grid-cols-3 gap-6">
           <Label className="col-span-3">Product Image:</Label>
-          <DropOff type="square" />
+          <DropOff
+            type="square"
+            onFileSelect={function (file: File): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
           <div className="col-span-2 grid grid-cols-2 gap-6">
             <div className="col-span-2 !space-y-6">
               <Label>Product Name:</Label>

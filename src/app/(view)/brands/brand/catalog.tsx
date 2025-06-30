@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/components/core/product-card";
 import React from "react";

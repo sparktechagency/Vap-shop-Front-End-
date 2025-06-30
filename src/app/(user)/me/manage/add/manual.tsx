@@ -1,3 +1,5 @@
+"use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import DropOff from "@/components/core/drop-off";
 import { Button } from "@/components/ui/button";
@@ -18,7 +20,12 @@ export default function Manual() {
     <div className="py-12! px-4 sm:px-6! lg:px-8!">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Label className="col-span-full">Product Image:</Label>
-        <DropOff type="square" />
+        <DropOff
+          type="square"
+          onFileSelect={function (file: File): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="col-span-full space-y-2">
             <Label>Product Name:</Label>
