@@ -18,7 +18,7 @@ export default async function RootLayout({
 
   return (
     <>
-      <Navbar token={undefined} />
+      <Navbar />
       {children}
       <Footer />
     </>

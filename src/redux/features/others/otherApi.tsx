@@ -42,6 +42,11 @@ export const otherApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
+    search: builder.query<any, { search: string; type: string }>({
+      query: ({ search, type }) => ({
+        url: `/search?search_term=${search}&type=${type}`,
+      }),
+    }),
   }),
 });
 
@@ -52,4 +57,5 @@ export const {
   useToggleLikeMutation,
   useReplyReviewMutation,
   usePostLikeMutation,
+  useSearchQuery,
 } = otherApi;

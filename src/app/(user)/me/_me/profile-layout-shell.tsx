@@ -54,7 +54,7 @@ export default async function ProfileLayoutShell({
               : "linear-gradient(to top right, var(--background) 0%, rgba(128, 90, 213, 0.5) 40%, #331F60 100%)",
           }}
         >
-          <Avatar className="size-[120px] md:size-[220px] lg:size-[300px] absolute -bottom-[60px] md:-bottom-[110px] lg:-bottom-[150px] right-1/2 translate-x-1/2 md:translate-0 md:right-4 lg:right-[7%] border">
+          <Avatar className="size-[120px] md:size-[220px] bg-background lg:size-[300px] absolute -bottom-[60px] md:-bottom-[110px] lg:-bottom-[150px] right-1/2 translate-x-1/2 md:translate-0 md:right-4 lg:right-[7%] border">
             <AvatarImage src={my.avatar} className="object-cover" />
             <AvatarFallback>
               {my.first_name.toUpperCase().slice(0, 2)}

@@ -9,8 +9,24 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import howl from "@/lib/howl";
+import { cookies } from "next/headers";
 
-export default function Catalog() {
+export default async function Catalog() {
+  const token = (await cookies()).get("token")?.value;
+  const res = await howl({ link: "product-manage", token });
+
+  if (!res.ok) {
+    return (
+      <div className="p-6! py-12! flex justify-center items-center">
+        {res?.message}
+      </div>
+    );
+  }
+
+  const datas = res?.data;
+  console.log(datas);
+
   const data = {
     image: "/image/shop/item.jpg",
     title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",

@@ -39,7 +39,21 @@ export default function CoverPhoto({ my }: { my: UserData }) {
       setUploading(true);
 
       const formData = new FormData();
-      formData.append("first_name", my.first_name); // Keep this if required by backend
+      switch (parseInt(my.role)) {
+        case 5:
+          formData.append("store_name", my.first_name);
+          formData.append("address", my.address?.address ?? "");
+          formData.append("region_id", my.address?.region_id ?? "");
+          formData.append("zip_code", my.address?.zip_code ?? "");
+          break;
+        case 3:
+          formData.append("brand_name", my.brand_name);
+          break;
+        default:
+          formData.append("first_name", my.first_name);
+          formData.append("last_name", my.last_name);
+          break;
+      }
       formData.append("cover_photo", file);
 
       const result = await updateUser(formData).unwrap();

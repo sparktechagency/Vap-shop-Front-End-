@@ -40,7 +40,6 @@ export default function ProductCarousel({
     };
   }, [api]);
 
-
   return (
     <div className="w-full">
       <Carousel
@@ -78,8 +77,9 @@ export default function ProductCarousel({
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-2 rounded-full transition-all ${current === index ? "bg-purple-600 w-4" : "bg-gray-300"
-              }`}
+            className={`h-2 w-2 rounded-full transition-all ${
+              current === index ? "bg-purple-600 w-4" : "bg-gray-300"
+            }`}
             onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
           />

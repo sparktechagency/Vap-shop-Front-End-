@@ -37,11 +37,12 @@ const formSchema = z.object({
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
   address: z.string().min(2),
-  zipcode: z.string().min(2),
+  zip_code: z.string().min(2),
   region_id: z.string(),
   latitude: z.string(),
   longitude: z.string(),
 });
+
 interface LocationData {
   lat: number;
   lng: number;
@@ -51,34 +52,31 @@ interface LocationData {
 export default function StoreEditForm({ my }: { my: UserData }) {
   const [selectedLocationData, setSelectedLocationData] =
     useState<LocationData | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      store_name: "",
-      email: "",
-      phone: "",
-      address: "",
-      zipcode: "",
-      region_id: "",
-      latitude: "", // ✅ was missing
-      longitude: "", // ✅ was missing
+      store_name: my.first_name || "",
+      email: my?.email || "",
+      phone: my?.phone || "",
+      address: my?.address?.address || "",
+      zip_code: my?.address?.zip_code || "",
+      region_id: String(my?.address?.region_id || ""),
+      latitude: String(my?.address?.latitude || ""),
+      longitude: String(my?.address?.longitude || ""),
     },
   });
 
   const [updateUser, { isLoading }] = useUpdateUserMutation();
-
   useEffect(() => {
-    form.setValue("store_name", my.first_name);
-    form.setValue("email", my?.email ?? "");
-    form.setValue("phone", my?.phone ?? "");
-    form.setValue("address", my?.address?.address ?? "");
-    form.setValue("zipcode", my?.address?.zip_code ?? "");
-    form.setValue("region_id", String(my?.address?.region_id ?? ""));
-    form.setValue("latitude", String(my?.address?.latitude ?? ""));
-    form.setValue("longitude", String(my?.address?.longitude ?? ""));
+    if (my?.address?.latitude && my?.address?.longitude) {
+      setSelectedLocationData({
+        lat: parseFloat(my?.address?.latitude),
+        lng: parseFloat(my?.address?.longitude),
+      });
+    }
   }, []);
 
-  // 📍 Set lat/lng dynamically when location is picked
   useEffect(() => {
     if (selectedLocationData) {
       const { lat, lng, address } = selectedLocationData;
@@ -97,7 +95,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
     try {
       const res = await updateUser(values).unwrap();
 
-      toast.success("Storeupdated successfully ✅");
+      toast.success("Store updated successfully ✅");
       console.log("Store update response:", res);
     } catch (error: any) {
       const message =
@@ -114,7 +112,6 @@ export default function StoreEditForm({ my }: { my: UserData }) {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-6"
       >
-        {/* Basic fields */}
         <FormField
           control={control}
           name="store_name"
@@ -130,14 +127,13 @@ export default function StoreEditForm({ my }: { my: UserData }) {
         />
 
         <FormField
-          disabled
           control={control}
           name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email address</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your email" {...field} disabled />
+                <Input placeholder="Enter your email" {...field} readOnly />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -161,6 +157,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name="address"
@@ -177,7 +174,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
 
         <FormField
           control={control}
-          name="zipcode"
+          name="zip_code"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Zip Code</FormLabel>
@@ -198,8 +195,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
+                  value={field.value || ""}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your region" />
@@ -224,6 +220,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             }}
           />
         </div>
+
         {selectedLocationData && (
           <Card className="w-full hidden">
             <CardHeader>
@@ -255,7 +252,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </CardContent>
           </Card>
         )}
-        {/* Submit button */}
+
         <FormField
           control={control}
           name="latitude"

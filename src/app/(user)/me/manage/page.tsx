@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import React, { Suspense } from "react";
 import Catalog from "./catalog";
 import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   return (
@@ -14,7 +15,17 @@ export default function Page() {
           <Link href="/me/manage/add">Add New Products</Link>
         </Button>
       </div>
-      <Catalog />
+      <Suspense
+        fallback={
+          <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 py-12! px-6!">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} className="w-full aspect-square" />
+            ))}
+          </div>
+        }
+      >
+        <Catalog />
+      </Suspense>
     </div>
   );
 }

@@ -29,7 +29,7 @@ interface LocationPickerProps {
   defaultLocation?: { lat: number; lng: number };
 }
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyARXa6r8AXKRaoeWqyesQNBI8Y3EUEWSnY"; // still needed to show the map (not for billing)
+const GOOGLE_MAPS_API_KEY = "AIzaSyAMQ0pEGF-QlR3_fmwl8PEqOHrJvgIlD8o";
 
 export default function LocationPicker({
   onLocationSelect,

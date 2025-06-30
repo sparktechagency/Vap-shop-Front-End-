@@ -2,11 +2,11 @@
 export interface Address {
   id: number;
   user_id: number;
-  region_id: number | null;
+  region_id: string | null;
   address: string;
   zip_code: string | null;
-  latitude: number | null;
-  longitude: number | null;
+  latitude: string | null;
+  longitude: string | null;
   created_at: string;
   updated_at: string;
   region?: any | null;
@@ -20,10 +20,12 @@ export interface FavouriteEntity {
 }
 
 export interface UserData {
+  brand_name: string;
+  store_name: string;
   cover_photo: string;
   id: string;
   first_name: string;
-  last_name: string | null;
+  last_name: string;
   dob: string | null;
   email?: string;
   role: string;
