@@ -26,24 +26,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-
-// import {
-//   FacebookShareButton,
-//   InstapaperShareButton,
-//   TwitterShareButton,
-//   WhatsappShareButton,
-// } from "react-share";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import Link from "next/link";
+// import { formatDate } from "@/lib/utils";
 
-export default function ArticleCard() {
+interface ArticleProps {
+  id: number;
+  title: string;
+  content: string;
+  image: string;
+  likeCount: number;
+  isLiked: boolean;
+  role: string;
+  createdAt: string;
+}
+
+export default function ArticleCard({ article }: { article: ArticleProps }) {
   const [copied, setCopied] = useState(false);
-  const articleUrl = "https://www.example.com/article";
-  const articleTitle = "Amazing Article Title";
+  const articleUrl = `${window.location.origin}/trending/article/${article.id}`;
 
   const copyToClipboard = async () => {
     try {
@@ -75,14 +79,14 @@ export default function ArticleCard() {
       color: "bg-[#1DA1F2] hover:bg-[#1A91DA]",
       url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
         articleUrl
-      )}&text=${encodeURIComponent(articleTitle)}`,
+      )}&text=${encodeURIComponent(article.title)}`,
     },
     {
       name: "WhatsApp",
       icon: MessageCircle,
       color: "bg-[#25D366] hover:bg-[#22C55E]",
       url: `https://wa.me/?text=${encodeURIComponent(
-        `${articleTitle} ${articleUrl}`
+        `${article.title} ${articleUrl}`
       )}`,
     },
   ];
@@ -90,29 +94,27 @@ export default function ArticleCard() {
   const handleShare = (url: string) => {
     window.open(url, "_blank", "width=600,height=400");
   };
+
   return (
-    <Card className="!pt-0  overflow-hidden">
+    <Card className="!pt-0 overflow-hidden h-full flex flex-col">
       <Image
-        src="/image/trends.jpg"
-        height={1920}
-        width={1280}
-        alt="article"
+        src={article.image}
+        height={500}
+        width={800}
+        alt={article.title}
         className="aspect-video object-cover hover:scale-105 hover:opacity-80 transition-all"
       />
       <CardHeader>
-        <CardTitle>The Ultimate Beginner&apos;s Guide to Vaping</CardTitle>
-        <CardDescription className="line-clamp-4">
-          Stepping into the vape world can feel overwhelming with all the
-          devices, flavors, and nicotine options out there. This guide breaks
-          everything down into easy steps—perfect for anyone new to vaping.
-          We’ll cover the basics of how vapes work, how to choose your first
-          setup, what e-liquids are best for beginners, and tips to avoid common
-          mistakes. Whether you&apos;re switching from smoking or just curious
-          about vaping, this one’s your go-to manual...
+        <CardTitle className="line-clamp-2">{article.title}</CardTitle>
+        {/* <div className="text-sm text-muted-foreground">
+          {formatDate(article.createdAt)} • {article.role}
+        </div> */}
+        <CardDescription className="line-clamp-3">
+          {article.content}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-6">
-        <Link href="/trending/article">
+      <CardContent className="grid grid-cols-2 gap-6 mt-auto">
+        <Link href={`/trending/article/${article.id}`}>
           <button className="w-full !py-4 rounded-lg outline-2 flex justify-center items-center cursor-pointer hover:bg-secondary transition-colors text-xs md:text-base">
             View Article
           </button>
@@ -135,9 +137,9 @@ export default function ArticleCard() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6!">
+            <div className="space-y-6">
               {/* Copy Link Section */}
-              <div className="space-y-2!">
+              <div className="space-y-2">
                 <Label htmlFor="link" className="text-sm font-medium">
                   Article Link
                 </Label>
@@ -167,7 +169,7 @@ export default function ArticleCard() {
               <Separator />
 
               {/* Social Share Buttons */}
-              <div className="space-y-3!">
+              <div className="space-y-3">
                 <Label className="text-sm font-medium">
                   Share on social media
                 </Label>
@@ -187,7 +189,7 @@ export default function ArticleCard() {
               </div>
 
               {/* Quick Share Options */}
-              <div className="space-y-3!">
+              <div className="space-y-3">
                 <Label className="text-sm font-medium">Quick actions</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
@@ -196,7 +198,7 @@ export default function ArticleCard() {
                     onClick={() => {
                       if (navigator.share) {
                         navigator.share({
-                          title: articleTitle,
+                          title: article.title,
                           url: articleUrl,
                         });
                       } else {
@@ -212,7 +214,7 @@ export default function ArticleCard() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const subject = encodeURIComponent(articleTitle);
+                      const subject = encodeURIComponent(article.title);
                       const body = encodeURIComponent(
                         `Check out this article: ${articleUrl}`
                       );

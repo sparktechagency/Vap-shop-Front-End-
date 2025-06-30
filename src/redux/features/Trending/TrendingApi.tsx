@@ -42,9 +42,31 @@ export const trendingApi = api.injectEndpoints({
         method: "POST",
         invalidatesTags: ["tranding", "brand"],
       }),
+    }),
+
+    mostRatedReview: builder.query<any, void>({
+      query: () => `/most-rated-reviews`,
+    }),
+
+    getMostratedArtical: builder.query<any, { page: string; per_page: string }>({
+      query: ({ page, per_page }) => `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1`,
+    }),
+
+
+    myartical: builder.query<any, { page: string; per_page: string }>({
+      query: ({ page, per_page }) => `/post?per_page=${per_page}&page=${page}&content_type=article`,
+    }),
+
+    createApost: builder.mutation<any, any>({
+      query: (formData) => ({
+        url: "/post?content_type=article",
+        method: "POST",
+        body: formData,
+      }),
     })
+
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation } =
   trendingApi;

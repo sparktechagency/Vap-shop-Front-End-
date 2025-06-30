@@ -9,6 +9,8 @@ export const homePageApi = api.injectEndpoints({
     getallCategorys: builder.query<any, void>({
       query: () => `/get-all-categories`,
     }),
+
+
   }),
 });
 
