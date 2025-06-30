@@ -31,6 +31,9 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TriangleAlertIcon } from "lucide-react";
+import { usePostProductMutation } from "@/redux/features/manage/product";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // --- util hook ---
 function useDebounce<T>(value: T, delay: number): T {
@@ -55,6 +58,7 @@ const productSchema = z.object({
 type ProductFormValues = z.infer<typeof productSchema>;
 
 export default function Import() {
+  const navig = useRouter();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -67,7 +71,7 @@ export default function Import() {
   });
 
   const brandName = form.watch("brandName");
-  const debouncedBrand = useDebounce(brandName, 400);
+  const debouncedBrand = useDebounce(brandName, 100);
 
   const { data, isLoading, error } = useSearchQuery(
     { search: debouncedBrand, type: "brand" },
@@ -81,6 +85,8 @@ export default function Import() {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const inputRef = useRef<HTMLDivElement>(null);
+
+  const [postProduct] = usePostProductMutation();
 
   const {
     data: prods,
@@ -103,35 +109,38 @@ export default function Import() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const onSubmit = (data: ProductFormValues) => {
-    // const pathOnly = selectedProduct.product_image.replace(
-    //   /^https?:\/\/[^/]+/,
-    //   ""
-    // );
-    const finalizer = {
-      brand_name: data.brandName,
-      category_id: selectedProduct.category_id,
-      // product_image: pathOnly,
-      product_id: selectedProduct.id,
-      product_discount: 0,
-      product_discount_unit: 0,
-      product_stock: selectedProduct.product_stock,
-      product_description: selectedProduct.product_description,
-    };
+  const onSubmit = async (data: ProductFormValues) => {
+    if (!selectedProduct) {
+      toast.error("Please select a product.");
+      return;
+    }
 
-    console.log(finalizer);
+    try {
+      const finalizer = {
+        brand_name: data.brandName,
+        category_id: selectedProduct.category_id,
+        product_id: selectedProduct.id,
+        product_price: data.price,
+        product_discount: 0,
+        product_discount_unit: 0,
+        product_stock: data.stock,
+        product_description: data.description,
+      };
+      const res: any = await postProduct(finalizer);
+      console.log(res);
+
+      if (!res.ok) {
+        toast.error(res?.message ?? "Something went wrong.");
+      } else {
+        toast.success(res.data?.message ?? "Success!");
+      }
+      toast.success(res?.message ?? "Product added successfully!");
+      navig.push("/me/manage");
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong.");
+      console.error(error);
+    }
   };
-
-  // const cardData = {
-  //   image: "/image/shop/item.jpg",
-  //   title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-  //   category: "PODS",
-  //   note: "93.1% THC",
-  // };
-
-  // if (prods) {
-  //   console.log();
-  // }
 
   return (
     <div className="py-12!">

@@ -9,12 +9,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetBrandDetailsByIdQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetProductsQuery } from "@/redux/features/manage/product";
 
-export default function Catalog({ id }: any) {
-  const { data: catalog, isLoading } = useGetBrandDetailsByIdQuery(id as any);
-  const products = catalog?.data?.products?.data || [];
+export default function Catalog() {
+  const { data: catalog, isLoading } = useGetProductsQuery();
+  const products = catalog?.data?.data || [];
+  console.log(products);
 
   if (isLoading) {
     return (
@@ -42,7 +43,9 @@ export default function Catalog({ id }: any) {
             image: product.product_image || "/image/shop/item.jpg",
             title: product.product_name,
             category: `$${product.product_price}`,
-            note: `${product.average_rating}★ (${product.total_heart} hearts)`,
+            note: `${product.average_rating ?? "0.0"}★ (${
+              product.total_heart
+            } hearts)`,
             price: product.product_price,
             discount: product.product_discount,
             hearts: product.total_heart,
@@ -52,9 +55,14 @@ export default function Catalog({ id }: any) {
 
           return (
             <ProductCard
+              manage
               key={product.id}
               data={productData}
-              link={`/brands/brand/product/${product.id}`}
+              link={
+                product.role === "5"
+                  ? `/stores/store/product/${product.id}`
+                  : `/brands/brand/product/${product.id}`
+              }
             />
           );
         })}
