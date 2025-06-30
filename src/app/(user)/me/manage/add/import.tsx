@@ -79,6 +79,7 @@ export default function Import() {
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -103,15 +104,30 @@ export default function Import() {
   }, []);
 
   const onSubmit = (data: ProductFormValues) => {
-    console.log("Form submitted", data);
+    // const pathOnly = selectedProduct.product_image.replace(
+    //   /^https?:\/\/[^/]+/,
+    //   ""
+    // );
+    const finalizer = {
+      brand_name: data.brandName,
+      category_id: selectedProduct.category_id,
+      // product_image: pathOnly,
+      product_id: selectedProduct.id,
+      product_discount: 0,
+      product_discount_unit: 0,
+      product_stock: selectedProduct.product_stock,
+      product_description: selectedProduct.product_description,
+    };
+
+    console.log(finalizer);
   };
 
-  const cardData = {
-    image: "/image/shop/item.jpg",
-    title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-    category: "PODS",
-    note: "93.1% THC",
-  };
+  // const cardData = {
+  //   image: "/image/shop/item.jpg",
+  //   title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
+  //   category: "PODS",
+  //   note: "93.1% THC",
+  // };
 
   // if (prods) {
   //   console.log();
@@ -119,9 +135,29 @@ export default function Import() {
 
   return (
     <div className="py-12!">
+      {/* <Button
+        onClick={() => {
+          console.log(selectedProduct);
+        }}
+      >
+        Magic button
+      </Button> */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="order-2 lg:order-1">
-          <ProductCard data={cardData} />
+          {selectedProduct ? (
+            <ProductCard
+              data={{
+                title: selectedProduct.product_name,
+                image: selectedProduct.product_image,
+                category: selectedProduct.role_label,
+                note: "",
+              }}
+            />
+          ) : (
+            <div className="w-full aspect-square bg-card border rounded-md flex justify-center items-center text-muted-foreground">
+              Select a product to preview
+            </div>
+          )}
         </div>
 
         <div className="space-y-6! order-1 lg:order-2">
@@ -185,7 +221,13 @@ export default function Import() {
                       <FormLabel>Product Name</FormLabel>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          const selected = prods.data.products.data.find(
+                            (p: any) => String(p.id) === value
+                          );
+                          setSelectedProduct(selected);
+                        }}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
@@ -196,7 +238,7 @@ export default function Import() {
                           {!prodLoading &&
                             !isError &&
                             prods.data.products.data.map((x: any) => (
-                              <SelectItem value={x.id} key={x.id}>
+                              <SelectItem value={String(x.id)} key={x.id}>
                                 {x.product_name}
                               </SelectItem>
                             ))}
@@ -212,9 +254,7 @@ export default function Import() {
                   className="flex justify-center items-center"
                 >
                   <TriangleAlertIcon />
-                  <AlertDescription>
-                    Please select a brand first
-                  </AlertDescription>
+                  <AlertDescription>Please select brand first</AlertDescription>
                 </Alert>
               )}
 
@@ -226,7 +266,7 @@ export default function Import() {
                   <FormItem>
                     <FormLabel>Price:</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} type="number" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -241,7 +281,7 @@ export default function Import() {
                   <FormItem>
                     <FormLabel>Available in stock:</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} type="number" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -256,7 +296,7 @@ export default function Import() {
                   <FormItem>
                     <FormLabel>Description:</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} className="min-h-[30dvh]" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
