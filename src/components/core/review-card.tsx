@@ -83,7 +83,9 @@ export default function ProductReviewCard({
   data,
   productData,
   role,
+  refetch,
 }: {
+  refetch: any;
   data: any;
   productData: ProductReviewCardProps;
   role: number;
@@ -133,6 +135,7 @@ export default function ProductReviewCard({
         toast.error("Couldn't reply to this review");
       } else {
         toast.success(`Replied to ${data?.user?.first_name}'s Review`);
+        refetch();
       }
     } catch (err: any) {
       console.error(err);
@@ -239,8 +242,7 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${
-                      data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
                     }'s review as helpful`
                   );
                 }

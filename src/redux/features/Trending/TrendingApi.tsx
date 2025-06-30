@@ -42,9 +42,15 @@ export const trendingApi = api.injectEndpoints({
         method: "POST",
         invalidatesTags: ["tranding", "brand"],
       }),
+    }),
+
+    mostRatedReview: builder.query<any, void>({
+      query: () => `/most-rated-reviews`,
     })
+
+
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery } =
   trendingApi;
