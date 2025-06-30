@@ -3,13 +3,17 @@ import { api } from "@/redux/baseApi";
 
 export const manageApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    postProduct: builder.query<any, void>({
-      query: () => ({
+    postProduct: builder.mutation<any, any>({
+      query: (body) => ({
         url: `/product-manage`,
         method: "POST",
+        body,
       }),
+    }),
+    getProducts: builder.query<any, void>({
+      query: () => `/product-manage`,
     }),
   }),
 });
 
-export const { useGetHomeBannerQuery } = manageApi;
+export const { usePostProductMutation, useGetProductsQuery } = manageApi;

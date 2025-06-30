@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
 import { Button } from "../ui/button";
@@ -24,16 +24,18 @@ export default function ProductCard({
         {data.type === "ad" && (
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
-        <div className="absolute bottom-2 right-2 flex z-50">
-          <Button
-            className="!text-sm"
-            variant="outline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {data?.hearts || 0}
-            <HeartIcon className="ml-1! size-5" />
-          </Button>
-        </div>
+        {!manage && (
+          <div className="absolute bottom-2 right-2 flex z-50">
+            <Button
+              className="!text-sm"
+              variant="outline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {data?.hearts || 0}
+              <HeartIcon className="ml-1! size-5" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* 🔹 Content - click to navigate */}
@@ -63,13 +65,15 @@ export default function ProductCard({
           >
             <Link href="/me/manage/ad-request">Ad request</Link>
           </Button>
-          <Button
-            variant="outline"
-            asChild
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Link href="/brands/brand/product">View</Link>
-          </Button>
+          {link && (
+            <Button
+              variant="outline"
+              asChild
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Link href={link}>View</Link>
+            </Button>
+          )}
         </CardFooter>
       )}
     </Card>

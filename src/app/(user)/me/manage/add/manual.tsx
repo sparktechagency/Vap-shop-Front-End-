@@ -1,10 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+
+import { useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
 import DropOff from "@/components/core/drop-off";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -12,91 +24,380 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
+import { usePostProductMutation } from "@/redux/features/manage/product";
 
-export default function Manual() {
+const formSchema = z.object({
+  product_name: z.string().min(1, "Product name is required"),
+  product_price: z.string().min(1, "Product price is required"),
+  product_discount: z.string().optional(),
+  product_stock: z.string().min(1, "Stock quantity is required"),
+  brand_name: z.string().min(1, "Brand name is required"),
+  // discountUntil: z.string().optional(),
+  category_id: z.string().min(1, "Please select a category"),
+  product_description: z
+    .string()
+    .min(10, "Description must be at least 10 characters"),
+  faqs: z
+    .array(
+      z.object({
+        question: z.string().min(1, "Question is required"),
+        answer: z.string().min(1, "Answer is required"),
+      })
+    )
+    .min(1, "At least one FAQ is required"),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+export default function ProductForm() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
+  const [postProduct] = usePostProductMutation();
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      product_name: "",
+      product_price: "",
+      product_discount: "",
+      product_stock: "",
+      brand_name: "",
+      category_id: "",
+      product_description: "",
+      faqs: [{ question: "", answer: "" }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "faqs",
+  });
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+
+      // Add the file if selected
+      if (selectedFile) {
+        formData.append("product_image", selectedFile);
+      }
+
+      console.log(data.faqs);
+
+      // Add all form data
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "faqs") {
+          data.faqs.forEach((faq, index) => {
+            formData.append(`product_faqs[${index}][question]`, faq.question);
+            formData.append(`product_faqs[${index}][answer]`, faq.answer);
+          });
+
+          console.log(formData.get("product_faqs"));
+        } else if (key === "product_discount") {
+          formData.append("product_discount_unit", value as string);
+
+          formData.append(
+            "product_discount",
+            String(
+              parseFloat(data.product_price) *
+                (parseFloat(data.product_discount ?? "0") / 100)
+            )
+          );
+        } else {
+          formData.append(key, value as string);
+        }
+      });
+
+      // Log the data (replace with actual API call)
+      console.log("Form Data:", data);
+      console.log("Selected File:", selectedFile);
+      console.log("<--------------------<");
+
+      console.log("FormData entries:");
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      console.log(">-------------------->");
+      // Simulate API call
+      const res = await postProduct(formData).unwrap();
+
+      console.log(res);
+
+      toast("Success!", {
+        description: "Product has been uploaded successfully.",
+      });
+
+      // Reset form after successful submission
+      form.reset();
+      setSelectedFile(null);
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Error", {
+        description: "Failed to upload product. Please try again.",
+      });
+    }
+  };
+
+  const addFAQ = () => {
+    append({ question: "", answer: "" });
+  };
+
+  const removeFAQ = (index: number) => {
+    if (fields.length > 1) {
+      remove(index);
+    }
+  };
+
   return (
-    <div className="py-12! px-4 sm:px-6! lg:px-8!">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Label className="col-span-full">Product Image:</Label>
-        <DropOff
-          type="square"
-          onFileSelect={function (file: File): void {
-            throw new Error("Function not implemented.");
-          }}
-        />
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="col-span-full space-y-2">
-            <Label>Product Name:</Label>
-            <Input />
-          </div>
-          <div className="space-y-2!">
-            <Label>Product Price:</Label>
-            <Input />
-          </div>
-          <div className="space-y-2!">
-            <Label>Discount (%):</Label>
-            <Input />
-          </div>
-        </div>
+    <div className="py-12! px-4! sm:px-6! lg:px-8!">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8!">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Product Image Upload */}
+            <div className="col-span-full space-y-2!">
+              <FormLabel>Product Image:</FormLabel>
+              <DropOff
+                type="square"
+                onFileSelect={(file: File) => {
+                  setSelectedFile(file);
+                  console.log("File selected:", file);
+                }}
+              />
+              {selectedFile && (
+                <p className="text-sm text-muted-foreground mt-2!">
+                  Selected: {selectedFile.name}
+                </p>
+              )}
+            </div>
 
-        <div className="flex flex-col gap-2">
-          <Label>Available in stock</Label>
-          <Input />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Brand Name</Label>
-          <Input />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Discount until:</Label>
-          <Input />
-        </div>
+            {/* Product Name */}
+            <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="product_name"
+                render={({ field }) => (
+                  <FormItem className="col-span-full">
+                    <FormLabel>Product Name:</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter product name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <div className="lg:col-start-3 flex flex-col gap-2">
-          <Label>Select Category:</Label>
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="disposables">Disposables</SelectItem>
-              <SelectItem value="ejuice">E-juice</SelectItem>
-              <SelectItem value="pods">PODS</SelectItem>
-              <SelectItem value="mods">MODS</SelectItem>
-              <SelectItem value="others">Others</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+              {/* Product Price */}
+              <FormField
+                control={form.control}
+                name="product_price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product Price:</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="0.00"
+                        type="number"
+                        step="0.01"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <div className="col-span-full space-y-2!">
-          <Label>Product Description: </Label>
-          <Textarea className="h-[160px]" />
-        </div>
+              {/* Discount */}
+              <FormField
+                control={form.control}
+                name="product_discount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Discount (%):</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="0"
+                        type="number"
+                        min="0"
+                        max="100"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="product_stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Available in stock</FormLabel>
+                    <FormControl>
+                      <Input placeholder="0" type="number" min="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="brand_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Brand Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter brand name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category_id"
+                render={({ field }) => (
+                  <FormItem className="">
+                    <FormLabel>Select Category:</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {!catLoading &&
+                          cats.data.map((x: any) => (
+                            <SelectItem value={String(x.id)} key={x.id}>
+                              {x.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-        <div className="col-span-full space-y-6!">
-          <div className="!space-y-2">
-            <Label>Question #1</Label>
-            <Input />
-            <Label>Answer #1</Label>
-            <Input />
+            {/* Stock */}
+
+            {/* Brand Name */}
+
+            {/* Discount Until */}
+            {/* <FormField
+              control={form.control}
+              name="product_discount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Discount until:</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
+            {/* Category */}
+
+            {/* Product Description */}
+            <FormField
+              control={form.control}
+              name="product_description"
+              render={({ field }) => (
+                <FormItem className="col-span-full">
+                  <FormLabel>Product Description:</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter product description"
+                      className="h-[160px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* FAQs Section */}
+            <div className="col-span-full space-y-6!">
+              <div className="flex items-center justify-between">
+                <FormLabel className="text-base font-semibold">FAQs</FormLabel>
+                <Button type="button" variant="outline" onClick={addFAQ}>
+                  Add FAQ
+                </Button>
+              </div>
+
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="space-y-4! p-4! border rounded-lg"
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">FAQ #{index + 1}</h4>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeFAQ(index)}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name={`faqs.${index}.question`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Question</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter question" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`faqs.${index}.answer`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Answer</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Enter answer" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-          <Separator />
-          <div className="space-y-2!">
-            <Label>Question #2</Label>
-            <Input />
-            <Label>Answer #2</Label>
-            <Input />
-          </div>
-          <Separator />
-          <Button variant="outline">Add more FAQ&apos;s</Button>
-        </div>
-      </div>
 
-      <div className="pt-10! flex justify-center items-center">
-        <Button>Confirm Upload</Button>
-      </div>
+          {/* Submit Button */}
+          <div className="pt-10 flex justify-center items-center">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Uploading..." : "Confirm Upload"}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
