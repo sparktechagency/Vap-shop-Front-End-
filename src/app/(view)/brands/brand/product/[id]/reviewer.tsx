@@ -4,7 +4,7 @@ import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
 import React from "react";
 
 export default function Reviewer({ product }: { product: any }) {
-  const { data, isLoading } = useGetReviewsQuery({
+  const { data, isLoading, refetch } = useGetReviewsQuery({
     role: 3,
     id: product.id,
   });
@@ -22,6 +22,7 @@ export default function Reviewer({ product }: { product: any }) {
               data={x}
               productData={product}
               role={3}
+              refetch={refetch()}
             />
           ))}
       </div>
