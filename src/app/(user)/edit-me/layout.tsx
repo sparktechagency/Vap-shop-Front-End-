@@ -17,12 +17,16 @@ import { UserData } from "@/lib/types/apiTypes";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import CoverPhoto from "./_inner-component/cover-photo";
+import { redirect } from "next/navigation";
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const token = (await cookies()).get("token")?.value;
+  if (!token) {
+    return redirect("/");
+  }
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;

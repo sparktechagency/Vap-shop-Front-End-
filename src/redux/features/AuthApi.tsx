@@ -49,6 +49,13 @@ const AuthApi = api.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
+    updatePass: builder.mutation({
+      query: (body) => ({
+        url: `/update-password`,
+        method: "POST",
+        body,
+      }),
+    }),
 
     countys: builder.query<any, void>({
       query: () => ({
@@ -85,4 +92,5 @@ export const {
   useGetOwnprofileQuery,
   useCountysQuery,
   useGetFavouriteQuery,
+  useUpdatePassMutation,
 } = AuthApi;

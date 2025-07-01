@@ -16,11 +16,11 @@ export const UsernavLinks = [
     label: "Your Favourites",
     to: "#",
   },
-  {
-    icon: <Lucide.MailOpen className="size-5" />,
-    label: "Orders & Requests",
-    to: "/me/orders",
-  },
+  // {
+  //   icon: <Lucide.MailOpen className="size-5" />,
+  //   label: "Orders & Requests",
+  //   to: "/me/orders",
+  // },
   {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",
@@ -54,11 +54,11 @@ export const BrandnavLinks = [
     label: "Manage Products",
     to: "/me/manage",
   },
-  {
-    icon: <Lucide.MailOpen className="size-5" />,
-    label: "Orders & Requests",
-    to: "/me/orders",
-  },
+  // {
+  //   icon: <Lucide.MailOpen className="size-5" />,
+  //   label: "Orders & Requests",
+  //   to: "/me/orders",
+  // },
   {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",
@@ -92,11 +92,11 @@ export const StorenavLinks = [
     label: "Manage Products",
     to: "/me/manage",
   },
-  {
-    icon: <Lucide.MailOpen className="size-5" />,
-    label: "Orders & Requests",
-    to: "/me/orders",
-  },
+  // {
+  //   icon: <Lucide.MailOpen className="size-5" />,
+  //   label: "Orders & Requests",
+  //   to: "/me/orders",
+  // },
   {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",
@@ -130,11 +130,11 @@ export const WholesalernavLinks = [
     label: "Manage Products",
     to: "/me/manage",
   },
-  {
-    icon: <Lucide.MailOpen className="size-5" />,
-    label: "Orders & Requests",
-    to: "/me/orders",
-  },
+  // {
+  //   icon: <Lucide.MailOpen className="size-5" />,
+  //   label: "Orders & Requests",
+  //   to: "/me/orders",
+  // },
   {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",

@@ -14,16 +14,41 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import howl from "@/lib/howl";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "VSM Admin Panel",
   description: "Admin panel of vape shop maps",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) {
+    console.log("no token");
+    throw redirect("/login");
+  }
+  const res = await howl({ link: "me", token: token });
+  console.log("------------------------------------------");
+  console.log(res);
+  console.log("------------------------------------------");
+
+  try {
+    if (!res?.data || String(res.data.role) !== "1") {
+      console.log("not an admin");
+
+      throw redirect("/login");
+    }
+  } catch (error) {
+    // If API call fails, redirect to login as fallback
+    console.error("Middleware howl error:", error);
+    throw redirect("/login");
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
