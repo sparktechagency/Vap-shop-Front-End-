@@ -10,19 +10,22 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Namer from "../core/internal/namer";
 import Dotter from "../ui/dotter";
-import { useGetCountriesQuery } from "@/redux/features/others/otherApi";
+import {
+  useGetCountriesQuery,
+  useSearchQuery,
+} from "@/redux/features/others/otherApi";
 
-const categories = ["shops", "brands", "products", "accounts", "everything"];
+const categories = ["store", "brand", "product", "account"];
 
 const getImageSrc = (category: string) => {
   switch (category) {
-    case "shops":
+    case "store":
       return "/image/icon/store.png";
-    case "brands":
+    case "brand":
       return "/image/icon/brand.jpg";
-    case "products":
+    case "product":
       return "/image/shop/item.jpg";
-    case "accounts":
+    case "account":
     default:
       return "/image/icon/user.jpeg";
   }
@@ -35,11 +38,20 @@ export default function Searcher({
   const [searchFocus, setSearchFocus] = useState(false);
   const [locationFocus, setLocationFocus] = useState(false);
   const [locationInput, setLocationInput] = useState("");
-
-  const [selectedSearch, setSelectedSearch] = useState("shops");
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedSearch, setSelectedSearch] = useState("store");
   const searchContainerRef = useRef<HTMLDivElement>(null);
-
+  const [searchInput, setSearchInput] = useState("");
   const { data: locations } = useGetCountriesQuery();
+  const { data: searching, isLoading: searchLoading } = useSearchQuery({
+    search: searchInput,
+    type: selectedSearch,
+    // region: selectedRegion,
+  });
+
+  if (!searchLoading) {
+    console.log(searching);
+  }
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -88,6 +100,10 @@ export default function Searcher({
           className="border-none outline-none !ring-0 !px-2 md:!px-4 !bg-background text-xs md:text-base"
           placeholder="Products, retailers & brands"
           onFocus={() => setSearchFocus(true)}
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
         />
         <div className="w-[1px] h-1/2 bg-zinc-300" />
         <div className="w-1/2 sm:w-1/3 h-full md:!space-x-2 flex items-center !pl-2 md:!pl-4 text-zinc-500 relative">
@@ -181,6 +197,7 @@ export default function Searcher({
                         variant="ghost"
                         onClick={() => {
                           setLocationInput(region.name);
+                          setSelectedRegion(String(region.id));
                           // loca;
                         }}
                       >

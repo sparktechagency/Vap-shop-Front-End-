@@ -87,7 +87,7 @@ export default function ProductReviewCard({
 }: {
   refetch: any;
   data: any;
-  productData: ProductReviewCardProps;
+  productData?: ProductReviewCardProps;
   role: number;
 }) {
   const [helpful, setHelpful] = useState(false);
@@ -242,7 +242,8 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${
+                      data?.user?.full_name
                     }'s review as helpful`
                   );
                 }

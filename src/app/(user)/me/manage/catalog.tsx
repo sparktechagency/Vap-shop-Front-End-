@@ -50,7 +50,7 @@ export default async function Catalog() {
           />
         ))}
       </div>
-      <div className="!mt-[100px]">
+      <div className="!mt-[100px] hidden">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
