@@ -33,7 +33,7 @@ export default async function Page() {
                 case 2:
                   return <AssociationEditForm />;
                 case 3:
-                  return <BrandEditForm />;
+                  return <BrandEditForm my={my} />;
                 case 4:
                   return <WholesalerEditForm />;
                 case 5:

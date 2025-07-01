@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import { usePostProductMutation } from "@/redux/features/manage/product";
+import { useUser } from "@/context/userContext";
 
 const formSchema = z.object({
   product_name: z.string().min(1, "Product name is required"),
@@ -56,6 +57,7 @@ export default function ProductForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   const [postProduct] = usePostProductMutation();
+  const { role } = useUser();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -196,7 +198,11 @@ export default function ProductForm() {
                 name="product_price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Product Price:</FormLabel>
+                    <FormLabel>
+                      {role == "3"
+                        ? "Product Price(For B2B):"
+                        : "Product Price:"}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="0.00"
