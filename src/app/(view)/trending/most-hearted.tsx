@@ -73,6 +73,7 @@ export default function MostHearted() {
         {ProductsAds?.data?.map((item: any, i: number) => (
           <ProductCard data={
             {
+              id: item.product_id,
               image: item?.product_image || "/image/shop/item.jpg",
               title: item?.product_name,
               category: item?.brand || "PODS",
@@ -80,6 +81,8 @@ export default function MostHearted() {
               discount: item.product_discount,
               hearts: item.total_heart,
               type: "ad",
+
+
             }
           } link={`/brands/brand/product/${item.id}`} key={i} />
         ))}

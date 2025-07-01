@@ -4,6 +4,7 @@ import { ProductType } from "@/lib/types/product";
 import { Button } from "../ui/button";
 import { HeartIcon } from "lucide-react";
 import Link from "next/link";
+import { useFevoriteUnveforiteMutation } from "@/redux/features/Trending/TrendingApi";
 
 export default function ProductCard({
   data,
@@ -14,6 +15,20 @@ export default function ProductCard({
   manage?: boolean;
   link?: string;
 }) {
+  const [fevoriteUnveforite, { isLoading }] = useFevoriteUnveforiteMutation()
+
+  const handleFebandUnfev = async (id: string) => {
+    const alldata = {
+      product_id: id,
+      role: 3,
+    }
+    try {
+      const response = await fevoriteUnveforite(alldata).unwrap();
+      console.log('response', response);
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
   return (
     <Card className="!p-0 !gap-0 shadow-sm overflow-hidden group">
       {/* 🔹 Image - no click */}
@@ -27,13 +42,15 @@ export default function ProductCard({
         {!manage && (
           <div className="absolute bottom-2 right-2 flex z-50">
             <Button
+              disabled={data?.is_hearted === true}
               className="!text-sm"
               variant="outline"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => handleFebandUnfev(data?.id)}
             >
               {data?.hearts || 0}
               <HeartIcon className="ml-1! size-5" />
             </Button>
+
           </div>
         )}
       </div>
@@ -51,6 +68,7 @@ export default function ProductCard({
             <div className="text-xs md:text-sm text-muted-foreground">
               <span>{data.note}</span>
             </div>
+
           </CardContent>
         </div>
       </Link>
