@@ -89,7 +89,14 @@ export default function AgePopup() {
             variant="outline"
             className="w-full"
             onClick={() => {
-              window.location.href = "https://neal.fun/";
+              window.close();
+
+              // Fallback: after 300ms, assume it failed and redirect
+              setTimeout(() => {
+                if (!window.closed) {
+                  window.location.href = "https://www.google.com";
+                }
+              }, 300);
             }}
             size="lg"
           >

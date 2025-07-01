@@ -15,12 +15,18 @@ import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import { UserData } from "@/lib/types/apiTypes";
 import UserProvider from "@/components/userProvider";
+import { redirect } from "next/navigation";
 export default async function ProfileLayoutShell({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    return redirect("/");
+  }
+
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;
@@ -47,7 +53,7 @@ export default async function ProfileLayoutShell({
     <>
       <main className="w-full">
         <div
-          className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative"
+          className="h-[250px] md:h-[350px] lg:h-[400px] w-full relative bg-center bg-no-repeat bg-cover"
           style={{
             backgroundImage: my.cover_photo
               ? `url('${my.cover_photo}')`
@@ -108,7 +114,7 @@ export default async function ProfileLayoutShell({
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-2 md:gap-4 !mt-6 md:!mt-8">
-              <Button
+              {/* <Button
                 size="icon"
                 variant="outline"
                 className="hidden md:flex"
@@ -117,12 +123,12 @@ export default async function ProfileLayoutShell({
                 <Link href="/chat">
                   <MessageSquareMoreIcon />
                 </Link>
-              </Button>
+              </Button> */}
               {/* <Button variant="outline">Follow this account</Button>
 <Button variant="outline">Block this account</Button> */}
-              <Button variant="outline" asChild>
+              {/* <Button variant="outline" asChild>
                 <Link href={`/profile/${my.id}`}>Preview Profile</Link>
-              </Button>
+              </Button> */}
               {/* <Button variant="outline">Settings</Button> */}
             </div>
 

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "Connect, engage, and grow your presence in the world's first all-in-one social platform made for the vape industry.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

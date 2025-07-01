@@ -36,6 +36,7 @@ export default function TabsTriggerer() {
   const my = useUser() || {};
   const role = parseInt(my.role);
   const isMember = role === 6;
+  const isAdmin = String(role) === "1";
 
   const allTabs = [
     { value: "top-stores", label: "Top 6 Stores", visible: isMember },
@@ -54,7 +55,7 @@ export default function TabsTriggerer() {
     {
       value: "about",
       label: "About",
-      visible: !isMember,
+      visible: !isMember && !isAdmin,
     },
   ];
   function getDefaultTab(role: number): string {
