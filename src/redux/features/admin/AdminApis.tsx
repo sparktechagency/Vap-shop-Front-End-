@@ -93,7 +93,9 @@ export const adminApis = api.injectEndpoints({
 
         // ARTICLES APIS------------------------------------
 
-
+        getAdminStatistics: builder.query<any, { period: string }>({
+            query: ({ period }) => `/admin/dashboard?period=${period}`,
+        }),
 
 
     }),
@@ -110,5 +112,6 @@ export const {
     useGetallAddRequestQuery,
     useApproveAddMutation,
     useGetallArticlesQuery,
-    useDelteAricalMutation
+    useDelteAricalMutation,
+    useGetAdminStatisticsQuery
 } = adminApis;

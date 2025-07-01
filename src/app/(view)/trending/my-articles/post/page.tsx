@@ -67,8 +67,8 @@ export default function Featured() {
   };
 
   const handleEditorChange = (e: { htmlValue: string | null, textValue: string }) => {
-    setContent(e.htmlValue || ''); // Keep HTML content if needed for display
-    setPlainTextContent(e.textValue || ''); // Store plain text version
+    setContent(e.htmlValue || '');
+    setPlainTextContent(e.textValue || '');
   };
 
   return (
