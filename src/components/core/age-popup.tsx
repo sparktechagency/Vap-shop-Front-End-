@@ -50,7 +50,7 @@ export default function AgePopup() {
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold">
-                Are you 18 or older?
+                Are you 21 or older?
               </h1>
             </div>
 
@@ -59,13 +59,13 @@ export default function AgePopup() {
             <div className="space-y-4! text-left text-sm sm:text-base">
               <p className="text-muted-foreground leading-relaxed">
                 This vape shop requires age verification due to the nature of
-                its products, which are intended strictly for adults aged 18 and
+                its products, which are intended strictly for adults aged 21 and
                 over.
               </p>
 
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4!">
                 <p className="text-amber-800 font-medium text-sm sm:text-sm">
-                  ⚠️ By proceeding, I confirm that I am at least 18 years old
+                  ⚠️ By proceeding, I confirm that I am at least 21 years old
                   and understand that this website contains age-restricted
                   material.
                 </p>
@@ -83,7 +83,7 @@ export default function AgePopup() {
             }}
             size="lg"
           >
-            Yes, I&apos;m 18 or Older
+            Yes, I&apos;m 21 or Older
           </Button>
           <Button
             variant="outline"
@@ -100,7 +100,7 @@ export default function AgePopup() {
             }}
             size="lg"
           >
-            No, I&apos;m Under 18
+            No, I&apos;m Under 21
           </Button>
         </CardFooter>
       </Card>

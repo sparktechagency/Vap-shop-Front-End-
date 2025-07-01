@@ -42,9 +42,14 @@ export const otherApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
-    search: builder.query<any, { search: string; type: string }>({
-      query: ({ search, type }) => ({
-        url: `/search?search_term=${search}&type=${type}`,
+    search: builder.query<
+      any,
+      { search: string; type: string; region?: string }
+    >({
+      query: ({ search, type, region }) => ({
+        url: `/search?search_term=${search}&type=${type}&per_page=8${
+          region ? `&region_id=${region}` : ""
+        }`,
       }),
     }),
   }),
