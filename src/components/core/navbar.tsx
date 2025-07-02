@@ -196,7 +196,7 @@ export default function Navbar() {
             </div>
           )}
           <div className="lg:hidden">
-            <MobileMenu />
+            <MobileMenu user={user ?? undefined} />
           </div>
         </div>
       </div>
