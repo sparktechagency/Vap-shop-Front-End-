@@ -76,7 +76,7 @@ export default function MostHearted() {
               image: item?.product_image || "/image/shop/item.jpg",
               title: item?.product_name,
               category: item?.brand || "PODS",
-              note: `${item.product_price}$`,
+              note: `$${item.product_price}`,
               discount: item.product_discount,
               hearts: item.total_heart,
               type: "ad",
@@ -95,7 +95,7 @@ export default function MostHearted() {
               image: product.product_image || "/image/shop/item.jpg",
               title: product.product_name,
               category: product.brand || "PODS",
-              note: `${product.product_price}$`,
+              note: `$${product.product_price}`,
               discount: product.product_discount,
               hearts: product.total_heart,
             }}

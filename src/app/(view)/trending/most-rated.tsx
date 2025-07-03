@@ -26,7 +26,7 @@ export default function MostRated() {
 
 
   if (isLoading) return <LoadingSkeleton />;
-  if (isError) return <p>Error loading reviews</p>;
+  if (isError) return <p>can't loading reviews</p>;
   if (!data?.data?.length) return <p>No reviews found</p>;
 
   return (
@@ -61,16 +61,16 @@ export default function MostRated() {
       <div className="space-y-6">
         {data?.data?.map((review: any) => (
           <ReviewCard
-            role={review.manage_products?.role || 0}
+            role={review?.manage_products?.role || 0}
             refetch={refetch}
-            key={review.id}
+            key={review?.id}
             data={review}
             productData={{
-              id: review.manage_product_id,
-              product_image: review.manage_products?.product_image || "/placeholder.svg",
-              product_name: review.manage_products?.product_name || "Unknown Product",
-              category: review.manage_products?.category,
-              average_rating: review.manage_products?.average_rating?.toString() || "0"
+              id: review?.manage_product_id,
+              product_image: review?.manage_products?.product_image || "/placeholder.svg",
+              product_name: review?.manage_products?.product_name || "Unknown Product",
+              category: review?.manage_products?.category,
+              average_rating: review?.manage_products?.average_rating?.toString() || "0"
             }}
           />
         ))}
