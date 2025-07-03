@@ -3,12 +3,13 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**', // match any hostname
+        protocol: "https",
+        hostname: "**",
+        //
       },
       {
-        protocol: 'http',
-        hostname: '**',
+        protocol: "http",
+        hostname: "**",
       },
     ],
   },
@@ -17,7 +18,7 @@ const nextConfig = {
   },
   css: {
     experimental: {
-      engine: 'oxide',
+      engine: "oxide",
     },
   },
 };
