@@ -19,7 +19,12 @@ const MeApi = api.injectEndpoints({
       }),
       providesTags: ["post"],
     }),
-
+    getFeed: builder.query<any, void>({
+      query: () => ({
+        url: `/feed`,
+        method: "GET",
+      }),
+    }), 
     commentPost: builder.mutation<
       any,
       { post_id: string; comment: string; parent_id?: string }
@@ -53,4 +58,5 @@ export const {
   useCommentPostMutation,
   useGetCommentQuery,
   useGetPostLikeQuery,
+  useGetFeedQuery
 } = MeApi;

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import MagicButton from "@/components/magic-button";
+// import MagicButton from "@/components/magic-button";
 import { Suspense } from "react";
 // import { Provider } from 'react-redux'
 import StoreProvider from "@/components/StoreProvider";
@@ -52,7 +52,7 @@ export default function RootLayout({
             <StoreProvider>{children}</StoreProvider>
           </Suspense>
           <Toaster />
-          <MagicButton />
+          {/* <MagicButton /> */}
           <AgePopup />
         </ThemeProvider>
       </body>

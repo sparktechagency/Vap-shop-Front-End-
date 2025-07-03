@@ -16,7 +16,7 @@ import About from "./about";
 import Catalog from "./catalog";
 import Announcement from "./announcement";
 import Post from "./post";
-// import Feed from "./feed";
+import Feed from "./feed";
 import { useUser } from "@/context/userContext";
 
 const tabComponents: Record<string, React.ReactNode> = {
@@ -24,7 +24,7 @@ const tabComponents: Record<string, React.ReactNode> = {
   "top-brands": <TopBrands />,
   reviews: <LatestRevs />,
   post: <Post />,
-  feed: <Post />,
+  feed: <Feed />,
   // inbox: <Inbox />,
   "create-group": <Groups />,
   announcement: <Announcement />,
