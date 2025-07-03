@@ -22,7 +22,7 @@ import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 export default function Page() {
   const { id } = useParams();
   console.log('id', id);
-  const { data, isLoading } = useGtStoreDetailsQuery({ id });
+  const { data, isLoading } = useGtStoreDetailsQuery({ id: id as any });
 
   const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery(id as any);
   console.log('brand details', brandDetails);

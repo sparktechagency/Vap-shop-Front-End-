@@ -1,17 +1,23 @@
-/** @type {import('tailwindcss').Config} */
-
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
-    domains: ["img.icons8.com", "10.0.80.13"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // match any hostname
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
   css: {
     experimental: {
-      engine: "oxide",
+      engine: 'oxide',
     },
   },
 };

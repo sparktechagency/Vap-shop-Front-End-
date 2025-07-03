@@ -30,7 +30,6 @@ import {
 
 interface StoreRegisterFormData {
   store_name: string;
-  dob: string;
   email: string;
   phone: string;
   address: string;
@@ -96,7 +95,6 @@ export default function StoreRegister({
     try {
       const formattedData = {
         store_name: data.store_name,
-        dob: new Date(data.dob).toLocaleDateString("en-US"),
         email: data.email,
         phone: data.phone,
         address: data.address,
@@ -277,23 +275,6 @@ export default function StoreRegister({
                     {errors.phone && (
                       <span className="text-red-500 text-sm">
                         {errors.phone.message}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Date of Birth */}
-                  <div className="grid gap-2">
-                    <Label htmlFor="dob">Date of Birth</Label>
-                    <Input
-                      id="dob"
-                      type="date"
-                      {...formRegister("dob", {
-                        required: "Date of birth is required",
-                      })}
-                    />
-                    {errors.dob && (
-                      <span className="text-red-500 text-sm">
-                        {errors.dob.message}
                       </span>
                     )}
                   </div>
