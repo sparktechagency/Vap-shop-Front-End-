@@ -1,9 +1,11 @@
+'use client';
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2Icon,
   InfoIcon,
+  Loader2Icon,
   MapPinIcon,
   MessageSquareMoreIcon,
   RadioIcon,
@@ -13,16 +15,32 @@ import React from "react";
 import TabsTriggerer from "../tabs-trigger";
 import Dotter from "@/components/ui/dotter";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useGetOwnprofileQuery, useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 
 export default function Page() {
+  const { id } = useParams();
+  console.log('id', id);
+  const { data, isLoading } = useGtStoreDetailsQuery({ id });
+
+  const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery(id as any);
+  console.log('brand details', brandDetails);
+  if (isLoading) {
+    return (
+      <div className="!p-6 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
   return (
     <>
       <div
         className="h-[50dvh] w-full relative bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/image/home/car2.png')` }}
+        style={{ backgroundImage: `url('${data?.data?.cover_photo || '/image/home/car2.png'}')` }}
       >
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
-          <AvatarImage src="/image/icon/store.png" />
+          <AvatarImage src={data?.data?.avatar || '/image/icon/store.png'} />
           <AvatarFallback>VD</AvatarFallback>
         </Avatar>
       </div>
@@ -32,14 +50,14 @@ export default function Page() {
           <div className="flex !py-4 gap-4 items-center">
             <div className="lg:h-24 flex flex-col !py-3 justify-between">
               <Namer
-                name="Vape Juice Deport"
+                name={data?.data?.full_name || "Vape Juice Deport"}
                 isVerified
                 type="store"
                 size="xl"
               />
             </div>
           </div>
-          <div className="">
+          {/* <div className="hidden">
             <p className="text-xs md:text-sm xl:text-base">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -49,8 +67,8 @@ export default function Page() {
               nulla pariatur. Excepteur sint occaecat cupidatat non proident,
               sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
-          </div>
-          <div className="!mt-8 flex flex-col gap-4 lg:flex-row justify-between items-center">
+          </div> */}
+          <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
             <div className="text-xs md:text-sm text-muted-foreground flex gap-2 items-center">
               <span className={"text-green-600"}>Open Now</span>
               <Dotter />
@@ -58,7 +76,7 @@ export default function Page() {
             </div>
             <div className="text-xs flex items-center gap-2">
               <MapPinIcon className="size-4" />
-              BROOKLYN, New York
+              <span>{data?.data?.address || "No Address"}</span>
             </div>
           </div>
           <div className="!mt-4">

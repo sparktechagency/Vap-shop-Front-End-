@@ -33,6 +33,7 @@ export const api = createApi({
     "ads",
     "review",
     "fevorite",
+    "store"
   ],
   endpoints: () => ({}),
 });

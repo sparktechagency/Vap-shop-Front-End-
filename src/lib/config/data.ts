@@ -6,4 +6,4 @@
 //
 
 export const BASE_API = "http://10.0.80.13:7001/";
-export const BASE_API_ENDPOINT = "http://10.0.80.13:7001/api/";
+export const BASE_API_ENDPOINT = "http://10.10.10.55/api/";
