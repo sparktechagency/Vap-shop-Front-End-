@@ -17,7 +17,7 @@ export default function ProductCard({
 }) {
   const [fevoriteUnveforite, { isLoading }] = useFevoriteUnveforiteMutation()
 
-  const handleFebandUnfev = async (id: string) => {
+  const handleFebandUnfev = async (id: number) => {
     const alldata = {
       product_id: id,
       role: 3,
