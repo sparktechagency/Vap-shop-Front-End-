@@ -45,7 +45,7 @@ export default function ProductCard({
               disabled={data?.is_hearted === true}
               className="!text-sm"
               variant="outline"
-              onClick={(e) => handleFebandUnfev(data?.id)}
+              onClick={(e) => handleFebandUnfev(data?.id as number)}
             >
               {data?.hearts || 0}
               <HeartIcon className="ml-1! size-5" />
