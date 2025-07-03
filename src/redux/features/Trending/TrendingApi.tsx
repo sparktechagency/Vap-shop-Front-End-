@@ -9,6 +9,7 @@ export const trendingApi = api.injectEndpoints({
 
     getproductsAds: builder.query<any, void>({
       query: () => `/ad-request-trending-products`,
+      providesTags: ["tranding", "fevorite"],
     }),
 
     getmostFollowrsBrand: builder.query<any, void>({
@@ -63,10 +64,19 @@ export const trendingApi = api.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-    })
+    }),
+
+    fevoriteUnveforite: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `/hearted-product`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["fevorite"],
+    }),
 
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation } =
   trendingApi;

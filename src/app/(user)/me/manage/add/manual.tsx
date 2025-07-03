@@ -105,7 +105,7 @@ export default function ProductForm() {
             "product_discount",
             String(
               parseFloat(data.product_price) *
-                (parseFloat(data.product_discount ?? "0") / 100)
+              (parseFloat(data.product_discount ?? "0") / 100)
             )
           );
         } else {
@@ -129,6 +129,7 @@ export default function ProductForm() {
 
       console.log(res);
 
+      if (!res.ok) return toast.error(res.message);
       toast("Success!", {
         description: "Product has been uploaded successfully.",
       });
