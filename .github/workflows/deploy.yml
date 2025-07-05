@@ -1,0 +1,50 @@
+name: Deploy Frontend to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    name: Build and Test Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+  deploy:
+    name: Deploy Frontend to DigitalOcean
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy Frontend on DigitalOcean
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          port: 22
+          script: |
+            git config --global --add safe.directory ${{ secrets.APP_DIRECTORY }}
+            cd ${{ secrets.APP_DIRECTORY }}
+            git stash push -m "Stash before frontend deployment"
+            git pull origin main
+            git stash pop || echo "No changes to apply from stash" || true
+            cd ${{ secrets.ROOT_DIRECTORY }}
+            sudo docker compose up -d --build --no-deps frontend
