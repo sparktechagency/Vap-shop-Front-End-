@@ -120,7 +120,7 @@ export default function Catalog({ id }: any) {
               category: `$${item.product_price}`,
               note: item.product_type
             }}
-            link="#"
+            link={`/stores/store/product/${item.id}`}
             key={i}
           />
         ))}

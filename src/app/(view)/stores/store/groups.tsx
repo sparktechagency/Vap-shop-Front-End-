@@ -33,8 +33,13 @@ export default function Groups({ id }: any) {
     <div className="!mt-12">
       <Card className="gap-0 !pt-0 overflow-hidden">
         <CardHeader className="flex justify-between items-center bg-secondary !p-6">
-          <div></div>
-          <Select>
+          {/* <Link
+            href="/forum/thread"
+            className="text-xs md:text-sm underline hover:text-secondary-foreground/80"
+          >
+            Create a group
+          </Link> */}
+          {/* <Select>
             <SelectTrigger className="md:w-[180px]">
               <SelectValue placeholder="Filter" className="bg-background" />
             </SelectTrigger>
@@ -42,7 +47,7 @@ export default function Groups({ id }: any) {
               <SelectItem value="light">Most Recent</SelectItem>
               <SelectItem value="dark">Most Viewed</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
         </CardHeader>
         {groupData ? groupData?.data?.data.map((item: any, index: number) => (
           <ForumCard
