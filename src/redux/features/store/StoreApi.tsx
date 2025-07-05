@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "@/redux/baseApi";
+import { Store } from "lucide-react";
 
 export const storeApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,8 +13,12 @@ export const storeApi = api.injectEndpoints({
         }),
         getstoreAbout: builder.query<any, { id: string }>({
             query: (id) => `/about?user_id=${id}`,
-        })
+        }),
+        StoreGroupList: builder.query<any, void>({
+            query: (id) => `/forum-group?user_id=${id}&show_front=1`,
+        }),
+
     }),
 });
 
-export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery } = storeApi;
+export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery, useStoreGroupListQuery } = storeApi;

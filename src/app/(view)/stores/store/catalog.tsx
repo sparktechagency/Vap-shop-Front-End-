@@ -107,6 +107,8 @@ export default function Catalog({ id }: any) {
     return items;
   };
 
+  if (!brandDetails?.data?.products?.data) return <div>Products not found</div>;
+
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
