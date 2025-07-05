@@ -24,7 +24,7 @@ import { useFollowBrandMutation, useUnfollowBrandMutation } from "@/redux/featur
 export default function Page() {
   const { id } = useParams();
   console.log('id', id);
-  const { data, isLoading, isError, error } = useGtStoreDetailsQuery({ id: id as any });
+  const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({ id: id as any });
 
 
 
@@ -34,8 +34,9 @@ export default function Page() {
   const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
 
 
-  const user = data?.data?.user;
-
+  const user = data?.data;
+  console.log('data', data);
+  console.log('user', user);
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -175,7 +176,7 @@ export default function Page() {
                 <CheckCircle2Icon className="size-4 text-green-600" />
               </div>
               <div className="flex-1 md:h-24 grid grid-cols-1 md:flex flex-row justify-end items-center gap-4">
-                <p className="font-semibold text-sm">{user?.total_followers} followers</p>
+                <p className="font-semibold text-sm">{user?.total_followers || 0} followers</p>
                 <Button
                   variant="outline"
                   className="!text-sm font-extrabold"
