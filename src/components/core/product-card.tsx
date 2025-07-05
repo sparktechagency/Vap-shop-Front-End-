@@ -5,12 +5,17 @@ import { Button } from "../ui/button";
 import { HeartIcon } from "lucide-react";
 import Link from "next/link";
 import { useFevoriteUnveforiteMutation } from "@/redux/features/Trending/TrendingApi";
+import { toast } from "sonner";
 
 export default function ProductCard({
+  refetchAds,
+  refetch,
   data,
   manage,
   link,
 }: {
+  refetchAds?: () => void;
+  refetch?: () => void;
   data: ProductType;
   manage?: boolean;
   link?: string;
@@ -18,17 +23,27 @@ export default function ProductCard({
   const [fevoriteUnveforite, { isLoading }] = useFevoriteUnveforiteMutation()
 
   const handleFebandUnfev = async (id: number) => {
+    console.log('id', id);
     const alldata = {
       product_id: id,
       role: 3,
     }
+    console.log('alldata', alldata);
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
-      console.log('response', response);
+      if (response.ok) {
+        refetchAds && refetchAds();
+        refetch && refetch();
+        toast.success(response.message || "Fevorited successfully");
+      }
     } catch (error) {
       console.log('error', error);
+      toast.error(error?.data?.message || "Failed to fevorite");
     }
   }
+
+
+  console.log('singleproductdata', data);
   return (
     <Card className="!p-0 !gap-0 shadow-sm overflow-hidden group">
       {/* 🔹 Image - no click */}
@@ -42,13 +57,16 @@ export default function ProductCard({
         {!manage && (
           <div className="absolute bottom-2 right-2 flex z-50">
             <Button
-              disabled={data?.is_hearted === true}
+
               className="!text-sm"
               variant="outline"
               onClick={(e) => handleFebandUnfev(data?.id as number)}
             >
               {data?.hearts || 0}
-              <HeartIcon className="ml-1! size-5" />
+              <HeartIcon
+                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""}`}
+              />
+
             </Button>
 
           </div>
