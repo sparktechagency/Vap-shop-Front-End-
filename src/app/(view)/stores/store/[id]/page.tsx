@@ -16,16 +16,20 @@ import TabsTriggerer from "../tabs-trigger";
 import Dotter from "@/components/ui/dotter";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useGetOwnprofileQuery, useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
-import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
+import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+
 
 export default function Page() {
   const { id } = useParams();
   console.log('id', id);
-  const { data, isLoading } = useGtStoreDetailsQuery({ id: id as any });
+  const { data, isLoading, isError, error } = useGtStoreDetailsQuery({ id: id as any });
 
-  const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery(id as any);
-  console.log('brand details', brandDetails);
+
+
+  console.log('userdata', data);
+  if (isError) {
+    console.log('error', error);
+  }
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">
@@ -57,17 +61,11 @@ export default function Page() {
               />
             </div>
           </div>
-          {/* <div className="hidden">
+          <div className="">
             <p className="text-xs md:text-sm xl:text-base">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {data?.data?.about?.content || "No Description"}
             </p>
-          </div> */}
+          </div>
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
             <div className="text-xs md:text-sm text-muted-foreground flex gap-2 items-center">
               <span className={"text-green-600"}>Open Now</span>
@@ -76,7 +74,7 @@ export default function Page() {
             </div>
             <div className="text-xs flex items-center gap-2">
               <MapPinIcon className="size-4" />
-              <span>{data?.data?.address || "No Address"}</span>
+              <span>{data?.data?.address?.address || "No Address"}</span>
             </div>
           </div>
           <div className="!mt-4">
@@ -126,7 +124,7 @@ export default function Page() {
           </div>
         </div>
         <div className="w-full">
-          <TabsTriggerer />
+          <TabsTriggerer id={id} />
         </div>
       </main>
     </>
