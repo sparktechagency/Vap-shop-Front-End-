@@ -51,7 +51,7 @@ export default function TabsTriggererForum() {
             className="mt-4"
             onClick={() => refetch()}
           >
-            <RefreshCw className="mr-2 h-4 w-4" />
+            <RefreshCw className="mr-2" />
             Retry
           </Button>
         </Alert>
