@@ -37,13 +37,13 @@ export default function StoreProdCard({ data }: { data: BrandType }) {
       <div className="!p-3 sm:!p-4 !space-y-1">
         <div className="flex flex-row justify-between items-center gap-2 sm:gap-4">
           <Avatar className="size-10 sm:size-12 border">
-            <AvatarImage src="/image/icon/store.png" />
+            <AvatarImage src={data.avatar} />
             <AvatarFallback>
               {data.storeName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <Link href="/stores/store" className="block truncate">
+            <Link href={`/stores/store/${data.id}`} className="block truncate">
               <Namer type="store" name={data.storeName} isVerified />
             </Link>
             <div className="flex flex-row justify-start items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
@@ -57,12 +57,12 @@ export default function StoreProdCard({ data }: { data: BrandType }) {
           <div className="flex flex-row items-center gap-1 sm:gap-2 text-muted-foreground">
             <StarIcon fill="#ee8500" stroke="" className="w-4 h-4" />{" "}
             {data.rating.value}
-            <Link
-              href={"#"}
+            <span
+
               className="text-primary underline text-xs sm:text-sm"
             >
               ({data.rating.reviews} Reviews)
-            </Link>
+            </span>
           </div>
         </h3>
         <div className="text-xs md:text-sm text-muted-foreground flex gap-1 sm:gap-2 items-center">

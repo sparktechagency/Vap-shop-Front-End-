@@ -15,18 +15,11 @@ import Link from "next/link";
 import { useGetproductsAdsQuery, useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
 
 export default function MostHearted() {
-  const { data: mosthartedproducts } = useMosthartedProductQuery();
-  const { data: ProductsAds } = useGetproductsAdsQuery();
+  const { data: mosthartedproducts, refetch } = useMosthartedProductQuery();
+  const { data: ProductsAds, refetch: refetchAds } = useGetproductsAdsQuery();
 
   console.log("ProductsAds", ProductsAds);
 
-  const dataAd = {
-    image: "/image/shop/item.jpg",
-    title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-    category: "PODS",
-    note: "93.1% THC",
-    type: "ad",
-  };
   return (
     <>
       <div className="w-full flex justify-end items-center gap-6 !my-12">
@@ -71,17 +64,25 @@ export default function MostHearted() {
 
 
         {ProductsAds?.data?.map((item: any, i: number) => (
-          <ProductCard data={
-            {
-              image: item?.product_image || "/image/shop/item.jpg",
-              title: item?.product_name,
-              category: item?.brand || "PODS",
-              note: `$${item.product_price}`,
-              discount: item.product_discount,
-              hearts: item.total_heart,
-              type: "ad",
-            }
-          } link={`/brands/brand/product/${item.id}`} key={i} />
+          <ProductCard
+            refetch={refetch}
+            refetchAds={refetchAds}
+            data={
+              {
+
+                id: item.product_id,
+                image: item?.product_image || "/image/shop/item.jpg",
+                title: item?.product_name,
+                category: item?.brand || "PODS",
+                note: `${item.product_price}$`,
+                discount: item.product_discount,
+                hearts: item.total_heart,
+                is_hearted: item.is_hearted,
+                type: "ad",
+
+
+              }
+            } link={`/brands/brand/product/${item.id}`} key={i} />
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12 text-center">
@@ -91,13 +92,18 @@ export default function MostHearted() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {mosthartedproducts?.data?.map((product: any) => (
           <ProductCard
+            refetch={refetch}
+            refetchAds={refetchAds}
+
             data={{
+              id: product.id,
               image: product.product_image || "/image/shop/item.jpg",
               title: product.product_name,
               category: product.brand || "PODS",
               note: `$${product.product_price}`,
               discount: product.product_discount,
               hearts: product.total_heart,
+              is_hearted: product.is_hearted,
             }}
             link={`/brands/brand/product/${product.id}`}
             key={product.id}

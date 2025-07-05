@@ -36,7 +36,7 @@ export default function ForumCard({ data, to }: ForumCardProps | any) {
     7 * 24 * 60 * 60 * 1000;
 
   return (
-    <Link href={to ? to : `/forum/group/${data?.id}`}>
+    <Link href={to ? to : `/forum/thread/${data?.id}`}>
       <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary lg:rounded-xl lg:hover:border dark:hover:bg-background lg:hover:scale-[103%] transition-all">
         <div className="min-h-[5rem] md:h-24 !px-3 sm:!px-6 flex gap-2 sm:gap-4 w-full">
           <div className="h-12 w-12 sm:h-16 sm:w-16 md:h-full md:aspect-square border rounded-xl bg-secondary flex justify-center items-center shrink-0">

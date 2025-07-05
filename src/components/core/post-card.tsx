@@ -136,7 +136,7 @@ export default function PostCard({
 
                 toast.error(
                   err?.data?.message ||
-                    "Something went wrong. Please try again."
+                  "Something went wrong. Please try again."
                 );
                 console.error("Like error:", err);
               } finally {
@@ -160,8 +160,10 @@ export default function PostCard({
 
           <Dialog>
             <DialogTrigger asChild>
+
               <Button variant="ghost">
-                <MessageCircle /> Reply
+                <MessageCircle className="mr-1" />
+                {comments?.data?.data?.length || 0} Reply
               </Button>
             </DialogTrigger>
             <DialogContent>

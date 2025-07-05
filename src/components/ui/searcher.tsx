@@ -9,27 +9,28 @@ import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Namer from "../core/internal/namer";
-import Dotter from "../ui/dotter";
+// import Dotter from "../ui/dotter";
 import {
   useGetCountriesQuery,
   useSearchQuery,
 } from "@/redux/features/others/otherApi";
+import Link from "next/link";
 
 const categories = ["store", "brand", "product", "account"];
 
-const getImageSrc = (category: string) => {
-  switch (category) {
-    case "store":
-      return "/image/icon/store.png";
-    case "brand":
-      return "/image/icon/brand.jpg";
-    case "product":
-      return "/image/shop/item.jpg";
-    case "account":
-    default:
-      return "/image/icon/user.jpeg";
-  }
-};
+// const getImageSrc = (category: string) => {
+//   switch (category) {
+//     case "store":
+//       return "/image/icon/store.png";
+//     case "brand":
+//       return "/image/icon/brand.jpg";
+//     case "product":
+//       return "/image/shop/item.jpg";
+//     case "account":
+//     default:
+//       return "/image/icon/user.jpeg";
+//   }
+// };
 
 export default function Searcher({
   className,
@@ -46,12 +47,18 @@ export default function Searcher({
   const { data: searching, isLoading: searchLoading } = useSearchQuery({
     search: searchInput,
     type: selectedSearch,
-    // region: selectedRegion,
+    region: selectedRegion,
   });
 
   if (!searchLoading) {
     console.log(searching);
   }
+  useEffect(() => {
+    if (locationInput === "") {
+      setSelectedRegion("")
+    }
+  }, [locationInput])
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -126,49 +133,49 @@ export default function Searcher({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute top-[calc(148px/3)] left-0 w-full bg-background border shadow-lg h-[40vh] rounded-lg grid grid-cols-4 z-10  p-4!"
+              className="absolute top-[calc(148px/3)] left-0 w-full bg-background border shadow-lg h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-4 z-10  p-4!"
             >
-              <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-[100px] w-full rounded p-2! flex gap-2"
-                  >
-                    <Card className="aspect-square rounded p-1!">
-                      <Image
-                        src={getImageSrc(selectedSearch)}
-                        height={124}
-                        width={124}
-                        className="h-full w-full object-cover rounded animate-in"
-                        alt="icon"
-                      />
-                    </Card>
-                    <div className="flex-1 flex flex-col justify-between">
-                      <Namer
-                        name="Vape Juice Deport"
-                        type="store"
-                        isVerified
-                        size="sm"
-                      />
-                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                        <StarIcon
-                          fill="#ee8500"
-                          stroke=""
-                          className="w-4 h-4"
+              <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden row-span-2 lg:row-span-1">
+                {searching?.data?.data ? searching?.data?.data?.map((x: any, i: number) => (
+                  <Link href={selectedSearch === "store" ? `/stores/store/${x.id}` : selectedSearch === "brand" ? `/brands/brand/${x.id}` : "#"} key={i}>
+                    <div
+                      className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary"
+                    >
+                      <Card className="aspect-square rounded p-1!">
+                        <Image
+                          src={x.avatar}
+                          height={124}
+                          width={124}
+                          className="h-full w-full object-cover rounded animate-in"
+                          alt="icon"
                         />
-                        4.9
+                      </Card>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <Namer
+                          name={x.first_name}
+                          type={selectedSearch}
+                          // isVerified
+                          size="sm"
+                        />
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                          <StarIcon
+                            fill="#ee8500"
+                            stroke=""
+                            className="w-4 h-4"
+                          />
+                          {x.avg_rating}
+                        </div>
+                        <div className="flex gap-2 text-xs! text-muted-foreground items-center">
+                          <p className="truncate">{x?.address?.address}</p>
+                          {/* <Dotter /> */}
+                          {/* <div className="whitespace-nowrap">4 mi</div> */}
+                        </div>
                       </div>
-                      <div className="flex gap-2 text-xs! text-muted-foreground items-center">
-                        <p className="truncate">BROOKLYN, New York</p>
-                        <Dotter />
-                        <div className="whitespace-nowrap">4 mi</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    </div></Link>
+                )) : <p className="text-sm text-muted-foreground">Search something</p>}
               </div>
 
-              <div className="flex flex-col justify-around items-center text-xs sm:text-sm md:text-base lg:text-lg">
+              <div className="flex flex-col justify-around items-center text-xs sm:text-sm md:text-base lg:text-lg border-r lg:border-none">
                 {categories.map((cat) => (
                   <Button
                     key={cat}
@@ -182,7 +189,7 @@ export default function Searcher({
                   </Button>
                 ))}
               </div>
-              <div className="w-full bg-background border shadow-lg rounded-lg z-10 p-4! overflow-y-auto overflow-x-hidden!">
+              <div className="w-full bg-background lg:border lg:shadow-lg rounded-lg z-10 p-4! overflow-y-auto overflow-x-hidden!">
                 {filteredRegions?.length ? (
                   filteredRegions.map(
                     (region: {
@@ -198,7 +205,6 @@ export default function Searcher({
                         onClick={() => {
                           setLocationInput(region.name);
                           setSelectedRegion(String(region.id));
-                          // loca;
                         }}
                       >
                         {region.name} ({region.code}), {region.countryName}

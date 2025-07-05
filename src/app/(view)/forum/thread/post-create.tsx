@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useCreateThreadMutation } from "@/redux/features/Forum/ForumApi";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 const postSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -40,8 +41,12 @@ export default function PostCreate({
       body: "",
     },
   });
-
+  const token = Cookies.get("token");
+  console.log("token", token);
   const onSubmit = async (data: PostFormData) => {
+    if (!token) {
+      return toast.error("Please login to create a thread.");
+    }
     try {
       const finalData = {
         title: data.title,

@@ -1,27 +1,68 @@
-import FeedCard from "@/components/core/feed-card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import React from "react";
+import Link from "next/link";
+
+import PostCard from "@/components/core/post-card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetFeedQuery } from "@/redux/features/users/postApi";
+import { useUser } from "@/context/userContext";
 
 export default function Feed() {
-  return (
-    <div className="!p-6">
-      <div className="!my-12 !space-y-6">
-        <div className="flex justify-end items-center">
-          <Button asChild>
-            <Link href="/me/create-feed">Post a new feed</Link>
-          </Button>
-        </div>
-        {Array.from({ length: 6 }).map((_, i) => (
-          <FeedCard
-            key={i}
-            data={{
-              name: "Shop name",
-              avatar: "/image/icon/user.jpeg",
-            }}
-          />
-        ))}
-      </div>
+  const { data, isLoading, isError, isFetching } = useGetFeedQuery();
+  console.log('data', data);
+  const my = useUser();
+  if (data) {
+    console.log(data);
+
+  }
+  const renderSkeletons = () => (
+    <div className="flex flex-col gap-6">
+      {[...Array(3)].map((_, i) => (
+        <Skeleton key={i} className="h-[300px] w-full" />
+      ))}
     </div>
+  );
+
+  const renderHeader = () => (
+    <div className="flex justify-end">
+      <Button asChild>
+        <Link href="/me/create-post">Upload a new post</Link>
+      </Button>
+    </div>
+  );
+
+  const renderError = () => (
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-muted-foreground">No post found.</p>
+      <Button variant="link" asChild>
+        <Link href="/me/create-post">What’s on your mind?</Link>
+      </Button>
+    </div>
+  );
+
+  const renderPosts = () =>
+    data?.data?.data?.map((post: any, index: number) => (
+      <PostCard
+        key={post.id || index} // Prefer post.id if available
+        user={{ name: post?.user?.full_name ?? "", avatar: post?.user?.avatar }}
+        data={post}
+      />
+    ));
+
+  if (data) {
+    console.log(data.data.data);
+  }
+  return (
+    <section className="p-6!">
+      <div className="my-12 space-y-6!">
+        {renderHeader()}
+        {(isLoading || isFetching) && renderSkeletons()}
+        {isError && renderError()}
+        {!isLoading && !isError && data?.data?.data.length > 0 && renderPosts()}
+      </div>
+    </section>
   );
 }

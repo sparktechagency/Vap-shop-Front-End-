@@ -8,36 +8,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetBrandGroupQuery } from "@/redux/features/brand/brandApis";
-import { useGetallThredsByGropIdQuery } from "@/redux/features/Forum/ForumApi";
-import Link from "next/link";
+import { useStoreGroupListQuery } from "@/redux/features/store/StoreApi";
+
 import React from "react";
 
-
+const diffData = {
+  title: "New Members: Introduce Yourself!",
+  new: false,
+  secondaryA: "12K Threads",
+  secondaryB: "225k messages",
+  date: "May 28, 202",
+};
 export default function Groups({ id }: any) {
-
-  const { data: groupData, isLoading, isError, error } = useGetBrandGroupQuery(id as any);
+  const { data: groupData, isLoading, isError, error } = useStoreGroupListQuery(id as any);
   console.log('groupData', groupData);
-
-  if (isLoading) {
-    return <div className=" !my-6">
-      {[...Array(4)].map((_, i) => (
-        <Skeleton key={i} className="h-64 w-full rounded-lg mb-4" />
-      ))}
-    </div>
-  }
-
-
-  if (isError) {
-    console.log('error', error);
-  }
-
+  if (isLoading) return <div className=" !my-6">{[...Array(4)].map((_, i) => (<Skeleton key={i} className="h-64 w-full rounded-lg mb-4" />))}</div>
   return (
     <div className="!mt-12">
       <Card className="gap-0 !pt-0 overflow-hidden">
-        <CardHeader className="flex justify-end items-center bg-secondary !p-6">
-
-          <Select>
+        <CardHeader className="flex justify-between items-center bg-secondary !p-6">
+          <div></div>
+          {/* <Select>
             <SelectTrigger className="md:w-[180px]">
               <SelectValue placeholder="Filter" className="bg-background" />
             </SelectTrigger>
@@ -45,24 +36,32 @@ export default function Groups({ id }: any) {
               <SelectItem value="light">Most Recent</SelectItem>
               <SelectItem value="dark">Most Viewed</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
         </CardHeader>
-        {groupData.data?.data.map((group: any) => (
-          <ForumCard key={group.id} data={{
-            id: group.id,
-            title: group.title,
-            description: group.description,
-            user_id: group.user_id,
-            created_at: group.created_at,
-            updated_at: group.updated_at,
-            threads_count: group.threads_count,
-            total_threads: group.total_threads,
-            total_comments: group.total_comments,
-            date: group.date
-
-
-          }} />
-        ))}
+        {groupData ? groupData?.data?.data.map((item: any, index: number) => (
+          <ForumCard
+            key={index}
+            data={
+              {
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                user_id: item.user_id,
+                created_at: item.created_at,
+                updated_at: item.updated_at,
+                threads_count: item.total_threads,
+                total_threads: item.total_threads,
+                total_comments: item.total_comments,
+              }
+            }
+            diffData={diffData}
+          />
+        )) : (
+          <div>
+            <h1 className="text-2xl font-semibold">No Groups</h1>
+          </div>
+        )
+        }
 
       </Card>
     </div>

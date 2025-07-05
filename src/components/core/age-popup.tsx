@@ -58,7 +58,7 @@ export default function AgePopup() {
 
             <div className="space-y-4! text-left text-sm sm:text-base">
               <p className="text-muted-foreground leading-relaxed">
-                This vape shop requires age verification due to the nature of
+                This platform requires age verification due to the nature of
                 its products, which are intended strictly for adults aged 21 and
                 over.
               </p>

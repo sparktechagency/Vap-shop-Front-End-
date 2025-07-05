@@ -16,6 +16,7 @@ export interface ProductType {
 export interface BrandType {
   id: string;
   image: string;
+  avatar?: string;
   type: "normal" | "wholesaler" | "brand" | "store" | "ad";
   storeName: string;
   isVerified: boolean;
