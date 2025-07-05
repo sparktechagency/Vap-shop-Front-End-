@@ -12,10 +12,11 @@ import { useUser } from "@/context/userContext";
 
 export default function Feed() {
   const { data, isLoading, isError, isFetching } = useGetFeedQuery();
+  console.log('data', data);
   const my = useUser();
   if (data) {
     console.log(data);
-    
+
   }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
@@ -46,7 +47,7 @@ export default function Feed() {
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
         key={post.id || index} // Prefer post.id if available
-        user={{ name: my.full_name ?? "", avatar: my.avatar }}
+        user={{ name: post?.user?.full_name ?? "", avatar: post?.user?.avatar }}
         data={post}
       />
     ));

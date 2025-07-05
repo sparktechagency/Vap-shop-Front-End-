@@ -38,7 +38,7 @@ export default function ProductCard({
       }
     } catch (error) {
       console.log('error', error);
-      toast.error(error?.data?.message || "Failed to fevorite");
+      toast.error("Failed to fevorite");
     }
   }
 
