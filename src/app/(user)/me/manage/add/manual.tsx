@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import { usePostProductMutation } from "@/redux/features/manage/product";
 import { useUser } from "@/context/userContext";
+import Image from "next/image";
 
 const formSchema = z.object({
   product_name: z.string().min(1, "Product name is required"),
@@ -57,6 +58,7 @@ export default function ProductForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   const [postProduct] = usePostProductMutation();
+  const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -127,7 +129,7 @@ export default function ProductForm() {
       // Simulate API call
       const res = await postProduct(formData).unwrap();
 
-      console.log(res);
+      console.log('product add resposne ', res);
 
       if (!res.ok) return toast.error(res.message);
       toast("Success!", {
@@ -167,13 +169,17 @@ export default function ProductForm() {
                 type="square"
                 onFileSelect={(file: File) => {
                   setSelectedFile(file);
+                  setImageurl(URL.createObjectURL(file));
                   console.log("File selected:", file);
                 }}
               />
-              {selectedFile && (
-                <p className="text-sm text-muted-foreground mt-2!">
-                  Selected: {selectedFile.name}
-                </p>
+              {imageurl && (
+                <Image
+                  src={imageurl}
+                  width={100}
+                  height={100}
+                  alt="Product Image"
+                />
               )}
             </div>
 

@@ -17,6 +17,8 @@ import Dotter from "@/components/ui/dotter";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+import { toast } from "sonner";
+import { useFollowBrandMutation, useUnfollowBrandMutation } from "@/redux/features/Trending/TrendingApi";
 
 
 export default function Page() {
@@ -26,7 +28,83 @@ export default function Page() {
 
 
 
-  console.log('userdata', data);
+
+
+  const [followOrUnfollowBrand, { isLoading: isFollowing }] = useFollowBrandMutation();
+  const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
+
+
+  const user = data?.data?.user;
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `Check out ${user?.full_name} on our platform`,
+        text: `I found this amazing brand ${user?.full_name} that you might like!`,
+        url: window.location.href,
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing:', error));
+    } else {
+      const shareUrl = window.location.href;
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => {
+          toast.success('Link copied to clipboard!');
+        })
+        .catch(() => {
+          const tempInput = document.createElement('input');
+          tempInput.value = shareUrl;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+          toast.success('Link copied to clipboard!');
+        });
+    }
+  };
+
+  const handleFollow = async (id: string) => {
+    try {
+      const response = await followOrUnfollowBrand(id).unwrap();
+      if (response.ok) {
+        toast.success(response.message || "Followed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to follow");
+    }
+  };
+
+  const handleUnfollow = async (id: string) => {
+    try {
+      const response = await unfollowBrand(id).unwrap();
+      if (response.ok) {
+        toast.success(response.message || "Unfollowed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to unfollow");
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isError) {
     console.log('error', error);
   }
@@ -97,13 +175,13 @@ export default function Page() {
                 <CheckCircle2Icon className="size-4 text-green-600" />
               </div>
               <div className="flex-1 md:h-24 grid grid-cols-1 md:flex flex-row justify-end items-center gap-4">
-                <p className="font-semibold text-sm">43.1k followers</p>
+                <p className="font-semibold text-sm">{user?.total_followers} followers</p>
                 <Button
                   variant="outline"
                   className="!text-sm font-extrabold"
                   asChild
                 >
-                  <Link href="/stores/store/btb"> B2B</Link>
+                  <Link href="/stores/store/btb">B2B</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -115,8 +193,18 @@ export default function Page() {
                     <MessageSquareMoreIcon />
                   </Link>
                 </Button>
-                <Button>Follow</Button>
-                <Button variant="outline" className="w-full md:w-9" size="icon">
+                {
+                  user?.is_following ? (
+                    <Button onClick={() => handleUnfollow(user?.id)} variant="outline">
+                      {isUnFollowing ? "Unfollowing..." : "Unfollow"}
+                    </Button>
+                  ) : (
+                    <Button onClick={() => handleFollow(user?.id)} variant="outline">
+                      {isFollowing ? "Following..." : "Follow"}
+                    </Button>
+                  )
+                }
+                <Button onClick={handleShare} variant="outline" className="w-full md:w-9" size="icon">
                   <Share2Icon />
                 </Button>
               </div>

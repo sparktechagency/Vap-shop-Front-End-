@@ -19,7 +19,7 @@ export default function TabsTriggerer({ id }: any) {
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
           <TabsTrigger value="hearted">Most Hearted Products</TabsTrigger>
           <TabsTrigger value="catalog">Catalog</TabsTrigger>
-          <TabsTrigger value="announcement">Announcement</TabsTrigger>
+          {/* <TabsTrigger value="announcement">Announcement</TabsTrigger> */}
           <TabsTrigger value="feed">Feed</TabsTrigger>
           <TabsTrigger value="inbox">Inbox</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
@@ -32,9 +32,9 @@ export default function TabsTriggerer({ id }: any) {
         <TabsContent value="catalog">
           <Catalog id={id} />
         </TabsContent>
-        <TabsContent value="announcement">
+        {/* <TabsContent value="announcement">
           <Announcement />
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="feed">
           <Announcement />
         </TabsContent>
@@ -42,7 +42,7 @@ export default function TabsTriggerer({ id }: any) {
           <Inbox />
         </TabsContent>
         <TabsContent value="about">
-          <About />
+          <About id={id} />
         </TabsContent>
         <TabsContent value="groups">
           <Groups id={id} />

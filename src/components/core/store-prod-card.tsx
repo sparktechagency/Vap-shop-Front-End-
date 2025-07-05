@@ -37,7 +37,7 @@ export default function StoreProdCard({ data }: { data: BrandType }) {
       <div className="!p-3 sm:!p-4 !space-y-1">
         <div className="flex flex-row justify-between items-center gap-2 sm:gap-4">
           <Avatar className="size-10 sm:size-12 border">
-            <AvatarImage src="/image/icon/store.png" />
+            <AvatarImage src={data.avatar} />
             <AvatarFallback>
               {data.storeName.slice(0, 2).toUpperCase()}
             </AvatarFallback>

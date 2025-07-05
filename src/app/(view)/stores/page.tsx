@@ -25,7 +25,7 @@ export default function Page() {
 
   const products = data?.data || [];
   const pagination = data || {};
-
+  console.log('storeproducts', products);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -50,6 +50,7 @@ export default function Page() {
               const productData: BrandType = {
                 id: product.id.toString(),
                 image: product.product_image || "/image/shop/item.jpg",
+                avatar: product?.user?.avatar || "/image/shop/item.jpg",
                 storeName: product.product_name,
                 isVerified: true,
                 location: {
