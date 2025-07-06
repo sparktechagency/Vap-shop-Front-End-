@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductReviewCard from "@/components/core/review-card";
+import LoadingScletion from "@/components/LoadingScletion";
 import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
 import React from "react";
 
-export default function Reviewer({ product }: { product: any }) {
+export default function Reviewer({ product, role }: { product: any; role: any }) {
   const { data, isLoading, refetch } = useGetReviewsQuery({
-    role: 3,
-    id: product.id,
+    role: role,
+    id: product?.data?.id,
   });
 
-  console.log(product);
+  console.log('product', product, 'role', role);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingScletion />
+      </div>
+    );
+  }
+
+  console.log('review', data);
 
   return (
     <div className="">
@@ -22,7 +33,7 @@ export default function Reviewer({ product }: { product: any }) {
               data={x}
               productData={product}
               role={3}
-              refetch={refetch()}
+              refetch={refetch}
             />
           ))}
       </div>

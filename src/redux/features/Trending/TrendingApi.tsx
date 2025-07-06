@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "@/redux/baseApi";
 
+
 export const trendingApi = api.injectEndpoints({
   endpoints: (builder) => ({
     mosthartedProduct: builder.query<any, void>({
@@ -24,6 +25,11 @@ export const trendingApi = api.injectEndpoints({
 
     trendingProductDetailsById: builder.query<any, void>({
       query: (id) => `/get-product/${id}?role=3`,
+      providesTags: ["tranding"],
+
+    }),
+    storeProductDetailsById: builder.query<any, void>({
+      query: (id) => `/get-product/${id}?role=5`,
       providesTags: ["tranding"],
 
     }),
@@ -78,5 +84,5 @@ export const trendingApi = api.injectEndpoints({
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation, useStoreProductDetailsByIdQuery } =
   trendingApi;
