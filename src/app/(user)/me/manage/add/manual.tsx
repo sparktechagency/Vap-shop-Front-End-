@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
+import { useDropzone } from "react-dropzone";
 import DropOff from "@/components/core/drop-off";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,35 +31,34 @@ import { usePostProductMutation } from "@/redux/features/manage/product";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 
+const faqSchema = z.object({
+  question: z.string().min(1, "Question is required"),
+  answer: z.string().min(1, "Answer is required"),
+});
+
 const formSchema = z.object({
   product_name: z.string().min(1, "Product name is required"),
-  product_price: z.string().min(1, "Product price is required"),
+  product_price: z.string().optional(),
   product_discount: z.string().optional(),
-  product_stock: z.string().min(1, "Stock quantity is required"),
+  product_stock: z.string().optional(),
   brand_name: z.string().min(1, "Brand name is required"),
-  // discountUntil: z.string().optional(),
   category_id: z.string().min(1, "Please select a category"),
   product_description: z
     .string()
     .min(10, "Description must be at least 10 characters"),
-  faqs: z
-    .array(
-      z.object({
-        question: z.string().min(1, "Question is required"),
-        answer: z.string().min(1, "Answer is required"),
-      })
-    )
-    .min(1, "At least one FAQ is required"),
+  faqs: z.array(faqSchema).min(1, "At least one FAQ is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export default function ProductForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   const [postProduct] = usePostProductMutation();
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,71 +78,82 @@ export default function ProductForm() {
     name: "faqs",
   });
 
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.webp']
+    },
+    maxFiles: 1,
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+        setSelectedFile(file);
+        setImageurl(URL.createObjectURL(file));
+      }
+    },
+    onDragEnter: () => setIsDragging(true),
+    onDragLeave: () => setIsDragging(false),
+    onDropAccepted: () => setIsDragging(false),
+    onDropRejected: () => {
+      setIsDragging(false);
+      toast.error("Please upload a valid image file (JPEG, JPG, PNG, WEBP)");
+    }
+  });
+
   const onSubmit = async (data: FormData) => {
     try {
-      // Create FormData for file upload
       const formData = new FormData();
 
-      // Add the file if selected
+      // 1. Append the image if selected
       if (selectedFile) {
         formData.append("product_image", selectedFile);
       }
 
-      console.log(data.faqs);
-
-      // Add all form data
+      // 2. Append all other form data fields, excluding the discount for now
       Object.entries(data).forEach(([key, value]) => {
+        if (key === "product_discount") {
+          return; // Skip discount, handle it separately
+        }
+
         if (key === "faqs") {
           data.faqs.forEach((faq, index) => {
             formData.append(`product_faqs[${index}][question]`, faq.question);
             formData.append(`product_faqs[${index}][answer]`, faq.answer);
           });
-
-          console.log(formData.get("product_faqs"));
-        } else if (key === "product_discount") {
-          formData.append("product_discount_unit", value as string);
-
-          formData.append(
-            "product_discount",
-            String(
-              parseFloat(data.product_price) *
-              (parseFloat(data.product_discount ?? "0") / 100)
-            )
-          );
         } else {
-          formData.append(key, value as string);
+          // Append other fields, ensuring null/undefined becomes an empty string
+          formData.append(key, value ? String(value) : "");
         }
       });
 
-      // Log the data (replace with actual API call)
-      console.log("Form Data:", data);
-      console.log("Selected File:", selectedFile);
-      console.log("<--------------------<");
+      // 3. Always append discount fields with appropriate values
+      if (data.product_discount && data.product_price) {
+        const discountValue = parseFloat(data.product_discount);
+        const priceValue = parseFloat(data.product_price);
+        const calculatedDiscount = priceValue * (discountValue / 100);
 
-      console.log("FormData entries:");
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
+        formData.append("product_discount", calculatedDiscount.toString());
+        formData.append("product_discount_unit", data.product_discount);
+      } else {
+        // **THE FIX**: If no discount is entered, send "0" for both fields
+        formData.append("product_discount", "0");
+        formData.append("product_discount_unit", "0");
       }
 
-      console.log(">-------------------->");
-      // Simulate API call
+      // 4. Send the request
       const res = await postProduct(formData).unwrap();
 
-      console.log('product add resposne ', res);
+      if (!res.ok) {
+        toast.error(res.message);
+        return;
+      }
 
-      if (!res.ok) return toast.error(res.message);
-      toast("Success!", {
-        description: "Product has been uploaded successfully.",
-      });
-
-      // Reset form after successful submission
+      toast.success("Product has been uploaded successfully.");
       form.reset();
       setSelectedFile(null);
-    } catch (error) {
+      setImageurl(null);
+    } catch (error: any) {
       console.error("Submission error:", error);
-      toast.error("Error", {
-        description: "Failed to upload product. Please try again.",
-      });
+      toast.error(error?.data?.errors || "Failed to upload product. Please try again.");
     }
   };
 
@@ -158,32 +168,46 @@ export default function ProductForm() {
   };
 
   return (
-    <div className="py-12! px-4! sm:px-6! lg:px-8!">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8!">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Product Image Upload */}
-            <div className="col-span-full space-y-2!">
+            {/* Product Image Upload with Drag and Drop */}
+            <div className="col-span-full space-y-2">
               <FormLabel>Product Image:</FormLabel>
-              <DropOff
-                type="square"
-                onFileSelect={(file: File) => {
-                  setSelectedFile(file);
-                  setImageurl(URL.createObjectURL(file));
-                  console.log("File selected:", file);
-                }}
-              />
-              {imageurl && (
-                <Image
-                  src={imageurl}
-                  width={100}
-                  height={100}
-                  alt="Product Image"
-                />
-              )}
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+                  }`}
+              >
+                <input {...getInputProps()} />
+                {imageurl ? (
+                  <div className="flex flex-col items-center">
+                    <Image
+                      src={imageurl}
+                      width={200}
+                      height={200}
+                      alt="Product preview"
+                      className="mb-4 rounded-md object-cover"
+                    />
+                    <p className="text-sm text-gray-600">
+                      Click or drag to replace the image
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <p className="text-gray-600 mb-2">
+                      Drag & drop an image here, or click to select
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Supports: JPEG, JPG, PNG, WEBP
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Product Name */}
+            {/* Product Details */}
             <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -199,23 +223,23 @@ export default function ProductForm() {
                 )}
               />
 
-              {/* Product Price */}
+              {/* Product Price (Optional) */}
               <FormField
                 control={form.control}
                 name="product_price"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {role == "3"
-                        ? "Product Price(For B2B):"
-                        : "Product Price:"}
+                      {role === "3" ? "Product Price (For B2B, optional):" : "Product Price (optional):"}
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="0.00"
                         type="number"
                         step="0.01"
+                        min="0"
                         {...field}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -223,13 +247,13 @@ export default function ProductForm() {
                 )}
               />
 
-              {/* Discount */}
+              {/* Discount (Optional) */}
               <FormField
                 control={form.control}
                 name="product_discount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Discount (%):</FormLabel>
+                    <FormLabel>Discount % (optional):</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="0"
@@ -237,25 +261,35 @@ export default function ProductForm() {
                         min="0"
                         max="100"
                         {...field}
+                        value={field.value || ""}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Stock (Optional) */}
               <FormField
                 control={form.control}
                 name="product_stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Available in stock</FormLabel>
+                    <FormLabel>Available in stock (optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="0" type="number" min="0" {...field} />
+                      <Input
+                        placeholder="0"
+                        type="number"
+                        min="0"
+                        {...field}
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="brand_name"
@@ -269,11 +303,12 @@ export default function ProductForm() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="category_id"
                 render={({ field }) => (
-                  <FormItem className="">
+                  <FormItem>
                     <FormLabel>Select Category:</FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -286,7 +321,7 @@ export default function ProductForm() {
                       </FormControl>
                       <SelectContent>
                         {!catLoading &&
-                          cats.data.map((x: any) => (
+                          cats?.data?.map((x: { id: number; name: string }) => (
                             <SelectItem value={String(x.id)} key={x.id}>
                               {x.name}
                             </SelectItem>
@@ -298,27 +333,6 @@ export default function ProductForm() {
                 )}
               />
             </div>
-
-            {/* Stock */}
-
-            {/* Brand Name */}
-
-            {/* Discount Until */}
-            {/* <FormField
-              control={form.control}
-              name="product_discount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Discount until:</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
-            {/* Category */}
 
             {/* Product Description */}
             <FormField
@@ -340,7 +354,7 @@ export default function ProductForm() {
             />
 
             {/* FAQs Section */}
-            <div className="col-span-full space-y-6!">
+            <div className="col-span-full space-y-6">
               <div className="flex items-center justify-between">
                 <FormLabel className="text-base font-semibold">FAQs</FormLabel>
                 <Button type="button" variant="outline" onClick={addFAQ}>
@@ -351,7 +365,7 @@ export default function ProductForm() {
               {fields.map((field, index) => (
                 <div
                   key={field.id}
-                  className="space-y-4! p-4! border rounded-lg"
+                  className="space-y-4 p-4 border rounded-lg"
                 >
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">FAQ #{index + 1}</h4>
