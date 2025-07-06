@@ -209,20 +209,11 @@ export default function MemberRegister({
                     <Input
                       id="phone"
                       type="tel"
-                      required
+
                       {...formRegister("phone", {
-                        required: "Phone number is required",
-                        pattern: {
-                          value: /^\+?[0-9]{10,15}$/,
-                          message: "Invalid phone number",
-                        },
                       })}
                     />
-                    {errors.phone && (
-                      <span className="text-red-500 text-sm">
-                        {errors.phone.message}
-                      </span>
-                    )}
+
                   </div>
                   <div className="col-span-2 grid gap-2">
                     <div className="flex items-center">

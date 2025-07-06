@@ -9,7 +9,8 @@ export default function Reviewer({ product }: { product: any }) {
     id: product.id,
   });
 
-  console.log(product);
+  console.log('product', product);
+  console.log('review', data);
 
   return (
     <div className="">
@@ -22,7 +23,7 @@ export default function Reviewer({ product }: { product: any }) {
               data={x}
               productData={product}
               role={3}
-              refetch={refetch()}
+              refetch={refetch}
             />
           ))}
       </div>

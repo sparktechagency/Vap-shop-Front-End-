@@ -5,7 +5,7 @@ import { Store } from "lucide-react";
 export const storeApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAllstore: builder.query({
-            query: ({ page, per_page }) => `/get-all-products?role=5&per_page=${per_page}&page=${page}`,
+            query: ({ page }) => `/get-all-store-brand-wholesaler?type=store&per_page=8&page=${page}`,
         }),
         getStoreDetailsById: builder.query<any, { id: string; page: number; per_page: number }>({
             query: ({ id, page, per_page }) => `/get/${id}/products?type=store&per_page=${per_page}&page=${page}`,

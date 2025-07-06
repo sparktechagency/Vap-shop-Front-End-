@@ -144,7 +144,7 @@ export default function ProductReviewCard({
     // 🔧 Add reply submission logic here (API call, mutation etc.)
     setReply("");
   };
-
+  console.log('rating', data);
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
       {/* Product Header */}
@@ -175,10 +175,10 @@ export default function ProductReviewCard({
 
       {/* Review Content */}
       <div className="!p-4">
-        {productData?.average_rating && (
+        {data?.rating && (
           <div className="!mb-3">
             <h4 className="font-semibold text-base !mb-2">
-              ⭐ {parseFloat(productData?.average_rating).toFixed(1)}/5
+              ⭐ {parseFloat(data?.rating).toFixed(1)}/5
             </h4>
           </div>
         )}
@@ -242,8 +242,7 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${
-                      data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
                     }'s review as helpful`
                   );
                 }

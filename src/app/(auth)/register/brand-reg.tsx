@@ -155,19 +155,9 @@ export default function BrandRegister({
                     <Input
                       id="phone"
                       type="tel"
-                      {...formRegister("phone", {
-                        required: "Phone number is required",
-                        pattern: {
-                          value: /^\+?[0-9]{10,15}$/,
-                          message: "Invalid phone number",
-                        },
-                      })}
+                      {...formRegister("phone")}
                     />
-                    {errors.phone && (
-                      <span className="text-red-500 text-sm">
-                        {errors.phone.message}
-                      </span>
-                    )}
+
                   </div>
 
                   {/* Password */}

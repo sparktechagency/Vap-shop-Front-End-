@@ -48,8 +48,8 @@ export default function StoreProdCard({ data }: { data: BrandType }) {
             </Link>
             <div className="flex flex-row justify-start items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
               <p className="truncate">{data.location.city}</p>
-              <Dotter />
-              <div className="whitespace-nowrap">{data.location.distance}</div>
+              {/* <Dotter /> */}
+              {/* <div className="whitespace-nowrap">{data.location.distance} sd</div> */}
             </div>
           </div>
         </div>

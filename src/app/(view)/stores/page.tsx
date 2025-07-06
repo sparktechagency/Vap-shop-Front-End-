@@ -12,20 +12,22 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-
-
 export default function Page() {
   const [page, setPage] = useState(1);
-  const [perPage] = useState(8);
-  const { data, isLoading } = useGetAllstoreQuery({ page, per_page: perPage });
-
+  const [perPage] = useState(4);
+  const { data, isLoading } = useGetAllstoreQuery({ page });
+  console.log('data', data);
   if (isLoading) {
     return <LoadingScletion />;
   }
 
-  const products = data?.data || [];
-  const pagination = data || {};
-  console.log('storeproducts', products);
+  const stores = data?.data?.data || [];
+  const pagination = {
+    current_page: data?.data?.current_page || 1,
+    last_page: data?.data?.last_page || 1,
+    total: data?.data?.total || 0,
+  };
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -43,40 +45,39 @@ export default function Page() {
           </Button>
         </div>
 
-        {/* Products Grid */}
+        {/* Stores Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-          {products?.data?.length > 0 ? (
-            products?.data?.map((product: any) => {
-              const productData: BrandType = {
-                id: product.id.toString(),
-                image: product.product_image || "/image/shop/item.jpg",
-                avatar: product?.user?.avatar || "/image/shop/item.jpg",
-                storeName: product.product_name,
+          {stores?.length > 0 ? (
+            stores?.map((store: any) => {
+              const storeData: BrandType = {
+                id: store.id.toString(),
+                image: store.cover_photo || "/image/shop/item.jpg",
+                avatar: store.avatar || "/image/shop/item.jpg",
+                storeName: store.full_name,
                 isVerified: true,
                 location: {
-                  city: product.category?.name || "Product",
-                  distance: `$${product.product_price}`,
+                  city: store.address?.address || "Unknown",
+                  distance: store.address?.zip_code || "",
                 },
                 rating: {
-                  value: parseFloat(product.average_rating) || 0,
-                  reviews: product.total_heart || 0,
+                  value: store.avg_rating || 0,
+                  reviews: store.total_reviews || 0,
                 },
-                isOpen: true,
+                isOpen: !store.is_banned,
                 closingTime: "",
                 type: "normal",
               };
 
               return (
                 <StoreProdCard
-                  key={product.id}
-                  data={productData}
-
+                  key={store.id}
+                  data={storeData}
                 />
               );
             })
           ) : (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">No products found</p>
+              <p className="text-muted-foreground">No stores found</p>
             </div>
           )}
         </div>
