@@ -1,15 +1,17 @@
+//  Keywords for Search Optimization:
+// vap, vape, vape shop, vape shop maps, VSM, vapeshop, vapshop maps, vape shop maps, vape shop maps admin, vape shop maps admin panel , 
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-// import MagicButton from "@/components/magic-button";
+
 import { Suspense } from "react";
-// import { Provider } from 'react-redux'
+
 import StoreProvider from "@/components/StoreProvider";
 import AgePopup from "@/components/core/age-popup";
 import Image from "next/image";
-// import { cookies } from "next/headers";
-// import { notFound } from "next/navigation";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Vape Shop Maps",
@@ -22,10 +24,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const token = (await cookies()).get("token")?.value;
-
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <link rel="icon" type="image/webp" href="/image/vsm-logo.webp" />
+      </Head>
+
       <body
         suppressHydrationWarning
         className={`antialiased overflow-x-hidden`}
@@ -52,7 +56,6 @@ export default function RootLayout({
             <StoreProvider>{children}</StoreProvider>
           </Suspense>
           <Toaster />
-          {/* <MagicButton /> */}
           <AgePopup />
         </ThemeProvider>
       </body>
