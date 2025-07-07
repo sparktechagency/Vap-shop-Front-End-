@@ -100,6 +100,19 @@ interface ShareButtonsProps {
   title: string;
 }
 
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+interface AccordionItemType {
+  id: string;
+  title: string;
+  content: string | React.ReactNode;
+}
+
+
 const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
   return (
     <div className="flex justify-center gap-4 pt-4">
@@ -144,6 +157,19 @@ export default function Page() {
   const [unfollowBrand, { isLoading: isUnFollowing }] =
     useUnfollowBrandMutation();
   console.log("product", product);
+
+
+
+
+  const getFAQAccordionItems = (): AccordionItemType[] => {
+    if (!product?.data?.product_faqs?.length) return [];
+
+    return product.data.product_faqs.map((faq: FAQItem, index: number) => ({
+      id: `faq-${index}`,
+      title: faq.question,
+      content: faq.answer,
+    }));
+  };
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -248,6 +274,9 @@ export default function Page() {
     return updatedAccordionData;
   };
 
+
+
+  console.log("product", product);
   if (!product) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -360,7 +389,7 @@ export default function Page() {
           </p>
           <div className="w-full lg:w-2/3">
             <Accordion type="single" collapsible>
-              {getAccordionData().map((item) => (
+              {getFAQAccordionItems().map((item: AccordionItemType) => (
                 <AccordionItem key={item.id} value={item.id}>
                   <AccordionTrigger>{item.title}</AccordionTrigger>
                   <AccordionContent>{item.content}</AccordionContent>
@@ -410,7 +439,7 @@ export default function Page() {
               />
             ))}
         </div>
-        <ReviewPost productId={product?.data?.id} />
+        <ReviewPost role={3} productId={product?.data?.id} />
         <Separator />
 
         {product && <Reviewer product={product.data} />}

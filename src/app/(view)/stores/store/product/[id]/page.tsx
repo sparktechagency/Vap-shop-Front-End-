@@ -1,8 +1,22 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+interface FAQAccordionItem {
+  id: string;
+  title: string;
+  content: string;
+}
+import React, { useState } from "react";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquareMoreIcon, Share2Icon } from "lucide-react";
+import {
+  MessageSquareMoreIcon,
+  Share2Icon,
+  CopyIcon,
+  MailIcon,
+} from "lucide-react";
+import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
 import {
   Accordion,
@@ -12,191 +26,338 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
-
+import { useParams } from "next/navigation";
+import {
+  useFollowBrandMutation,
+  useStoreProductDetailsByIdQuery,
+  useTrendingProductDetailsByIdQuery,
+  useUnfollowBrandMutation,
+} from "@/redux/features/Trending/TrendingApi";
+import LoadingScletion from "@/components/LoadingScletion";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import BuyMachine from "../buy-machine";
-const data = {
-  image: "/image/shop/item.jpg",
-  title: "Blue Dream | Melted Diamond Live Resin Vaporizer | 1.0g (Reload)",
-  category: "PODS",
-  note: "93.1% THC",
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  EmailShareButton,
+} from "react-share";
+import { Separator } from "@/components/ui/separator";
+import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
+import ProductReviewCard from "@/components/core/review-card";
+import ReviewPost from "../../[id]/review-post";
+import Reviewer from "../../[id]/reviewer";
+
+interface ShareButtonsProps {
+  url: string;
+  title: string;
+}
+
+const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
+  return (
+    <div className="flex justify-center gap-4 pt-4">
+      <FacebookShareButton url={url} hashtag="#vapeshopmaps">
+        <Button variant="outline" size="icon">
+          <FaFacebook className="h-5 w-5 text-blue-600" />
+        </Button>
+      </FacebookShareButton>
+      <TwitterShareButton url={url} title={title}>
+        <Button variant="outline" size="icon">
+          <FaTwitter className="h-5 w-5 text-blue-400" />
+        </Button>
+      </TwitterShareButton>
+      <LinkedinShareButton url={url} title={title}>
+        <Button variant="outline" size="icon">
+          <FaLinkedin className="h-5 w-5 text-blue-700" />
+        </Button>
+      </LinkedinShareButton>
+      <EmailShareButton url={url} subject={title}>
+        <Button variant="outline" size="icon">
+          <MailIcon className="h-5 w-5 text-gray-600" />
+        </Button>
+      </EmailShareButton>
+    </div>
+  );
 };
 
-const accordionData = [
-  {
-    id: "features",
-    title: "Key Features",
-    content:
-      "Discover the standout features of the KUMIHO THOTH S, including its long-lasting 1000mAh battery, adjustable 5-35W wattage for a personalized vaping experience, and compatibility with a range of pod options. Experience consistent performance and ultimate control in the palm of your hand.",
-  },
-  {
-    id: "specifications",
-    title: "Technical Specifications",
-    content: (
-      <ul>
-        <li>Battery Capacity: 1000mAh</li>
-        <li>Wattage Range: 5 - 35W Adjustable</li>
-        <li>Pod Compatibility: THOTH S Pod Series</li>
-        <li>Charging: USB-C</li>
-        <li>Display: LED Indicator</li>
-        <li>Material: Durable Zinc Alloy</li>
-      </ul>
-    ),
-  },
-  {
-    id: "what-in-the-box",
-    title: "What's in the Box",
-    content: (
-      <ul>
-        <li>1 x KUMIHO THOTH S Device</li>
-        <li>1 x THOTH S Pod (0.8Ω Mesh Coil Pre-installed)</li>
-        <li>1 x USB-C Cable</li>
-        <li>1 x User Manual</li>
-        <li>1 x Warranty Card</li>
-      </ul>
-    ),
-  },
-  {
-    id: "how-to-use",
-    title: "How to Use",
-    content: (
-      <ol>
-        <li>
-          <strong>Charging:</strong> Connect the device to a power source using
-          the provided USB-C cable until fully charged. The LED indicator will
-          show the charging status.
-        </li>
-        <li>
-          <strong>Pod Installation:</strong> Insert a compatible THOTH S pod
-          into the device until it clicks into place.
-        </li>
-        <li>
-          <strong>Power On/Off:</strong> Quickly press the power button five
-          times to turn the device on or off.
-        </li>
-        <li>
-          <strong>Wattage Adjustment:</strong> Use the adjustment buttons to set
-          your desired wattage (5-35W). The current wattage will be displayed on
-          the LED indicator.
-        </li>
-        <li>
-          <strong>Vaping:</strong> Once the pod is installed and the device is
-          powered on, inhale through the mouthpiece to vape.
-        </li>
-      </ol>
-    ),
-  },
-  {
-    id: "safety-precautions",
-    title: "Safety Precautions",
-    content: (
-      <ul>
-        <li>Keep out of reach of children and pets.</li>
-        <li>Do not use if the device or pod is damaged.</li>
-        <li>Avoid extreme temperatures and direct sunlight.</li>
-        <li>Use only compatible pods and charging cables.</li>
-        <li>Dispose of responsibly according to local regulations.</li>
-      </ul>
-    ),
-  },
-];
-
 export default function Page() {
+  const params = useParams();
+  const id = params.id;
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const {
+    data: product,
+    isLoading,
+    refetch,
+  } = useStoreProductDetailsByIdQuery(id as any);
+
+  // Add this hook to fetch reviews
+  const { data: reviewsData, isLoading: isReviewsLoading } = useGetReviewsQuery({
+    role: 5,
+    id: product?.data?.id,
+  });
+  console.log('reviewsData', reviewsData);
+  const [followOrUnfollowBrand, { isLoading: isFollowing }] =
+    useFollowBrandMutation();
+  const [unfollowBrand, { isLoading: isUnFollowing }] =
+    useUnfollowBrandMutation();
+
+  if (isLoading || isReviewsLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingScletion />
+      </div>
+    );
+  }
+
+  // Simplified FAQ accordion data mapping
+  const faqAccordionItems = product?.data?.product_faqs?.map((faq: any, index: number) => ({
+    id: `faq-${index}`,
+    title: faq.question,
+    content: faq.answer,
+  })) || [];
+
+  const handleFollow = async (id: string) => {
+    try {
+      const response = await followOrUnfollowBrand(id).unwrap();
+      if (response.ok) {
+        toast.success(response.message || "Followed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to follow");
+    }
+  };
+
+  const handleUnfollow = async (id: string) => {
+    try {
+      const response = await unfollowBrand(id).unwrap();
+      if (response.ok) {
+        toast.success(response.message || "Unfollowed successfully");
+        refetch();
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to unfollow");
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy link");
+    }
+  };
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: product?.data?.product_name || "Check out this product",
+        url: currentUrl,
+      });
+    } catch (err) {
+      setIsShareDialogOpen(true);
+    }
+  };
+
+  const formatPrice = () => {
+    if (!product?.data?.product_price) return "Price not available";
+    const price = parseFloat(product.data.product_price);
+    return `$${price.toFixed(2)}`;
+  };
+
+  if (!product) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Product not found
+      </div>
+    );
+  }
+
   return (
     <main className="!py-12">
       <div className="!px-4 lg:!px-[7%] !pb-12">
         <div className="flex !py-4 gap-4 ">
           <Avatar className="size-24 border">
-            <AvatarImage src="/image/icon/store.png" alt="SMOK Brand Logo" />
-            <AvatarFallback>DV</AvatarFallback>
+            <AvatarImage
+              src={product?.data?.user?.avatar || "/image/icon/brand.jpg"}
+              alt={`${product?.data?.user?.avatar} Brand Logo`}
+            />
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
-            <Namer name="Vape Juice Deport" isVerified type="store" size="xl" />
+            <Link
+              href={`/brands/brand/${product?.data?.user?.id}`}
+              className="text-black hover:text-[#3a3a3a] underline"
+            >
+              <Namer
+                name={product?.data?.user?.full_name || "Brand"}
+                isVerified
+                type="brand"
+                size="xl"
+              />
+            </Link>
           </div>
           <div className="flex-1 h-24 flex flex-row justify-end items-center gap-4">
-            <p className="font-semibold text-sm">43.1k followers</p>
+            <p className="font-semibold text-sm">
+              {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
+              followers
+            </p>
             <Button variant="outline" className="!text-sm font-extrabold">
               B2B
             </Button>
             <Button variant="outline" size="icon">
               <MessageSquareMoreIcon />
             </Button>
-            <Button variant="outline">Follow</Button>
-            <Button variant="outline" size="icon">
-              <Share2Icon />
-            </Button>
+            {product?.data?.user?.is_following ? (
+              <Button
+                onClick={() => handleUnfollow(product?.data?.user?.id)}
+                variant="outline"
+              >
+                {isUnFollowing ? "Unfollowing..." : "Unfollow"}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => handleFollow(product?.data?.user?.id)}
+                variant="outline"
+              >
+                {isFollowing ? "Following..." : "Follow"}
+              </Button>
+            )}
+
+            <Dialog
+              open={isShareDialogOpen}
+              onOpenChange={setIsShareDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button
+                  onClick={handleNativeShare}
+                  variant="outline"
+                  size="icon"
+                >
+                  <Share2Icon />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Share this product</DialogTitle>
+                </DialogHeader>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Input value={currentUrl} readOnly />
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="px-3"
+                    onClick={copyToClipboard}
+                  >
+                    <span className="sr-only">Copy</span>
+                    <CopyIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <ShareButtons
+                  url={currentUrl}
+                  title={
+                    product?.data?.product_name || "Check out this product"
+                  }
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
       <div className="w-full grid grid-cols-1 lg:grid-cols-9 !py-12 bg-secondary dark:bg-zinc-900 !px-4 lg:!px-[7%] gap-8">
         <div className="col-span-1 lg:col-span-5">
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
-            KUMIHO THOTH S Pod System
+            {product?.data?.product_name || "Brand"}
           </h1>
+          <div className="text-2xl font-bold !mb-4">{formatPrice()}</div>
           <p className="text-muted-foreground !mb-8">
-            The THOTH S pod system by kumiho, boasting a powerful 1000mAh
-            battery and adjustable wattage from 5 to 35W, offers unmatched power
-            and flexibility.
+            {product?.data?.product_description ||
+              "Premium product with excellent features."}
           </p>
           <div className="w-full lg:w-2/3">
-            <Accordion type="single" collapsible>
-              {accordionData.map((item) => (
-                <AccordionItem key={item.id} value={item.id}>
-                  <AccordionTrigger>{item.title}</AccordionTrigger>
-                  <AccordionContent>{item.content}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            {faqAccordionItems.length > 0 ? (
+              <Accordion type="single" collapsible>
+                {faqAccordionItems.map((item: FAQAccordionItem) => (
+                  <AccordionItem key={item.id} value={item.id}>
+                    <AccordionTrigger>{item.title}</AccordionTrigger>
+                    <AccordionContent>{item.content}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <p className="text-muted-foreground">No FAQs available for this product</p>
+            )}
           </div>
         </div>
         <div className="col-span-1 lg:col-span-4">
           <Image
-            src="/image/shop/item.jpg"
+            src={product?.data?.product_image || "/image/shop/item.jpg"}
             width={800}
             height={800}
-            alt="KUMIHO THOTH S Pod System"
+            alt={product?.data?.product_name}
             className="aspect-square object-cover object-center w-full rounded-md shadow-lg"
           />
-          <div className="">
-            <h3 className="text-end text-4xl flex gap-4 justify-end !mt-12">
-              Price:{" "}
-              <span className="text-green-600 font-semibold">$17.99</span>{" "}
-              <span className="line-through text-muted-foreground">$39.99</span>
-            </h3>
-
-            <div className="flex justify-end">
-              <BuyMachine />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="!px-4 lg:!px-[7%] !py-20">
-        <h3 className="text-2xl !mb-12">Reviews of this product</h3>
-        <div className="flex flex-row gap-6">
-          <Input placeholder="What do you think about this?" />
-          <Button>Add review</Button>
-        </div>
-        <div className="w-full flex flex-col justify-start items-start gap-6 !mt-6">
-          {/* {Array.from({ length: 6 }).map((_, i) => (
-            <ReviewCard key={i} />
-          ))} */}
         </div>
       </div>
       <div className="!px-4 lg:!px-[7%] !py-20">
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
-          <Link href="/stores/store" className="underline font-semibold">
-            Vape Juice Deport
+          <Link href={`#`} className="underline font-semibold">
+            {product?.data?.user?.full_name || "Brand"}
           </Link>
           ?
         </h3>
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Link href="/brands/brand/product" key={i}>
-              <ProductCard data={data} />
-            </Link>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {product?.data?.related_products
+            ?.slice(0, 4)
+            .map((relatedProduct: any) => (
+              <ProductCard
+                key={relatedProduct.id}
+                link={`${relatedProduct.id}`}
+                data={{
+                  image: relatedProduct.product_image || "/image/shop/item.jpg",
+                  title: relatedProduct.product_name,
+                  category: relatedProduct.category?.name || "Product",
+                  note: `$${parseFloat(relatedProduct.product_price).toFixed(
+                    2
+                  )}`,
+                  discount: relatedProduct.product_discount,
+                  hearts: relatedProduct.total_heart,
+                  rating: parseFloat(
+                    relatedProduct.average_rating || "0"
+                  ).toFixed(1),
+                }}
+              />
+            ))}
         </div>
+
+        {/* Reviews Section */}
+        <ReviewPost role={5} productId={product?.data?.id} />
+        <Separator />
+
+        {/* Pass reviews data to Reviewer component */}
+        {reviewsData && (
+          <Reviewer
+            product={product}
+            role={5}
+
+
+          />
+        )}
       </div>
     </main>
   );

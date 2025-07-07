@@ -77,9 +77,14 @@ export default function ProductCard({
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
-            <p className="text-muted-foreground font-bold text-sm md:text-base">
-              {data.category}
-            </p>
+            {
+              data?.category !== null && (
+
+                <p className="text-muted-foreground font-bold text-sm md:text-base">
+                  ${data?.category}
+                </p>
+              )
+            }
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
               {data.title}
             </h3>

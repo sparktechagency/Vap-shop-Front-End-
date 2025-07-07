@@ -117,7 +117,7 @@ export default function Catalog({ id }: any) {
             data={{
               image: item.product_image || "/image/shop/item.jpg",
               title: item.product_name,
-              category: `$${item.product_price}`,
+              category: `${item.product_price}`,
               note: item.product_type
             }}
             link={`/stores/store/product/${item.id}`}

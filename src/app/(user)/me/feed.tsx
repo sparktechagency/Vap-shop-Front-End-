@@ -47,7 +47,7 @@ export default function Feed() {
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
         key={post.id || index} // Prefer post.id if available
-        user={{ name: post?.user?.full_name ?? "", avatar: post?.user?.avatar }}
+        user={{ name: post?.user?.full_name ?? "Name not found", avatar: post?.user?.avatar }}
         data={post}
       />
     ));
