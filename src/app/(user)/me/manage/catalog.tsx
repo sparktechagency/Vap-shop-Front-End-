@@ -27,7 +27,7 @@ export default async function Catalog() {
   }
 
   const datas = res?.data.data;
-  console.log('datas-------------------', datas);
+  // console.log('datas-------------------', datas);
 
   return (
     <>
