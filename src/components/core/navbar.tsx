@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "../ui/button";
-
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -12,7 +11,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { navActions, navActionsBasic } from "./core-values/navlinks";
 import Searcher from "../ui/searcher";
 import MobileMenu from "./mobile-menu";
@@ -24,6 +22,7 @@ import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
+
 export const LinkList = [
   {
     title: "Trending",
@@ -42,9 +41,7 @@ export const LinkList = [
       main: [{ label: "All brands", to: "/brands" }],
       sub: {
         title: "My Favourite Brands",
-        items: [
-          // { label: "All brands", to: "/brands" },
-        ],
+        items: [],
       },
     },
   },
@@ -55,83 +52,71 @@ export const LinkList = [
       main: [{ label: "All stores", to: "/stores" }],
       sub: {
         title: "My Favourite Stores",
-        items: [
-          // { label: "All stores", to: "/stores" },
-        ],
+        items: [],
       },
     },
   },
 ];
 
 export default function Navbar() {
-  const token = Cookies.get("token");
+  const pathname = usePathname();
+  const [token, setToken] = useState<string | undefined>(undefined);
   const [user, setUser] = useState<UserData | null>(null);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
-  const { data, isLoading, refetch } = useGetOwnprofileQuery();
-  const pathname = usePathname();
 
-  function reData() {
-    setUser(data.data);
-    const updated = [...LinkList];
-    updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
-      (x: { full_name: string; id: string }) => ({
-        label: x.full_name,
-        to: "#",
-      })
-    );
-    updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
-      (x: { full_name: string; id: string }) => ({
-        label: x.full_name,
-        to: "#",
-      })
-    );
-    setLinkListDynamic(updated); // linkListDynamic should be a state variable
-  }
+  const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
+    skip: !token, // Skip query if no token
+  });
 
+  // Watch for token changes
   useEffect(() => {
-    if (document.cookie.includes("token")) {
-      refetch().then((res) => {
-        if (!("error" in res) && res.data) {
-          setUser(res.data.data);
-          const updated = [...LinkList];
-          updated[3].dropdown!.sub.items =
-            res.data.data.favourite_store_list.map(
-              (x: { full_name: string; id: string }) => ({
-                label: x.full_name,
-                to: "#",
-              })
-            );
-          updated[2].dropdown!.sub.items =
-            res.data.data.favourite_brand_list.map(
-              (x: { full_name: string; id: string }) => ({
-                label: x.full_name,
-                to: "#",
-              })
-            );
-          setLinkListDynamic(updated);
-        } else {
-          setUser(null); // in case user is not logged in
-          setLinkListDynamic(LinkList);
-        }
-      });
+    const checkToken = () => {
+      const newToken = Cookies.get("token");
+      if (newToken !== token) {
+        setToken(newToken);
+      }
+    };
+
+    // Initial check
+    checkToken();
+
+    // Set up interval to check for token changes
+    const interval = setInterval(checkToken, 1000);
+
+    return () => clearInterval(interval);
+  }, [token]);
+
+  // Update user data when token or data changes
+  useEffect(() => {
+    if (token && data) {
+      setUser(data.data);
+
+      const updated = [...LinkList];
+      updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
+        (x: { full_name: string; id: string }) => ({
+          label: x.full_name,
+          to: `/stores/${x.id}`,
+        })
+      );
+      updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
+        (x: { full_name: string; id: string }) => ({
+          label: x.full_name,
+          to: `/brands/${x.id}`,
+        })
+      );
+      setLinkListDynamic(updated);
     } else {
       setUser(null);
       setLinkListDynamic(LinkList);
     }
-  }, [pathname]);
+  }, [token, data]);
 
+  // Trigger refetch when path changes (for cases where login redirects)
   useEffect(() => {
-    if (data) {
-      reData();
+    if (token) {
       refetch();
     }
-  }, [data, pathname, refetch]);
-
-  useEffect(() => {
-    if (document.cookie.includes("token")) {
-      refetch();
-    }
-  }, []);
+  }, [pathname, token, refetch]);
 
   return (
     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
@@ -254,3 +239,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
