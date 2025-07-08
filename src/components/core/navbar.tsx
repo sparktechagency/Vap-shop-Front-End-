@@ -123,8 +123,9 @@ export default function Navbar() {
   useEffect(() => {
     if (data) {
       reData();
+      refetch();
     }
-  }, [data]);
+  }, [data, pathname, refetch]);
 
   useEffect(() => {
     if (document.cookie.includes("token")) {
