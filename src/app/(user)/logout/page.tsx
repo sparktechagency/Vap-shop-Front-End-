@@ -18,21 +18,9 @@ export default function LogoutPage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
 
-    try {
-      // Remove the token cookie
-      Cookies.remove("token");
-
-      // Add a small delay for better UX
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Redirect to home page
-      router.push("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-      setIsLoggingOut(false);
-    }
+    Cookies.remove("token");
+    router.push("/login");
   };
 
   const handleGoBack = () => {

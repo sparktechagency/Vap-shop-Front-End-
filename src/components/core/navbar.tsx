@@ -23,7 +23,7 @@ import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-
+import Cookies from "js-cookie";
 export const LinkList = [
   {
     title: "Trending",
@@ -64,6 +64,7 @@ export const LinkList = [
 ];
 
 export default function Navbar() {
+  const token = Cookies.get("token");
   const [user, setUser] = useState<UserData | null>(null);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
   const { data, isLoading, refetch } = useGetOwnprofileQuery();
@@ -122,8 +123,9 @@ export default function Navbar() {
   useEffect(() => {
     if (data) {
       reData();
+      refetch();
     }
-  }, [data]);
+  }, [data, pathname, refetch]);
 
   useEffect(() => {
     if (document.cookie.includes("token")) {
@@ -166,7 +168,7 @@ export default function Navbar() {
           </div>
           {!isLoading && (
             <div className="hidden lg:flex flex-row justify-end items-center gap-2">
-              {user ? (
+              {user && token ? (
                 <Button variant="outline" asChild>
                   <Link href="/me">
                     <Avatar className="size-6">
