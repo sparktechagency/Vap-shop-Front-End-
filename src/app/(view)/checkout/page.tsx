@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -7,44 +9,172 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CheckoutForm from "./checkout-form";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { XIcon } from "lucide-react";
+import { toast } from "sonner";
 
-export default function Page() {
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
+export default function CheckoutPage() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Load cart items from localStorage
+  useEffect(() => {
+    setIsClient(true);
+    const loadCart = () => {
+      try {
+        const cart = localStorage.getItem('cart');
+        setCartItems(cart ? JSON.parse(cart) : []);
+      } catch (error) {
+        console.error("Error loading cart:", error);
+        setCartItems([]);
+      }
+    };
+    loadCart();
+  }, []);
+
+  const removeItem = (id: string) => {
+    try {
+      const updatedCart = cartItems.filter(item => item.id !== id);
+      setCartItems(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      toast.success('Item removed from cart');
+    } catch (error) {
+      toast.error('Failed to remove item');
+    }
+  };
+
+  const updateQuantity = (id: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    try {
+      const updatedCart = cartItems.map(item =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      );
+      setCartItems(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    } catch (error) {
+      toast.error('Failed to update quantity');
+    }
+  };
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  if (!isClient) {
+    return (
+      <main className="!py-12 !px-4 md:!px-[7%]">
+        <div className="col-span-7">
+          <h1 className="text-4xl font-bold">Checkout</h1>
+        </div>
+        <p>Loading your cart...</p>
+      </main>
+    );
+  }
+
   return (
-    <main className="!py-12 !px-4 md:!px-[7%] grid grid-cols-7 gap-12">
+    <main className="!py-12 !px-4 md:!px-[7%] grid grid-cols-1 lg:grid-cols-7 gap-12">
       <div className="col-span-7">
         <h1 className="text-4xl font-bold">Checkout</h1>
       </div>
-      <div className="col-span-5 !space-y-12">
+
+      <div className="lg:col-span-5 !space-y-12">
         <Card>
-          <CardContent>
-            <CheckoutForm />
+          <CardContent className="pt-6">
+            <CheckoutForm cartItems={cartItems} totalPrice={totalPrice} />
           </CardContent>
         </Card>
       </div>
-      <div className="col-span-2">
-        <Card className="w-full">
+
+      <div className="lg:col-span-2">
+        <Card className="w-full sticky top-4">
           <CardHeader>
             <CardTitle>Your order</CardTitle>
           </CardHeader>
+
           <CardContent>
             <CardDescription>
-              <ol className="list-decimal list-inside !space-y-4">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <li className="flex justify-between w-full" key={i}>
-                    <p>VooPoo - Vmate E2 Kit</p>
-                    <p>100$</p>
-                  </li>
-                ))}
+              <ol className="!space-y-4">
+                {cartItems.length === 0 ? (
+                  <p className="text-gray-500">Your cart is empty</p>
+                ) : (
+                  cartItems.map((item) => (
+                    <li key={item.id} className="flex flex-col gap-2 pb-4 border-b">
+                      <div className="flex justify-between items-start w-full">
+                        <div className="flex gap-3">
+                          <div className="relative h-16 w-16">
+                            <Image
+                              src={item.image || "/image/shop/item.jpg"}
+                              alt={item.name}
+                              fill
+                              className="rounded-md object-cover"
+                              sizes="64px"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-medium">{item.name}</p>
+                            <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeItem(item.id)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <XIcon className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                            className="h-8 w-8 p-0"
+                          >
+                            -
+                          </Button>
+                          <span className="w-8 text-center">{item.quantity}</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="h-8 w-8 p-0"
+                          >
+                            +
+                          </Button>
+                        </div>
+                        <p className="font-medium">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+                    </li>
+                  ))
+                )}
               </ol>
             </CardDescription>
           </CardContent>
+
           <Separator />
-          <CardFooter>
-            <div className="flex justify-between w-full">
+
+          <CardFooter className="py-4">
+            <div className="flex justify-between w-full font-bold text-lg">
               <p>Total</p>
-              <p>600$</p>
+              <p>${totalPrice.toFixed(2)}</p>
             </div>
           </CardFooter>
         </Card>
