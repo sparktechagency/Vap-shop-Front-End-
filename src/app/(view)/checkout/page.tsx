@@ -92,7 +92,7 @@ export default function CheckoutPage() {
       <div className="lg:col-span-5 !space-y-12">
         <Card>
           <CardContent className="pt-6">
-            <CheckoutForm cartItems={cartItems} totalPrice={totalPrice} />
+            <CheckoutForm />
           </CardContent>
         </Card>
       </div>
