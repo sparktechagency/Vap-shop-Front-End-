@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
@@ -20,15 +22,15 @@ export default function ProductCard({
   manage?: boolean;
   link?: string;
 }) {
-  const [fevoriteUnveforite, { isLoading }] = useFevoriteUnveforiteMutation()
+  const [fevoriteUnveforite, { isLoading }] = useFevoriteUnveforiteMutation();
 
   const handleFebandUnfev = async (id: number) => {
-    console.log('id', id);
+    console.log("id", id);
     const alldata = {
       product_id: id,
       role: 3,
-    }
-    console.log('alldata', alldata);
+    };
+    console.log("alldata", alldata);
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
       if (response.ok) {
@@ -37,13 +39,12 @@ export default function ProductCard({
         toast.success(response.message || "Fevorited successfully");
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
       toast.error("Failed to fevorite");
     }
-  }
+  };
 
-
-  console.log('singleproductdata', data);
+  console.log("singleproductdata", data);
   return (
     <Card className="!p-0 !gap-0 shadow-sm overflow-hidden group">
       {/* 🔹 Image - no click */}
@@ -57,18 +58,17 @@ export default function ProductCard({
         {!manage && (
           <div className="absolute bottom-2 right-2 flex z-50">
             <Button
-
               className="!text-sm"
               variant="outline"
               onClick={(e) => handleFebandUnfev(data?.id as number)}
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""}`}
+                className={`ml-1 size-5 ${
+                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                }`}
               />
-
             </Button>
-
           </div>
         )}
       </div>
@@ -77,21 +77,17 @@ export default function ProductCard({
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
-            {
-              data?.category !== null && (
-
-                <p className="text-muted-foreground font-bold text-sm md:text-base">
-                  ${data?.category}
-                </p>
-              )
-            }
+            {data?.category !== null && (
+              <p className="text-muted-foreground font-bold text-sm md:text-base">
+                ${data?.category}
+              </p>
+            )}
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
               {data.title}
             </h3>
             <div className="text-xs md:text-sm text-muted-foreground">
               <span>{data.note}</span>
             </div>
-
           </CardContent>
         </div>
       </Link>
@@ -112,7 +108,7 @@ export default function ProductCard({
               asChild
               onClick={(e) => e.stopPropagation()}
             >
-              <Link href={link}>View</Link>
+              <Link href={link}>Edit</Link>
             </Button>
           )}
         </CardFooter>

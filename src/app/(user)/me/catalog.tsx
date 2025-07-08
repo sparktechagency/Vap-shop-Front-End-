@@ -55,7 +55,7 @@ export default function Catalog() {
 
           return (
             <ProductCard
-              manage
+              // manage
               key={product.id}
               data={productData}
               link={

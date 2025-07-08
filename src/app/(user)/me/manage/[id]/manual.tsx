@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -52,9 +53,9 @@ type FormData = z.infer<typeof formSchema>;
 export default function ProductForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   const [postProduct] = usePostProductMutation();
+  const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
 
   const form = useForm<FormData>({
@@ -76,21 +77,18 @@ export default function ProductForm() {
     name: "faqs",
   });
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];
-      setSelectedFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-    }
-  }, []);
-
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [".jpeg", ".jpg", ".png", ".webp"],
     },
     maxFiles: 1,
-    onDrop,
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+        setSelectedFile(file);
+        setImageurl(URL.createObjectURL(file));
+      }
+    },
     onDragEnter: () => setIsDragging(true),
     onDragLeave: () => setIsDragging(false),
     onDropAccepted: () => setIsDragging(false),
@@ -102,59 +100,60 @@ export default function ProductForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Validate form before submission
-      await form.trigger();
-      if (!form.formState.isValid) {
-        toast.error("Please fill all required fields correctly");
-        return;
-      }
-
       const formData = new FormData();
 
-      // Append image if selected
+      // 1. Append the image if selected
       if (selectedFile) {
         formData.append("product_image", selectedFile);
       }
 
-      // Append all form data
+      // 2. Append all other form data fields, excluding the discount for now
       Object.entries(data).forEach(([key, value]) => {
+        if (key === "product_discount") {
+          return; // Skip discount, handle it separately
+        }
+
         if (key === "faqs") {
           data.faqs.forEach((faq, index) => {
             formData.append(`product_faqs[${index}][question]`, faq.question);
             formData.append(`product_faqs[${index}][answer]`, faq.answer);
           });
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
+        } else {
+          // Append other fields, ensuring null/undefined becomes an empty string
+          formData.append(key, value ? String(value) : "");
         }
       });
 
-      // Handle discount calculation
-      const discountValue = data.product_discount ? parseFloat(data.product_discount) : 0;
-      const priceValue = data.product_price ? parseFloat(data.product_price) : 0;
-      const calculatedDiscount = priceValue * (discountValue / 100);
+      // 3. Always append discount fields with appropriate values
+      if (data.product_discount && data.product_price) {
+        const discountValue = parseFloat(data.product_discount);
+        const priceValue = parseFloat(data.product_price);
+        const calculatedDiscount = priceValue * (discountValue / 100);
 
-      formData.append("product_discount", calculatedDiscount.toString());
-      formData.append("product_discount_unit", discountValue.toString());
+        formData.append("product_discount", calculatedDiscount.toString());
+        formData.append("product_discount_unit", data.product_discount);
+      } else {
+        // **THE FIX**: If no discount is entered, send "0" for both fields
+        formData.append("product_discount", "0");
+        formData.append("product_discount_unit", "0");
+      }
 
-      // Submit the form
+      // 4. Send the request
       const res = await postProduct(formData).unwrap();
 
       if (!res.ok) {
-        toast.error(res.message || "Failed to upload product");
+        toast.error(res.message);
         return;
       }
 
       toast.success("Product has been uploaded successfully.");
       form.reset();
       setSelectedFile(null);
-      setImagePreview(null);
+      setImageurl(null);
     } catch (error: any) {
       console.error("Submission error:", error);
       toast.error(
-        error?.data?.errors?.[0]?.msg ||
-        error?.data?.message ||
-        "Failed to upload product. Please try again."
-     
+        error?.data?.errors || "Failed to upload product. Please try again."
       );
     }
   };
@@ -166,8 +165,6 @@ export default function ProductForm() {
   const removeFAQ = (index: number) => {
     if (fields.length > 1) {
       remove(index);
-    } else {
-      toast.error("At least one FAQ is required");
     }
   };
 
@@ -176,7 +173,7 @@ export default function ProductForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Product Image Upload */}
+            {/* Product Image Upload with Drag and Drop */}
             <div className="col-span-full space-y-2">
               <FormLabel>Product Image:</FormLabel>
               <div
@@ -188,15 +185,14 @@ export default function ProductForm() {
                 }`}
               >
                 <input {...getInputProps()} />
-                {imagePreview ? (
+                {imageurl ? (
                   <div className="flex flex-col items-center">
                     <Image
-                      src={imagePreview}
+                      src={imageurl}
                       width={200}
                       height={200}
                       alt="Product preview"
                       className="mb-4 rounded-md object-cover"
-                      onLoad={() => URL.revokeObjectURL(imagePreview)}
                     />
                     <p className="text-sm text-gray-600">
                       Click or drag to replace the image
@@ -231,7 +227,7 @@ export default function ProductForm() {
                 )}
               />
 
-              {/* Product Price */}
+              {/* Product Price (Optional) */}
               <FormField
                 control={form.control}
                 name="product_price"
@@ -257,7 +253,7 @@ export default function ProductForm() {
                 )}
               />
 
-              {/* Discount */}
+              {/* Discount (Optional) */}
               <FormField
                 control={form.control}
                 name="product_discount"
@@ -279,7 +275,7 @@ export default function ProductForm() {
                 )}
               />
 
-              {/* Stock */}
+              {/* Stock (Optional) */}
               <FormField
                 control={form.control}
                 name="product_stock"
@@ -322,25 +318,20 @@ export default function ProductForm() {
                     <FormLabel>Select Category:</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      value={field.value}
+                      defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {catLoading ? (
-                          <SelectItem value="loading" disabled>
-                            Loading categories...
-                          </SelectItem>
-                        ) : (
+                        {!catLoading &&
                           cats?.data?.map((x: { id: number; name: string }) => (
                             <SelectItem value={String(x.id)} key={x.id}>
                               {x.name}
                             </SelectItem>
-                          ))
-                        )}
+                          ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -359,7 +350,7 @@ export default function ProductForm() {
                   <FormControl>
                     <Textarea
                       placeholder="Enter product description"
-                      className="min-h-[160px]"
+                      className="h-[160px]"
                       {...field}
                     />
                   </FormControl>
@@ -414,11 +405,7 @@ export default function ProductForm() {
                       <FormItem>
                         <FormLabel>Answer</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Enter answer"
-                            {...field}
-                            className="min-h-[100px]"
-                          />
+                          <Textarea placeholder="Enter answer" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -430,12 +417,11 @@ export default function ProductForm() {
           </div>
 
           {/* Submit Button */}
-          <div className="pt-10 flex justify-center">
+          <div className="pt-10 flex justify-center items-center">
             <Button
               type="submit"
               size="lg"
               disabled={form.formState.isSubmitting}
-              className="w-full sm:w-auto"
             >
               {form.formState.isSubmitting ? "Uploading..." : "Confirm Upload"}
             </Button>
