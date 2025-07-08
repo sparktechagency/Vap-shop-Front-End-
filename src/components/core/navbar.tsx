@@ -155,7 +155,8 @@ export default function Navbar() {
             <div className="hidden lg:flex flex-row justify-end items-center gap-2">
               {user && token ? (
                 <Button variant="outline" asChild>
-                  <Link href="/me">
+                  <Link href={`/me?${user?.full_name?.toLowerCase()}`}>
+
                     <Avatar className="size-6">
                       <AvatarImage src={user.avatar} className="object-cover" />
                       <AvatarFallback className="text-xs font-bold uppercase">

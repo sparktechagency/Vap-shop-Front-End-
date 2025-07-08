@@ -16,7 +16,7 @@ import {
 } from "@/redux/features/others/otherApi";
 import Link from "next/link";
 
-const categories = ["store", "brand", "product", "account"];
+const categories = ["store", "brand", "products", "accounts", "wholesaler"];
 
 // const getImageSrc = (category: string) => {
 //   switch (category) {

@@ -303,9 +303,7 @@ export default function Page() {
               <p className="text-muted-foreground">No FAQs available for this product</p>
             )}
           </div>
-          <p>
-            {product?.data?.product_image}
-          </p>
+
 
         </div>
         <div className="col-span-1 lg:col-span-4">

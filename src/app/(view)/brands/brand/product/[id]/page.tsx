@@ -297,7 +297,7 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={`/brands/brand/${product?.data?.user?.id}`}
+              href={`/brands/brand/${product?.data?.user?.id}?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer

@@ -22,7 +22,7 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
 
-        <Link href={`/brands/brand/${data?.id}`}>
+        <Link href={`/brands/brand/${data?.id}?${data?.storeName?.toLocaleLowerCase()}`}>
           <div className="bg-background/70 h-full w-full opacity-0 hover:opacity-60 hover:backdrop-blur-xs transition-all z-0">
             <div className="absolute flex items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-foreground hover:scale-125 transition-transform cursor-pointer gap-1 text-xs md:text-base">
               <EyeIcon className="size-4 md:size-6" /> View
