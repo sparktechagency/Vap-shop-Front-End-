@@ -2,9 +2,13 @@
 import { api } from "../../baseApi";
 export const forumApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getForum: builder.query<any, void>({
-      query: () => `/forum-group?show_front=1`,
+    getForum: builder.query<any, Record<string, string | number | boolean | undefined>>({
+      query: (params) => {
+        const queryString = new URLSearchParams(params as Record<string, string>).toString();
+        return `/forum-group?${queryString}`;
+      },
     }),
+
 
     getallThredsByGropId: builder.query({
       query: ({ page, per_page, id }) =>

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Tabs,
   TabsList,
@@ -11,28 +10,38 @@ import {
 import VapeTalk from "./vape-talk";
 import { useGetForumQuery } from "@/redux/features/Forum/ForumApi";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-// import { ExclamationTriangleIcon, ReloadIcon } from "lucide-react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingScletion from "@/components/LoadingScletion";
 
 export default function TabsTriggererForum() {
-  const { data, isLoading, isError, error, refetch } = useGetForumQuery();
+  const [activeTab, setActiveTab] = useState("default");
 
-  if (isLoading) {
-    return <LoadingScletion />;
-  }
+  // Query params based on tab
+  const queryParams = () => {
+    switch (activeTab) {
+      case "trending":
+        return { show_front: 1, is_trending: 1 };
+      case "latest": // Fresh Puffs
+        return { show_front: 1, is_latest: 1 };
+      default:
+        return { show_front: 1 };
+    }
+  };
+
+  const { data, isLoading, isError, error, refetch } = useGetForumQuery(queryParams());
+
+  if (isLoading) return <LoadingScletion />;
 
   if (isError) {
     return (
       <div className="container !py-10">
         <div className="mb-8">
-          <Tabs defaultValue="hearted">
+          <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
             <TabsList className="border-b !justify-center gap-2 md:gap-3 lg:gap-6">
-              <TabsTrigger value="hearted">💬 Vape Talk Central</TabsTrigger>
-              <TabsTrigger value="followers">🔥 Trending Now</TabsTrigger>
-              <TabsTrigger value="rated">✨ Fresh Puffs</TabsTrigger>
-              <TabsTrigger value="featured">🫂 Create Community</TabsTrigger>
+              <TabsTrigger value="default">💬 Vape Talk Central</TabsTrigger>
+              <TabsTrigger value="trending">🔥 Trending Now</TabsTrigger>
+              <TabsTrigger value="latest">✨ Fresh Puffs</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -61,23 +70,20 @@ export default function TabsTriggererForum() {
 
   return (
     <div className="container !py-10">
-      <Tabs defaultValue="hearted">
+      <Tabs defaultValue="default" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="border-b !justify-center gap-2 md:gap-3 lg:gap-6">
-          <TabsTrigger value="hearted">💬 Vape Talk Central</TabsTrigger>
-          <TabsTrigger value="followers">🔥 Trending Now</TabsTrigger>
-          <TabsTrigger value="rated">✨ Fresh Puffs</TabsTrigger>
-          <TabsTrigger value="featured">🫂 Create Community</TabsTrigger>
+          <TabsTrigger value="default">💬 Vape Talk Central</TabsTrigger>
+          <TabsTrigger value="trending">🔥 Trending Now</TabsTrigger>
+          <TabsTrigger value="latest">✨ Fresh Puffs</TabsTrigger>
         </TabsList>
-        <TabsContent value="hearted">
+
+        <TabsContent value="default">
           <VapeTalk forumGroups={data?.data?.data} />
         </TabsContent>
-        <TabsContent value="followers">
+        <TabsContent value="trending">
           <VapeTalk forumGroups={data?.data?.data} />
         </TabsContent>
-        <TabsContent value="rated">
-          <VapeTalk forumGroups={data?.data?.data} />
-        </TabsContent>
-        <TabsContent value="featured">
+        <TabsContent value="latest">
           <VapeTalk forumGroups={data?.data?.data} />
         </TabsContent>
       </Tabs>
