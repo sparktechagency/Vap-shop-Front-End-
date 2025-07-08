@@ -54,6 +54,7 @@ import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
 import ProductReviewCard from "@/components/core/review-card";
 import ReviewPost from "../../[id]/review-post";
 import Reviewer from "../../[id]/reviewer";
+import { ProductPrice } from "@/components/ui/ProductPrice";
 
 interface ShareButtonsProps {
   url: string;
@@ -93,7 +94,7 @@ export default function Page() {
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-
+  const [quantity, setQuantity] = useState(1);
   const {
     data: product,
     isLoading,
@@ -302,6 +303,7 @@ export default function Page() {
               <p className="text-muted-foreground">No FAQs available for this product</p>
             )}
           </div>
+
         </div>
         <div className="col-span-1 lg:col-span-4">
           <Image
@@ -311,6 +313,19 @@ export default function Page() {
             alt={product?.data?.product_name}
             className="aspect-square object-cover object-center w-full rounded-md shadow-lg"
           />
+
+          <div className="flex items-center justify-end mt-4">
+            <ProductPrice
+              currentPrice={parseFloat(product?.data?.product_price || "0")}
+              originalPrice={product?.data?.original_price ? parseFloat(product.data.original_price) : undefined}
+              productId={product?.data?.id || ""}
+              description={product?.data?.product_description || ""}
+              productName={product?.data?.product_name || ""}
+              productImage={product?.data?.product_image}
+            />
+          </div>
+
+
         </div>
       </div>
       <div className="!px-4 lg:!px-[7%] !py-20">
