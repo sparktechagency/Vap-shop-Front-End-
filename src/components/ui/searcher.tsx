@@ -201,7 +201,7 @@ export default function Searcher({
                   </p>
                 )}
               </div>
-              {/* /// */}
+              {/* // */}
               <div className="flex flex-col justify-around items-center text-xs sm:text-sm md:text-base lg:text-lg border-r lg:border-none">
                 {categories.map((cat) => (
                   <Button
