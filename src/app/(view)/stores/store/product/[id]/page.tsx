@@ -102,11 +102,13 @@ export default function Page() {
   } = useStoreProductDetailsByIdQuery(id as any);
 
   // Add this hook to fetch reviews
-  const { data: reviewsData, isLoading: isReviewsLoading } = useGetReviewsQuery({
-    role: 5,
-    id: product?.data?.id,
-  });
-  console.log('reviewsData', reviewsData);
+  const { data: reviewsData, isLoading: isReviewsLoading } = useGetReviewsQuery(
+    {
+      role: 5,
+      id: product?.data?.id,
+    }
+  );
+  console.log("reviewsData", reviewsData);
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
@@ -121,11 +123,12 @@ export default function Page() {
   }
 
   // Simplified FAQ accordion data mapping
-  const faqAccordionItems = product?.data?.product_faqs?.map((faq: any, index: number) => ({
-    id: `faq-${index}`,
-    title: faq.question,
-    content: faq.answer,
-  })) || [];
+  const faqAccordionItems =
+    product?.data?.product_faqs?.map((faq: any, index: number) => ({
+      id: `faq-${index}`,
+      title: faq.question,
+      content: faq.answer,
+    })) || [];
 
   const handleFollow = async (id: string) => {
     try {
@@ -300,11 +303,11 @@ export default function Page() {
                 ))}
               </Accordion>
             ) : (
-              <p className="text-muted-foreground">No FAQs available for this product</p>
+              <p className="text-muted-foreground">
+                No FAQs available for this product
+              </p>
             )}
           </div>
-
-
         </div>
         <div className="col-span-1 lg:col-span-4">
           <Image
@@ -318,15 +321,17 @@ export default function Page() {
           <div className="flex items-center justify-end mt-4">
             <ProductPrice
               currentPrice={parseFloat(product?.data?.product_price || "0")}
-              originalPrice={product?.data?.original_price ? parseFloat(product.data.original_price) : undefined}
+              originalPrice={
+                product?.data?.original_price
+                  ? parseFloat(product.data.original_price)
+                  : undefined
+              }
               productId={product?.data?.id || ""}
               description={product?.data?.product_description || ""}
               productName={product?.data?.product_name || ""}
               productImage={product?.data?.product_image}
             />
           </div>
-
-
         </div>
       </div>
       <div className="!px-4 lg:!px-[7%] !py-20">
@@ -366,14 +371,7 @@ export default function Page() {
         <Separator />
 
         {/* Pass reviews data to Reviewer component */}
-        {reviewsData && (
-          <Reviewer
-            product={product}
-            role={5}
-
-
-          />
-        )}
+        {reviewsData && <Reviewer product={product} role={5} />}
       </div>
     </main>
   );

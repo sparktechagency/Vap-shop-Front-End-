@@ -55,9 +55,9 @@ export default function Searcher({
   }
   useEffect(() => {
     if (locationInput === "") {
-      setSelectedRegion("")
+      setSelectedRegion("");
     }
-  }, [locationInput])
+  }, [locationInput]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -136,43 +136,57 @@ export default function Searcher({
               className="absolute top-[calc(148px/3)] left-0 w-full bg-background border shadow-lg h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-4 z-10  p-4!"
             >
               <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden row-span-2 lg:row-span-1">
-                {searching?.data?.data ? searching?.data?.data?.map((x: any, i: number) => (
-                  <Link href={selectedSearch === "store" ? `/stores/store/${x.id}` : selectedSearch === "brand" ? `/brands/brand/${x.id}` : "#"} key={i}>
-                    <div
-                      className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary"
+                {searching?.data?.data ? (
+                  searching?.data?.data?.map((x: any, i: number) => (
+                    <Link
+                      href={
+                        selectedSearch === "store"
+                          ? `/stores/store/${x.id}`
+                          : selectedSearch === "brand"
+                          ? `/brands/brand/${x.id}`
+                          : "#"
+                      }
+                      key={i}
                     >
-                      <Card className="aspect-square rounded p-1!">
-                        <Image
-                          src={x.avatar}
-                          height={124}
-                          width={124}
-                          className="h-full w-full object-cover rounded animate-in"
-                          alt="icon"
-                        />
-                      </Card>
-                      <div className="flex-1 flex flex-col justify-between">
-                        <Namer
-                          name={x.first_name}
-                          type={selectedSearch}
-                          // isVerified
-                          size="sm"
-                        />
-                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                          <StarIcon
-                            fill="#ee8500"
-                            stroke=""
-                            className="w-4 h-4"
+                      <div className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary">
+                        <Card className="aspect-square rounded p-1!">
+                          <Image
+                            src={x.avatar}
+                            height={124}
+                            width={124}
+                            className="h-full w-full object-cover rounded animate-in"
+                            alt="icon"
                           />
-                          {x.avg_rating}
-                        </div>
-                        <div className="flex gap-2 text-xs! text-muted-foreground items-center">
-                          <p className="truncate">{x?.address?.address}</p>
-                          {/* <Dotter /> */}
-                          {/* <div className="whitespace-nowrap">4 mi</div> */}
+                        </Card>
+                        <div className="flex-1 flex flex-col justify-between">
+                          <Namer
+                            name={x.first_name}
+                            type={selectedSearch}
+                            // isVerified
+                            size="sm"
+                          />
+                          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                            <StarIcon
+                              fill="#ee8500"
+                              stroke=""
+                              className="w-4 h-4"
+                            />
+                            {x.avg_rating}
+                          </div>
+                          <div className="flex gap-2 text-xs! text-muted-foreground items-center">
+                            <p className="truncate">{x?.address?.address}</p>
+                            {/* <Dotter /> */}
+                            {/* <div className="whitespace-nowrap">4 mi</div> */}
+                          </div>
                         </div>
                       </div>
-                    </div></Link>
-                )) : <p className="text-sm text-muted-foreground">Search something</p>}
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Search something
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col justify-around items-center text-xs sm:text-sm md:text-base lg:text-lg border-r lg:border-none">

@@ -35,16 +35,13 @@ export default async function Catalog() {
         {datas?.map((x: any) => (
           <ProductCard
             data={{
+              id: x.id,
               image: x.product_image,
               title: x.product_name,
               category: x.brand_name,
               note: "",
             }}
-            link={
-              x.role === 5
-                ? `/stores/store/product/${x.id}`
-                : `/brands/brand/product/${x.id}`
-            }
+            link={`/stores/store/product/${x.id}`}
             manage
             key={x.id}
           />

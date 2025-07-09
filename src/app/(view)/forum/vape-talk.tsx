@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import ForumCard from "@/components/core/forum-card";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { group } from "console";
+import Link from "next/link";
 import React from "react";
 
 interface ForumGroup {
@@ -34,7 +37,11 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
 
   return (
     <div className="!py-12">
-
+      <div className="flex justify-end items-center mb-12">
+        <Button variant="outline" asChild>
+          <Link href="/forum/create">Create Community</Link>
+        </Button>
+      </div>
       <Card className="gap-0">
         {forumGroups?.map((group) => (
           <ForumCard
@@ -60,7 +67,6 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
 }
 
 function isNewGroup(createdAt: string): boolean {
-
   const createdDate = new Date(createdAt);
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - createdDate.getTime());
@@ -68,12 +74,11 @@ function isNewGroup(createdAt: string): boolean {
   return diffDays <= 7;
 }
 
-
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 }
