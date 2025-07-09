@@ -14,7 +14,7 @@ export const UsernavLinks = [
   {
     icon: <Lucide.HeartIcon className="size-5" />,
     label: "Your Favourites",
-    to: "#",
+    to: "/me/favs",
   },
   {
     icon: <Lucide.MailOpen className="size-5" />,

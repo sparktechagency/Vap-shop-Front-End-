@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -29,7 +30,9 @@ export default function TabsTriggererForum() {
     }
   };
 
-  const { data, isLoading, isError, error, refetch } = useGetForumQuery(queryParams());
+  const { data, isLoading, isError, error, refetch } = useGetForumQuery(
+    queryParams()
+  );
 
   if (isLoading) return <LoadingScletion />;
 
@@ -70,7 +73,11 @@ export default function TabsTriggererForum() {
 
   return (
     <div className="container !py-10">
-      <Tabs defaultValue="default" value={activeTab} onValueChange={setActiveTab}>
+      <Tabs
+        defaultValue="default"
+        value={activeTab}
+        onValueChange={setActiveTab}
+      >
         <TabsList className="border-b !justify-center gap-2 md:gap-3 lg:gap-6">
           <TabsTrigger value="default">💬 Vape Talk Central</TabsTrigger>
           <TabsTrigger value="trending">🔥 Trending Now</TabsTrigger>

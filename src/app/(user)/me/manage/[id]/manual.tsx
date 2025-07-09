@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,10 +26,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
-import { usePostProductMutation } from "@/redux/features/manage/product";
+import { useUpdateProductMutation } from "@/redux/features/manage/product";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
-
 const faqSchema = z.object({
   question: z.string().min(1, "Question is required"),
   answer: z.string().min(1, "Answer is required"),
@@ -50,11 +49,11 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function ProductForm() {
+export default function ProductForm({ prod }: { prod: any }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
-  const [postProduct] = usePostProductMutation();
+  const [updateProduct] = useUpdateProductMutation();
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
 
@@ -71,6 +70,31 @@ export default function ProductForm() {
       faqs: [{ question: "", answer: "" }],
     },
   });
+
+  useEffect(() => {
+    if (!prod) return;
+
+    form.setValue("product_name", String(prod.product_name || ""));
+    form.setValue("product_price", String(prod.product_price || ""));
+    form.setValue("product_discount", String(prod.product_discount || ""));
+    form.setValue("product_stock", String(prod.product_stock || ""));
+    form.setValue(
+      "product_description",
+      String(prod.product_description || "")
+    );
+    form.setValue("brand_name", String(prod.brand_name || ""));
+    form.setValue("category_id", String(prod.category_id || ""));
+
+    form.setValue(
+      "faqs",
+      prod.faqs?.length > 0
+        ? prod.faqs.map((f: { question: any; answer: any }) => ({
+            question: String(f.question || ""),
+            answer: String(f.answer || ""),
+          }))
+        : [{ question: "", answer: "" }]
+    );
+  }, [prod]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -137,9 +161,14 @@ export default function ProductForm() {
         formData.append("product_discount", "0");
         formData.append("product_discount_unit", "0");
       }
-
+      formData.append("product_id", prod.id);
+      formData.append("_method", "PUT");
       // 4. Send the request
-      const res = await postProduct(formData).unwrap();
+      // alert(prod.id)
+      const res = await updateProduct({
+        body: formData,
+        id: String(prod.id),
+      }).unwrap();
 
       if (!res.ok) {
         toast.error(res.message);
@@ -178,7 +207,7 @@ export default function ProductForm() {
               <FormLabel>Product Image:</FormLabel>
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${
+                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
                   isDragging
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-300 hover:border-gray-400"
@@ -369,7 +398,7 @@ export default function ProductForm() {
               </div>
 
               {fields.map((field, index) => (
-                <div key={field.id} className="space-y-4 p-4 border rounded-lg">
+                <div key={index} className="space-y-4 p-4 border rounded-lg">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">FAQ #{index + 1}</h4>
                     {fields.length > 1 && (
@@ -423,7 +452,7 @@ export default function ProductForm() {
               size="lg"
               disabled={form.formState.isSubmitting}
             >
-              {form.formState.isSubmitting ? "Uploading..." : "Confirm Upload"}
+              {form.formState.isSubmitting ? "Uploading..." : "Confirm Update"}
             </Button>
           </div>
         </form>
