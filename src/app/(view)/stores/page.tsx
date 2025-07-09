@@ -15,8 +15,11 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 export default function Page() {
   const [page, setPage] = useState(1);
   const [perPage] = useState(4);
-  const { data, isLoading } = useGetAllstoreQuery({ page });
-  console.log('data', data);
+  const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
+
+
+
+  console.log('store data ', data);
   if (isLoading) {
     return <LoadingScletion />;
   }
@@ -51,6 +54,7 @@ export default function Page() {
             stores?.map((store: any) => {
               const storeData: BrandType = {
                 id: store.id.toString(),
+                is_favourite: store.is_favourite,
                 image: store.cover_photo || "/image/shop/item.jpg",
                 avatar: store.avatar || "/image/shop/item.jpg",
                 storeName: store.full_name,
@@ -70,6 +74,7 @@ export default function Page() {
 
               return (
                 <StoreProdCard
+                  refetch={refetch}
                   key={store.id}
                   data={storeData}
                 />

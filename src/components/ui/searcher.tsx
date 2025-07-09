@@ -143,21 +143,34 @@ export default function Searcher({
                         selectedSearch === "store"
                           ? `/stores/store/${x.id}`
                           : selectedSearch === "brand"
-                          ? `/brands/brand/${x.id}`
-                          : "#"
+                            ? `/brands/brand/${x.id}`
+                            : "#"
                       }
                       key={i}
                     >
-                      <div className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary">
-                        <Card className="aspect-square rounded p-1!">
-                          <Image
-                            src={x.avatar}
-                            height={124}
-                            width={124}
-                            className="h-full w-full object-cover rounded animate-in"
-                            alt="icon"
+                      <Card className="aspect-square rounded p-1!">
+                        {/* <Image
+                          src={x.avatar}
+                          height={124}
+                          width={124}
+                          className="h-full w-full object-cover rounded animate-in"
+                          alt="icon"
+                        /> */}
+                      </Card>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <Namer
+                          name={x.first_name}
+                          type={selectedSearch}
+                          // isVerified
+                          size="sm"
+                        />
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                          <StarIcon
+                            fill="#ee8500"
+                            stroke=""
+                            className="w-4 h-4"
                           />
-                        </Card>
+                        </div>
                         <div className="flex-1 flex flex-col justify-between">
                           <Namer
                             name={x.first_name}

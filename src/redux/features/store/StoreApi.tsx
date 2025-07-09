@@ -18,7 +18,16 @@ export const storeApi = api.injectEndpoints({
             query: (id) => `/forum-group?user_id=${id}&show_front=1`,
         }),
 
+        fevoritestore: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `/favourite`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["store"],
+        }),
+
     }),
 });
 
-export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery, useStoreGroupListQuery } = storeApi;
+export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery, useStoreGroupListQuery, useFevoritestoreMutation } = storeApi;

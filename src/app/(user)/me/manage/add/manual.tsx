@@ -30,8 +30,8 @@ import { useUser } from "@/context/userContext";
 import Image from "next/image";
 
 const faqSchema = z.object({
-  question: z.string().min(1, "Question is required"),
-  answer: z.string().min(1, "Answer is required"),
+  question: z.string().optional(),
+  answer: z.string().optional(),
 });
 
 const formSchema = z.object({
@@ -44,7 +44,7 @@ const formSchema = z.object({
   product_description: z
     .string()
     .min(10, "Description must be at least 10 characters"),
-  faqs: z.array(faqSchema).min(1, "At least one FAQ is required"),
+  faqs: z.array(faqSchema).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -54,7 +54,7 @@ export default function ProductForm() {
   const [isDragging, setIsDragging] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
-  const [postProduct] = usePostProductMutation();
+  const [postProduct, { isLoading: isSubmitting }] = usePostProductMutation();
   const { role } = useUser();
 
   const form = useForm<FormData>({
@@ -67,7 +67,7 @@ export default function ProductForm() {
       brand_name: "",
       category_id: "",
       product_description: "",
-      faqs: [{ question: "", answer: "" }],
+      faqs: [],
     },
   });
 
@@ -102,10 +102,15 @@ export default function ProductForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Validate form before submission
-      await form.trigger();
-      if (!form.formState.isValid) {
-        toast.error("Please fill all required fields correctly");
+      // Trigger validation and wait for it to complete
+      const isValid = await form.trigger();
+
+      if (!isValid) {
+        // Focus the first error field
+        const firstError = Object.keys(form.formState.errors)[0];
+        if (firstError) {
+          form.setFocus(firstError as keyof FormData);
+        }
         return;
       }
 
@@ -118,10 +123,10 @@ export default function ProductForm() {
 
       // Append all form data
       Object.entries(data).forEach(([key, value]) => {
-        if (key === "faqs") {
-          data.faqs.forEach((faq, index) => {
-            formData.append(`product_faqs[${index}][question]`, faq.question);
-            formData.append(`product_faqs[${index}][answer]`, faq.answer);
+        if (key === "faqs" && Array.isArray(value) && value.length > 0) {
+          value.forEach((faq, index) => {
+            formData.append(`product_faqs[${index}][question]`, faq.question || '');
+            formData.append(`product_faqs[${index}][answer]`, faq.answer || '');
           });
         } else if (value !== undefined && value !== null) {
           formData.append(key, String(value));
@@ -154,7 +159,6 @@ export default function ProductForm() {
         error?.data?.errors?.[0]?.msg ||
         error?.data?.message ||
         "Failed to upload product. Please try again."
-     
       );
     }
   };
@@ -164,11 +168,7 @@ export default function ProductForm() {
   };
 
   const removeFAQ = (index: number) => {
-    if (fields.length > 1) {
-      remove(index);
-    } else {
-      toast.error("At least one FAQ is required");
-    }
+    remove(index); // Simply remove the FAQ without any restrictions
   };
 
   return (
@@ -181,11 +181,10 @@ export default function ProductForm() {
               <FormLabel>Product Image:</FormLabel>
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${
-                  isDragging
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
+                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${isDragging
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-300 hover:border-gray-400"
+                  }`}
               >
                 <input {...getInputProps()} />
                 {imagePreview ? (
@@ -371,7 +370,7 @@ export default function ProductForm() {
             {/* FAQs Section */}
             <div className="col-span-full space-y-6">
               <div className="flex items-center justify-between">
-                <FormLabel className="text-base font-semibold">FAQs</FormLabel>
+                <FormLabel className="text-base font-semibold">FAQs (Optional)</FormLabel>
                 <Button type="button" variant="outline" onClick={addFAQ}>
                   Add FAQ
                 </Button>
@@ -381,16 +380,14 @@ export default function ProductForm() {
                 <div key={field.id} className="space-y-4 p-4 border rounded-lg">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">FAQ #{index + 1}</h4>
-                    {fields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeFAQ(index)}
-                      >
-                        Remove
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeFAQ(index)}
+                    >
+                      Remove
+                    </Button>
                   </div>
 
                   <FormField
@@ -400,7 +397,7 @@ export default function ProductForm() {
                       <FormItem>
                         <FormLabel>Question</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter question" {...field} />
+                          <Input placeholder="Enter question (optional)" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -415,7 +412,7 @@ export default function ProductForm() {
                         <FormLabel>Answer</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Enter answer"
+                            placeholder="Enter answer (optional)"
                             {...field}
                             className="min-h-[100px]"
                           />
@@ -426,7 +423,12 @@ export default function ProductForm() {
                   />
                 </div>
               ))}
+
+              {fields.length === 0 && (
+                <p className="text-sm text-gray-500">No FAQs added (optional)</p>
+              )}
             </div>
+
           </div>
 
           {/* Submit Button */}
@@ -434,10 +436,10 @@ export default function ProductForm() {
             <Button
               type="submit"
               size="lg"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || isSubmitting}
               className="w-full sm:w-auto"
             >
-              {form.formState.isSubmitting ? "Uploading..." : "Confirm Upload"}
+              {form.formState.isSubmitting || isSubmitting ? "Uploading..." : "Confirm Upload"}
             </Button>
           </div>
         </form>

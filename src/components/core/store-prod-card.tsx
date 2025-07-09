@@ -6,71 +6,115 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Dotter from "@/components/ui/dotter";
 import Namer from "./internal/namer";
+import { useFevoritestoreMutation } from "@/redux/features/store/StoreApi";
+import { toast } from "sonner";
 
-export default function StoreProdCard({ data }: { data: BrandType }) {
+interface StoreProdCardProps {
+  data: BrandType;
+  refetch?: () => void;
+}
+
+export default function StoreProdCard({ data, refetch }: StoreProdCardProps) {
+  const [fevoritestore, { isLoading }] = useFevoritestoreMutation();
+  console.log('single store', data);
+  const handleFavorite = async (id: string) => {
+    try {
+      const response = await fevoritestore({ favourite_id: id }).unwrap();
+      console.log('response', response);
+      toast.success(response.message || "Favorite status updated");
+      refetch?.(); // Only call refetch if it exists
+    } catch (error) {
+      console.error('Favorite error:', error);
+      toast.error("Failed to update favorite status");
+    }
+  };
+
   return (
-    <div className="!p-0 !gap-0 shadow-sm w-full">
+    <div className="w-full shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+      {/* Image Section */}
       <div
-        className="w-full aspect-square bg-center bg-no-repeat bg-cover rounded-t-lg relative transition-all"
+        className="w-full aspect-square bg-center bg-no-repeat bg-cover relative group"
         style={{ backgroundImage: `url('${data.image}')` }}
       >
+        {/* Ad Badge */}
         {data.type === "ad" && (
           <div className="absolute top-2 left-2 text-3xl sm:text-4xl z-10">
             🔥
           </div>
         )}
-        <Link href={`/stores/store/${data.id}?${data?.storeName.toLocaleLowerCase()}`}>
-          <div className="bg-background/70 h-full w-full opacity-0 hover:opacity-60 focus:opacity-60 hover:backdrop-blur-xs transition-all z-0">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 text-foreground hover:scale-125 transition-transform cursor-pointer text-sm sm:text-base">
-              <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" /> View
-            </div>
+
+        {/* View Overlay */}
+        <Link
+          href={`/stores/store/${data.id}?${data?.storeName.toLowerCase()}`}
+          className="absolute inset-0 flex items-center justify-center bg-background/70 opacity-0 group-hover:opacity-60 backdrop-blur-sm transition-opacity"
+          aria-label={`View ${data.storeName} store`}
+        >
+          <div className="flex items-center gap-1.5 text-foreground text-sm sm:text-base">
+            <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>View</span>
           </div>
         </Link>
+
+        {/* Favorite Button */}
         <Button
-          className="absolute bottom-2 right-2 bg-background hover:bg-secondary dark:hover:bg-zinc-800 text-foreground size-8 sm:size-10"
+          className="absolute bottom-2 right-2 bg-background hover:bg-secondary dark:hover:bg-zinc-800 text-foreground size-8 sm:size-10 p-0"
           variant="default"
           size="icon"
+          onClick={() => handleFavorite(data.id)}
+          disabled={isLoading}
+          aria-label={data.is_favourite ? "Remove from favorites" : "Add to favorites"}
         >
-          <HeartIcon className="text-foreground w-4 h-4 sm:w-5 sm:h-5" />
+          <HeartIcon
+            fill={data.is_favourite ? "#e7000b" : "transparent"}
+            className="text-foreground w-4 h-4 sm:w-5 sm:h-5"
+            stroke={data.is_favourite ? "#e7000b" : "currentColor"}
+          />
         </Button>
       </div>
-      <div className="!p-3 sm:!p-4 !space-y-1">
-        <div className="flex flex-row justify-between items-center gap-2 sm:gap-4">
+
+      {/* Store Info Section */}
+      <div className="p-3 sm:p-4 space-y-2">
+        <div className="flex items-center gap-3">
           <Avatar className="size-10 sm:size-12 border">
-            <AvatarImage src={data.avatar} />
+            <AvatarImage src={data.avatar} alt={data.storeName} />
             <AvatarFallback>
               {data.storeName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
+
           <div className="flex-1 min-w-0">
-            <Link href={`/stores/store/${data.id}?${data?.storeName.toLocaleLowerCase()}`} className="block truncate">
+            <Link
+              href={`/stores/store/${data.id}?${data?.storeName.toLowerCase()}`}
+              className="block truncate hover:text-primary transition-colors"
+            >
               <Namer type="store" name={data.storeName} isVerified />
             </Link>
-            <div className="flex flex-row justify-start items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
               <p className="truncate">{data.location.city}</p>
-              {/* <Dotter /> */}
-              {/* <div className="whitespace-nowrap">{data.location.distance} sd</div> */}
             </div>
           </div>
         </div>
-        <h3 className="text-xs sm:text-sm">
-          <div className="flex flex-row items-center gap-1 sm:gap-2 text-muted-foreground">
-            <StarIcon fill="#ee8500" stroke="" className="w-4 h-4" />{" "}
-            {data.rating.value}
-            <span
 
-              className="text-primary underline text-xs sm:text-sm"
-            >
-              ({data.rating.reviews} Reviews)
-            </span>
-          </div>
-        </h3>
-        <div className="text-xs md:text-sm text-muted-foreground flex gap-1 sm:gap-2 items-center">
+        {/* Rating Section */}
+        <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+          <StarIcon fill="#ee8500" stroke="none" className="w-4 h-4" />
+          <span>{data.rating.value}</span>
+          <Link
+            href={`/stores/store/${data.id}?${data?.storeName.toLowerCase()}#reviews`}
+            className="text-primary underline hover:text-primary/80 transition-colors"
+          >
+            ({data.rating.reviews} Reviews)
+          </Link>
+        </div>
+
+        {/* Opening Status */}
+        <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
           <span className={data.isOpen ? "text-green-600" : "text-red-600"}>
             {data.isOpen ? "Open Now" : "Closed"}
           </span>
           <Dotter />
-          <span>Close {data.closingTime}</span>
+          <span>Closes at {data.closingTime}</span>
         </div>
       </div>
     </div>
