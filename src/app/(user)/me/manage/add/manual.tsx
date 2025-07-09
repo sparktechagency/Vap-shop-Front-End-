@@ -54,7 +54,7 @@ export default function ProductForm() {
   const [isDragging, setIsDragging] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
-  const [postProduct] = usePostProductMutation();
+  const [postProduct, { isLoading: isSubmitting }] = usePostProductMutation();
   const { role } = useUser();
 
   const form = useForm<FormData>({
@@ -102,10 +102,15 @@ export default function ProductForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Validate form before submission
-      await form.trigger();
-      if (!form.formState.isValid) {
-        toast.error("Please fill all required fields correctly");
+      // Trigger validation and wait for it to complete
+      const isValid = await form.trigger();
+
+      if (!isValid) {
+        // Focus the first error field
+        const firstError = Object.keys(form.formState.errors)[0];
+        if (firstError) {
+          form.setFocus(firstError as keyof FormData);
+        }
         return;
       }
 
@@ -119,7 +124,6 @@ export default function ProductForm() {
       // Append all form data
       Object.entries(data).forEach(([key, value]) => {
         if (key === "faqs" && Array.isArray(value) && value.length > 0) {
-          // Only process FAQs if the array isn't empty
           value.forEach((faq, index) => {
             formData.append(`product_faqs[${index}][question]`, faq.question || '');
             formData.append(`product_faqs[${index}][answer]`, faq.answer || '');
@@ -155,7 +159,6 @@ export default function ProductForm() {
         error?.data?.errors?.[0]?.msg ||
         error?.data?.message ||
         "Failed to upload product. Please try again."
-
       );
     }
   };
@@ -433,10 +436,10 @@ export default function ProductForm() {
             <Button
               type="submit"
               size="lg"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || isSubmitting}
               className="w-full sm:w-auto"
             >
-              {form.formState.isSubmitting ? "Uploading..." : "Confirm Upload"}
+              {form.formState.isSubmitting || isSubmitting ? "Uploading..." : "Confirm Upload"}
             </Button>
           </div>
         </form>
