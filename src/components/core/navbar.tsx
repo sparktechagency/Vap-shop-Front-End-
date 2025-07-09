@@ -62,8 +62,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const [token, setToken] = useState<string | undefined>(undefined);
   const [user, setUser] = useState<UserData | null>(null);
+  const role = Number(user?.role);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
-
+  // console.log("user", );
   const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
     skip: !token, // Skip query if no token
   });
@@ -155,7 +156,7 @@ export default function Navbar() {
             <div className="hidden lg:flex flex-row justify-end items-center gap-2">
               {user && token ? (
                 <Button variant="outline" asChild>
-                  <Link href={`/me?${user?.full_name?.toLowerCase()}`}>
+                  <Link href={`${role === 1 ? "/admin/dashboard" : `/me?${user?.full_name?.toLowerCase()}`}`}>
 
                     <Avatar className="size-6">
                       <AvatarImage src={user.avatar} className="object-cover" />
