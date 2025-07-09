@@ -15,9 +15,17 @@ const MyApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["user"], // must match the tag in getOwnprofile
+      invalidatesTags: ["user"], 
+    }),
+    updateAbout:builder.mutation({
+      query: (body) => ({
+        url: `/about`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["user"], 
     }),
   }),
 });
 
-export const { useGetMyReviewsQuery, useUpdateUserMutation } = MyApi;
+export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation } = MyApi;

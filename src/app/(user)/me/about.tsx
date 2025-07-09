@@ -2,22 +2,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/context/userContext";
-import { useUpdateUserMutation } from "@/redux/features/users/userApi";
+import { useUpdateAboutMutation } from "@/redux/features/users/userApi";
 import { Editor } from "primereact/editor";
 import React from "react";
 import { useForm } from "react-hook-form";
-
+import DOMPurify from "dompurify";
+import { toast } from "sonner";
 type FormData = {
   about: string;
 };
 
 export default function About() {
   const my = useUser();
-  const [updateUser] = useUpdateUserMutation();
+  const [updateAbout] = useUpdateAboutMutation();
   const { handleSubmit, setValue, watch } = useForm<FormData>({
     defaultValues: {
-      about: my.about ?? "",
+      about: "",
     },
   });
 
@@ -29,29 +31,23 @@ export default function About() {
     setValue("about", e.htmlValue);
   };
 
-  console.log(my);
-
   const onSubmit = async (data: FormData) => {
     console.log("Submitted about:", data.about);
     const dataset = {
-      address: my.address?.address,
-      zip_code: my.address?.zip_code,
-      region_id: String(my.address?.region_id),
-      about: data.about,
-      ...(String(my.role) === "3"
-        ? { brand_name: my.full_name }
-        : { store_name: my.full_name }),
+      content: data.about,
     };
     try {
-      const res = await updateUser(dataset).unwrap();
+      const res = await updateAbout(dataset).unwrap();
       console.log(res);
 
       if (res.ok) {
+        toast.success("About us updated Successfully");
       }
     } catch (error) {
       console.error(error);
     }
   };
+  console.log(my);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6! pt-4!">
@@ -64,6 +60,14 @@ export default function About() {
       />
 
       <Button type="submit">Update About Us</Button>
+
+      <Separator />
+      <h2 className="text-xl font-semibold mb-12">Preview:</h2>
+      <article
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(aboutValue),
+        }}
+      />
     </form>
   );
 }

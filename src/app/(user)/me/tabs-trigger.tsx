@@ -48,10 +48,17 @@ export default function TabsTriggerer() {
 
     {
       value: "catalog",
-      label: "Catalog",
+      label:
+        role === 3
+          ? "Catalogue"
+          : role === 5
+          ? "Shop"
+          : role === 4
+          ? "Wholesale"
+          : "Catalogue",
       visible: !isMember && role !== 2,
     },
-    { value: "create-group", label: "Create a group", visible: true },
+    { value: "create-group", label: "Groups", visible: true },
     {
       value: "about",
       label: "About",

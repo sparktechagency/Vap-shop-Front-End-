@@ -7,6 +7,7 @@ export default function Page() {
       <h1 className="text-center font-semibold text-2xl md:text-4xl lg:text-6xl">
         FORUM
       </h1>
+      <div className="flex items-end justify-end"></div>
       <div className="flex justify-center">
         <TabsTriggererForum />
       </div>
