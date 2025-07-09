@@ -1,7 +1,11 @@
 import React, { Suspense } from "react";
 import EditForm from "./edit-form";
-
-export default async function Page({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
+export default async function Page({ params }: PageProps) {
   return (
     <div className="!py-12">
       <h2 className="mb-6! font-semibold text-3xl text-center">
