@@ -142,13 +142,13 @@ export default function Searcher({
                       className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary"
                     >
                       <Card className="aspect-square rounded p-1!">
-                        <Image
+                        {/* <Image
                           src={x.avatar}
                           height={124}
                           width={124}
                           className="h-full w-full object-cover rounded animate-in"
                           alt="icon"
-                        />
+                        /> */}
                       </Card>
                       <div className="flex-1 flex flex-col justify-between">
                         <Namer

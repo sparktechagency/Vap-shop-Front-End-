@@ -56,20 +56,21 @@ export function ProductPrice({
                 name: productName,
                 price: currentPrice,
                 quantity: quantity,
-                image: productImage
-                , description
+                image: productImage,
+                description
             });
         }
 
         // Save to localStorage
         if (typeof window !== 'undefined') {
             localStorage.setItem('cart', JSON.stringify(cart));
+            // Dispatch storage event to trigger updates in other components
+            window.dispatchEvent(new Event('storage'));
         }
 
         // Show success message
         toast.success(`${quantity} ${productName} added to cart`);
     };
-
     return (
         <div className="flex flex-col gap-3 font-sans">
             {/* Price display */}
@@ -87,7 +88,7 @@ export function ProductPrice({
 
             {/* Amount Display */}
             <div className="flex items-center gap-2">
-                <span className="text-xl text-gray-700">Amount:</span>
+                <span className="text-xl text-gray-700">Quantity:</span>
                 <span className="text-xl font-semibold">{quantity}</span>
             </div>
 

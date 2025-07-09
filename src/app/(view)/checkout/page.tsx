@@ -26,11 +26,7 @@ interface CartItem {
 
 export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isClient, setIsClient] = useState(false);
-
-  // Load cart items from localStorage
   useEffect(() => {
-    setIsClient(true);
     const loadCart = () => {
       try {
         const cart = localStorage.getItem('cart');
@@ -40,14 +36,36 @@ export default function CheckoutPage() {
         setCartItems([]);
       }
     };
+
     loadCart();
+
+
+    const handleStorageChange = () => {
+      loadCart();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('cart-updated', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('cart-updated', handleStorageChange);
+    };
   }, []);
+
+  // Update localStorage and state when cartItems change
+  const updateCart = (newCartItems: CartItem[]) => {
+    setCartItems(newCartItems);
+    localStorage.setItem('cart', JSON.stringify(newCartItems));
+    // Dispatch both storage and custom events
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new CustomEvent('cart-updated'));
+  };
 
   const removeItem = (id: string) => {
     try {
       const updatedCart = cartItems.filter(item => item.id !== id);
-      setCartItems(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      updateCart(updatedCart);
       toast.success('Item removed from cart');
     } catch (error) {
       toast.error('Failed to remove item');
@@ -60,8 +78,7 @@ export default function CheckoutPage() {
       const updatedCart = cartItems.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       );
-      setCartItems(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      updateCart(updatedCart);
     } catch (error) {
       toast.error('Failed to update quantity');
     }
@@ -71,17 +88,6 @@ export default function CheckoutPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-
-  if (!isClient) {
-    return (
-      <main className="!py-12 !px-4 md:!px-[7%]">
-        <div className="col-span-7">
-          <h1 className="text-4xl font-bold">Checkout</h1>
-        </div>
-        <p>Loading your cart...</p>
-      </main>
-    );
-  }
 
   return (
     <main className="!py-12 !px-4 md:!px-[7%] grid grid-cols-1 lg:grid-cols-7 gap-12">
