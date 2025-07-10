@@ -17,6 +17,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/AuthApi";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import MembershipInfo from "./membershipinfo";
 
 interface WholeRegisterFormData {
   name: string;
@@ -100,7 +108,7 @@ export default function WholeRegister({
                 <div className="flex flex-col gap-6">
                   {/* Personal Information */}
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Your Name</Label>
+                    <Label htmlFor="name">Buissness Name</Label>
                     <Input
                       id="name"
                       type="text"
@@ -155,12 +163,7 @@ export default function WholeRegister({
 
                   <div className="grid gap-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...formRegister("phone")}
-                    />
-
+                    <Input id="phone" type="tel" {...formRegister("phone")} />
                   </div>
 
                   {/* Password */}
@@ -204,7 +207,23 @@ export default function WholeRegister({
                       </span>
                     )}
                   </div>
-
+                  <div className="col-span-2 grid gap-2">
+                    <Label>Select Membership</Label>
+                    <div className="w-full flex justify-between items-center gap-6">
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="FREE MEMBERSHIP" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
+                          <SelectItem value="advocacy">
+                            CASAA Advocacy Business Add‑On
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <MembershipInfo />
+                    </div>
+                  </div>
                   {/* Terms and Conditions */}
                   <div className="flex items-center gap-2">
                     <Checkbox

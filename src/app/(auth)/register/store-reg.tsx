@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MembershipInfo from "./membershipinfo";
 
 interface StoreRegisterFormData {
   store_name: string;
@@ -261,12 +262,7 @@ export default function StoreRegister({
 
                   <div className="grid gap-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...formRegister("phone")}
-                    />
-
+                    <Input id="phone" type="tel" {...formRegister("phone")} />
                   </div>
 
                   {/* Password */}
@@ -309,6 +305,23 @@ export default function StoreRegister({
                         {errors.password_confirmation.message}
                       </span>
                     )}
+                  </div>
+                  <div className="col-span-2 grid gap-2">
+                    <Label>Select Membership</Label>
+                    <div className="w-full flex justify-between items-center gap-6">
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="FREE MEMBERSHIP" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
+                          <SelectItem value="advocacy">
+                            CASAA Advocacy Business Add‑On
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <MembershipInfo />
+                    </div>
                   </div>
 
                   {/* Terms and Conditions */}
