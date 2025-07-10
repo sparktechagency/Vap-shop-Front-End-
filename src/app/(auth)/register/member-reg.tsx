@@ -17,6 +17,14 @@ import { useRegisterMutation } from "@/redux/features/AuthApi";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import MembershipInfo from "./membershipinfo";
 
 interface RegisterFormData {
   first_name: string;
@@ -209,11 +217,8 @@ export default function MemberRegister({
                     <Input
                       id="phone"
                       type="tel"
-
-                      {...formRegister("phone", {
-                      })}
+                      {...formRegister("phone", {})}
                     />
-
                   </div>
                   <div className="col-span-2 grid gap-2">
                     <div className="flex items-center">
@@ -259,6 +264,23 @@ export default function MemberRegister({
                         {errors.password_confirmation.message}
                       </span>
                     )}
+                  </div>
+                  <div className="col-span-2 grid gap-2">
+                    <Label>Select Membership</Label>
+                    <div className="w-full flex justify-between items-center gap-6">
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="FREE MEMBERSHIP" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
+                          <SelectItem value="advocacy">
+                            ADVOCACY CHAMPION MEMBERSHIP
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <MembershipInfo member />
+                    </div>
                   </div>
                   <div className=""></div>
                   <div className="flex flex-row justify-end items-center gap-2">

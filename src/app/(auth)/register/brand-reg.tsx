@@ -17,6 +17,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/AuthApi";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import MembershipInfo from "./membershipinfo";
 
 interface BrandRegisterFormData {
   brand_name: string;
@@ -152,12 +160,7 @@ export default function BrandRegister({
 
                   <div className="grid gap-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...formRegister("phone")}
-                    />
-
+                    <Input id="phone" type="tel" {...formRegister("phone")} />
                   </div>
 
                   {/* Password */}
@@ -201,7 +204,23 @@ export default function BrandRegister({
                       </span>
                     )}
                   </div>
-
+                  <div className="col-span-2 grid gap-2">
+                    <Label>Select Membership</Label>
+                    <div className="w-full flex justify-between items-center gap-6">
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="FREE MEMBERSHIP" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
+                          <SelectItem value="advocacy">
+                            ADVOCACY CHAMPION MEMBERSHIP
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <MembershipInfo />
+                    </div>
+                  </div>
                   {/* Terms and Conditions */}
                   <div className="flex items-center gap-2">
                     <Checkbox
