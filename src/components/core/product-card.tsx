@@ -57,33 +57,36 @@ export default function ProductCard({
   data,
   manage,
   link,
+  role,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
   data: ProductType;
   manage?: boolean;
   link?: string;
+  role?: number;
 }) {
   const [copied, setCopied] = useState(false);
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const [fevoriteUnveforite] = useFevoriteUnveforiteMutation();
   const [deleteProd, { isLoading }] = useDeleteProdMutation();
   const handleFebandUnfev = async (id: number) => {
-    console.log("id", id);
+
     const alldata = {
       product_id: id,
-      role: 3,
+      role: role || 3,
     };
-    console.log("alldata", alldata);
+
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
+
       if (response.ok) {
         refetchAds && refetchAds();
         refetch && refetch();
         toast.success(response.message || "Fevorited successfully");
       }
     } catch (error) {
-      console.log("error", error);
+
       toast.error("Failed to fevorite");
     }
   };
@@ -116,9 +119,8 @@ export default function ProductCard({
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${
-                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
-                }`}
+                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                  }`}
               />
             </Button>
           </div>

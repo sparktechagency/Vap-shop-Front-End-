@@ -16,7 +16,7 @@ import { useGetMostHurtedBrandQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MostHearted({ id }: any) {
-  const { data: brandData, isLoading } = useGetMostHurtedBrandQuery(id as any);
+  const { data: brandData, isLoading, refetch } = useGetMostHurtedBrandQuery(id as any);
   const products = brandData?.data?.products?.data || [];
 
   if (isLoading) {
@@ -54,6 +54,8 @@ export default function MostHearted({ id }: any) {
 
           return (
             <ProductCard
+              role={3}
+              refetch={refetch}
               key={product.id}
               data={productData}
               link={`/brands/brand/product/${product.id}`}
