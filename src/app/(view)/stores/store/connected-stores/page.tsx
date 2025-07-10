@@ -1,3 +1,5 @@
+'use client';
+
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

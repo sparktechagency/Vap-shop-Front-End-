@@ -1,7 +1,15 @@
 import React, { Suspense } from "react";
 import EditForm from "./edit-form";
 
-export default async function Page({ params }: { params: { id: string } }) {
+type SegmentParams = { id: string };
+
+interface PageProps {
+  params: Promise<SegmentParams>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const resolvedParams = await params; // await here because it's a Promise
+
   return (
     <div className="!py-12">
       <h2 className="mb-6! font-semibold text-3xl text-center">
@@ -14,7 +22,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
         }
       >
-        <EditForm id={params.id} />
+        <EditForm id={resolvedParams.id} />
       </Suspense>
     </div>
   );
