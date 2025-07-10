@@ -16,7 +16,7 @@ export default function Catalog({ id }: any) {
   const [page, setPage] = React.useState(1);
   const per_page = 2;
 
-  const { data: brandDetails, isLoading: isBrandLoading } = useGetStoreDetailsByIdQuery({ id, page, per_page });
+  const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery({ id, page, per_page });
 
   if (isBrandLoading) return <div>Loading...</div>;
 
@@ -115,13 +115,17 @@ export default function Catalog({ id }: any) {
         {brandDetails?.data?.products?.data.map((item: any, i: number) => (
           <ProductCard
             data={{
+              id: item.id,
               image: item.product_image || "/image/shop/item.jpg",
               title: item.product_name,
               category: `${item.product_price}`,
-              note: item.product_type
+              note: item.product_type,
+              is_hearted: item.is_hearted
             }}
             link={`/stores/store/product/${item.id}`}
             key={i}
+            refetch={refetch}
+            role={5}
           />
         ))}
       </div>
