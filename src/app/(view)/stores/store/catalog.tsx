@@ -17,7 +17,7 @@ export default function Catalog({ id }: any) {
   const per_page = 2;
 
   const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery({ id, page, per_page });
-
+  console.log('brandDetails', brandDetails);
   if (isBrandLoading) return <div>Loading...</div>;
 
   const handlePrevPage = () => {
@@ -120,7 +120,9 @@ export default function Catalog({ id }: any) {
               title: item.product_name,
               category: `${item.product_price}`,
               note: item.product_type,
-              is_hearted: item.is_hearted
+              is_hearted: item.is_hearted,
+              hearts: item.total_heart
+
             }}
             link={`/stores/store/product/${item.id}`}
             key={i}

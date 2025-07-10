@@ -166,3 +166,33 @@ h3.tiptap-heading + h2.tiptap-heading {
   border-radius: 0 0 0.5rem 0.5rem; /* rounded-md */
   background: var(--background) !important;
 }
+
+/* styles/globals.css */
+.gm-style .map-marker-label {
+  background-color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: 8px;
+  white-space: nowrap;
+}
+/* styles/globals.css */
+.store-label {
+  color: #000;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.marker-label {
+  background-color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: 8px;
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
