@@ -97,18 +97,14 @@ const Map: React.FC<MapProps> = ({ center, stores, selectedStore, onMarkerClick 
             center={center}
             options={{
                 // styles: mapStyles,
-                styles: cleanMapStyles, // Apply the clean styles
-                disableDefaultUI: true, // Optional: disable all default controls
-                clickableIcons: false, // Disable clickable POIs
-                gestureHandling: "cooperative", // Better touch control
+                styles: cleanMapStyles,
+                disableDefaultUI: true,
+                clickableIcons: false,
+                gestureHandling: "cooperative",
                 mapTypeControl: true,
                 fullscreenControl: true,
-                // backgroundColor: "#e0e0e0",
-
                 zoomControl: true,
                 cameraControl: true,
-                // colorScheme: "#e0e0e0",
-
             }}
         >
             {stores.map((store) => (

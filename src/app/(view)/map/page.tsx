@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { InfoIcon, X } from 'lucide-react';
+import { InfoIcon, Link, X } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -21,6 +21,7 @@ import {
 import { useGetAllstoreQuery } from '@/redux/features/store/StoreApi';
 import dynamic from 'next/dynamic';
 import { Store, StoreApiResponse } from '@/lib/types/store';
+import { useRouter } from 'next/navigation';
 
 // Dynamically import the Map component to avoid SSR issues
 const MapWithNoSSR = dynamic(() => import('@/components/Map'), {
@@ -29,6 +30,7 @@ const MapWithNoSSR = dynamic(() => import('@/components/Map'), {
 });
 
 const MapPage: React.FC = () => {
+  const router = useRouter();
   const [page, setPage] = useState<number>(1);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
@@ -160,8 +162,9 @@ const MapPage: React.FC = () => {
                 </button>
               </div>
               <div className="mt-2 flex space-x-2">
-                <Button size="sm" className="rounded-full">
-                  Directions
+                <Button onClick={() => router.push(`/stores/store/${selectedStore.id}`)} size="sm" className="rounded-full">
+                  {/* <Link href={`/stores/store/${selectedStore.id}`}>View Store</Link> */}
+                  View Store
                 </Button>
                 <Button size="sm" variant="outline" className="rounded-full">
                   Save
