@@ -17,6 +17,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/redux/features/AuthApi";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import MembershipInfo from "./membershipinfo";
 
 interface AssosRegisterFormData {
   name: string;
@@ -154,12 +162,7 @@ export default function AssosRegister({
 
                   <div className="grid gap-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...formRegister("phone")}
-                    />
-
+                    <Input id="phone" type="tel" {...formRegister("phone")} />
                   </div>
 
                   {/* Password */}
@@ -202,6 +205,23 @@ export default function AssosRegister({
                         {errors.password_confirmation.message}
                       </span>
                     )}
+                  </div>
+                  <div className="col-span-2 grid gap-2">
+                    <Label>Select Membership</Label>
+                    <div className="w-full flex justify-between items-center gap-6">
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="FREE MEMBERSHIP" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
+                          <SelectItem value="advocacy">
+                            CASAA Advocacy Business Add‑On
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <MembershipInfo />
+                    </div>
                   </div>
 
                   {/* Terms and Conditions */}
