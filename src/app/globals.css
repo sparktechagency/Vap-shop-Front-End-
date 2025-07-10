@@ -195,5 +195,4 @@ h3.tiptap-heading + h2.tiptap-heading {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
 }

@@ -28,6 +28,42 @@ const mapStyles = [
     },
     // Add more style rules as needed
 ];
+
+const cleanMapStyles = [
+    // Hide all default POI icons
+    {
+        featureType: "poi",
+        elementType: "labels.icon",
+        stylers: [{ visibility: "off" }]
+    },
+    // Hide business POIs
+    {
+        featureType: "poi.business",
+        stylers: [{ visibility: "off" }]
+    },
+    // Hide attractions
+    {
+        featureType: "poi.attraction",
+        stylers: [{ visibility: "off" }]
+    },
+    // Hide parks
+    {
+        featureType: "poi.park",
+        stylers: [{ visibility: "off" }]
+    },
+    // Hide all labels
+    {
+        featureType: "all",
+        elementType: "labels",
+        stylers: [{ visibility: "off" }]
+    },
+    // Optional: Hide roads if you want
+    {
+        featureType: "road",
+        elementType: "labels",
+        stylers: [{ visibility: "off" }]
+    }
+];
 const libraries = ['places'] as const;
 const mapContainerStyle = {
     width: '100%',
@@ -60,17 +96,18 @@ const Map: React.FC<MapProps> = ({ center, stores, selectedStore, onMarkerClick 
             zoom={12}
             center={center}
             options={{
-                styles: mapStyles,
-                streetViewControl: false,
-                mapTypeControl: false,
-                fullscreenControl: false,
+                // styles: mapStyles,
+                styles: cleanMapStyles, // Apply the clean styles
+                disableDefaultUI: true, // Optional: disable all default controls
+                clickableIcons: false, // Disable clickable POIs
+                gestureHandling: "cooperative", // Better touch control
+                mapTypeControl: true,
+                fullscreenControl: true,
                 // backgroundColor: "#e0e0e0",
+
                 zoomControl: true,
                 cameraControl: true,
-                clickableIcons: true,
                 // colorScheme: "#e0e0e0",
-                // gestureHandling: "greedy",
-                disableDefaultUI: true
 
             }}
         >
@@ -84,9 +121,9 @@ const Map: React.FC<MapProps> = ({ center, stores, selectedStore, onMarkerClick 
                     onClick={() => onMarkerClick(store)}
                     icon={{
                         url: selectedStore?.id === store.id
-                            ? "/image/shop/storeicon.png" // Selected store icon
+                            ? "/image/shop/storeactive.png" // Selected store icon
                             : "/image/shop/storeicon.png", // Normal store icon
-                        scaledSize: new window.google.maps.Size(32, 32)
+                        scaledSize: new window.google.maps.Size(23, 32)
                     }}
                     label={
                         {
