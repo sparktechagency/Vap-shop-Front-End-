@@ -29,7 +29,7 @@ interface LocationPickerProps {
   defaultLocation?: { lat: number; lng: number };
 }
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyAMQ0pEGF-QlR3_fmwl8PEqOHrJvgIlD8o";
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export default function LocationPicker({
   onLocationSelect,
