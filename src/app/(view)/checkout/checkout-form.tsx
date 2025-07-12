@@ -77,29 +77,17 @@ export default function CheckoutForm({ cartItems }: {
           quantity: item.quantity
         }))
       };
-
-      console.log('Submitting checkout data:', checkoutData);
-
-      // Call the checkout mutation
       const result = await checkout(checkoutData).unwrap();
-
       if (result?.ok) {
-        // Show success message
         toast.success("Order placed successfully!", {
           description: "Thank you for your purchase.",
         });
-
-        // Clear the form
         form.reset();
         localStorage.removeItem('cart');
       }
       if (result?.error) {
-        // Show error message
         toast.error(result?.error || "Checkout failed");
       }
-
-
-
     } catch (error: any) {
       toast.error(error.data?.message || "Checkout failed");
 
