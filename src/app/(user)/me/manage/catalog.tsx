@@ -27,7 +27,6 @@ export default async function Catalog() {
   }
 
   const datas = res?.data.data;
-  // console.log('datas-------------------', datas);
 
   return (
     <>
@@ -40,6 +39,7 @@ export default async function Catalog() {
               title: x.product_name,
               category: x.brand_name,
               note: "",
+              thc_percentage: x.thc_percentage,
             }}
             link={`/stores/store/product/${x.id}`}
             manage

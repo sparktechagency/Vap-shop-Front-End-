@@ -11,8 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
-import { useGetproductsAdsQuery, useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
+import {
+  useGetproductsAdsQuery,
+  useMosthartedProductQuery,
+} from "@/redux/features/Trending/TrendingApi";
 
 export default function MostHearted() {
   const { data: mosthartedproducts, refetch } = useMosthartedProductQuery();
@@ -62,27 +64,24 @@ export default function MostHearted() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 !my-6">
         {/* Content for Most Hearted Products */}
 
-
         {ProductsAds?.data?.map((item: any, i: number) => (
           <ProductCard
             refetch={refetch}
             refetchAds={refetchAds}
-            data={
-              {
-
-                id: item.product_id,
-                image: item?.product_image || "/image/shop/item.jpg",
-                title: item?.product_name,
-                category: item?.brand || "PODS",
-                note: `$${item.product_price}`,
-                discount: item.product_discount,
-                hearts: item.total_heart,
-                is_hearted: item.is_hearted,
-                type: "ad",
-
-
-              }
-            } link={`/brands/brand/product/${item.id}`} key={i} />
+            data={{
+              id: item.product_id,
+              image: item?.product_image || "/image/shop/item.jpg",
+              title: item?.product_name,
+              category: item?.brand || "PODS",
+              note: `$${item.product_price}`,
+              discount: item.product_discount,
+              hearts: item.total_heart,
+              is_hearted: item.is_hearted,
+              type: "ad",
+            }}
+            link={`/brands/brand/product/${item.id}`}
+            key={i}
+          />
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12 text-center">
@@ -94,13 +93,12 @@ export default function MostHearted() {
           <ProductCard
             refetch={refetch}
             refetchAds={refetchAds}
-
             data={{
               id: product.id,
               image: product.product_image || "/image/shop/item.jpg",
               title: product.product_name,
               category: product.brand || "PODS",
-              note: `$${product.product_price}`,
+              note: product.product_price,
               discount: product.product_discount,
               hearts: product.total_heart,
               is_hearted: product.is_hearted,

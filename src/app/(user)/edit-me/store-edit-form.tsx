@@ -41,6 +41,8 @@ const formSchema = z.object({
   region_id: z.string(),
   latitude: z.string(),
   longitude: z.string(),
+  open_from: z.string(),
+  close_at: z.string(),
 });
 
 interface LocationData {
@@ -61,9 +63,11 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       phone: my?.phone || "",
       address: my?.address?.address || "",
       zip_code: my?.address?.zip_code || "",
-      region_id: String(my?.address?.region_id || ""),
+      region_id: String(my?.address?.region_id || "0"),
       latitude: String(my?.address?.latitude || ""),
       longitude: String(my?.address?.longitude || ""),
+      open_from: String(my?.open_from || ""),
+      close_at: String(my?.close_at || ""),
     },
   });
 
@@ -195,7 +199,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
               <FormControl>
                 <Select
                   onValueChange={field.onChange}
-                  value={field.value || ""}
+                  value={String(field.value) || "0"}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your region" />
@@ -205,6 +209,32 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                     <SelectItem value="2">US</SelectItem>
                   </SelectContent>
                 </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="open_from"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Open from</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter zip code" type="time" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="close_at"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Closed at</FormLabel>
+              <FormControl>
+                <Input placeholder="" type="time" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

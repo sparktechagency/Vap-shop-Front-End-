@@ -44,7 +44,8 @@ const formSchema = z.object({
   product_description: z
     .string()
     .min(10, "Description must be at least 10 characters"),
-  faqs: z.array(faqSchema).min(1, "At least one FAQ is required"),
+  faqs: z.array(faqSchema).optional(),
+  thc_percentage: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -67,10 +68,14 @@ export default function ProductForm({ prod }: { prod: any }) {
       brand_name: "",
       category_id: "",
       product_description: "",
-      faqs: [{ question: "", answer: "" }],
+      faqs: [],
+      thc_percentage: "",
     },
   });
-
+  const { fields, append, remove, replace } = useFieldArray({
+    control: form.control,
+    name: "faqs",
+  });
   useEffect(() => {
     if (!prod) return;
 
@@ -84,22 +89,18 @@ export default function ProductForm({ prod }: { prod: any }) {
     );
     form.setValue("brand_name", String(prod.brand_name || ""));
     form.setValue("category_id", String(prod.category_id || ""));
+    form.setValue("thc_percentage", String(prod.thc_percentage || ""));
+    console.log(prod.product_faqs);
 
-    form.setValue(
-      "faqs",
-      prod.faqs?.length > 0
-        ? prod.faqs.map((f: { question: any; answer: any }) => ({
+    replace(
+      prod.product_faqs?.length > 0
+        ? prod.product_faqs.map((f: any) => ({
             question: String(f.question || ""),
             answer: String(f.answer || ""),
           }))
-        : [{ question: "", answer: "" }]
+        : []
     );
   }, [prod]);
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "faqs",
-  });
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -138,7 +139,7 @@ export default function ProductForm({ prod }: { prod: any }) {
         }
 
         if (key === "faqs") {
-          data.faqs.forEach((faq, index) => {
+          data?.faqs?.forEach((faq, index) => {
             formData.append(`product_faqs[${index}][question]`, faq.question);
             formData.append(`product_faqs[${index}][answer]`, faq.answer);
           });
@@ -172,6 +173,8 @@ export default function ProductForm({ prod }: { prod: any }) {
 
       if (!res.ok) {
         toast.error(res.message);
+        console.log(res);
+
         return;
       }
 
@@ -293,6 +296,7 @@ export default function ProductForm({ prod }: { prod: any }) {
                       <Input
                         placeholder="0"
                         type="number"
+                        step="0.01"
                         min="0"
                         max="100"
                         {...field}
@@ -345,10 +349,7 @@ export default function ProductForm({ prod }: { prod: any }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select Category:</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select category" />
@@ -387,30 +388,47 @@ export default function ProductForm({ prod }: { prod: any }) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="thc_percentage"
+              render={({ field }) => (
+                <FormItem className="col-span-3">
+                  <FormLabel>THC Percentage (optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter Ammount "
+                      type="number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* FAQs Section */}
             <div className="col-span-full space-y-6">
               <div className="flex items-center justify-between">
-                <FormLabel className="text-base font-semibold">FAQs</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  FAQs (Optional)
+                </FormLabel>
                 <Button type="button" variant="outline" onClick={addFAQ}>
                   Add FAQ
                 </Button>
               </div>
 
               {fields.map((field, index) => (
-                <div key={index} className="space-y-4 p-4 border rounded-lg">
+                <div key={field.id} className="space-y-4 p-4 border rounded-lg">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">FAQ #{index + 1}</h4>
-                    {fields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeFAQ(index)}
-                      >
-                        Remove
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeFAQ(index)}
+                    >
+                      Remove
+                    </Button>
                   </div>
 
                   <FormField
@@ -420,7 +438,10 @@ export default function ProductForm({ prod }: { prod: any }) {
                       <FormItem>
                         <FormLabel>Question</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter question" {...field} />
+                          <Input
+                            placeholder="Enter question (optional)"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -434,7 +455,11 @@ export default function ProductForm({ prod }: { prod: any }) {
                       <FormItem>
                         <FormLabel>Answer</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Enter answer" {...field} />
+                          <Textarea
+                            placeholder="Enter answer (optional)"
+                            {...field}
+                            className="min-h-[100px]"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -442,6 +467,12 @@ export default function ProductForm({ prod }: { prod: any }) {
                   />
                 </div>
               ))}
+
+              {fields.length === 0 && (
+                <p className="text-sm text-gray-500">
+                  No FAQs added (optional)
+                </p>
+              )}
             </div>
           </div>
 

@@ -12,7 +12,7 @@ import {
   StorenavLinks,
   UsernavLinks,
   WholesalernavLinks,
-} from "./navLinks";
+} from "../me/navLinks";
 import { UserData } from "@/lib/types/apiTypes";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";

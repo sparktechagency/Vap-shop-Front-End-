@@ -11,6 +11,7 @@ export interface ProductType {
   reviews?: number;
   id?: number;
   is_hearted?: boolean;
+  thc_percentage?:string
 }
 
 export interface BrandType {

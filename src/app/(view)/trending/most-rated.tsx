@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   Select,
@@ -12,21 +13,14 @@ import {
 import ReviewCard from "@/components/core/review-card";
 import { useMostRatedReviewQuery } from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function MostRated() {
   const { data, isLoading, isError, refetch } = useMostRatedReviewQuery();
 
-
-  console.log('most rated review', data);
-
-
-
-
-
+  console.log("most rated review", data);
 
   if (isLoading) return <LoadingSkeleton />;
-  if (isError) return <p>can't loading reviews</p>;
+  if (isError) return <p>can&apos;t loading reviews</p>;
   if (!data?.data?.length) return <p>No reviews found</p>;
 
   return (
@@ -67,10 +61,13 @@ export default function MostRated() {
             data={review}
             productData={{
               id: review?.manage_product_id,
-              product_image: review?.manage_products?.product_image || "/placeholder.svg",
-              product_name: review?.manage_products?.product_name || "Unknown Product",
+              product_image:
+                review?.manage_products?.product_image || "/placeholder.svg",
+              product_name:
+                review?.manage_products?.product_name || "Unknown Product",
               category: review?.manage_products?.category,
-              average_rating: review?.manage_products?.average_rating?.toString() || "0"
+              average_rating:
+                review?.manage_products?.average_rating?.toString() || "0",
             }}
           />
         ))}

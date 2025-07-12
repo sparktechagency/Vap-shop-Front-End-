@@ -25,7 +25,13 @@ const MyApi = api.injectEndpoints({
       }),
       invalidatesTags: ["user"], 
     }),
+    getMyMostHearted:builder.query<any, void>({
+      query: () => "/product-manage?is_most_hearted=1",
+    }),
+        getOrders:builder.query<any, void>({
+      query: () => "/orders",
+    }),
   }),
 });
 
-export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation } = MyApi;
+export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery} = MyApi;

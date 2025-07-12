@@ -10,12 +10,14 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetProductsQuery } from "@/redux/features/manage/product";
+import { useGetMyMostHeartedQuery } from "@/redux/features/users/userApi";
+import { useUser } from "@/context/userContext";
 
 export default function Catalog() {
-  const { data: catalog, isLoading } = useGetProductsQuery();
+  const { data: catalog, isLoading } = useGetMyMostHeartedQuery();
+
   const products = catalog?.data?.data || [];
-  console.log(products);
+  const { role } = useUser();
 
   if (isLoading) {
     return (
@@ -51,7 +53,6 @@ export default function Catalog() {
             hearts: product.total_heart,
             rating: product.average_rating,
             reviews: product.hearts_count,
-            thc_percentage: product.thc_percentage,
           };
 
           return (
@@ -59,8 +60,9 @@ export default function Catalog() {
               // manage
               key={product.id}
               data={productData}
+              role={parseInt(role)}
               link={
-                product.role === "5"
+                String(role) === "5"
                   ? `/stores/store/product/${product.id}`
                   : `/brands/brand/product/${product.id}`
               }
