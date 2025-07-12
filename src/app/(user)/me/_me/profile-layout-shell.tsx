@@ -114,7 +114,7 @@ export default async function ProfileLayoutShell({
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-2 md:gap-4 !mt-6 md:!mt-8">
-              {/* <Button
+              <Button
                 size="icon"
                 variant="outline"
                 className="hidden md:flex"
@@ -123,12 +123,24 @@ export default async function ProfileLayoutShell({
                 <Link href="/chat">
                   <MessageSquareMoreIcon />
                 </Link>
-              </Button> */}
+              </Button>
               {/* <Button variant="outline">Follow this account</Button>
 <Button variant="outline">Block this account</Button> */}
-              {/* <Button variant="outline" asChild>
-                <Link href={`/profile/${my.id}`}>Preview Profile</Link>
-              </Button> */}
+              <Button variant="outline" asChild>
+                <Link
+                  href={
+                    String(my.role) === "6"
+                      ? `/profile/${my.id}`
+                      : String(my.role) === "5"
+                      ? `/stores/store/${my.id}`
+                      : String(my.role) === "3"
+                      ? `/brands/brand/${my.id}`
+                      : `/profile/${my.id}`
+                  }
+                >
+                  Preview Profile
+                </Link>
+              </Button>
               {/* <Button variant="outline">Settings</Button> */}
             </div>
 
