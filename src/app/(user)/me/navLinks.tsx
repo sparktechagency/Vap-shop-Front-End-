@@ -60,6 +60,11 @@ export const BrandnavLinks = [
     to: "/me/orders",
   },
   {
+    icon: <Lucide.HeartIcon className="size-5" />,
+    label: "Most Hearted",
+    to: "/me/most-hearted",
+  },
+  {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",
     to: "/me/reviews",
@@ -96,6 +101,11 @@ export const StorenavLinks = [
     icon: <Lucide.MailOpen className="size-5" />,
     label: "Orders & Requests",
     to: "/me/orders",
+  },
+  {
+    icon: <Lucide.HeartIcon className="size-5" />,
+    label: "Most Hearted",
+    to: "/me/most-hearted",
   },
   {
     icon: <Lucide.ListChecks className="size-5" />,

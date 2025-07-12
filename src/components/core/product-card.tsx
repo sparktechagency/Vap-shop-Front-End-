@@ -67,11 +67,14 @@ export default function ProductCard({
   role?: number;
 }) {
   const [copied, setCopied] = useState(false);
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const currentUrl = `${
+    window.location.origin ?? "https://vapeshopmaps.com/"
+  }/stores/store/product/${data.id}`;
   const [fevoriteUnveforite] = useFevoriteUnveforiteMutation();
   const [deleteProd, { isLoading }] = useDeleteProdMutation();
-  const handleFebandUnfev = async (id: number) => {
+  console.log(data);
 
+  const handleFebandUnfev = async (id: number) => {
     const alldata = {
       product_id: id,
       role: role || 3,
@@ -86,7 +89,6 @@ export default function ProductCard({
         toast.success(response.message || "Fevorited successfully");
       }
     } catch (error) {
-
       toast.error("Failed to fevorite");
     }
   };
@@ -119,8 +121,9 @@ export default function ProductCard({
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""
-                  }`}
+                className={`ml-1 size-5 ${
+                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                }`}
               />
             </Button>
           </div>
@@ -219,12 +222,17 @@ export default function ProductCard({
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
             {data?.category !== null && (
               <p className="text-muted-foreground font-bold text-sm md:text-base">
-                ${data?.category}
+                {data?.category}
               </p>
             )}
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
               {data.title}
             </h3>
+            {data.thc_percentage && (
+              <div className="text-sm text-muted-foreground">
+                {data?.thc_percentage}% THC
+              </div>
+            )}
             <div className="text-xs md:text-sm text-muted-foreground">
               <span>{data.note}</span>
             </div>

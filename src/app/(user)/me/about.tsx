@@ -6,10 +6,11 @@ import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/context/userContext";
 import { useUpdateAboutMutation } from "@/redux/features/users/userApi";
 import { Editor } from "primereact/editor";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import DOMPurify from "dompurify";
 import { toast } from "sonner";
+import howl from "@/lib/howl";
 type FormData = {
   about: string;
 };
@@ -22,6 +23,19 @@ export default function About() {
       about: "",
     },
   });
+
+  useEffect(() => {
+    async function getAbout() {
+      const call = await howl({ link: `about?user_id=${my.id}` });
+      const aboutData = call?.data?.content;
+      console.log(call);
+
+      if (aboutData) {
+        setValue("about", aboutData);
+      }
+    }
+    getAbout();
+  }, []);
 
   // Watch the value for live updates (controlled input)
   const aboutValue = watch("about");

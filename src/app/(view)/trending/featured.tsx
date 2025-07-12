@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import {
@@ -29,7 +30,7 @@ export default function Featured() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const { data, isLoading, isError } = useGetMostratedArticalQuery({
     page: currentPage.toString(),
-    per_page: "6", // Changed from 1000 to 10 for better pagination
+    per_page: "6",
   });
 
   if (isLoading) return <LoadingSkeleton />;
