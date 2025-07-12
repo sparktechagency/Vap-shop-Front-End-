@@ -98,7 +98,13 @@ export default function CheckoutPage() {
       <div className="lg:col-span-5 !space-y-12">
         <Card>
           <CardContent className="pt-6">
-            <CheckoutForm />
+            <CheckoutForm cartItems={cartItems.map(item => ({
+              id: parseInt(item.id),
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+              image: item.image || null,
+            }))} />
           </CardContent>
         </Card>
       </div>
