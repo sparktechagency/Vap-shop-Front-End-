@@ -27,7 +27,16 @@ export const storeApi = api.injectEndpoints({
             invalidatesTags: ["store"],
         }),
 
+        checkout: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `/order-request`,
+                method: "POST",
+                body,
+            }),
+
+        }),
+
     }),
 });
 
-export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery, useStoreGroupListQuery, useFevoritestoreMutation } = storeApi;
+export const { useGetAllstoreQuery, useGetStoreDetailsByIdQuery, useGetstoreAboutQuery, useStoreGroupListQuery, useFevoritestoreMutation, useCheckoutMutation } = storeApi;
