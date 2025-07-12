@@ -317,7 +317,9 @@ export default function Page() {
               B2B
             </Button>
             <Button variant="outline" size="icon">
-              <MessageSquareMoreIcon />
+              <Link href={`/chat?email=${product?.data?.user?.email}`}>
+                <MessageSquareMoreIcon />
+              </Link>
             </Button>
             {product?.data?.user?.is_following ? (
               <Button

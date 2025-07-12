@@ -190,7 +190,7 @@ export default function Page() {
                   size="icon"
                   asChild
                 >
-                  <Link href="/chat">
+                  <Link href={`/chat?email=${user?.email}`}>
                     <MessageSquareMoreIcon />
                   </Link>
                 </Button>

@@ -74,7 +74,7 @@ export default async function ProfileLayoutShell({
                 className="hidden md:flex"
                 asChild
               >
-                <Link href="/chat">
+                <Link href={`/chat?email=${my?.email}`}>
                   <MessageSquareMoreIcon /> Send a message
                 </Link>
               </Button>

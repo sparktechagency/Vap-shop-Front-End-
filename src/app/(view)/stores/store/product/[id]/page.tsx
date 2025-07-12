@@ -221,8 +221,10 @@ export default function Page() {
             <Button variant="outline" className="!text-sm font-extrabold">
               B2B
             </Button>
-            <Button variant="outline" size="icon">
-              <MessageSquareMoreIcon />
+            <Button variant="outline" size="icon" asChild>
+              <Link href={`/chat?email=${product?.data?.user?.email}`}>
+                <MessageSquareMoreIcon />
+              </Link>
             </Button>
             {product?.data?.user?.is_following ? (
               <Button

@@ -95,7 +95,7 @@ export default async function ProfileLayoutShell({
                 <div className="flex flex-row md:flex-row justify-between items-center w-full gap-4">
                   <div className="block sm:hidden">
                     <Button size="icon" variant="outline" asChild>
-                      <Link href="/chat">
+                      <Link href={`/chat?email=${my?.email}`}>
                         <MessageSquareMoreIcon />
                       </Link>
                     </Button>
@@ -120,7 +120,7 @@ export default async function ProfileLayoutShell({
                 className="hidden md:flex"
                 asChild
               >
-                <Link href="/chat">
+                <Link href={`/chat`}>
                   <MessageSquareMoreIcon />
                 </Link>
               </Button>
@@ -132,10 +132,10 @@ export default async function ProfileLayoutShell({
                     String(my.role) === "6"
                       ? `/profile/${my.id}`
                       : String(my.role) === "5"
-                      ? `/stores/store/${my.id}`
-                      : String(my.role) === "3"
-                      ? `/brands/brand/${my.id}`
-                      : `/profile/${my.id}`
+                        ? `/stores/store/${my.id}`
+                        : String(my.role) === "3"
+                          ? `/brands/brand/${my.id}`
+                          : `/profile/${my.id}`
                   }
                 >
                   Preview Profile
