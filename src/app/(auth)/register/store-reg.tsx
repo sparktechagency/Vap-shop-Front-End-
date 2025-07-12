@@ -35,7 +35,7 @@ interface StoreRegisterFormData {
   phone: string;
   address: string;
   zip_code: string;
-  region_id: string; // Changed to region_id to match backend expectation
+  region_id: string;
   password: string;
   password_confirmation: string;
   role: string;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useCallback } from "react";
@@ -45,6 +46,7 @@ const formSchema = z.object({
     .string()
     .min(10, "Description must be at least 10 characters"),
   faqs: z.array(faqSchema).optional(),
+  thc_percentage: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -67,6 +69,7 @@ export default function ProductForm() {
       brand_name: "",
       category_id: "",
       product_description: "",
+      thc_percentage: "",
       faqs: [],
     },
   });
@@ -125,8 +128,11 @@ export default function ProductForm() {
       Object.entries(data).forEach(([key, value]) => {
         if (key === "faqs" && Array.isArray(value) && value.length > 0) {
           value.forEach((faq, index) => {
-            formData.append(`product_faqs[${index}][question]`, faq.question || '');
-            formData.append(`product_faqs[${index}][answer]`, faq.answer || '');
+            formData.append(
+              `product_faqs[${index}][question]`,
+              faq.question || ""
+            );
+            formData.append(`product_faqs[${index}][answer]`, faq.answer || "");
           });
         } else if (value !== undefined && value !== null) {
           formData.append(key, String(value));
@@ -134,8 +140,12 @@ export default function ProductForm() {
       });
 
       // Handle discount calculation
-      const discountValue = data.product_discount ? parseFloat(data.product_discount) : 0;
-      const priceValue = data.product_price ? parseFloat(data.product_price) : 0;
+      const discountValue = data.product_discount
+        ? parseFloat(data.product_discount)
+        : 0;
+      const priceValue = data.product_price
+        ? parseFloat(data.product_price)
+        : 0;
       const calculatedDiscount = priceValue * (discountValue / 100);
 
       formData.append("product_discount", calculatedDiscount.toString());
@@ -157,8 +167,8 @@ export default function ProductForm() {
       console.error("Submission error:", error);
       toast.error(
         error?.data?.errors?.[0]?.msg ||
-        error?.data?.message ||
-        "Failed to upload product. Please try again."
+          error?.data?.message ||
+          "Failed to upload product. Please try again."
       );
     }
   };
@@ -181,10 +191,11 @@ export default function ProductForm() {
               <FormLabel>Product Image:</FormLabel>
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${isDragging
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-300 hover:border-gray-400"
-                  }`}
+                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
               >
                 <input {...getInputProps()} />
                 {imagePreview ? (
@@ -319,10 +330,7 @@ export default function ProductForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select Category:</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select category" />
@@ -366,11 +374,30 @@ export default function ProductForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="thc_percentage"
+              render={({ field }) => (
+                <FormItem className="col-span-3">
+                  <FormLabel>THC Percentage (optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter Ammount "
+                      type="number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* FAQs Section */}
             <div className="col-span-full space-y-6">
               <div className="flex items-center justify-between">
-                <FormLabel className="text-base font-semibold">FAQs (Optional)</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  FAQs (Optional)
+                </FormLabel>
                 <Button type="button" variant="outline" onClick={addFAQ}>
                   Add FAQ
                 </Button>
@@ -397,7 +424,10 @@ export default function ProductForm() {
                       <FormItem>
                         <FormLabel>Question</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter question (optional)" {...field} />
+                          <Input
+                            placeholder="Enter question (optional)"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -425,10 +455,11 @@ export default function ProductForm() {
               ))}
 
               {fields.length === 0 && (
-                <p className="text-sm text-gray-500">No FAQs added (optional)</p>
+                <p className="text-sm text-gray-500">
+                  No FAQs added (optional)
+                </p>
               )}
             </div>
-
           </div>
 
           {/* Submit Button */}
@@ -439,7 +470,9 @@ export default function ProductForm() {
               disabled={form.formState.isSubmitting || isSubmitting}
               className="w-full sm:w-auto"
             >
-              {form.formState.isSubmitting || isSubmitting ? "Uploading..." : "Confirm Upload"}
+              {form.formState.isSubmitting || isSubmitting
+                ? "Uploading..."
+                : "Confirm Upload"}
             </Button>
           </div>
         </form>

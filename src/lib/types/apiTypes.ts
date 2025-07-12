@@ -45,4 +45,6 @@ export interface UserData {
   favourite_store_list?: FavouriteEntity[];
   favourite_brand_list?: FavouriteEntity[];
   address?: (Address & { region?: any | null }) | null;
+  open_from?:string;
+  close_at?:string
 }

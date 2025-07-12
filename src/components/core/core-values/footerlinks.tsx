@@ -16,7 +16,7 @@ export const footer_navs: FooterNav[] = [
   {
     title: "Platform Navigation",
     links: [
-      { label: "Log In / Sign up", target: "/auth" },
+      { label: "Log In / Sign up", target: "/login" },
       { label: "Home", target: "/" },
       { label: "Trending", target: "/trending" },
       { label: "Find Stores", target: "/stores" },

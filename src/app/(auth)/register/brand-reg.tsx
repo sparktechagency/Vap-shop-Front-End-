@@ -214,7 +214,7 @@ export default function BrandRegister({
                         <SelectContent>
                           <SelectItem value="free">FREE MEMBERSHIP</SelectItem>
                           <SelectItem value="advocacy">
-                            ADVOCACY CHAMPION MEMBERSHIP
+                            CASAA Advocacy Business Add‑On
                           </SelectItem>
                         </SelectContent>
                       </Select>
