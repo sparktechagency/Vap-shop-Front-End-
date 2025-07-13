@@ -1,6 +1,7 @@
-'use client';
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -8,11 +9,12 @@ interface User {
   last_name: string | null;
   full_name: string;
   avatar?: string;
+  role?: number;
 }
 
 interface Comment {
   id: number;
-  comment: string;  // Changed from 'body' to match your data
+  comment: string; // Changed from 'body' to match your data
   created_at: string;
   updated_at: string;
   user: User;
@@ -30,21 +32,33 @@ export default function CommentCard({ comment }: CommentCardProps) {
           <Avatar className="size-10">
             <AvatarImage src={comment.user?.avatar} />
             <AvatarFallback>
-              {comment.user?.first_name?.charAt(0) || 'U'}
-              {comment.user?.last_name?.charAt(0) || ''}
+              {comment.user?.first_name?.charAt(0) || "U"}
+              {comment.user?.last_name?.charAt(0) || ""}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span>{comment.user?.full_name || 'Unknown User'}</span>
+            <Link
+              href={
+                comment?.user.role === 5
+                  ? `/stores/store/${comment?.user.id}`
+                  : comment?.user.role === 4
+                  ? `/brands/brand/${comment?.user.id}`
+                  : `/profile/${comment?.user.id}`
+              }
+            >
+              {comment.user?.full_name || "Unknown User"}
+            </Link>
             <span className="text-xs text-muted-foreground font-normal">
-              {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+              {formatDistanceToNow(new Date(comment.created_at), {
+                addSuffix: true,
+              })}
             </span>
           </div>
         </div>
       </div>
 
       <div className="!p-4 text-xs md:text-sm text-muted-foreground">
-        {comment.comment}  {/* Changed from comment.body to comment.comment */}
+        {comment.comment} {/* Changed from comment.body to comment.comment */}
       </div>
     </div>
   );

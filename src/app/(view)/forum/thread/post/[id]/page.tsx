@@ -21,6 +21,7 @@ import { useParams } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import SafeHtml from "./safeHtml";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -123,9 +124,18 @@ export default function Page() {
               </AvatarFallback>
             </Avatar>
             <div className="!h-full flex flex-col justify-center">
-              <h3 className="text-base md:text-xl font-bold">
+              <Link
+                href={
+                  thread?.user.role === 5
+                    ? `/stores/store/${thread?.user.id}`
+                    : thread?.user.role === 4
+                    ? `/brands/brand/${thread.user.id}`
+                    : `/profile/${thread?.user.id}`
+                }
+                className="text-base md:text-xl font-bold hover:text-primary/80"
+              >
                 {thread.user?.full_name || "Unknown User"}
-              </h3>
+              </Link>
               <div className="!space-x-2 !space-y-2">
                 <Badge>{thread.user?.role_label || "User"}</Badge>
                 {thread.user?.avg_rating ? (

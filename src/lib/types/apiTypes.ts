@@ -47,6 +47,8 @@ export interface UserData {
   address?: (Address & { region?: any | null }) | null;
   open_from?: string;
   close_at?: string;
+  ein:string,
+  pl:boolean|number
 }
 export interface Message {
   id: number | string; // id এখন number অথবা string দুটোই হতে পারে

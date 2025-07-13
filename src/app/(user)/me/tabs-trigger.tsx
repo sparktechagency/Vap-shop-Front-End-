@@ -41,23 +41,23 @@ export default function TabsTriggerer() {
   const allTabs = [
     { value: "top-stores", label: "Top 6 Stores", visible: isMember },
     { value: "top-brands", label: "Top 6 Brands", visible: isMember },
-    { value: "post", label: "Post", visible: true },
-    { value: "feed", label: "Feed", visible: true },
-    { value: "reviews", label: "Latest Reviews", visible: isMember },
-    // { value: "inbox", label: "Inbox", visible: true },
-
     {
       value: "catalog",
       label:
         role === 3
           ? "Catalogue"
           : role === 5
-          ? "Shop"
+          ? "Store"
           : role === 4
           ? "Wholesale"
           : "Catalogue",
       visible: !isMember && role !== 2,
     },
+    { value: "post", label: "Post", visible: true },
+    { value: "feed", label: "Feed", visible: true },
+    { value: "reviews", label: "Latest Reviews", visible: isMember },
+    // { value: "inbox", label: "Inbox", visible: true },
+
     { value: "create-group", label: "Groups", visible: true },
     {
       value: "about",

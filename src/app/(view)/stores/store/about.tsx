@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetstoreAboutQuery } from "@/redux/features/store/StoreApi";
 import { Loader } from "lucide-react";
 import React from "react";

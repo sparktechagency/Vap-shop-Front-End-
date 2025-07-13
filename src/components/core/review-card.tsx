@@ -29,6 +29,7 @@ import {
   useToggleLikeMutation,
 } from "@/redux/features/others/otherApi";
 import Namer from "./internal/namer";
+import Link from "next/link";
 
 interface ProductReviewCardProps {
   id: any;
@@ -144,7 +145,7 @@ export default function ProductReviewCard({
     // 🔧 Add reply submission logic here (API call, mutation etc.)
     setReply("");
   };
-  console.log('rating', data);
+  console.log("rating", data);
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
       {/* Product Header */}
@@ -203,7 +204,18 @@ export default function ProductReviewCard({
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">{data?.user.full_name}</p>
+              <Link
+                href={
+                  data?.user.role === 5
+                    ? `/stores/store/${data?.user.id}`
+                    : data?.user.role === 4
+                    ? `/brands/brand/${data?.user.id}`
+                    : `/profile/${data?.user.id}`
+                }
+                className="text-sm font-medium"
+              >
+                {data?.user.full_name}
+              </Link>
               <p className="text-xs text-muted-foreground">
                 {data?.updated_at
                   ? new Date(data?.updated_at).toLocaleDateString()
@@ -242,7 +254,8 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${
+                      data?.user?.full_name
                     }'s review as helpful`
                   );
                 }
@@ -293,11 +306,21 @@ export default function ProductReviewCard({
                           <AvatarImage src={x.user.avatar} />
                           <AvatarFallback>UI</AvatarFallback>
                         </Avatar>
-                        <Namer
-                          type={String(x.user.role_label).toLowerCase()}
-                          size="sm"
-                          name={x.user.full_name}
-                        />
+                        <Link
+                          href={
+                            data?.user.role === 5
+                              ? `/stores/store/${data?.user.id}`
+                              : data?.user.role === 4
+                              ? `/brands/brand/${data?.user.id}`
+                              : `/profile/${data?.user.id}`
+                          }
+                        >
+                          <Namer
+                            type={String(x.user.role_label).toLowerCase()}
+                            size="sm"
+                            name={x.user.full_name}
+                          />
+                        </Link>
                       </div>
                       <p className="text-xs text-muted-foreground">
                         {new Date(x?.updated_at).toLocaleDateString()}

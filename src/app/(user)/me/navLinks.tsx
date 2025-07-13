@@ -146,6 +146,11 @@ export const WholesalernavLinks = [
     to: "/me/orders",
   },
   {
+    icon: <Lucide.HeartIcon className="size-5" />,
+    label: "Most Hearted",
+    to: "/me/most-hearted",
+  },
+  {
     icon: <Lucide.ListChecks className="size-5" />,
     label: "Reviews",
     to: "/me/reviews",

@@ -35,7 +35,8 @@ export const api = createApi({
     "fevorite",
     "store",
     "manage",
-    "message"
+    "message",
+    "order",
   ],
   endpoints: () => ({}),
 });
