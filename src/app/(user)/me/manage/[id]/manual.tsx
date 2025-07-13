@@ -57,7 +57,7 @@ export default function ProductForm({ prod }: { prod: any }) {
   const [updateProduct] = useUpdateProductMutation();
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
-
+  const [imageChanged, setImageChanged] = useState(false);
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -77,7 +77,7 @@ export default function ProductForm({ prod }: { prod: any }) {
     name: "faqs",
   });
   useEffect(() => {
-    if (!prod) return;
+    if (!prod || !cats?.data) return;
 
     form.setValue("product_name", String(prod.product_name || ""));
     form.setValue("product_price", String(prod.product_price || ""));
@@ -90,7 +90,8 @@ export default function ProductForm({ prod }: { prod: any }) {
     form.setValue("brand_name", String(prod.brand_name || ""));
     form.setValue("category_id", String(prod.category_id || ""));
     form.setValue("thc_percentage", String(prod.thc_percentage || ""));
-    console.log(prod.product_faqs);
+
+    setImageurl(prod.product_image);
 
     replace(
       prod.product_faqs?.length > 0
@@ -100,7 +101,7 @@ export default function ProductForm({ prod }: { prod: any }) {
           }))
         : []
     );
-  }, [prod]);
+  }, [prod, cats]);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -113,6 +114,7 @@ export default function ProductForm({ prod }: { prod: any }) {
         setSelectedFile(file);
         setImageurl(URL.createObjectURL(file));
       }
+      setImageChanged(true);
     },
     onDragEnter: () => setIsDragging(true),
     onDragLeave: () => setIsDragging(false),
@@ -128,7 +130,7 @@ export default function ProductForm({ prod }: { prod: any }) {
       const formData = new FormData();
 
       // 1. Append the image if selected
-      if (selectedFile) {
+      if (selectedFile && imageChanged) {
         formData.append("product_image", selectedFile);
       }
 
@@ -164,6 +166,7 @@ export default function ProductForm({ prod }: { prod: any }) {
       }
       formData.append("product_id", prod.id);
       formData.append("_method", "PUT");
+
       // 4. Send the request
       // alert(prod.id)
       const res = await updateProduct({
@@ -208,36 +211,62 @@ export default function ProductForm({ prod }: { prod: any }) {
             {/* Product Image Upload with Drag and Drop */}
             <div className="col-span-full space-y-2">
               <FormLabel>Product Image:</FormLabel>
-              <div
-                {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
-                  isDragging
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                <input {...getInputProps()} />
-                {imageurl ? (
-                  <div className="flex flex-col items-center">
+              <div className="">
+                {imageurl && !imageChanged && (
+                  <div className="size-[300px] relative">
                     <Image
-                      src={imageurl}
-                      width={200}
-                      height={200}
-                      alt="Product preview"
-                      className="mb-4 rounded-md object-cover"
+                      src={imageurl ?? ""}
+                      height={800}
+                      width={800}
+                      className="size-[300px]"
+                      alt="product_image"
                     />
-                    <p className="text-sm text-gray-600">
-                      Click or drag to replace the image
-                    </p>
+                    <div className="w-full h-full hover:bg-background/30 hover:backdrop-blur-xs absolute top-0 right-0 transition-all flex justify-center items-center opacity-0 hover:opacity-100">
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setImageChanged(true);
+                        }}
+                      >
+                        Change Image
+                      </Button>
+                    </div>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center">
-                    <p className="text-gray-600 mb-2">
-                      Drag & drop an image here, or click to select
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Supports: JPEG, JPG, PNG, WEBP
-                    </p>
+                )}
+
+                {imageChanged && (
+                  <div
+                    {...getRootProps()}
+                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
+                      isDragging
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    {imageurl ? (
+                      <div className="flex flex-col items-center">
+                        <Image
+                          src={imageurl}
+                          width={200}
+                          height={200}
+                          alt="Product preview"
+                          className="mb-4 rounded-md object-cover"
+                        />
+                        <p className="text-sm text-gray-600">
+                          Click or drag to replace the image
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <p className="text-gray-600 mb-2">
+                          Drag & drop an image here, or click to select
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Supports: JPEG, JPG, PNG, WEBP
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -31,6 +31,8 @@ import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import LocationPicker from "@/components/core/location-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
   store_name: z.string().min(2),
@@ -43,6 +45,8 @@ const formSchema = z.object({
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
+  ein: z.string(),
+  pl: z.boolean(),
 });
 
 interface LocationData {
@@ -68,6 +72,8 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       longitude: String(my?.address?.longitude || ""),
       open_from: String(my?.open_from || ""),
       close_at: String(my?.close_at || ""),
+      ein: String(my?.ein || ""),
+      pl: my?.pl === 1 ? true : false,
     },
   });
 
@@ -161,7 +167,22 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
-
+        {String(my.role) === "3" ||
+          (String(my.role) === "5" && (
+            <FormField
+              control={control}
+              name="ein"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>EIN Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your EIN" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
         <FormField
           control={control}
           name="address"
@@ -310,6 +331,31 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
+
+        {["5"].includes(String(my.role)) && (
+          <FormField
+            control={control}
+            name="pl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Participating Locations</FormLabel>
+                <FormControl>
+                  <div className="flex items-center space-x-2 mt-4">
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      id="participating-locations"
+                    />
+                    <Label htmlFor="participating-locations">
+                      {field.value ? "Enabled" : "Disabled"}
+                    </Label>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="col-span-2">
           <Button type="submit" className="w-full" disabled={isLoading}>
