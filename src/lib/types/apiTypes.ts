@@ -45,6 +45,15 @@ export interface UserData {
   favourite_store_list?: FavouriteEntity[];
   favourite_brand_list?: FavouriteEntity[];
   address?: (Address & { region?: any | null }) | null;
-  open_from?:string;
-  close_at?:string
+  open_from?: string;
+  close_at?: string;
+}
+export interface Message {
+  id: number | string; // id এখন number অথবা string দুটোই হতে পারে
+  sender_id: number;
+  receiver_id: number;
+  message: string;
+  created_at: string;
+  is_read: boolean;
+  is_sender: boolean;
 }
