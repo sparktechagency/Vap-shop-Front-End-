@@ -50,9 +50,7 @@ export default function Searcher({
     region: selectedRegion,
   });
 
-  if (!searchLoading) {
-    console.log(searching);
-  }
+
   useEffect(() => {
     if (locationInput === "") {
       setSelectedRegion("")

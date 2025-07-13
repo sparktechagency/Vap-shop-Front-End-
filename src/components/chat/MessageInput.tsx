@@ -6,16 +6,17 @@ import { useState } from "react";
 
 interface MessageInputProps {
     disabled?: boolean;
-    onSend: (message: string) => void;
+    onSendMessage: (message: string) => void;
+
 }
 
-export default function MessageInput({ disabled = false, onSend }: MessageInputProps) {
+export default function MessageInput({ disabled = false, onSendMessage }: MessageInputProps) {
     const [message, setMessage] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (message.trim()) {
-            onSend(message);
+            onSendMessage(message);
             setMessage("");
         }
     };
