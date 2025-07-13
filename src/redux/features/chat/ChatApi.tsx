@@ -29,4 +29,4 @@ export const chatApi = api.injectEndpoints({
     }),
 });
 
-export const { useSearchuserQuery, useSendMessageMutation, useGetAllmesageByidQuery, useGetChatlistQuery } = chatApi;
+export const { useSearchuserQuery, useSendMessageMutation, useGetAllmesageByidQuery, useGetChatlistQuery, useLazyGetAllmesageByidQuery } = chatApi;

@@ -24,7 +24,7 @@ export default function UserList({
     isChatList = false,
 }: UserListProps) {
     return (
-        <div className="col-span-2 border rounded-lg flex flex-col h-[calc(100vh-200px)]">
+        <div className="col-span-2 border rounded-lg flex flex-col h-[calc(100vh-100px)]">
             <div className="p-4 border-b">
                 <Input
                     placeholder="Search users..."

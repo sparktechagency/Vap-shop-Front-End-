@@ -12,7 +12,7 @@ interface MessageBubbleProps {
 
 export default function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
     const { data: ownuserprofile } = useGetOwnprofileQuery();
-    console.log('message', message);
+    // console.log('message', message);
     const isSender = isCurrentUser;
 
     return (

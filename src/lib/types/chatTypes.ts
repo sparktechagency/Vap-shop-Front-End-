@@ -21,3 +21,17 @@ export interface SendMessagePayload {
   receiver_id: number;
   message: string;
 }
+
+interface ChatAreaProps {
+  user: User | null;
+  messages: Message[];
+  isLoading: boolean;
+  isSending: boolean;
+  hasMore: boolean;
+  isLoadingMore: boolean;
+  onSendMessage: (message: string) => Promise<void>;
+  onLoadMore: () => void;
+  onScroll: () => void;
+  chatContainerRef: React.RefObject<HTMLDivElement | null>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+}

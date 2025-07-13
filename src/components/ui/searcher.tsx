@@ -140,12 +140,12 @@ export default function Searcher({
                         selectedSearch === "store"
                           ? `/stores/store/${x.id}`
                           : selectedSearch === "brand"
-                          ? `/brands/brand/${x.id}`
-                          : selectedSearch === "productS"
-                          ? `/brands/brand/product/${x.id}`
-                          : selectedSearch === "accounts"
-                          ? `/stores/store/${x.id}`
-                          : ""
+                            ? `/brands/brand/${x.id}`
+                            : selectedSearch === "productS"
+                              ? `/brands/brand/product/${x.id}`
+                              : selectedSearch === "accounts"
+                                ? `/stores/store/${x.id}`
+                                : ""
                       }
                       key={i}
                     >
