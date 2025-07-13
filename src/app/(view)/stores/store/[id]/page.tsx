@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2Icon,
+  CircleOffIcon,
   InfoIcon,
   Loader2Icon,
   MapPinIcon,
@@ -14,7 +15,6 @@ import {
 } from "lucide-react";
 import React from "react";
 import TabsTriggerer from "../tabs-trigger";
-import Dotter from "@/components/ui/dotter";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
@@ -24,12 +24,13 @@ import {
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import DOMPurify from "dompurify";
+import OpenStatus from "./open-status";
 export default function Page() {
   const { id } = useParams();
-  console.log("id", id);
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
     id: id as any,
   });
+  console.log(data?.data);
 
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
@@ -119,7 +120,7 @@ export default function Page() {
         <div className="">
           <div className="h-12"></div>
           <div className="flex !py-4 gap-4 items-center">
-            <div className="lg:h-24 flex flex-col !py-3 justify-between">
+            <div className="lg:h-12 flex flex-col !py-3 justify-between">
               <Namer
                 name={data?.data?.full_name || "Vape Juice Deport"}
                 isVerified
@@ -139,10 +140,11 @@ export default function Page() {
             />
           </div>
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
-            <div className="text-xs md:text-sm text-muted-foreground flex gap-2 items-center">
-              <span className={"text-green-600"}>Open Now</span>
-              <Dotter />
-              <span>Close 10 PM</span>
+            <div className="text-xs md:text-sm text-muted-foreground">
+              <OpenStatus
+                openFrom={data?.data?.open_from}
+                openTo={data?.data?.close_at}
+              />
             </div>
             <div className="text-xs flex items-center gap-2">
               <MapPinIcon className="size-4" />
@@ -166,7 +168,11 @@ export default function Page() {
               </div>
               <div className="text-xs flex items-center gap-1">
                 PL
-                <CheckCircle2Icon className="size-4 text-green-600" />
+                {data?.data?.pl ? (
+                  <CheckCircle2Icon className="size-4 text-green-600" />
+                ) : (
+                  <CircleOffIcon className="size-4 text-destructive" />
+                )}
               </div>
               <div className="flex-1 md:h-24 grid grid-cols-1 md:flex flex-row justify-end items-center gap-4">
                 <p className="font-semibold text-sm">
