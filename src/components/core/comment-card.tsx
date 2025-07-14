@@ -2,6 +2,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { ArrowBigUpIcon } from "lucide-react";
+import { useLikeCommentMutation } from "@/redux/features/Forum/ForumApi";
 
 interface User {
   id: number;
@@ -18,6 +22,8 @@ interface Comment {
   created_at: string;
   updated_at: string;
   user: User;
+  is_liked: boolean;
+  total_likes: number;
 }
 
 interface CommentCardProps {
@@ -25,6 +31,8 @@ interface CommentCardProps {
 }
 
 export default function CommentCard({ comment }: CommentCardProps) {
+  const [likeComment] = useLikeCommentMutation();
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       <div className="border-b !p-4">
@@ -59,6 +67,30 @@ export default function CommentCard({ comment }: CommentCardProps) {
 
       <div className="!p-4 text-xs md:text-sm text-muted-foreground">
         {comment.comment} {/* Changed from comment.body to comment.comment */}
+      </div>
+      <div className="border-t py-4 px-4">
+        <Button
+          variant="outline"
+          onClick={async () => {
+            try {
+              const res = await likeComment({ id: comment.id }).unwrap();
+              if (!res.ok) {
+                toast.error(res.message);
+                return;
+              } else {
+                toast.success(res.message);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+        >
+          <ArrowBigUpIcon
+            fill={comment.is_liked ? "#191919" : "#ffffff"}
+            stroke={comment.is_liked ? "#191919" : "#000000"}
+          />{" "}
+          {comment.total_likes}
+        </Button>
       </div>
     </div>
   );

@@ -15,13 +15,25 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   useCreatecommentMutation,
+  useDeleteThreadMutation,
   useGetThreadDetailsByIdQuery,
+  useLikeThreadMutation,
 } from "@/redux/features/Forum/ForumApi";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import SafeHtml from "./safeHtml";
 import Link from "next/link";
+import { ArrowBigUpIcon, Trash2Icon } from "lucide-react";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import PostUpdate from "./update-post";
 
 interface User {
   id: number;
@@ -54,9 +66,11 @@ interface Comment {
   created_at: string;
   updated_at: string;
   user: User;
+  is_liked: boolean;
+  total_likes: number;
 }
 
-interface ThreadDetails {
+export interface ThreadDetails {
   id: number;
   title: string;
   body: string;
@@ -69,6 +83,8 @@ interface ThreadDetails {
   user: User;
   group: Group;
   comments: Comment[];
+  is_liked: boolean;
+  total_likes: number;
 }
 
 export default function Page() {
@@ -77,7 +93,12 @@ export default function Page() {
     useGetThreadDetailsByIdQuery(id);
   const [createcomment, { isLoading: isCommentLoading }] =
     useCreatecommentMutation();
+  const [threadUpvote] = useLikeThreadMutation();
   const [comment, setComment] = React.useState("");
+  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [deleteThread] = useDeleteThreadMutation();
+  const navig = useRouter();
   const handleComment = async () => {
     if (!comment) return;
     try {
@@ -85,7 +106,6 @@ export default function Page() {
         thread_id: Number(id),
         comment,
       });
-      console.log("res", res);
       if (res?.data?.ok) {
         toast.success("Comment created successfully");
         setComment("");
@@ -156,15 +176,86 @@ export default function Page() {
       </Card>
       <Card>
         <CardHeader className="border-b">
-          <CardTitle>
+          <CardTitle className="flex items-center justify-between">
             <h2 className="text-lg font-bold">{thread.title}</h2>
+            <div className="flex items-center gap-2">
+              {!meLoading && thread.user.id === me.data.id && (
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="secondary">Edit thread</Button>
+                  </DialogTrigger>
+                  <DialogContent className="min-w-[80dvw]">
+                    <DialogHeader className="border-b pb-4!">
+                      <DialogTitle className="text-sm! font-semibold ">
+                        Update this thread
+                      </DialogTitle>
+                    </DialogHeader>
+                    <PostUpdate
+                      groupId={String(thread.group_id)}
+                      id={String(thread.id)}
+                      closer={() => setDialogOpen(false)}
+                      data={thread}
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              {!meLoading && thread.user.id === me.data.id && (
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      const res = await deleteThread({
+                        id: thread.id,
+                      }).unwrap();
+                      console.log(res);
+
+                      if (!res.ok) {
+                        toast.error(res.message);
+                      } else {
+                        toast.success(res.message);
+                        navig.push("/forum");
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      toast.error("Something went wrong");
+                    }
+                  }}
+                >
+                  <Trash2Icon className="text-destructive" />
+                </Button>
+              )}
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <SafeHtml html={thread.body} />
         </CardContent>
-        <CardFooter className="border-t">
-          <div className="mt-2! text-sm text-muted-foreground">
+        <CardFooter className="border-t flex items-center">
+          <div className="mt-2! text-sm text-muted-foreground flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                try {
+                  const res = await threadUpvote({ id: thread.id }).unwrap();
+                  if (!res.ok) {
+                    toast.error(res.message);
+                    return;
+                  } else {
+                    toast.success(res.message);
+                  }
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+            >
+              <ArrowBigUpIcon
+                fill={thread.is_liked ? "#191919" : "#ffffff"}
+                stroke={thread.is_liked ? "#191919" : "#000000"}
+              />{" "}
+              {thread.total_likes}
+            </Button>
             {thread.views} view{thread.views !== 1 ? "s" : ""} •{" "}
             {thread.total_replies} comment
             {thread.total_replies !== 1 ? "s" : ""}
@@ -176,10 +267,12 @@ export default function Page() {
           <h3 className="text-md font-semibold mb-2">
             Group: {thread.group?.title}
           </h3>
-          <p className="text-xs text-muted-foreground">
-            {thread.group?.total_threads} threads •{" "}
-            {thread.group?.total_comments} comments
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-muted-foreground">
+              {thread.group?.total_threads} threads •{" "}
+              {thread.group?.total_comments} comments
+            </p>
+          </div>
         </CardContent>
       </Card>
       <div className="flex flex-row gap-4">

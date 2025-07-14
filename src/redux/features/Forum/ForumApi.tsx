@@ -2,13 +2,17 @@
 import { api } from "../../baseApi";
 export const forumApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getForum: builder.query<any, Record<string, string | number | boolean | undefined>>({
+    getForum: builder.query<
+      any,
+      Record<string, string | number | boolean | undefined>
+    >({
       query: (params) => {
-        const queryString = new URLSearchParams(params as Record<string, string>).toString();
+        const queryString = new URLSearchParams(
+          params as Record<string, string>
+        ).toString();
         return `/forum-group?${queryString}`;
       },
     }),
-
 
     getallThredsByGropId: builder.query({
       query: ({ page, per_page, id }) =>
@@ -18,6 +22,7 @@ export const forumApi = api.injectEndpoints({
 
     getThreadDetailsById: builder.query({
       query: (id) => `/forum-thread/${id}`,
+      providesTags: ["thread"],
     }),
     createThread: builder.mutation({
       query: (body) => ({
@@ -27,7 +32,21 @@ export const forumApi = api.injectEndpoints({
       }),
       invalidatesTags: ["thread"],
     }),
-
+    updateThread: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `/forum-thread/${id}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["thread"],
+    }),
+    deleteThread: builder.mutation({
+      query: ({ id }) => ({
+        url: `/forum-thread/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["thread"],
+    }),
     getDashboardForum: builder.query({
       query: ({ id }) => `/forum-group?&user_id=${id}`,
     }),
@@ -46,6 +65,21 @@ export const forumApi = api.injectEndpoints({
         body,
       }),
     }),
+
+    likeThread: builder.mutation({
+      query: ({ id }) => ({
+        url: `/forum-thread/${id}/like`,
+        method: "POST",
+      }),
+      invalidatesTags: ["thread"],
+    }),
+    likeComment: builder.mutation({
+      query: ({ id }) => ({
+        url: `/forum-comment/${id}/like`,
+        method: "POST",
+      }),
+      invalidatesTags: ["thread"],
+    }),
   }),
 });
 
@@ -57,4 +91,8 @@ export const {
   useGetDashboardForumQuery,
   useCreateGroupMutation,
   useCreateThreadMutation,
+  useLikeThreadMutation,
+  useLikeCommentMutation,
+  useUpdateThreadMutation,
+  useDeleteThreadMutation,
 } = forumApi;

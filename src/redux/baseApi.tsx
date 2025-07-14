@@ -36,6 +36,7 @@ export const api = createApi({
     "manage",
     "message",
     "order",
+    "inbox",
   ],
   endpoints: () => ({}),
 });
