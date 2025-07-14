@@ -40,6 +40,7 @@ interface StoreRegisterFormData {
   password_confirmation: string;
   role: string;
   terms: boolean;
+  ein: string;
 }
 
 interface Country {
@@ -100,14 +101,16 @@ export default function StoreRegister({
         phone: data.phone,
         address: data.address,
         zip_code: data.zip_code,
-        region_id: data.region_id, // Only sending region_id to backend
+        region_id: data.region_id,
         password: data.password,
         password_confirmation: data.password_confirmation,
         role: data.role,
+        ein: data.ein,
       };
 
-      const response = await register(formattedData).unwrap();
+      console.log('formdata', formattedData);
 
+      const response = await register(formattedData).unwrap();
       if (response?.ok) {
         toast.success(response?.message || "Registration successful!");
         router.push("/verify-otp?isregistared=true");
@@ -229,6 +232,8 @@ export default function StoreRegister({
                     )}
                   </div>
 
+
+
                   <div className="grid gap-2">
                     <Label htmlFor="zip_code">Zip Code</Label>
                     <Input
@@ -236,6 +241,21 @@ export default function StoreRegister({
                       type="text"
                       {...formRegister("zip_code")}
                     />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="ein">EIN</Label>
+                    <Input
+                      id="ein"
+                      type="text"
+                      {...formRegister("ein", {
+                        required: "Store name is required",
+                      })}
+                    />
+                    {errors.ein && (
+                      <span className="text-red-500 text-sm">
+                        {errors.ein.message}
+                      </span>
+                    )}
                   </div>
 
                   {/* Contact Information */}
