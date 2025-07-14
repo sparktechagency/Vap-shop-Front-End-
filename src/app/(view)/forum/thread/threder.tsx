@@ -104,7 +104,7 @@ export default function Threader({ id }: { id: string }) {
           </Button>
         </DialogTrigger>
         <DialogContent className="min-w-[80dvw]! min-h-fit flex flex-col">
-          <DialogHeader className="border-b pb-6!">
+          <DialogHeader className="border-b pb-4!">
             <DialogTitle className="text-sm!">Post a new thread</DialogTitle>
           </DialogHeader>
           <PostCreate id={id} closer={() => setDialogOpen(false)} />
@@ -152,18 +152,15 @@ export default function Threader({ id }: { id: string }) {
           data?.data?.data?.map((thread: Thread) => (
             <ForumCard
               key={thread.id}
-              data={
-                {
-                  id: thread.id,
-                  title: thread.title,
-                  created_at: thread.created_at,
+              data={{
+                id: thread.id,
+                title: thread.title,
+                created_at: thread.created_at,
 
-                  threads_count: thread.total_replies,
-                  total_threads: thread.total_replies,
-                  total_comments: thread.total_replies,
-
-                }
-              }
+                threads_count: thread.total_replies,
+                total_threads: thread.total_replies,
+                total_comments: thread.total_replies,
+              }}
               to={`/forum/thread/post/${thread.id}`}
             />
           ))

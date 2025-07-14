@@ -44,8 +44,32 @@ const MyApi = api.injectEndpoints({
         body
       }),
       invalidatesTags:["order"]
-    })
+    }),
+    getInbox: builder.query({
+      query:({id})=>({
+        url:`/inbox/${id}`
+
+      }),
+      providesTags:["inbox"]
+    }),
+    sendInbox: builder.mutation<any,any>({
+      query:(body)=>({
+        url:`/inbox/send-message`,
+        method:"POST",
+        body
+      }),
+      invalidatesTags:["inbox"]
+    }),
+        deleteInbox: builder.mutation<any,any>({
+      query:({id})=>({
+        url:`/inbox/delete-message/${id}`,
+        method:"DELETE",
+      }),
+      invalidatesTags:["inbox"]
+    }),
+    
   }),
+
 });
 
-export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation} = MyApi;
+export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation} = MyApi;
