@@ -10,9 +10,9 @@ export default function Inbox() {
 
   return (
     <div className="!my-12 !space-y-6">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {/* {Array.from({ length: 12 }).map((_, i) => (
         <InboxCard data={data} key={i} />
-      ))}
+      ))} */}
     </div>
   );
 }

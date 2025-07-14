@@ -4,7 +4,7 @@ import React from "react";
 export default function Inbox() {
   return (
     <div className="!p-6">
-      <div className="!my-12 !space-y-6">
+      {/* <div className="!my-12 !space-y-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <InboxCard
             key={i}
@@ -15,7 +15,7 @@ export default function Inbox() {
             }}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
