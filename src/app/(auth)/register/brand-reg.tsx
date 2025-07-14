@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,7 @@ import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useRegisterMutation } from "@/redux/features/AuthApi";
+import { useCountysQuery, useRegisterMutation } from "@/redux/features/AuthApi";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -29,37 +29,62 @@ import MembershipInfo from "./membershipinfo";
 interface BrandRegisterFormData {
   brand_name: string;
   address: string;
+  zip_code: string;
+  region_id: string;
   email: string;
   phone: string;
   password: string;
   password_confirmation: string;
   role: string;
   terms: boolean;
+  ein: string;
 }
-
+interface Country {
+  id: string;
+  name: string;
+}
 export default function BrandRegister({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [register, { isLoading }] = useRegisterMutation();
+  const { data: countriesResponse, isLoading: isLoadingCountries } =
+    useCountysQuery();
+
+  const [selectedCountryId, setSelectedCountryId] = useState<string>("");
+  const [regions, setRegions] = useState<
+    Array<{ id: number; name: string; code: string }>
+  >([]);
   const router = useRouter();
   const {
     register: formRegister,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<BrandRegisterFormData>({
     defaultValues: {
       role: "3", // Assuming 3 is the role for brands
+      region_id: "",
     },
   });
-
+  const handleCountryChange = (countryId: string) => {
+    setSelectedCountryId(countryId);
+    const selectedCountry = countriesResponse?.data?.find(
+      (c: { id: { toString: () => string } }) => c.id.toString() === countryId
+    );
+    setRegions(selectedCountry?.regions || []);
+    setValue("region_id", ""); // Reset region when country changes
+  };
   const onSubmit = async (data: BrandRegisterFormData) => {
     if (!data.terms) {
       toast.error("Please accept the terms and conditions");
       return;
     }
-
+    if (!data.region_id) {
+      toast.error("Please select a region");
+      return;
+    }
     try {
       const formattedData = {
         brand_name: data.brand_name,
@@ -69,6 +94,9 @@ export default function BrandRegister({
         password: data.password,
         password_confirmation: data.password_confirmation,
         role: data.role,
+        ein: data.ein,
+        zip_code: data.zip_code,
+        region_id: data.region_id,
       };
 
       const response = await register(formattedData).unwrap();
@@ -119,6 +147,61 @@ export default function BrandRegister({
                       </span>
                     )}
                   </div>
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="grid gap-2 w-full">
+                      <Label htmlFor="country">Country</Label>
+                      <Select
+                        onValueChange={handleCountryChange}
+                        disabled={isLoadingCountries}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countriesResponse?.data?.map((country: Country) => (
+                            <SelectItem
+                              key={country.id}
+                              value={country.id.toString()}
+                            >
+                              {country.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid gap-2 w-full">
+                      <Label htmlFor="region">Region</Label>
+                      <Select
+                        onValueChange={(value) => setValue("region_id", value)}
+                        disabled={!selectedCountryId || regions.length === 0}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={
+                              regions.length
+                                ? "Select region"
+                                : "Select country first"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {regions.map((region) => (
+                            <SelectItem
+                              key={region.id}
+                              value={region.id.toString()}
+                            >
+                              {region.name} ({region.code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.region_id && (
+                        <span className="text-red-500 text-sm">
+                          Please select a region
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Address Information */}
                   <div className="grid gap-2">
@@ -136,7 +219,14 @@ export default function BrandRegister({
                       </span>
                     )}
                   </div>
-
+                  <div className="grid gap-2">
+                    <Label htmlFor="zip_code">Zip Code</Label>
+                    <Input
+                      id="zip_code"
+                      type="text"
+                      {...formRegister("zip_code")}
+                    />
+                  </div>
                   {/* Contact Information */}
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
@@ -201,6 +291,21 @@ export default function BrandRegister({
                     {errors.password_confirmation && (
                       <span className="text-red-500 text-sm">
                         {errors.password_confirmation.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="ein">EIN</Label>
+                    <Input
+                      id="ein"
+                      type="text"
+                      {...formRegister("ein", {
+                        required: "Store name is required",
+                      })}
+                    />
+                    {errors.ein && (
+                      <span className="text-red-500 text-sm">
+                        {errors.ein.message}
                       </span>
                     )}
                   </div>

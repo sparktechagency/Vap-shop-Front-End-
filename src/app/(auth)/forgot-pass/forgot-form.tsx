@@ -43,7 +43,7 @@ export function ForgotForm({
       if (response.ok) {
         toast.success(response.message || "OTP sent successfully!");
         // Redirect to verify-otp page with email in query params
-        router.push(`/verify-otp`);
+        router.push(`/verify-otp?email=${data.email}`);
       } else {
         toast.error(response.message || "Failed to send OTP");
       }

@@ -18,7 +18,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { useVerifyemailMutation } from "@/redux/features/AuthApi";
+import { useResendotpMutation, useVerifyemailMutation } from "@/redux/features/AuthApi";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface OTPFormData {
@@ -30,10 +30,12 @@ export function OTPForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const searchParams = useSearchParams();
+  const email = searchParams.get('email');
   const isFromRegistration = searchParams?.get("isregistared");
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
+  const [resendotp, { isLoading: isResendLoading }] = useResendotpMutation();
   const router = useRouter();
-
+  console.log('email', email);
   console.log(isFromRegistration);
 
   const {
@@ -70,6 +72,23 @@ export function OTPForm({
     }
   };
 
+
+  const handleResendOtp = async () => {
+    try {
+      const response = await resendotp({ email }).unwrap();
+      console.log("Resend OTP response:", response);
+      if (response.ok) {
+        toast.success(response.message || "OTP sent successfully!");
+      } else {
+        toast.error(response.message || "Failed to send OTP");
+      }
+    } catch (error: any) {
+      toast.error(
+        error.data?.message || "Failed to send OTP. Please try again."
+      );
+      console.error("Resend OTP error:", error);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -116,6 +135,14 @@ export function OTPForm({
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Verifying..." : "Verify OTP"}
               </Button>
+            </div>
+            <div>
+              <p onClick={handleResendOtp} className="text-center  text-gray-500 mt-4">
+                Didn&apos;t receive the OTP?{" "}
+                <span className="text-black font-normal cursor-pointer">
+                  Resend OTP
+                </span>
+              </p>
             </div>
           </form>
         </CardContent>
