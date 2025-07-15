@@ -108,7 +108,7 @@ export default function StoreRegister({
         ein: data.ein,
       };
 
-      console.log('formdata', formattedData);
+      console.log("formdata", formattedData);
 
       const response = await register(formattedData).unwrap();
       if (response?.ok) {
@@ -232,8 +232,6 @@ export default function StoreRegister({
                     )}
                   </div>
 
-
-
                   <div className="grid gap-2">
                     <Label htmlFor="zip_code">Zip Code</Label>
                     <Input
@@ -326,7 +324,7 @@ export default function StoreRegister({
                       </span>
                     )}
                   </div>
-                  <div className="col-span-2 grid gap-2">
+                  <div className="col-span-2 hidden gap-2">
                     <Label>Select Membership</Label>
                     <div className="w-full flex justify-between items-center gap-6">
                       <Select>

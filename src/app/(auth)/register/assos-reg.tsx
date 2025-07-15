@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -301,7 +301,7 @@ export default function AssosRegister({
                       </span>
                     )}
                   </div>
-                  <div className="col-span-2 grid gap-2">
+                  <div className="col-span-2 gap-2 hidden">
                     <Label>Select Membership</Label>
                     <div className="w-full flex justify-between items-center gap-6">
                       <Select>
