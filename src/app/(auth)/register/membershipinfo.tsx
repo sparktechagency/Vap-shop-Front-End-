@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -61,7 +62,7 @@ export default function MembershipInfo({ member }: { member?: boolean }) {
               </h3>
             </CardContent>
           </Card>
-          {member ? <MemberCard /> : <BuissnessCard />}
+          {/* {member ? <MemberCard /> : <BuissnessCard />} */}
         </div>
       </DialogContent>
     </Dialog>

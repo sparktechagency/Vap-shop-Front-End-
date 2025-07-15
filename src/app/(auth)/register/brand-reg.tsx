@@ -309,7 +309,7 @@ export default function BrandRegister({
                       </span>
                     )}
                   </div>
-                  <div className="col-span-2 grid gap-2">
+                  <div className="col-span-2  hidden gap-2">
                     <Label>Select Membership</Label>
                     <div className="w-full flex justify-between items-center gap-6">
                       <Select>

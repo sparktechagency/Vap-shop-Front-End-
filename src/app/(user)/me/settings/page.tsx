@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useUser } from "@/context/userContext";
 
 const formSchema = z
   .object({
@@ -71,6 +72,7 @@ export default function Page() {
   };
 
   const { setTheme } = useTheme();
+  const my = useUser();
   return (
     <div className="!p-6">
       <h1 className="text-3xl !pb-4">Settings</h1>
@@ -79,10 +81,13 @@ export default function Page() {
         <Card>
           <CardContent className="flex justify-between items-center">
             <CardTitle>
-              Current Membership: <Badge variant="outline">FREE MEMBER</Badge>
+              Current Membership:{" "}
+              <Badge variant="outline">
+                FREE {my.role_label?.toUpperCase()}
+              </Badge>
             </CardTitle>
             <Button variant="link" asChild>
-              <Link href="/subscription">Member Subscription</Link>
+              <Link href="#">Subscription</Link>
             </Button>
           </CardContent>
         </Card>
