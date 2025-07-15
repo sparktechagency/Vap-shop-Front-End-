@@ -402,7 +402,7 @@ export default function Page() {
         </div>
         <div className="col-span-1 lg:col-span-4">
           <Image
-            src={product.product_image || "/image/shop/item.jpg"}
+            src={product?.data?.product_image}
             width={800}
             height={800}
             alt={product?.data?.product_name}
@@ -413,7 +413,7 @@ export default function Page() {
       <div className="!px-4 lg:!px-[7%] !py-20">
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
-          <Link href={`#`} className="underline font-semibold">
+          <Link className="text-black hover:text-[#3a3a3a] underline font-semibold" href={`/brands/brand/${product?.data?.user?.id}?${product?.data?.user?.full_name.toLocaleLowerCase()}`} >
             {product?.data?.user?.full_name || "Brand"}
           </Link>
           ?
@@ -423,9 +423,11 @@ export default function Page() {
             ?.slice(0, 4)
             .map((relatedProduct: any) => (
               <ProductCard
+                refetch={refetch}
                 key={relatedProduct.id}
                 link={`${relatedProduct.id}`}
                 data={{
+                  id: relatedProduct.id,
                   image: relatedProduct.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",

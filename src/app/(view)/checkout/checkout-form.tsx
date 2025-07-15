@@ -22,7 +22,7 @@ const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   phone: z.string().optional(),
   dob: z.string().optional(),
-  address: z.string().min(1, "Please enter your delivery address"),
+  address: z.string().optional(),
 });
 
 // Function to format date to DD-MM-YYYY
