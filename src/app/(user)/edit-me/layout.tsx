@@ -5,19 +5,13 @@ import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
 
 import Footer from "@/components/core/footer";
 import Navbar from "@/components/core/navbar";
-
-import {
-  AssosiationnavLinks,
-  BrandnavLinks,
-  StorenavLinks,
-  UsernavLinks,
-  WholesalernavLinks,
-} from "../me/navLinks";
 import { UserData } from "@/lib/types/apiTypes";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import CoverPhoto from "./_inner-component/cover-photo";
 import { redirect } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { createNavLinks } from "../me/navLinks";
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -31,23 +25,23 @@ export default async function RootLayout({
 
   const my: UserData = call.data;
 
-  function getNavs() {
-    switch (parseInt(my.role)) {
+  function getNavs(role: number) {
+    switch (role) {
       case 2:
-        return AssosiationnavLinks;
+        return createNavLinks("association");
       case 3:
-        return BrandnavLinks;
+        return createNavLinks("brand");
       case 4:
-        return WholesalernavLinks;
+        return createNavLinks("wholesaler");
       case 5:
-        return StorenavLinks;
+        return createNavLinks("store");
       case 6:
-        return UsernavLinks;
+        return createNavLinks("user");
       default:
-        return AssosiationnavLinks;
+        return createNavLinks("association");
     }
   }
-  getNavs();
+
   return (
     <>
       <Navbar />
@@ -64,14 +58,17 @@ export default async function RootLayout({
 
         <div className="grid grid-cols-1 md:grid-cols-10">
           <div className="hidden md:flex col-span-2 border-r flex-col justify-start !p-6">
-            {getNavs().map((x, i) => (
+            {getNavs(parseInt(my.role)).map(({ icon, label, to }, i) => (
               <Link
-                href={x.to}
-                key={i}
-                className="!p-4 flex gap-2 w-full hover:bg-secondary cursor-pointer last-of-type:text-destructive"
+                href={to}
+                key={label + i} // safer than just index
+                className={cn(
+                  "!p-4 flex gap-2 w-full hover:bg-secondary cursor-pointer",
+                  label === "Logout" && "text-destructive"
+                )}
               >
-                {x.icon}
-                {x.label}
+                {icon}
+                {label}
               </Link>
             ))}
           </div>

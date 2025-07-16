@@ -81,7 +81,7 @@ export default function Page() {
         <Card>
           <CardContent className="flex justify-between items-center">
             <CardTitle>
-              Current Membership:{" "}
+              Current Subscription:{" "}
               <Badge variant="outline">
                 FREE {my.role_label?.toUpperCase()}
               </Badge>

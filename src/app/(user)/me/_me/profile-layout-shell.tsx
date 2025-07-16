@@ -2,13 +2,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MessageSquareMoreIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
-import {
-  AssosiationnavLinks,
-  BrandnavLinks,
-  StorenavLinks,
-  UsernavLinks,
-  WholesalernavLinks,
-} from "../navLinks";
 import React from "react";
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
 import howl from "@/lib/howl";
@@ -16,6 +9,8 @@ import { cookies } from "next/headers";
 import { UserData } from "@/lib/types/apiTypes";
 import UserProvider from "@/components/userProvider";
 import { redirect } from "next/navigation";
+import { createNavLinks } from "../navLinks";
+import { cn } from "@/lib/utils";
 export default async function ProfileLayoutShell({
   children,
 }: Readonly<{
@@ -31,23 +26,24 @@ export default async function ProfileLayoutShell({
 
   const my: UserData = call.data;
 
-  function getNavs() {
-    switch (parseInt(my.role)) {
+  function getNavs(role: number) {
+    switch (role) {
       case 2:
-        return AssosiationnavLinks;
+        return createNavLinks("association");
       case 3:
-        return BrandnavLinks;
+        return createNavLinks("brand");
       case 4:
-        return WholesalernavLinks;
+        return createNavLinks("wholesaler");
       case 5:
-        return StorenavLinks;
+        return createNavLinks("store");
       case 6:
-        return UsernavLinks;
+        return createNavLinks("user");
       default:
-        return AssosiationnavLinks;
+        return createNavLinks("association");
     }
   }
-  getNavs();
+
+  // getNavs(parseInt(my?.role_label?.toLowerCase() ?? "association"));
 
   return (
     <>
@@ -70,14 +66,17 @@ export default async function ProfileLayoutShell({
 
         <div className="grid grid-cols-1 md:grid-cols-10">
           <div className="hidden md:flex col-span-2 border-r flex-col justify-start !p-6">
-            {getNavs().map((x, i) => (
+            {getNavs(parseInt(my.role)).map(({ icon, label, to }, i) => (
               <Link
-                href={x.to}
-                key={i}
-                className="!p-4 flex gap-2 w-full hover:bg-secondary cursor-pointer last-of-type:text-destructive"
+                href={to}
+                key={label + i} // safer than just index
+                className={cn(
+                  "!p-4 flex gap-2 w-full hover:bg-secondary cursor-pointer",
+                  label === "Logout" && "text-destructive"
+                )}
               >
-                {x.icon}
-                {x.label}
+                {icon}
+                {label}
               </Link>
             ))}
           </div>
@@ -132,10 +131,10 @@ export default async function ProfileLayoutShell({
                     String(my.role) === "6"
                       ? `/profile/${my.id}`
                       : String(my.role) === "5"
-                        ? `/stores/store/${my.id}`
-                        : String(my.role) === "3"
-                          ? `/brands/brand/${my.id}`
-                          : `/profile/${my.id}`
+                      ? `/stores/store/${my.id}`
+                      : String(my.role) === "3"
+                      ? `/brands/brand/${my.id}`
+                      : `/profile/${my.id}`
                   }
                 >
                   Preview Profile
