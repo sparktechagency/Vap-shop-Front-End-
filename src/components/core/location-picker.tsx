@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -13,6 +14,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Check, AlertCircle, Loader2 } from "lucide-react";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 interface LocationData {
   lat: number;
@@ -44,7 +46,8 @@ export default function LocationPicker({
   const [isLoadingAddress, setIsLoadingAddress] = useState(false);
   const [addressError, setAddressError] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-
+  const { data: countriesResponse, isLoading: isLoadingCountries } =
+    useCountysQuery();
   const loadGoogleMaps = () => {
     return new Promise<void>((resolve, reject) => {
       if (typeof window.google !== "undefined" && window.google.maps) {

@@ -140,7 +140,7 @@ export default function WholeRegister({
                 <div className="flex flex-col gap-6">
                   {/* Personal Information */}
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Buissness Name</Label>
+                    <Label htmlFor="name">Business Name</Label>
                     <Input
                       id="name"
                       type="text"

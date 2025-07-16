@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   Tabs,
@@ -8,7 +9,7 @@ import {
 import MostHearted from "./most-hearted";
 import Catalog from "./catalog";
 import Announcement from "./announcement";
-import Inbox from "./inbox";
+// import Inbox from "./inbox";
 import About from "./about";
 import Groups from "./groups";
 
@@ -21,7 +22,7 @@ export default function TabsTriggerer({ id }: any) {
           <TabsTrigger value="catalog">Catalog</TabsTrigger>
           {/* <TabsTrigger value="announcement">Announcement</TabsTrigger> */}
           <TabsTrigger value="feed">Feed</TabsTrigger>
-          <TabsTrigger value="inbox">Inbox</TabsTrigger>
+          {/* <TabsTrigger value="inbox">Inbox</TabsTrigger> */}
           <TabsTrigger value="about">About</TabsTrigger>
           <TabsTrigger value="groups">Groups</TabsTrigger>
         </TabsList>
@@ -38,9 +39,9 @@ export default function TabsTriggerer({ id }: any) {
         <TabsContent value="feed">
           <Announcement />
         </TabsContent>
-        <TabsContent value="inbox">
+        {/* <TabsContent value="inbox">
           <Inbox />
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="about">
           <About id={id} />
         </TabsContent>

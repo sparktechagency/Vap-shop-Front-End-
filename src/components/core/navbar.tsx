@@ -96,13 +96,13 @@ export default function Navbar() {
       updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
-          to: `/stores/${x.id}`,
+          to: `/stores/store/${x.id}`,
         })
       );
       updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
-          to: `/brands/${x.id}`,
+          to: `/brands/brand/${x.id}`,
         })
       );
       setLinkListDynamic(updated);
@@ -156,8 +156,13 @@ export default function Navbar() {
             <div className="hidden lg:flex flex-row justify-end items-center gap-2">
               {user && token ? (
                 <Button variant="outline" asChild>
-                  <Link href={`${role === 1 ? "/admin/dashboard" : `/me?${user?.full_name?.toLowerCase()}`}`}>
-
+                  <Link
+                    href={`${
+                      role === 1
+                        ? "/admin/dashboard"
+                        : `/me?${user?.full_name?.toLowerCase()}`
+                    }`}
+                  >
                     <Avatar className="size-6">
                       <AvatarImage src={user.avatar} className="object-cover" />
                       <AvatarFallback className="text-xs font-bold uppercase">
@@ -241,4 +246,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

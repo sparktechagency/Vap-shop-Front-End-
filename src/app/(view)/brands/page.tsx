@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import SliderWithSkeleton from "@/components/SliderWithSkeleton";
 import { Button } from "@/components/ui/button";
@@ -76,18 +77,16 @@ export default function Page() {
           </Button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-          {isLoading ? (
-            Array.from({ length: 8 }).map((_, index) => (
-              <BrandProdCardSkeleton key={index} />
-            ))
-          ) : (
-            brandsResponse?.data?.data?.map((brand: any) => (
-              <BrandProdCard
-                data={transformBrandData(brand)}
-                key={brand.id}
-              />
-            ))
-          )}
+          {isLoading
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <BrandProdCardSkeleton key={index} />
+              ))
+            : brandsResponse?.data?.data?.map((brand: any) => (
+                <BrandProdCard
+                  data={transformBrandData(brand)}
+                  key={brand.id}
+                />
+              ))}
         </div>
       </div>
     </div>

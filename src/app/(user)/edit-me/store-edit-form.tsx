@@ -45,7 +45,7 @@ const formSchema = z.object({
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
-  ein: z.string(),
+  // ein: z.string(),
   pl: z.boolean(),
 });
 
@@ -72,7 +72,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       longitude: String(my?.address?.longitude || ""),
       open_from: String(my?.open_from || ""),
       close_at: String(my?.close_at || ""),
-      ein: String(my?.ein || ""),
+      // ein: String(my?.ein || ""),
       pl: my?.pl === 1 ? true : false,
     },
   });
@@ -167,7 +167,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
-        {String(my.role) === "3" ||
+        {/* {String(my.role) === "3" ||
           (String(my.role) === "5" && (
             <FormField
               control={control}
@@ -182,7 +182,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                 </FormItem>
               )}
             />
-          ))}
+          ))} */}
         <FormField
           control={control}
           name="address"
