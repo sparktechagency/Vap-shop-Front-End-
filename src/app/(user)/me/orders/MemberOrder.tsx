@@ -11,26 +11,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 // import { Badge } from "@/components/ui/badge";
-import {
-  useGetOrdersQuery,
-  useUpdateOrderStatusMutation,
-} from "@/redux/features/users/userApi";
-import { EditIcon, EyeIcon, Loader2Icon } from "lucide-react";
+import { useGetCheckoutsQuery } from "@/redux/features/users/userApi";
+import { EyeIcon, Loader2Icon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import CheckOutDetail from "./checkout-detail";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
-import InvoiceDetail from "./invoice-detail";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface OrderType {
-  order_id: number;
-  order_date: string;
-  status:
+  checkout_date: string;
+  checkout_id: string;
+  overall_status:
     | "pending"
     | "accepted"
     | "rejected"
@@ -38,54 +33,29 @@ interface OrderType {
     | "completed"
     | "delivered"
     | "cancelled";
-  sub_total: string;
-  customer: {
-    name: string;
-    email: string;
-    address: string;
-    dob: string;
-  };
+  grand_total: string;
 }
 
-export default function BuissnessOrder() {
-  const { data, isLoading, isError, error } = useGetOrdersQuery();
-  const [updateOrder] = useUpdateOrderStatusMutation();
+export default function MemberOrder() {
+  const { data, isLoading, isError, error } = useGetCheckoutsQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState("12345");
+  const [selectedOrderId, setSelectedOrderId] = useState("");
 
   const handleViewInvoice = (orderId: string) => {
     setSelectedOrderId(orderId);
     setIsModalOpen(true);
   };
 
+  if (data) {
+    console.log(data.data);
+    // return <></>;
+  }
+
   if (error) {
     console.log(error);
   }
   if (!isLoading && !isError) {
     console.log(data);
-  }
-
-  async function statusChange(
-    x: "accepted" | "rejected" | "delivered" | "cancelled",
-    id: string
-  ) {
-    try {
-      const call = await updateOrder({
-        id,
-        body: { _method: "PUT", status: x },
-      }).unwrap();
-      console.log("--------------------");
-
-      console.log(call);
-
-      if (call?.ok) {
-        toast.success(`Order ${x} successfully`);
-      } else {
-        toast.error(`Failed to update order status`);
-      }
-    } catch (error: any) {
-      toast.error(error?.message || "Something went wrong");
-    }
   }
   if (isError) {
     return (
@@ -116,7 +86,6 @@ export default function BuissnessOrder() {
               <TableRow>
                 <TableHead>Order</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Customer</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="text-right">Action</TableHead>
@@ -124,80 +93,54 @@ export default function BuissnessOrder() {
             </TableHeader>
             <TableBody>
               {data.data.map((x: OrderType) => (
-                <TableRow key={x.order_id}>
-                  <TableCell className="font-medium"># {x.order_id}</TableCell>
-                  <TableCell>{x.order_date}</TableCell>
-                  <TableCell>{x.customer.name}</TableCell>
+                <TableRow key={x.checkout_id}>
+                  <TableCell className="font-medium">{x.checkout_id}</TableCell>
+                  <TableCell className="font-medium">
+                    {x.checkout_date}
+                  </TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Badge
                       className="capitalize"
                       variant={
-                        x.status === "pending"
+                        x.overall_status === "pending"
                           ? "special"
-                          : x.status === "accepted"
+                          : x.overall_status === "accepted"
                           ? "success"
-                          : x.status === "partially_accepted"
+                          : x.overall_status === "partially_accepted"
                           ? "outline"
-                          : x.status === "delivered"
+                          : x.overall_status === "delivered"
                           ? "success"
-                          : x.status === "rejected"
+                          : x.overall_status === "rejected"
                           ? "destructive"
-                          : x.status === "cancelled"
+                          : x.overall_status === "cancelled"
                           ? "destructive"
                           : "secondary"
                       }
                     >
-                      {x.status}
+                      {x.overall_status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">${x.sub_total}</TableCell>
+                  <TableCell className="text-right">${x.grand_total}</TableCell>
                   <TableCell className="text-right space-x-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="outline">
-                          <EditIcon />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("accepted", String(x.order_id));
-                          }}
-                        >
-                          Accept
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("rejected", String(x.order_id));
-                          }}
-                        >
-                          Reject
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("delivered", String(x.order_id));
-                          }}
-                        >
-                          Completed
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("cancelled", String(x.order_id));
-                          }}
-                          variant="destructive"
-                        >
-                          Cancel
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                     <Button
-                      onClick={() => handleViewInvoice(String(x.order_id))}
+                      onClick={() => handleViewInvoice(String(x.checkout_id))}
                       variant="outline"
                       size="icon"
                     >
                       <EyeIcon />
                     </Button>
-                    <InvoiceDetail
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <Trash2Icon className="text-destructive" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Under development
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <CheckOutDetail
                       id={selectedOrderId}
                       isOpen={isModalOpen}
                       onClose={() => setIsModalOpen(false)}

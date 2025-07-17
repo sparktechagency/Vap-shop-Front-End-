@@ -60,16 +60,25 @@ const MyApi = api.injectEndpoints({
       }),
       invalidatesTags:["inbox"]
     }),
-        deleteInbox: builder.mutation<any,any>({
+    deleteInbox: builder.mutation<any,any>({
       query:({id})=>({
         url:`/inbox/delete-message/${id}`,
         method:"DELETE",
       }),
       invalidatesTags:["inbox"]
     }),
-    
+    getCheckouts : builder.query<any,void>({
+      query : () => ({
+        url:`/checkouts`
+      })
+    }),
+    getCheckout:builder.query<any,any>({
+      query : ({id}) => ({
+        url:`/checkouts/${id}`
+      })
+    })
   }),
 
 });
 
-export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation} = MyApi;
+export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation , useGetCheckoutsQuery,useGetCheckoutQuery} = MyApi;
