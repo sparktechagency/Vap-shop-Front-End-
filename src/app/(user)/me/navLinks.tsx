@@ -56,6 +56,11 @@ const baseLinks = {
     label: "Settings",
     to: "/me/settings",
   },
+  inbox: {
+    icon: <Lucide.MessageSquareDotIcon className="size-5" />,
+    label: "Inbox",
+    to: "/me/inbox",
+  },
   logout: {
     icon: <Lucide.LogOut className="size-5" />,
     label: "Logout",
@@ -71,6 +76,7 @@ export const createNavLinks = (
       return [
         baseLinks.viewProfile,
         baseLinks.editProfile,
+        baseLinks.inbox,
         baseLinks.favs,
         baseLinks.orders,
         baseLinks.reviews,

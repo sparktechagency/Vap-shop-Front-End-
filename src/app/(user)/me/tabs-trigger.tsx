@@ -10,7 +10,6 @@ import {
 import TopStores from "./top-stores";
 import TopBrands from "./top-brands";
 import LatestRevs from "./latest-revs";
-import Inbox from "./inbox";
 import Groups from "./groups";
 import About from "./about";
 import Catalog from "./catalog";
@@ -25,7 +24,6 @@ const tabComponents: Record<string, React.ReactNode> = {
   reviews: <LatestRevs />,
   post: <Post />,
   feed: <Feed />,
-  inbox: <Inbox />,
   "create-group": <Groups />,
   announcement: <Announcement />,
   catalog: <Catalog />,
@@ -63,7 +61,7 @@ export default function TabsTriggerer() {
       label: "About",
       visible: !isMember && !isAdmin,
     },
-    { value: "inbox", label: "Inbox", visible: true },
+    // { value: "inbox", label: "Inbox", visible: true },
   ];
   function getDefaultTab(role: number): string {
     if (role === 6) return "top-stores";

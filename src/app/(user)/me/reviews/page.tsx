@@ -42,14 +42,18 @@ export default function LatestRevs() {
   return (
     <div className="!p-6">
       <div className="!my-12 !space-y-6">
-        {reviews.slice(0, 6).map((review) => (
+        <p className="text-center font-semibold text-sm my-12 text-muted-foreground">
+          This is under development and soon will be fixed
+          <code>&lt;/&gt;</code>
+        </p>
+        {/* {reviews.slice(0, 6).map((review) => (
           <ReviewCard
             key={review?.id}
             data={review}
             refetch={refetch()}
             role={review.role}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );
