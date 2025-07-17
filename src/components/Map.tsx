@@ -3,31 +3,6 @@
 import React from 'react';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { Store } from '@/lib/types/store';
-const mapStyles = [
-    {
-        featureType: "all",
-        elementType: "geometry",
-        stylers: [
-            { color: "#242f3e" }
-        ]
-    },
-    {
-        featureType: "all",
-        elementType: "labels.text.stroke",
-        stylers: [
-            { color: "#242f3e" },
-            { weight: 0.5 }
-        ]
-    },
-    {
-        featureType: "water",
-        elementType: "geometry",
-        stylers: [
-            { color: "#17263c" } // Dark blue for water
-        ]
-    },
-    // Add more style rules as needed
-];
 
 const cleanMapStyles = [
     // Hide all default POI icons

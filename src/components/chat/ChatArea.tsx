@@ -15,7 +15,7 @@ interface ChatAreaProps {
     hasMore: boolean;
     isLoadingMore: boolean;
     onSendMessage: (message: string) => void;
-    onScroll: () => void;
+    onScroll?: () => void;
     chatContainerRef: React.RefObject<HTMLDivElement | null>
     messagesEndRef: React.RefObject<HTMLDivElement | null>
 }
