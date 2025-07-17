@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -27,26 +28,28 @@ const formSchema = z.object({
 
 // Function to format date to DD-MM-YYYY
 const formatDateToDDMMYYYY = (dateString: string): string => {
-  if (!dateString) return '';
+  if (!dateString) return "";
 
   const date = new Date(dateString);
-  if (isNaN(date.getTime())) return '';
+  if (isNaN(date.getTime())) return "";
 
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
   return `${day}-${month}-${year}`;
 };
 
-export default function CheckoutForm({ cartItems }: {
+export default function CheckoutForm({
+  cartItems,
+}: {
   cartItems: Array<{
     id: number;
     name: string;
     price: number;
     quantity: number;
     image: string | null;
-  }>
+  }>;
 }) {
   const [checkout, { isLoading }] = useCheckoutMutation();
 
@@ -70,12 +73,12 @@ export default function CheckoutForm({ cartItems }: {
         customer_name: values.fullname,
         customer_email: values.email,
         customer_phone: values.phone ? values.phone.slice(0, 15) : "",
-        customer_dob: formattedDob || '24-04-1987',
+        customer_dob: formattedDob || "24-04-1987",
         customer_address: values.address,
-        cart_items: cartItems.map(item => ({
+        cart_items: cartItems.map((item) => ({
           product_id: item.id,
-          quantity: item.quantity
-        }))
+          quantity: item.quantity,
+        })),
       };
       const result = await checkout(checkoutData).unwrap();
       if (result?.ok) {
@@ -83,7 +86,7 @@ export default function CheckoutForm({ cartItems }: {
           description: "Thank you for your purchase.",
         });
         form.reset();
-        localStorage.removeItem('cart');
+        localStorage.removeItem("cart");
       }
       if (result?.error) {
         toast.error(result?.error || "Checkout failed");
@@ -191,8 +194,8 @@ export default function CheckoutForm({ cartItems }: {
             </FormItem>
           )}
         />
-        <p className="text-sm">
-          Note: Your order request will be sent to <b>VooPoo</b>.
+        <p className="text-sm text-muted-foreground font-semibold">
+          Note: This request will be sent directly to the product&apos;s store.
         </p>
 
         <Button type="submit" disabled={isLoading}>
