@@ -14,9 +14,11 @@ import Link from "next/link";
 export default function Page() {
   return (
     <div className="!px-[7%] !py-8">
-      <h1 className="text-center text-5xl !mb-12">Create an account</h1>
+      <h1 className="text-center text-3xl lg:text-5xl lg:!mb-12">
+        Create an account
+      </h1>
 
-      <div className="!py-8 w-full grid grid-cols-3 gap-6">
+      <div className="!py-8 w-full grid lg:grid-cols-3 gap-6">
         {registerStaticData.map((x, i) => (
           <Card
             key={i}
