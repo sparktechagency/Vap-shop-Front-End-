@@ -22,9 +22,16 @@ export default async function FavList() {
       link: `get/${my.data.id}/products?type=brand&is_most_hearted=1`,
       token,
     });
+    console.log(myFavs);
 
     if (!myFavs?.ok) {
-      return <div>Something went wrong while fetching favorites.</div>;
+      return (
+        <div className="py-8 w-full flex items-center justify-center font-semibold text-sm text-purple-500">
+          {myFavs.message === "No data found"
+            ? "Please mark a brand product as favourite"
+            : myFavs.message ?? "Something went wrong.."}
+        </div>
+      );
     }
 
     if (!Array.isArray(myFavs.data) || myFavs.data.length === 0) {

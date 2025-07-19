@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
 import React from "react";
 const data = {
   title: "New Members: Introduce Yourself!",
@@ -28,12 +27,7 @@ export default function Groups() {
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">
         <CardHeader className="flex justify-between items-center bg-secondary !p-6 rounded-xl">
-          <Link
-            href="/forum/thread"
-            className="text-sm underline hover:text-secondary-foreground/80"
-          >
-            Create a group
-          </Link>
+          <div className=""></div>
           <Select>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter" className="bg-background" />

@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import ProductCard from "@/components/core/product-card";
 import React from "react";
 import {
@@ -14,10 +15,14 @@ import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 
 export default function Catalog({ id }: any) {
   const [page, setPage] = React.useState(1);
-  const per_page = 2;
+  const per_page = 16;
 
-  const { data: brandDetails, isLoading: isBrandLoading, refetch } = useGetStoreDetailsByIdQuery({ id, page, per_page });
-  console.log('brandDetails', brandDetails);
+  const {
+    data: brandDetails,
+    isLoading: isBrandLoading,
+    refetch,
+  } = useGetStoreDetailsByIdQuery({ id, page, per_page });
+  console.log("brandDetails", brandDetails);
   if (isBrandLoading) return <div>Loading...</div>;
 
   const handlePrevPage = () => {
@@ -121,8 +126,7 @@ export default function Catalog({ id }: any) {
               category: `${item.product_price}`,
               note: item.product_type,
               is_hearted: item.is_hearted,
-              hearts: item.total_heart
-
+              hearts: item.total_heart,
             }}
             link={`/stores/store/product/${item.id}`}
             key={i}
