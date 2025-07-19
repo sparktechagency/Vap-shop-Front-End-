@@ -12,7 +12,11 @@ export default function Page() {
     <div className="!p-6">
       <h1 className="text-3xl !pb-4">Orders</h1>
       <Separator />
-      {["5", "3", "4"].includes(role) ? <BuissnessOrder /> : <MemberOrder />}
+      {["5", "3", "4"].includes(String(role)) ? (
+        <BuissnessOrder />
+      ) : (
+        <MemberOrder />
+      )}
     </div>
   );
 }

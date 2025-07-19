@@ -21,8 +21,8 @@ export default function TabsTriggerer() {
           <TabsTrigger value="post">Post</TabsTrigger>
           <TabsTrigger value="feed">Feed</TabsTrigger>
           <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
-          <TabsTrigger value="inbox">Inbox</TabsTrigger>
-          <TabsTrigger value="create-group">Create a group</TabsTrigger>
+          {/* <TabsTrigger value="inbox">Inbox</TabsTrigger> */}
+          <TabsTrigger value="create-group">Group</TabsTrigger>
         </TabsList>
         <TabsContent value="top-stores">
           <TopStores />
