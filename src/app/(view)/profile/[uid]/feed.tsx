@@ -8,12 +8,17 @@ import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetFeedQuery } from "@/redux/features/users/postApi";
+import { UserData } from "@/lib/types/apiTypes";
 
-export default function Feed() {
+export default function Feed({ my }: { my: UserData }) {
   const { data, isLoading, isError, isFetching } = useGetFeedQuery();
-  console.log("data", data);
-  if (data) {
-    console.log(data);
+  // console.log('data', data);
+  // if (data) {
+  //   console.log(data);
+
+  // }
+  if (my) {
+    console.log(my);
   }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">

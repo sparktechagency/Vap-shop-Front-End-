@@ -22,11 +22,12 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   title: z.string().min(1, "Group name is required"),
   description: z.string().min(1, "Description is required"),
+  isPrivate: z.boolean().optional(), // new field, default to false (public)
 });
-
 export default function Page() {
   const [createGroup] = useCreateGroupMutation();
   const navig = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

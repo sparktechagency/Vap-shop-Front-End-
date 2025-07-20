@@ -19,6 +19,13 @@ const MeApi = api.injectEndpoints({
       }),
       providesTags: ["post"],
     }),
+    getPostsById: builder.query<any, {id:any}>({
+      query: ({id}) => ({
+        url: `/get-posts-by-user-id/${id}?per_page=10`,
+        method: "GET",
+      }),
+      providesTags: ["post"],
+    }),
     getFeed: builder.query<any, void>({
       query: () => ({
         url: `/feed`,
@@ -49,6 +56,7 @@ const MeApi = api.injectEndpoints({
       }),
       providesTags: ["post"],
     }),
+
   }),
 });
 
@@ -58,5 +66,6 @@ export const {
   useCommentPostMutation,
   useGetCommentQuery,
   useGetPostLikeQuery,
-  useGetFeedQuery
+  useGetFeedQuery,
+  useGetPostsByIdQuery
 } = MeApi;

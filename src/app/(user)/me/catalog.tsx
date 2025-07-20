@@ -16,6 +16,7 @@ export default function Catalog() {
   const { data: catalog, isLoading } = useGetProductsQuery();
   const products = catalog?.data?.data || [];
   console.log(products);
+  console.log(catalog);
 
   if (isLoading) {
     return (

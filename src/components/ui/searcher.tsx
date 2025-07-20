@@ -94,6 +94,27 @@ export default function Searcher({
     })
     ?.slice(0, 8);
 
+  const getHref = (x: any) => {
+    if (selectedSearch === "store") return `/stores/store/${x.id}`;
+    if (selectedSearch === "brand") return `/brands/brand/${x.id}`;
+    if (selectedSearch === "productS") return `/brands/brand/product/${x.id}`;
+    if (selectedSearch === "accounts") {
+      if (x.role === 5) {
+        return `/stores/store/${x.id}`;
+      } else if (x.role === 3) {
+        return `/brands/brand/${x.id}`;
+      } else {
+        return `/profile/${x.id}?user=${x.full_name
+          .trim()
+          .replace(/\s+/g, " ")}`;
+      }
+    }
+    // fallback for any other cases
+    return (
+      `/profile/${x.id}?user=${x.full_name.trim().replace(/\s+/g, " ")}` || "#"
+    );
+  };
+
   return (
     <div className={className} {...props} ref={searchContainerRef}>
       <div className="h-[calc(48px-8px)] w-full border rounded-md flex justify-between items-center relative overflow-visible">
@@ -135,20 +156,7 @@ export default function Searcher({
               <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden row-span-2 lg:row-span-1">
                 {searching?.data?.data ? (
                   searching?.data?.data?.map((x: any, i: number) => (
-                    <Link
-                      href={
-                        selectedSearch === "store"
-                          ? `/stores/store/${x.id}`
-                          : selectedSearch === "brand"
-                            ? `/brands/brand/${x.id}`
-                            : selectedSearch === "productS"
-                              ? `/brands/brand/product/${x.id}`
-                              : selectedSearch === "accounts"
-                                ? `/stores/store/${x.id}`
-                                : ""
-                      }
-                      key={i}
-                    >
+                    <Link href={getHref(x)} key={i}>
                       <div className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary">
                         <Card className="aspect-square rounded p-1!">
                           <Image
