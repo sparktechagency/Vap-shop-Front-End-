@@ -72,6 +72,13 @@ const AuthApi = api.injectEndpoints({
       }),
       providesTags: ["user", "brand"],
     }),
+    getProfile: builder.query<any, { id: any }>({
+      query: ({ id }) => ({
+        url: `/profile/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["user", "brand"],
+    }),
 
     getFavourite: builder.query({
       query: (typeID) => ({
@@ -81,14 +88,12 @@ const AuthApi = api.injectEndpoints({
       providesTags: ["user"],
     }),
 
-
     gtStoreDetails: builder.query<any, { id: string }>({
       query: ({ id }) => ({
         url: `/profile/${id}`,
         method: "GET",
       }),
     }),
-
   }),
 });
 
@@ -99,8 +104,9 @@ export const {
   useResendotpMutation,
   useCreateNewpasswordMutation,
   useGetOwnprofileQuery,
+  useGetProfileQuery,
   useCountysQuery,
   useGetFavouriteQuery,
   useUpdatePassMutation,
-  useGtStoreDetailsQuery
+  useGtStoreDetailsQuery,
 } = AuthApi;

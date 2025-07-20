@@ -3,7 +3,7 @@ import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPinIcon } from "lucide-react";
 import Dotter from "@/components/ui/dotter";
-import Catalog from "../catalog";
+import Catalog from "../../catalog";
 export default function Page() {
   return (
     <>
@@ -57,7 +57,7 @@ export default function Page() {
           <h2 className="text-lg sm:text-xl md:text-3xl font-semibold">
             Available for wholesale
           </h2>
-          <Catalog />
+          {/* <Catalog /> */}
         </div>
       </main>
     </>

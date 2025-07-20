@@ -2,32 +2,37 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUser } from "@/context/userContext";
+import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import { Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
-export default function LatestReviewCard({ data }: { data: any }) {
+export default function LatestReviewCard({
+  data,
+  userId,
+}: {
+  data: any;
+  userId: number | string;
+}) {
   const [mounted, setMounted] = useState(false);
-  const my = useUser();
+  const { data: me, isLoading } = useGetProfileQuery({ id: userId });
+
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  if (!mounted) {
+  if (!mounted && isLoading) {
     return (
       <div className="py-12 flex justify-center items-center">
         <Loader2Icon className="animate-spin" />
       </div>
     );
   }
-  console.log("rating", data);
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
       <div className="p-4 flex items-center gap-2 bg-secondary">
         <Avatar>
-          <AvatarImage src={my.avatar} className="object-cover" />
+          <AvatarImage src={me?.data?.avatar} className="object-cover" />
           <AvatarFallback>UI</AvatarFallback>
         </Avatar>
-        <h4 className="text-sm font-semibold">{my.full_name}</h4>
+        <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
       </div>
       {/* Review Content */}
       <div className="p-4 !pb-1">

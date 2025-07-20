@@ -11,6 +11,7 @@ import UserProvider from "@/components/userProvider";
 import { redirect } from "next/navigation";
 import { createNavLinks } from "../navLinks";
 import { cn } from "@/lib/utils";
+import MeSharer from "./me-sharer";
 export default async function ProfileLayoutShell({
   children,
 }: Readonly<{
@@ -113,6 +114,7 @@ export default async function ProfileLayoutShell({
             </div>
 
             <div className="flex flex-col md:flex-row justify-end gap-2 md:gap-4 !mt-6 md:!mt-8">
+              <MeSharer me={my} />
               <Button
                 size="icon"
                 variant="outline"
@@ -129,12 +131,18 @@ export default async function ProfileLayoutShell({
                 <Link
                   href={
                     String(my.role) === "6"
-                      ? `/profile/${my.id}`
+                      ? `/profile/${my.id}?user=${my.full_name?.replace(
+                          /\s+/g,
+                          ""
+                        )}`
                       : String(my.role) === "5"
                       ? `/stores/store/${my.id}`
                       : String(my.role) === "3"
                       ? `/brands/brand/${my.id}`
-                      : `/profile/${my.id}`
+                      : `/profile/${my.id}?user=${my.full_name?.replace(
+                          /\s+/g,
+                          ""
+                        )}`
                   }
                 >
                   Preview Profile

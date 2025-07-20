@@ -123,7 +123,6 @@ export default function PostCreate({
           <p className="text-sm text-red-500">{errors.title.message}</p>
         )}
       </div>
-
       <div className="space-y-2!">
         <Label>Forum Content</Label>
         <Editor

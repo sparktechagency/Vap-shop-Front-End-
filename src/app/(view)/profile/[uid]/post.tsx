@@ -7,13 +7,22 @@ import Link from "next/link";
 import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetFeedQuery } from "@/redux/features/users/postApi";
+import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
+import { useParams } from "next/navigation";
+import { UserData } from "@/lib/types/apiTypes";
 
-export default function Feed() {
-  const { data, isLoading, isError, isFetching } = useGetFeedQuery();
-  console.log("data", data);
-  if (data) {
-    console.log(data);
+export default function Post({ user: my }: { user: UserData }) {
+  const id = useParams().uid;
+
+  const { data, isLoading, isError, isFetching, error } = useGetPostsByIdQuery({
+    id: id,
+  });
+  if (!isLoading) {
+    if (isError) {
+      console.error(error);
+    } else {
+      console.log(data);
+    }
   }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
@@ -44,10 +53,7 @@ export default function Feed() {
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
         key={post.id || index} // Prefer post.id if available
-        user={{
-          name: post?.user?.full_name ?? "Name not found",
-          avatar: post?.user?.avatar,
-        }}
+        user={{ name: my.full_name ?? "", avatar: my.avatar }}
         data={post}
       />
     ));

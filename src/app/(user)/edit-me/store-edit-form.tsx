@@ -28,11 +28,12 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, TriangleAlertIcon } from "lucide-react";
 import LocationPicker from "@/components/core/location-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const formSchema = z.object({
   store_name: z.string().min(2),
@@ -331,7 +332,31 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
-
+        {!my.address?.latitude && (
+          <Alert variant={"warn"} className="col-span-2">
+            <TriangleAlertIcon />
+            <AlertTitle>No Location Set</AlertTitle>
+            <AlertDescription>
+              You haven’t set an exact location on the map yet. Without it, your
+              profile won’t appear in the map section.
+            </AlertDescription>
+          </Alert>
+        )}
+        {my.address?.latitude && my.address?.longitude && (
+          <div className="p-4 grid grid-cols-2 gap-6 rounded-md border text-sm">
+            <div className="col-span-2 border-b pb-2 font-bold">
+              {my.full_name}&apos;s Map Location:
+            </div>
+            <div className="">
+              <span className="font-semibold">Latitute:</span>{" "}
+              {my.address.latitude}
+            </div>
+            <div className="">
+              <span className="font-semibold">Longtitude:</span>{" "}
+              {my.address.longitude}
+            </div>
+          </div>
+        )}
         {["5"].includes(String(my.role)) && (
           <FormField
             control={control}

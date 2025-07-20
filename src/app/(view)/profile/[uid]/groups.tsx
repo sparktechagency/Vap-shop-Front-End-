@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import ForumCard from "@/components/core/forum-card";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
@@ -7,26 +9,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UserData } from "@/lib/types/apiTypes";
+import { useGetDashboardForumQuery } from "@/redux/features/Forum/ForumApi";
 import React from "react";
-const data = {
-  title: "New Members: Introduce Yourself!",
-  new: true,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
-const diffData = {
-  title: "New Members: Introduce Yourself!",
-  new: false,
-  secondaryA: "12K Threads",
-  secondaryB: "225k messages",
-  date: "May 28, 202",
-};
-export default function Groups() {
+export default function Groups({ user }: { user: UserData }) {
+  const my = user;
+  const { data, isLoading } = useGetDashboardForumQuery({ id: my.id });
+
+  if (!isLoading) {
+    console.log(data);
+  }
   return (
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">
-        <CardHeader className="flex justify-between items-center bg-secondary !p-6 rounded-xl">
+        <CardHeader className="flex justify-between items-center bg-secondary !p-6 rounded-t-xl">
           <div className=""></div>
           <Select>
             <SelectTrigger className="w-[180px]">
@@ -38,16 +34,15 @@ export default function Groups() {
             </SelectContent>
           </Select>
         </CardHeader>
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
-        <ForumCard data={diffData} to="/forum/thread" />
-        <ForumCard data={data} to="/forum/thread" />
+        {!data ? (
+          <p className="mt-6! flex justify-center items-center text-muted-foreground text-sm">
+            No Forum Found
+          </p>
+        ) : (
+          data?.data?.data.map((x: any) => (
+            <ForumCard key={x.id} data={x} to={`/forum/thread/${x.id}`} />
+          ))
+        )}
       </Card>
     </div>
   );

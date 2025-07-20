@@ -92,10 +92,11 @@ export default function Page() {
   };
 
   const handleMapClick = (data: any) => {
-    console.log('data', data);
-    navigation.push(`/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`);
+    console.log("data", data);
+    navigation.push(
+      `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
+    );
   };
-
 
   if (isError) {
     console.log("error", error);
@@ -112,8 +113,9 @@ export default function Page() {
       <div
         className="h-[50dvh] w-full relative bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('${data?.data?.cover_photo || "/image/home/car2.png"
-            }')`,
+          backgroundImage: `url('${
+            data?.data?.cover_photo || "/image/home/car2.png"
+          }')`,
         }}
       >
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
@@ -151,7 +153,12 @@ export default function Page() {
                 openTo={data?.data?.close_at}
               />
             </div>
-            <Button onClick={() => handleMapClick(data?.data)} variant="outline" asChild className="text-xs flex items-center gap-2">
+            <Button
+              onClick={() => handleMapClick(data?.data)}
+              variant="outline"
+              asChild
+              className="text-xs flex items-center gap-2"
+            >
               <div>
                 <MapPinIcon className="size-4" />
                 <span>{data?.data?.address?.address || "No Address"}</span>
@@ -190,7 +197,7 @@ export default function Page() {
                   className="!text-sm font-extrabold"
                   asChild
                 >
-                  <Link href="/stores/store/btb">B2B</Link>
+                  <Link href={`/stores/store/${id}/btb`}>B2B</Link>
                 </Button>
                 <Button
                   variant="outline"
