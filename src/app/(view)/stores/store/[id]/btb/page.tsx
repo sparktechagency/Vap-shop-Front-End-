@@ -1,64 +1,163 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPinIcon } from "lucide-react";
-import Dotter from "@/components/ui/dotter";
-// import Catalog from "../../catalog";
+import { Button } from "@/components/ui/button";
+import {
+  CheckCircle2Icon,
+  CircleOffIcon,
+  InfoIcon,
+  Loader2Icon,
+  MapPinIcon,
+  PackageOpenIcon,
+  RadioIcon,
+} from "lucide-react";
+import React from "react";
+
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+
+import DOMPurify from "dompurify";
+import OpenStatus from "../open-status";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import Catalog from "./catalog";
+
 export default function Page() {
+  const { id } = useParams();
+
+  const { data, isLoading, isError, error } = useGtStoreDetailsQuery({
+    id: id as any,
+  });
+
+  const navigation = useRouter();
+
+  const handleMapClick = (data: any) => {
+    console.log("data", data);
+    navigation.push(
+      `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
+    );
+  };
+
+  if (isError) {
+    console.log("error", error);
+  }
+  if (isLoading) {
+    return (
+      <div className="!p-6 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
-      {" "}
       <div
         className="h-[50dvh] w-full relative bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/image/home/car2.png')` }}
+        style={{
+          backgroundImage: `url('${
+            data?.data?.cover_photo || "/image/home/car2.png"
+          }')`,
+        }}
       >
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
-          <AvatarImage src="/image/icon/store.png" />
+          <AvatarImage src={data?.data?.avatar || "/image/icon/store.png"} />
           <AvatarFallback>VD</AvatarFallback>
         </Avatar>
       </div>
       <main className="!py-12 !p-4 lg:!px-[7%]">
-        <div className="!pb-12">
+        <div className="">
           <div className="h-12"></div>
           <div className="flex !py-4 gap-4 items-center">
-            <div className="lg:h-24 flex flex-col !py-3 justify-between">
+            <div className="lg:h-12 flex flex-col !py-3 justify-between">
               <Namer
-                name="Vape Juice Deport"
+                name={data?.data?.full_name || "Vape Juice Deport"}
                 isVerified
-                type="brand"
+                type="store"
                 size="xl"
               />
             </div>
           </div>
           <div className="">
-            <p className="text-xs md:text-sm xl:text-base">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <p
+              className="text-xs md:text-sm xl:text-base line-clamp-1"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(
+                  data?.data?.about?.content || "No Description"
+                ),
+              }}
+            />
           </div>
-          <div className="!mt-8 flex flex-col gap-4 lg:flex-row justify-between items-center">
-            <div className="text-xs md:text-sm text-muted-foreground flex gap-2 items-center">
-              <span className={"text-green-600"}>Open Now</span>
-              <Dotter />
-              <span>Close 10 PM</span>
+          <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
+            <div className="text-xs md:text-sm text-muted-foreground">
+              <OpenStatus
+                openFrom={data?.data?.open_from}
+                openTo={data?.data?.close_at}
+              />
             </div>
-            <div className="text-xs flex items-center gap-2">
-              <MapPinIcon className="size-4" />
-              BROOKLYN, New York
+            <Button
+              onClick={() => handleMapClick(data?.data)}
+              variant="outline"
+              asChild
+              className="text-xs flex items-center gap-2"
+            >
+              <div>
+                <MapPinIcon className="size-4" />
+                <span>{data?.data?.address?.address || "No Address"}</span>
+              </div>
+            </Button>
+          </div>
+          <div className="!mt-4">
+            <div className="grid grid-cols-1 md:flex gap-8 items-center">
+              <div className="text-xs flex items-center gap-2 cursor-pointer hover:text-foreground/80">
+                <InfoIcon className="size-4" />
+                About us
+              </div>
+              <div className="text-xs cursor-pointer hover:text-foreground/80">
+                <Link
+                  href="/stores/store/connected-stores"
+                  className="flex items-center gap-2 "
+                >
+                  <RadioIcon className="size-4" />
+                  Connected Stores
+                </Link>
+              </div>
+              <div className="text-xs flex items-center gap-1">
+                PL
+                {data?.data?.pl ? (
+                  <CheckCircle2Icon className="size-4 text-green-600" />
+                ) : (
+                  <CircleOffIcon className="size-4 text-destructive" />
+                )}
+              </div>
             </div>
           </div>
         </div>
-        <div className="!py-12 border-t">
-          <h2 className="text-lg sm:text-xl md:text-3xl font-semibold">
-            Available for wholesale
-          </h2>
-          {/* <Catalog /> */}
-        </div>
+        <Catalog id={id as string} />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              className="fixed bottom-8 right-8 size-12 rounded-full border-black"
+              variant={"outline"}
+              size={"icon"}
+            >
+              <PackageOpenIcon className="size-6" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="top"
+            align="end"
+            className="h-[50dvh] w-[400px] bg-background border rounded-lg mb-2"
+          >
+            <div className="text-sm font-bold pb-2 border-b">
+              Your Wholesale Cart
+            </div>
+          </PopoverContent>
+        </Popover>
       </main>
     </>
   );
