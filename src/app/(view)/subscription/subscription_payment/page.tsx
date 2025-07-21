@@ -174,9 +174,9 @@ export default function ZodOnlyPaymentPage() {
         try {
             await purchesSubscription(submissionData).unwrap();
             setShowSuccessModal(true); // Show modal on success
-        } catch (error) {
+        } catch (error: any) {
             console.error("Payment Failed:", error);
-            toast.error("Payment failed. Please check your details and try again.");
+            toast.error(error?.data?.message || "Payment Failed");
         }
     }
 
