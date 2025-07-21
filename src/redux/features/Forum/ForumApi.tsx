@@ -19,6 +19,10 @@ export const forumApi = api.injectEndpoints({
         `/forum-thread/?group_id=${id}&per_page=${per_page}&page=${page}`,
       providesTags: ["thread"],
     }),
+    getGroup: builder.query<any, { id: string | number }>({
+      query: ({ id }) => `/forum-group/${id}`,
+      providesTags: ["thread"],
+    }),
 
     getThreadDetailsById: builder.query({
       query: (id) => `/forum-thread/${id}`,
@@ -95,4 +99,5 @@ export const {
   useLikeCommentMutation,
   useUpdateThreadMutation,
   useDeleteThreadMutation,
+  useGetGroupQuery,
 } = forumApi;

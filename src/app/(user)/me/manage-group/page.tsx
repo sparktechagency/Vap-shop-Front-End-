@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { useCreateGroupMutation } from "@/redux/features/Forum/ForumApi";
+import {
+  useCreateGroupMutation,
+  useGetGroupQuery,
+} from "@/redux/features/Forum/ForumApi";
+import { Loader2Icon } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(1, "Group name is required"),
@@ -28,9 +32,13 @@ const formSchema = z.object({
 
 export default function Page() {
   const [createGroup] = useCreateGroupMutation();
+
   const navig = useRouter();
   const id = useSearchParams().get("id");
-
+  const { data, isLoading } = useGetGroupQuery({ id: id ?? "" });
+  if (!isLoading) {
+    console.log(data);
+  }
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,7 +46,12 @@ export default function Page() {
       description: "",
     },
   });
+  useEffect(() => {
+    form.setValue("title", data?.data?.title);
+    form.setValue("description", data?.data?.description);
 
+    return () => {};
+  }, [data, form]);
   if (!id) {
     navig.back();
     return (
@@ -67,6 +80,15 @@ export default function Page() {
       toast.error("Something went wrong..");
     }
   };
+
+  if (isLoading) {
+    return (
+      <main className="py-12 p-6 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </main>
+    );
+  }
+
   return (
     <main className="">
       <Form {...form}>

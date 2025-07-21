@@ -29,13 +29,9 @@ export default async function RootLayout({
 }>) {
   const token = (await cookies()).get("token")?.value;
   if (!token) {
-    console.log("no token");
     throw redirect("/login");
   }
   const res = await howl({ link: "me", token: token });
-  console.log("------------------------------------------");
-  console.log(res);
-  console.log("------------------------------------------");
 
   try {
     if (!res?.data || String(res.data.role) !== "1") {
@@ -44,7 +40,6 @@ export default async function RootLayout({
       throw redirect("/login");
     }
   } catch (error) {
-    // If API call fails, redirect to login as fallback
     console.error("Middleware howl error:", error);
     throw redirect("/login");
   }
