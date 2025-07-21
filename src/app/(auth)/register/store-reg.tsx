@@ -113,7 +113,7 @@ export default function StoreRegister({
       const response = await register(formattedData).unwrap();
       if (response?.ok) {
         toast.success(response?.message || "Registration successful!");
-        router.push("/verify-otp?isregistared=true");
+        router.push(`/verify-otp?isregistared=true&email=${data.email}`);
       } else {
         toast.error(response?.message || "Registration failed!");
       }

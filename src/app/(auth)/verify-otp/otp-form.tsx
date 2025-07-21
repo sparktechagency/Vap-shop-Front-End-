@@ -49,17 +49,23 @@ export function OTPForm({
   const onSubmit = async (data: OTPFormData) => {
     try {
       const response = await verifyEmail({ otp: data.otp }).unwrap();
+      console.log('response', response);
 
       if (response.ok) {
         Cookies.set("token", response.data.access_token);
         if (isFromRegistration === "true") {
           toast.success(response.message || "Verification successful! Welcome.");
-          router.push("/");
+          if (response?.data?.user?.is_subscribed === false) {
+            return router.push("/subscription");
+          } else {
+            return router.push("/");
+          }
         } else {
           toast.success(
             response.message || "Email verified. You can now reset your password."
           );
           router.push("/reset-password");
+
         }
       } else {
         toast.error(response.message || "Verification failed");

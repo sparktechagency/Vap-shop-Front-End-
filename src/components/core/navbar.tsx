@@ -296,6 +296,7 @@ export default function Navbar() {
   const [user, setUser] = useState<UserData | null>(null);
   const role = Number(user?.role);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
+  console.log('user', user);
 
   const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
     skip: !token,

@@ -7,6 +7,12 @@ export interface User {
   phone?: string;
 }
 
+export interface subscribuser {
+  id: number | string;
+  role: number;
+  is_subscribed: boolean;
+  [key: string]: any;
+}
 export interface Message {
   id: number | string;
   sender_id: number;
