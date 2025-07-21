@@ -10,15 +10,15 @@ import Cookies from "js-cookie";
 export interface NavActionType {
   icon?: React.ReactNode;
   variant?:
-  | "ghost"
-  | "special"
-  | "link"
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | null
-  | undefined;
+    | "ghost"
+    | "special"
+    | "link"
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | null
+    | undefined;
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
   href: string;
   label?: string;
@@ -49,16 +49,13 @@ export const staticNavActions: NavActionType[] = [
 export const NavActions = () => {
   const [token, setToken] = useState<string | undefined>(undefined);
 
-  // Fetch user data, but only if the token exists
   const { data: userData } = useGetOwnprofileQuery(undefined, {
     skip: !token,
   });
 
-  // Separate counts for notifications and conversations
   const notificationCount = userData?.data?.unread_notification || 0;
   const conversationCount = userData?.data?.unread_conversations_count || 0;
 
-  // Effect to check for the authentication token
   useEffect(() => {
     const checkToken = () => {
       const newToken = Cookies.get("token");
@@ -71,22 +68,21 @@ export const NavActions = () => {
     return () => clearInterval(interval);
   }, [token]);
 
-  // Define actions that are only visible to logged-in users
   const dynamicNavActions: NavActionType[] = [
     {
       icon: <BellIcon className="size-4" />,
       variant: "ghost",
       size: "icon",
-      href: "/me/notification", // Link to notifications page
-      unread_notification: notificationCount, // Use the specific count for notifications
+      href: "/me/notification",
+      unread_notification: notificationCount,
       requiresAuth: true,
     },
     {
       icon: <MessageSquareIcon className="size-4" />,
       variant: "ghost",
       size: "icon",
-      href: "/chat", // Link to conversations/chat page
-      unread_notification: conversationCount, // Use the specific count for conversations
+      href: "/chat",
+      unread_notification: conversationCount,
       requiresAuth: true,
     },
   ];
@@ -97,13 +93,11 @@ export const NavActions = () => {
   return (
     <div className="flex items-center gap-2">
       {allActions.map((action, index) => {
-        // Hide auth-required actions if not logged in
-        if (action.requiresAuth && !isAuthenticated) return null;
-        // Hide login/register if logged in
-        if (action.requiresAuth === false && isAuthenticated) return null;
-        // Don't render the icon if its count is 0
-        if (action.requiresAuth && action.unread_notification === 0) return null;
+        const shouldHide =
+          (action.requiresAuth && !isAuthenticated) ||
+          (action.requiresAuth === false && isAuthenticated);
 
+        if (shouldHide) return null;
 
         return action.asChild ? (
           <Button key={index} variant={action.variant} asChild>
@@ -111,22 +105,26 @@ export const NavActions = () => {
           </Button>
         ) : (
           <Link key={index} href={action.href}>
-            {action.unread_notification !== undefined && action.icon ? (
+            {action.icon ? (
               <div className="relative inline-block">
                 <Button variant={action.variant} size={action.size}>
                   {action.icon}
                 </Button>
-                {action.unread_notification > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-[6px] py-[1px] rounded-full font-semibold">
-                    {action.unread_notification > 99
-                      ? "99+"
-                      : action.unread_notification}
-                  </span>
-                )}
+
+                {typeof action.unread_notification === "number" &&
+                  action.unread_notification > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-[6px] py-[1px] rounded-full font-semibold">
+                      {action.unread_notification > 99
+                        ? "99+"
+                        : action.unread_notification}
+                    </span>
+                  )}
               </div>
             ) : (
               <Button variant={action.variant} size={action.size}>
-                {action.icon || action.label}
+                {typeof action.label === "string" && action.label.trim() !== ""
+                  ? action.label
+                  : null}
               </Button>
             )}
           </Link>

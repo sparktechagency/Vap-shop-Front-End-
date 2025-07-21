@@ -47,7 +47,7 @@ export default function MostHearted() {
             <SelectGroup>
               <SelectLabel>Canada</SelectLabel>
               <SelectItem value="on">Ontario</SelectItem>
-              <SelectItem value="br">British Columbina</SelectItem>
+              <SelectItem value="br">British Columbia</SelectItem>
               <SelectItem value="al">Alberta</SelectItem>
             </SelectGroup>
             <SelectSeparator />

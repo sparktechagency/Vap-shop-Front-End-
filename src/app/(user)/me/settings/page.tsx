@@ -29,6 +29,9 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useUser } from "@/context/userContext";
+import PaymentAlert from "./payment-alert";
+import { useGetPGKeysQuery } from "@/redux/features/keys/keysApi";
+import { ArrowRight } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -47,6 +50,7 @@ type PasswordFormType = z.infer<typeof formSchema>;
 
 export default function Page() {
   const [updatePassword] = useUpdatePassMutation();
+  const { isError } = useGetPGKeysQuery();
   const form = useForm<PasswordFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,12 +90,28 @@ export default function Page() {
                 FREE {my.role_label?.toUpperCase()}
               </Badge>
             </CardTitle>
-            <Button variant="link" asChild>
-              <Link href="#">Subscription</Link>
+            <Button asChild>
+              <Link href="/subscription">Manage Subscription</Link>
             </Button>
           </CardContent>
         </Card>
       </div>
+      {!isError ? (
+        <div className="mt-12">
+          <Card>
+            <CardContent className="flex justify-between items-center">
+              <CardTitle>Manage Payment gateway cradentials</CardTitle>
+              <Button asChild>
+                <Link href="/me/settings/payment">
+                  Manage Payment cradentials <ArrowRight />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <PaymentAlert />
+      )}
       <div className="!my-12 !space-y-6">
         <div className="">
           <h1 className="text-center text-3xl font-semibold">Appearance</h1>

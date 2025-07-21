@@ -29,6 +29,7 @@ import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import { useUpdateProductMutation } from "@/redux/features/manage/product";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
+
 const faqSchema = z.object({
   question: z.string().min(1, "Question is required"),
   answer: z.string().min(1, "Answer is required"),
@@ -58,6 +59,7 @@ export default function ProductForm({ prod }: { prod: any }) {
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
   const [imageChanged, setImageChanged] = useState(false);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,10 +74,12 @@ export default function ProductForm({ prod }: { prod: any }) {
       thc_percentage: "",
     },
   });
+
   const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "faqs",
   });
+
   useEffect(() => {
     if (!prod || !cats?.data) return;
 
@@ -124,21 +128,16 @@ export default function ProductForm({ prod }: { prod: any }) {
       toast.error("Please upload a valid image file (JPEG, JPG, PNG, WEBP)");
     },
   });
-
   const onSubmit = async (data: FormData) => {
     try {
       const formData = new FormData();
 
-      // 1. Append the image if selected
       if (selectedFile && imageChanged) {
         formData.append("product_image", selectedFile);
       }
 
-      // 2. Append all other form data fields, excluding the discount for now
       Object.entries(data).forEach(([key, value]) => {
-        if (key === "product_discount") {
-          return; // Skip discount, handle it separately
-        }
+        if (key === "product_discount") return;
 
         if (key === "faqs") {
           data?.faqs?.forEach((faq, index) => {
@@ -146,12 +145,10 @@ export default function ProductForm({ prod }: { prod: any }) {
             formData.append(`product_faqs[${index}][answer]`, faq.answer);
           });
         } else {
-          // Append other fields, ensuring null/undefined becomes an empty string
           formData.append(key, value ? String(value) : "");
         }
       });
 
-      // 3. Always append discount fields with appropriate values
       if (data.product_discount && data.product_price) {
         const discountValue = parseFloat(data.product_discount);
         const priceValue = parseFloat(data.product_price);
@@ -160,35 +157,45 @@ export default function ProductForm({ prod }: { prod: any }) {
         formData.append("product_discount", calculatedDiscount.toString());
         formData.append("product_discount_unit", data.product_discount);
       } else {
-        // **THE FIX**: If no discount is entered, send "0" for both fields
         formData.append("product_discount", "0");
         formData.append("product_discount_unit", "0");
       }
-      formData.append("product_id", prod.id);
-      formData.append("_method", "PUT");
 
-      // 4. Send the request
-      // alert(prod.id)
-      const res = await updateProduct({
-        body: formData,
-        id: String(prod.id),
-      }).unwrap();
+      formData.append("thc_percentage", data.thc_percentage ?? "0");
+
+      if (prod.product_id) {
+        formData.append("product_id", prod.product_id);
+      }
+      formData.append("_method", "PUT");
+      // Wrap the API call in try-catch inside try to catch unwrap errors safely
+      let res;
+      try {
+        res = await updateProduct({
+          body: formData,
+          id: String(prod.id),
+        }).unwrap();
+        console.log(res);
+      } catch (apiError: any) {
+        // If unwrap throws (usually when error response), show toast and exit
+        toast.error(apiError?.data?.message || "Update failed");
+        console.error("API error:", apiError);
+        return;
+      }
 
       if (!res.ok) {
-        toast.error(res.message);
-        console.log(res);
-
+        toast.error(res.message ?? "Update failed");
+        console.error(res);
         return;
       }
 
       toast.success("Product has been uploaded successfully.");
-      form.reset();
       setSelectedFile(null);
       setImageurl(null);
     } catch (error: any) {
-      console.error("Submission error:", error);
+      // Fallback catch for unexpected errors (code bugs, form data issues, etc)
+      console.error("Unexpected submission error:", error);
       toast.error(
-        error?.data?.errors || "Failed to upload product. Please try again."
+        error?.message || "Failed to upload product. Please try again."
       );
     }
   };
@@ -198,9 +205,7 @@ export default function ProductForm({ prod }: { prod: any }) {
   };
 
   const removeFAQ = (index: number) => {
-    if (fields.length > 1) {
-      remove(index);
-    }
+    remove(index);
   };
 
   return (
@@ -446,6 +451,12 @@ export default function ProductForm({ prod }: { prod: any }) {
                 </Button>
               </div>
 
+              {fields.length === 0 && (
+                <p className="text-sm text-gray-500">
+                  No FAQs added (optional)
+                </p>
+              )}
+
               {fields.map((field, index) => (
                 <div key={field.id} className="space-y-4 p-4 border rounded-lg">
                   <div className="flex items-center justify-between">
@@ -496,12 +507,6 @@ export default function ProductForm({ prod }: { prod: any }) {
                   />
                 </div>
               ))}
-
-              {fields.length === 0 && (
-                <p className="text-sm text-gray-500">
-                  No FAQs added (optional)
-                </p>
-              )}
             </div>
           </div>
 

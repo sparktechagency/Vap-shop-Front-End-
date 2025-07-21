@@ -16,11 +16,7 @@ import { EyeIcon, Loader2Icon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CheckOutDetail from "./checkout-detail";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 interface OrderType {
   checkout_date: string;
@@ -129,16 +125,23 @@ export default function MemberOrder() {
                     >
                       <EyeIcon />
                     </Button>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          <Trash2Icon className="text-destructive" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        Under development
-                      </TooltipContent>
-                    </Tooltip>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={async () => {
+                        try {
+                          //  const res = await
+                          toast.info(
+                            "This feature is currently under development"
+                          );
+                        } catch (error) {
+                          console.error(error);
+                          toast.error("Something went wrong");
+                        }
+                      }}
+                    >
+                      <Trash2Icon className="text-destructive" />
+                    </Button>
 
                     <CheckOutDetail
                       id={selectedOrderId}

@@ -5,7 +5,6 @@ import {
   BriefcaseBusinessIcon,
   CreditCard,
   MegaphoneIcon,
-  Menu,
   SquareTerminal,
   UsersRoundIcon,
   WorkflowIcon,
@@ -20,7 +19,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 // This is sample data.
@@ -153,12 +151,15 @@ const data = {
           url: "/admin/billing/orders",
         },
         {
+          title: "Transaction Keys",
+          url: "/admin/billing/keys",
+        },
+        {
           title: "B2B Transactions",
           url: "/admin/billing/b-to-b",
         },
       ],
     },
-
   ],
 };
 
@@ -170,8 +171,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-
-
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

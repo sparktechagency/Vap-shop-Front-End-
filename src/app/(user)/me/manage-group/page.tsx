@@ -1,4 +1,6 @@
 "use client";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -16,18 +18,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { useCreateGroupMutation } from "@/redux/features/Forum/ForumApi";
-import { useRouter } from "next/navigation";
+import {
+  useCreateGroupMutation,
+  useGetGroupQuery,
+} from "@/redux/features/Forum/ForumApi";
+import { Loader2Icon } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(1, "Group name is required"),
   description: z.string().min(1, "Description is required"),
   isPrivate: z.boolean().optional(), // new field, default to false (public)
 });
+
 export default function Page() {
   const [createGroup] = useCreateGroupMutation();
-  const navig = useRouter();
 
+  const navig = useRouter();
+  const id = useSearchParams().get("id");
+  const { data, isLoading } = useGetGroupQuery({ id: id ?? "" });
+  if (!isLoading) {
+    console.log(data);
+  }
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,6 +46,20 @@ export default function Page() {
       description: "",
     },
   });
+  useEffect(() => {
+    form.setValue("title", data?.data?.title);
+    form.setValue("description", data?.data?.description);
+
+    return () => {};
+  }, [data, form]);
+  if (!id) {
+    navig.back();
+    return (
+      <main className=" py-6 px-4 flex justify-center items-center">
+        Please Select a group first
+      </main>
+    );
+  }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("Forum Group Created:", data);
@@ -56,12 +81,16 @@ export default function Page() {
     }
   };
 
-  return (
-    <main className="!py-12 !px-2 md:!px-[7%]">
-      <h1 className="text-center font-semibold text-xl md:text-2xl lg:text-4xl mb-12!">
-        CREATE A FORUM GROUP
-      </h1>
+  if (isLoading) {
+    return (
+      <main className="py-12 p-6 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </main>
+    );
+  }
 
+  return (
+    <main className="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4!">
           <FormField

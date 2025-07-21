@@ -9,87 +9,32 @@ import {
   InfoIcon,
   Loader2Icon,
   MapPinIcon,
-  MessageSquareMoreIcon,
+  PackageOpenIcon,
   RadioIcon,
-  Share2Icon,
 } from "lucide-react";
 import React from "react";
-import TabsTriggerer from "../tabs-trigger";
+
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
-import { toast } from "sonner";
-import {
-  useFollowBrandMutation,
-  useUnfollowBrandMutation,
-} from "@/redux/features/Trending/TrendingApi";
+
 import DOMPurify from "dompurify";
-import OpenStatus from "./open-status";
+import OpenStatus from "../open-status";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import Catalog from "./catalog";
+
 export default function Page() {
   const { id } = useParams();
-  const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
+
+  const { data, isLoading, isError, error } = useGtStoreDetailsQuery({
     id: id as any,
   });
-  console.log(data?.data);
+
   const navigation = useRouter();
-  const [followOrUnfollowBrand, { isLoading: isFollowing }] =
-    useFollowBrandMutation();
-  const [unfollowBrand, { isLoading: isUnFollowing }] =
-    useUnfollowBrandMutation();
-
-  const user = data?.data;
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `Check out ${user?.full_name} on our platform`,
-          text: `I found this amazing brand ${user?.full_name} that you might like!`,
-          url: window.location.href,
-        })
-        .then(() => console.log("Successful share"))
-        .catch((error) => console.log("Error sharing:", error));
-    } else {
-      const shareUrl = window.location.href;
-      navigator.clipboard
-        .writeText(shareUrl)
-        .then(() => {
-          toast.success("Link copied to clipboard!");
-        })
-        .catch(() => {
-          const tempInput = document.createElement("input");
-          tempInput.value = shareUrl;
-          document.body.appendChild(tempInput);
-          tempInput.select();
-          document.execCommand("copy");
-          document.body.removeChild(tempInput);
-          toast.success("Link copied to clipboard!");
-        });
-    }
-  };
-
-  const handleFollow = async (id: string) => {
-    try {
-      const response = await followOrUnfollowBrand(id).unwrap();
-      if (response.ok) {
-        toast.success(response.message || "Followed successfully");
-        refetch();
-      }
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to follow");
-    }
-  };
-
-  const handleUnfollow = async (id: string) => {
-    try {
-      const response = await unfollowBrand(id).unwrap();
-      if (response.ok) {
-        toast.success(response.message || "Unfollowed successfully");
-        refetch();
-      }
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to unfollow");
-    }
-  };
 
   const handleMapClick = (data: any) => {
     console.log("data", data);
@@ -108,6 +53,7 @@ export default function Page() {
       </div>
     );
   }
+
   return (
     <>
       <div
@@ -188,57 +134,30 @@ export default function Page() {
                   <CircleOffIcon className="size-4 text-destructive" />
                 )}
               </div>
-              <div className="flex-1 md:h-24 grid grid-cols-1 md:flex flex-row justify-end items-center gap-4">
-                <p className="font-semibold text-sm">
-                  {user?.total_followers || 0} followers
-                </p>
-                <Button
-                  variant="outline"
-                  className="!text-sm font-extrabold"
-                  asChild
-                >
-                  <Link href={`/stores/store/${id}/btb`}>B2B</Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full md:w-9"
-                  size="icon"
-                  asChild
-                >
-                  <Link href={`/chat?email=${user?.email}`}>
-                    <MessageSquareMoreIcon />
-                  </Link>
-                </Button>
-                {user?.is_following ? (
-                  <Button
-                    onClick={() => handleUnfollow(user?.id)}
-                    variant="outline"
-                  >
-                    {isUnFollowing ? "Unfollowing..." : "Unfollow"}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => handleFollow(user?.id)}
-                    variant="outline"
-                  >
-                    {isFollowing ? "Following..." : "Follow"}
-                  </Button>
-                )}
-                <Button
-                  onClick={handleShare}
-                  variant="outline"
-                  className="w-full md:w-9"
-                  size="icon"
-                >
-                  <Share2Icon />
-                </Button>
-              </div>
             </div>
           </div>
         </div>
-        <div className="w-full">
-          <TabsTriggerer id={id} />
-        </div>
+        <Catalog id={id as string} />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              className="fixed bottom-8 right-8 size-12 rounded-full border-black"
+              variant={"outline"}
+              size={"icon"}
+            >
+              <PackageOpenIcon className="size-6" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="top"
+            align="end"
+            className="h-[50dvh] w-[400px] bg-background border rounded-lg mb-2"
+          >
+            <div className="text-sm font-bold pb-2 border-b">
+              Your Wholesale Cart
+            </div>
+          </PopoverContent>
+        </Popover>
       </main>
     </>
   );

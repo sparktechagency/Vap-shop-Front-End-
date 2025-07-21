@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
-import { MessagesSquareIcon } from "lucide-react";
+import { EditIcon, MessagesSquareIcon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "../ui/button";
 
 interface ForumGroupType {
   id: number;
@@ -20,9 +21,14 @@ interface ForumGroupType {
 interface ForumCardProps {
   data: ForumGroupType;
   to?: string;
+  editable?: boolean;
 }
 
-export default function ForumCard({ data, to }: ForumCardProps | any) {
+export default function ForumCard({
+  data,
+  to,
+  editable,
+}: ForumCardProps | any) {
   // Format the date to be more readable
   const formattedDate = new Date(data?.created_at).toLocaleDateString("en-US", {
     year: "numeric",
@@ -36,12 +42,15 @@ export default function ForumCard({ data, to }: ForumCardProps | any) {
     7 * 24 * 60 * 60 * 1000;
 
   return (
-    <Link href={to ? to : `/forum/thread/${data?.id}`}>
-      <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary lg:rounded-xl lg:hover:border dark:hover:bg-background lg:hover:scale-[103%] transition-all">
-        <div className="min-h-[5rem] md:h-24 !px-3 sm:!px-6 flex gap-2 sm:gap-4 w-full">
-          <div className="h-12 w-12 sm:h-16 sm:w-16 md:h-full md:aspect-square border rounded-xl bg-secondary flex justify-center items-center shrink-0">
-            <MessagesSquareIcon className="size-6 sm:size-8 md:size-10 text-muted-foreground" />
-          </div>
+    <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary/80 lg:rounded-xl lg:hover:border dark:hover:bg-background/30 lg:hover:scale-[102%] transition-all">
+      <div className="min-h-[5rem] h-full !px-3 sm:!px-6 flex gap-2 sm:gap-4 w-full">
+        <div className="h-12 w-12 sm:h-16 sm:w-16 md:h-full md:aspect-square border rounded-xl bg-secondary flex justify-center items-center shrink-0">
+          <MessagesSquareIcon className="size-6 sm:size-8 md:size-10 text-muted-foreground" />
+        </div>
+        <Link
+          href={to ? to : `/forum/thread/${data?.id}`}
+          className="w-full h-full  mb-0! p-0!"
+        >
           <div className="flex flex-col justify-between !py-0 md:!py-1 w-full">
             <div className="flex flex-col lg:flex-row gap-1 md:gap-3 items-start lg:items-center">
               <h2 className="text-xs md:text-sm lg:text-xl line-clamp-2 lg:line-clamp-1">
@@ -64,9 +73,18 @@ export default function ForumCard({ data, to }: ForumCardProps | any) {
               </div>
             </div>
           </div>
-        </div>
+        </Link>
+        {editable && (
+          <div className="h-full flex items-center justify-center pl-6">
+            <Button variant="outline" asChild>
+              <Link href={`/me/manage-group?id=${data.id}`}>
+                <EditIcon /> Manage Group
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }
 

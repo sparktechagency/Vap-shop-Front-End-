@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import ProductCard from "@/components/core/product-card";
-import React from "react";
+import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 import {
   Pagination,
   PaginationContent,
@@ -11,19 +10,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
+import BtbProductCard from "@/components/core/btb-product-card";
+import React from "react";
 
-export default function Catalog({ id }: any) {
+export default function Catalog({ id }: { id: string }) {
   const [page, setPage] = React.useState(1);
   const per_page = 16;
-
-  const {
-    data: brandDetails,
-    isLoading: isBrandLoading,
-    refetch,
-  } = useGetStoreDetailsByIdQuery({ id, page, per_page });
-  console.log("brandDetails", brandDetails);
-  if (isBrandLoading) return <div>Loading...</div>;
+  const { data: brandDetails, isLoading: isBrandLoading } =
+    useGetStoreDetailsByIdQuery({ id: id as string, page, per_page });
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -39,7 +33,6 @@ export default function Catalog({ id }: any) {
 
   const renderPaginationItems = () => {
     if (!brandDetails?.data?.products?.last_page) return null;
-
     const totalPages = brandDetails.data.products.last_page;
     const currentPage = page;
     const items = [];
@@ -112,13 +105,15 @@ export default function Catalog({ id }: any) {
     return items;
   };
 
+  console.log("brandDetails", brandDetails);
+  if (isBrandLoading) return <div>Loading...</div>;
+
   if (!brandDetails?.data?.products?.data) return <div>Products not found</div>;
-  // console.log(brandDetails?.data?.products?.data);
   return (
-    <>
+    <div className="w-full">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {brandDetails?.data?.products?.data.map((item: any, i: number) => (
-          <ProductCard
+          <BtbProductCard
             data={{
               id: item.id,
               image: item.product_image || "/image/shop/item.jpg",
@@ -130,7 +125,7 @@ export default function Catalog({ id }: any) {
             }}
             link={`/stores/store/product/${item.id}`}
             key={i}
-            refetch={refetch}
+            // refetch={refetch}
             role={5}
           />
         ))}
@@ -161,6 +156,6 @@ export default function Catalog({ id }: any) {
           </Pagination>
         </div>
       )}
-    </>
+    </div>
   );
 }
