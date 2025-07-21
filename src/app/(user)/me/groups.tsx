@@ -47,7 +47,12 @@ export default function Groups() {
           </p>
         ) : (
           data?.data?.data.map((x: any) => (
-            <ForumCard key={x.id} data={x} to={`/forum/thread/${x.id}`} />
+            <ForumCard
+              key={x.id}
+              data={x}
+              to={`/forum/thread/${x.id}`}
+              editable
+            />
           ))
         )}
       </Card>
