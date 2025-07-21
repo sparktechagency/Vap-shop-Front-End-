@@ -36,6 +36,7 @@ export function LoginForm({
       const response = await login({ email, password }).unwrap();
       console.log('login response', response);
       if (response.ok) {
+
         toast.success(response.message || "Login successful");
         Cookies.set("token", response.data.access_token);
         if (response?.data?.user?.role === 1) {
