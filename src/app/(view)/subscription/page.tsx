@@ -92,7 +92,7 @@ export default function Page() {
           </div>
 
           {/* Disabled view of the subscription page */}
-          <div className="opacity-50 pointer-events-none select-none">
+          <div className=" select-none">
             <h3 className="text-center text-xl font-semibold mb-4 text-muted-foreground">Your Current Subscription Plan</h3>
             {RoleBasedComponent}
           </div>

@@ -113,7 +113,7 @@ export default function Page() {
         {/* Upload Button */}
         <label
           htmlFor="imgup"
-          className={`cursor-pointer aspect-square text-muted-foreground w-full bg-inherit rounded-lg border-2 border-dashed flex flex-col justify-center items-center hover:bg-muted transition ${isCreating ? 'opacity-50 pointer-events-none' : ''
+          className={`cursor-pointer aspect-square text-muted-foreground w-full bg-inherit rounded-lg border-2 border-dashed flex flex-col justify-center items-center hover:bg-muted transition ${isCreating ? '' : ''
             }`}
         >
           {isCreating ? (
