@@ -143,8 +143,12 @@ const data = {
       icon: CreditCard,
       items: [
         {
-          title: "Subscriptions",
+          title: "Add Subscriptions",
           url: "/admin/billing/subscriptions",
+        },
+        {
+          title: "Manage Subscriptions",
+          url: "/admin/billing/subscribetions_mangement",
         },
         {
           title: "Orders and payments",
