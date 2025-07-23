@@ -1,4 +1,4 @@
-// components/CartDrawer.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 interface CartItem {
   id: string;
@@ -31,6 +32,13 @@ export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
+  const { data: userData } = useGetOwnprofileQuery()
+  const user_id = userData?.data?.id
+  console.log('userData', userData);
+
+  console.log('user_id', user_id);
+  const cartKey = user_id ? `cart_${user_id}` : null;
+
   // Ensure we're on the client before accessing localStorage
   useEffect(() => {
     setIsClient(true);
@@ -38,11 +46,14 @@ export default function CartDrawer() {
 
   // Load cart items from localStorage
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || !cartKey) {
+      setCartItems([]); // Clear cart if no user or key
+      return;
+    }
 
     const loadCart = () => {
       try {
-        const cart = localStorage.getItem('cart');
+        const cart = localStorage.getItem(cartKey);
         setCartItems(cart ? JSON.parse(cart) : []);
       } catch (error) {
         console.error("Error loading cart:", error);
@@ -53,7 +64,7 @@ export default function CartDrawer() {
     loadCart();
     window.addEventListener('storage', loadCart);
     return () => window.removeEventListener('storage', loadCart);
-  }, [isClient]);
+  }, [isClient, cartKey]);
 
   // Calculate total price
   const totalPrice = cartItems.reduce(
@@ -62,10 +73,11 @@ export default function CartDrawer() {
   );
 
   const removeItem = (id: string) => {
+    if (!cartKey) return;
     try {
       const updatedCart = cartItems.filter(item => item.id !== id);
       setCartItems(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      localStorage.setItem(cartKey, JSON.stringify(updatedCart));
       toast.success('Item removed from cart');
     } catch (error) {
       toast.error('Failed to remove item');
@@ -74,7 +86,7 @@ export default function CartDrawer() {
   };
 
   const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
+    if (newQuantity < 1 || !cartKey) return;
 
     try {
       const updatedCart = cartItems.map(item =>
@@ -82,7 +94,7 @@ export default function CartDrawer() {
       );
 
       setCartItems(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      localStorage.setItem(cartKey, JSON.stringify(updatedCart));
     } catch (error) {
       toast.error('Failed to update quantity');
       console.error("Error updating quantity:", error);

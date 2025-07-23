@@ -15,6 +15,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 interface CartItem {
   id: string;
@@ -26,10 +27,14 @@ interface CartItem {
 
 export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  const { data: userData } = useGetOwnprofileQuery();
+  const user_id = userData?.data?.id;
+  const cartKey = `cart_${user_id}`;
   useEffect(() => {
     const loadCart = () => {
       try {
-        const cart = localStorage.getItem('cart');
+        const cart = localStorage.getItem(cartKey);
         setCartItems(cart ? JSON.parse(cart) : []);
       } catch (error) {
         console.error("Error loading cart:", error);
@@ -56,7 +61,7 @@ export default function CheckoutPage() {
   // Update localStorage and state when cartItems change
   const updateCart = (newCartItems: CartItem[]) => {
     setCartItems(newCartItems);
-    localStorage.setItem('cart', JSON.stringify(newCartItems));
+    localStorage.setItem(cartKey, JSON.stringify(newCartItems));
     // Dispatch both storage and custom events
     window.dispatchEvent(new Event('storage'));
     window.dispatchEvent(new CustomEvent('cart-updated'));
