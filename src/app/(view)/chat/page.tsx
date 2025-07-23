@@ -112,12 +112,14 @@ export default function Page() {
 
     // User selection handler
     const handleUserSelect = (user: User) => {
+        if (selectedUser?.id === user.id) {
+            return;
+        }
         setSelectedUser(user);
         setPage(1);
         setAllMessages([]);
         setHasMore(true);
     };
-
     // Message sending handler
     const handleSendMessage = async (message: string) => {
         if (!selectedUser || !message.trim() || isSending) return;
