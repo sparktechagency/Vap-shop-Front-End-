@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
   BriefcaseBusinessIcon,
-  Clock10Icon,
   MailWarningIcon,
   TrendingUpIcon,
   UserRoundPlusIcon,
@@ -26,23 +26,52 @@ export default function Page() {
   const { data: apiResponse, isLoading } = useGetAdminStatisticsQuery({
     period: "7d",
   });
-  console.log('apiResponse', apiResponse);
+  console.log("apiResponse", apiResponse);
   const stats = React.useMemo(() => {
     const data = apiResponse?.data;
     if (isLoading || !data) {
-      return Array(5).fill({}).map((_, index) => ({
-        title: <Skeleton className="h-4 w-24" key={`title-skel-${index}`} />,
-        value: <Skeleton className="h-8 w-16" key={`val-skel-${index}`} />,
-        change: <Skeleton className="h-4 w-20" key={`change-skel-${index}`} />,
-        icon: BriefcaseBusinessIcon,
-      }));
+      return Array(5)
+        .fill({})
+        .map((_, index) => ({
+          title: <Skeleton className="h-4 w-24" key={`title-skel-${index}`} />,
+          value: <Skeleton className="h-8 w-16" key={`val-skel-${index}`} />,
+          change: (
+            <Skeleton className="h-4 w-20" key={`change-skel-${index}`} />
+          ),
+          icon: BriefcaseBusinessIcon,
+        }));
     }
     return [
-      { title: "Total Users", value: data.Users.count, change: `${data.Users.percentage_change}%`, icon: UsersRoundIcon },
-      { title: "Total Brands", value: data.totalBrands.count, change: `${data.totalBrands.percentage_change}%`, icon: BriefcaseBusinessIcon },
-      { title: "Total Stores", value: data.totalStores.count, change: `${data.totalStores.percentage_change}%`, icon: BriefcaseBusinessIcon },
-      { title: "Total Wholesalers", value: data.totalWholesalers.count, change: `${data.totalWholesalers.percentage_change}%`, icon: UserRoundPlusIcon },
-      { title: "Pending Approvals", value: data.pendingApproval.count, change: `+${data.pendingApproval.pendingProducts} Products`, icon: MailWarningIcon },
+      {
+        title: "Total Users",
+        value: data.Users.count,
+        change: `${data.Users.percentage_change}%`,
+        icon: UsersRoundIcon,
+      },
+      {
+        title: "Total Brands",
+        value: data.totalBrands.count,
+        change: `${data.totalBrands.percentage_change}%`,
+        icon: BriefcaseBusinessIcon,
+      },
+      {
+        title: "Total Stores",
+        value: data.totalStores.count,
+        change: `${data.totalStores.percentage_change}%`,
+        icon: BriefcaseBusinessIcon,
+      },
+      {
+        title: "Subscriptions Requests",
+        value: data.newSubscription.count,
+        change: `${data.newSubscription.percentage_change}%`,
+        icon: UserRoundPlusIcon,
+      },
+      {
+        title: "Pending Approvals",
+        value: data.pendingApproval.count,
+        change: `+${data.pendingApproval.pendingProducts} Products`,
+        icon: MailWarningIcon,
+      },
     ];
   }, [apiResponse, isLoading]);
 
@@ -81,27 +110,30 @@ export default function Page() {
         <div className="flex-1 w-full grid auto-rows-min gap-4 md:grid-cols-3">
           {isLoading
             ? Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="bg-muted/50 rounded-xl !p-4 flex flex-col justify-around items-start space-y-2">
-                <div className="flex-1 w-full space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-2/3" />
+                <div
+                  key={index}
+                  className="bg-muted/50 rounded-xl !p-4 flex flex-col justify-around items-start space-y-2"
+                >
+                  <div className="flex-1 w-full space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                  <div className="flex justify-end w-full">
+                    <Skeleton className="h-4 w-16" />
+                  </div>
                 </div>
-                <div className="flex justify-end w-full">
-                  <Skeleton className="h-4 w-16" />
-                </div>
-              </div>
-            ))
+              ))
             : recentActivity.slice(0, 3).map((activity: any) => (
-              <div
-                key={activity.id}
-                className="bg-muted/50 rounded-xl !p-4 flex flex-col justify-between items-start"
-              >
-                <p className="flex-1 text-sm">{activity.data.message}</p>
-                <div className="flex justify-end items-end w-full text-sm text-muted-foreground pt-2">
-                  {formatTime(activity.created_at)}
+                <div
+                  key={activity.id}
+                  className="bg-muted/50 rounded-xl !p-4 flex flex-col justify-between items-start"
+                >
+                  <p className="flex-1 text-sm">{activity.data.message}</p>
+                  <div className="flex justify-end items-end w-full text-sm text-muted-foreground pt-2">
+                    {formatTime(activity.created_at)}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
     </>

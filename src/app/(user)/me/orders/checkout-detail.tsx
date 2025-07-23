@@ -287,7 +287,7 @@ export default function CheckOutDetail({
       <DialogHeader>
         <DialogTitle></DialogTitle>
       </DialogHeader>
-      <DialogContent className="max-w-4xl max-h-[80vh] p-0 overflow-hidden">
+      <DialogContent className="min-w-[90dvw] lg:min-w-[60dvw] max-h-[80vh] p-0 overflow-hidden">
         <div className="max-h-[80vh] overflow-auto pb-8">
           {data?.data?.sub_orders
             ? renderMemberInvoice(data.data as MemberData)

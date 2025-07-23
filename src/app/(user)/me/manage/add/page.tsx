@@ -8,6 +8,7 @@ import {
 import React from "react";
 import Manual from "./manual";
 import { useUser } from "@/context/userContext";
+import Import from "./import";
 // import Import from "./import";
 
 export default function Page() {
@@ -17,14 +18,16 @@ export default function Page() {
       <h2 className="mb-6! font-semibold text-3xl text-center">
         Add product to your catalog
       </h2>
-      <Tabs defaultValue={role === "5" ? "import" : "manual"}>
+      <Tabs defaultValue={String(role) === "5" ? "import" : "manual"}>
         <TabsList className="border-b">
-          {/* <TabsTrigger value="import">Brand Import</TabsTrigger> */}
+          {String(role) === String(5) && (
+            <TabsTrigger value="import">Brand Import</TabsTrigger>
+          )}
           <TabsTrigger value="manual">Add Manually</TabsTrigger>
         </TabsList>
-        {/* <TabsContent value="import">
+        <TabsContent value="import">
           <Import />
-        </TabsContent> */}
+        </TabsContent>
         <TabsContent value="manual">
           <Manual />
         </TabsContent>

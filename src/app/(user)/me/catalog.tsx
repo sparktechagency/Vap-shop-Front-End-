@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import ProductCard from "@/components/core/product-card";
-import React from "react";
+import React, { useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,117 +10,90 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useGetProductsQuery } from "@/redux/features/manage/product";
+import { Loader2Icon } from "lucide-react";
 
 export default function Catalog() {
-  const { data: catalog, isLoading } = useGetProductsQuery();
-  const products = catalog?.data?.data || [];
-  console.log(products);
-  console.log(catalog);
+  const [page, setPage] = useState<number>(1);
+  const per = 8;
+  const { data, isLoading, isError, error } = useGetProductsQuery<any>({
+    page,
+    per,
+  });
+
+  const totalPages = data?.data?.last_page || 1;
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-64 w-full rounded-lg" />
-        ))}
+      <div className="p-6 py-12 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
       </div>
     );
   }
 
-  if (!products.length) {
+  if (isError) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">No products found in catalog</p>
+      <div className="p-6 py-12 flex justify-center items-center">
+        {error?.data?.message ?? "Something went wrong."}
       </div>
     );
   }
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-        {products.map((product: any) => {
-          const productData = {
-            image: product.product_image || "/image/shop/item.jpg",
-            title: product.product_name,
-            category: `${product.product_price}`,
-            note: `${product.average_rating ?? "0.0"}★ (${
-              product.total_heart
-            } hearts)`,
-            price: product.product_price,
-            discount: product.product_discount,
-            hearts: product.total_heart,
-            rating: product.average_rating,
-            reviews: product.hearts_count,
-            thc_percentage: product.thc_percentage,
-          };
-
-          return (
-            <ProductCard
-              // manage
-              key={product.id}
-              data={productData}
-              link={
-                product.role === "5"
-                  ? `/stores/store/product/${product.id}`
-                  : `/brands/brand/product/${product.id}`
-              }
-            />
-          );
-        })}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-6">
+        {data?.data?.data?.map((x: any) => (
+          <ProductCard
+            key={x.id}
+            data={{
+              id: x.id,
+              image: x.product_image,
+              title: x.product_name,
+              category: x.brand_name,
+              note: "",
+              thc_percentage: x.thc_percentage,
+            }}
+            link={`/stores/store/product/${x.id}`}
+            manage
+          />
+        ))}
       </div>
 
-      {catalog?.data?.products?.last_page > 1 && (
-        <div className="!mt-[100px]">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={
-                    catalog.data.products.prev_page_url
-                      ? `?page=${catalog.data.products.current_page - 1}`
-                      : "#"
-                  }
-                  className={
-                    !catalog.data.products.prev_page_url
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
+      <div className="!mt-[64px]">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => {
+                  if (page > 1) setPage(page - 1);
+                }}
+              />
+            </PaginationItem>
 
-              {Array.from({ length: catalog.data.products.last_page }).map(
-                (_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      href={`?page=${i + 1}`}
-                      isActive={i + 1 === catalog.data.products.current_page}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
+            {Array.from({ length: totalPages }).map((_, i) => {
+              const pageNum = i + 1;
+              return (
+                <PaginationItem key={pageNum}>
+                  <PaginationLink
+                    isActive={page === pageNum}
+                    onClick={() => setPage(pageNum)}
+                  >
+                    {pageNum}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
 
-              <PaginationItem>
-                <PaginationNext
-                  href={
-                    catalog.data.products.next_page_url
-                      ? `?page=${catalog.data.products.current_page + 1}`
-                      : "#"
-                  }
-                  className={
-                    !catalog.data.products.next_page_url
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => {
+                  if (page < totalPages) setPage(page + 1);
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </>
   );
 }
