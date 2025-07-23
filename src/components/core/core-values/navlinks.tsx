@@ -52,8 +52,7 @@ export const NavActions = () => {
   const { data: userData } = useGetOwnprofileQuery(undefined, {
     skip: !token,
   });
-
-  const notificationCount = userData?.data?.unread_notification || 0;
+  const notificationCount = userData?.data?.unread_notifications || 0;
   const conversationCount = userData?.data?.unread_conversations_count || 0;
 
   useEffect(() => {

@@ -14,6 +14,8 @@ import Groups from "./groups";
 import { useParams } from "next/navigation";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import Post from "./post";
+import Catalog from "./catalog";
+import About from "./about";
 
 export default function TabsTriggerer() {
   const id = useParams().uid;
@@ -27,13 +29,21 @@ export default function TabsTriggerer() {
     <div className="!py-10 lg:!p-10">
       <Tabs defaultValue="top-stores">
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
-          <TabsTrigger value="top-stores">Top 6 Stores</TabsTrigger>
-          <TabsTrigger value="top-brands">Top 6 Brands</TabsTrigger>
+          {!isLoading && user?.data?.role !== 2 && user?.data?.role !== 4 && (
+            <>
+              <TabsTrigger value="top-stores">Top 6 Stores</TabsTrigger>
+              <TabsTrigger value="top-brands">Top 6 Brands</TabsTrigger>
+            </>
+          )}
+          {user?.data?.role === 4 && (
+            <TabsTrigger value="wholesale">Wholesale</TabsTrigger>
+          )}
           <TabsTrigger value="post">Post</TabsTrigger>
-          {/* <TabsTrigger value="feed">Feed</TabsTrigger> */}
+          <TabsTrigger value="feed">Feed</TabsTrigger>
           <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
           {/* <TabsTrigger value="inbox">Inbox</TabsTrigger> */}
           <TabsTrigger value="create-group">Group</TabsTrigger>
+          <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         {!isLoading ? (
           <>
@@ -42,6 +52,9 @@ export default function TabsTriggerer() {
             </TabsContent>
             <TabsContent value="top-brands">
               <TopBrands user={user.data} />
+            </TabsContent>
+            <TabsContent value="wholesale">
+              <Catalog />
             </TabsContent>
             <TabsContent value="post">
               <Post user={user.data} />
@@ -55,6 +68,9 @@ export default function TabsTriggerer() {
             </TabsContent>
             <TabsContent value="create-group">
               <Groups user={user.data} />
+            </TabsContent>
+            <TabsContent value="about">
+              <About id={user.data.id} />
             </TabsContent>
           </>
         ) : (

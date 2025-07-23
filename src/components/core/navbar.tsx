@@ -120,10 +120,6 @@
 //     }
 //   }, [pathname, token, refetch]);
 
-
-
-
-
 //   return (
 //     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
 //       <div className="h-1/2 flex flex-row justify-between items-center gap-4">
@@ -227,7 +223,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Button } from "../ui/button";
@@ -253,7 +248,6 @@ import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { NavActions } from "./core-values/navlinks";
-
 
 export const LinkList = [
   {
@@ -296,7 +290,6 @@ export default function Navbar() {
   const [user, setUser] = useState<UserData | null>(null);
   const role = Number(user?.role);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
-  console.log('user', user);
 
   const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
     skip: !token,
@@ -361,7 +354,6 @@ export default function Navbar() {
         <Searcher className="flex-1 hidden lg:block" />
         <div className="flex flex-row justify-end items-center gap-2">
           <CartDrawer />
-
           <NavActions />
           {/* ✅ CORRECTED USER ACTIONS SECTION */}
           {!isLoading && (
@@ -377,10 +369,7 @@ export default function Navbar() {
                     }
                   >
                     <Avatar className="size-6 mr-2">
-                      <AvatarImage
-                        src={user.avatar}
-                        className="object-cover"
-                      />
+                      <AvatarImage src={user.avatar} className="object-cover" />
                       <AvatarFallback className="text-xs font-bold uppercase">
                         {user.full_name?.slice(0, 1)}
                       </AvatarFallback>

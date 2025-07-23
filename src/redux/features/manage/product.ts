@@ -19,8 +19,8 @@ export const manageApi = api.injectEndpoints({
       }),
       invalidatesTags:["manage"]
     }),
-    getProducts: builder.query<any, void>({
-      query: () => `/product-manage`,
+    getProducts: builder.query<any, {page:number,per:number}>({
+      query: ({page,per}) => `/product-manage?page=${page}&per_page=${per}`,
       providesTags:["manage"]
     }),
     deleteProd: builder.mutation<any,any>({

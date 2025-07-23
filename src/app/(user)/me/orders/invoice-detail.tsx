@@ -63,7 +63,7 @@ export default function InvoiceDetail({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] p-0">
+      <DialogContent className="min-w-[90dvw] lg:min-w-[60dvw] max-h-[80vh] p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Receipt className="h-5 w-5" />
