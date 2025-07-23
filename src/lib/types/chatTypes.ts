@@ -5,6 +5,9 @@ export interface User {
   role_label?: string;
   email?: string;
   phone?: string;
+  sender_id?: number;
+  receiver_id?: number;
+  unread_messages_count?: number | string;
 }
 
 export interface subscribuser {
