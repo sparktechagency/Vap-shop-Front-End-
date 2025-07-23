@@ -14,16 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   first_name: z.string().min(2),
@@ -42,8 +33,6 @@ export default function AssociationEditForm() {
       last_name: "",
       email: "",
       phone: "",
-      favBrands: Array(6).fill(""),
-      favStores: Array(6).fill(""),
     },
   });
 
@@ -53,9 +42,6 @@ export default function AssociationEditForm() {
     console.log(values);
     // favBrands and favStores are arrays of 6 selected strings
   }
-
-  const brandOptions = ["Apple", "Nike", "Samsung"];
-  const storeOptions = ["Amazon", "Walmart", "Best Buy"];
 
   return (
     <Form {...form}>
@@ -122,72 +108,6 @@ export default function AssociationEditForm() {
             </FormItem>
           )}
         />
-
-        <Separator className="col-span-2" />
-
-        {/* Fav Stores Selects */}
-        <div className="flex flex-col gap-4">
-          <FormLabel>Favorite Stores</FormLabel>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <FormField
-              key={index}
-              control={control}
-              name={`favStores.${index}`}
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a store" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {storeOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-        </div>
-
-        {/* Fav Brands Selects */}
-        <div className="flex flex-col gap-4">
-          <FormLabel>Favorite Brands</FormLabel>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <FormField
-              key={index}
-              control={control}
-              name={`favBrands.${index}`}
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a brand" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {brandOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-        </div>
-
-        <Separator className="col-span-2" />
 
         {/* Submit button */}
         <div className="col-span-2">

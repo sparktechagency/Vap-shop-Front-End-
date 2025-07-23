@@ -14,15 +14,24 @@ import { UserData } from "@/lib/types/apiTypes";
 export default function Post({ user: my }: { user: UserData }) {
   const id = useParams().uid;
 
-  const { data, isLoading, isError, isFetching, error } = useGetPostsByIdQuery({
-    id: id,
-  });
+  const { data, isLoading, isError, isFetching, error } =
+    useGetPostsByIdQuery<any>({
+      id: id,
+    });
   if (!isLoading) {
     if (isError) {
-      console.error(error);
+      console.log(error);
     } else {
       console.log(data);
     }
+  }
+
+  if (!isError) {
+    return (
+      <section className="py-6 flex items-center justify-center">
+        {error?.data?.message ?? "Something went wrong"}
+      </section>
+    );
   }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">

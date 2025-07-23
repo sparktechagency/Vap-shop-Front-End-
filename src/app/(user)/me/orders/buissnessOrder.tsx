@@ -48,7 +48,7 @@ interface OrderType {
 }
 
 export default function BuissnessOrder() {
-  const { data, isLoading, isError, error } = useGetOrdersQuery();
+  const { data, isLoading, isError, error } = useGetOrdersQuery<any>();
   const [updateOrder] = useUpdateOrderStatusMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("12345");
@@ -84,14 +84,14 @@ export default function BuissnessOrder() {
         toast.error(`Failed to update order status`);
       }
     } catch (error: any) {
-      toast.error(error?.message || "Something went wrong");
+      toast.error(error?.data?.message || "Something went wrong");
     }
   }
   if (isError) {
     return (
       <div className="!p-6">
         <div className="h-12 w-full flex justify-center items-center">
-          Something went wrong
+          {error?.data?.message || "Something went wrong"}
         </div>
       </div>
     );
@@ -147,7 +147,7 @@ export default function BuissnessOrder() {
                           : "secondary"
                       }
                     >
-                      {x.status}
+                      {x.status === "delivered" ? "Completed" : x.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">${x.sub_total}</TableCell>

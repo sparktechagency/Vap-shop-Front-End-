@@ -22,7 +22,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,7 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 export default function ProductCard({
   refetchAds,
@@ -67,12 +66,17 @@ export default function ProductCard({
   role?: number;
 }) {
   const [copied, setCopied] = useState(false);
-  const currentUrl = `${
-    window.location.origin ?? "https://vapeshopmaps.com/"
-  }/stores/store/product/${data.id}`;
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const origin = window.location.origin;
+      setCurrentUrl(`${origin}/stores/store/product/${data.id}`);
+    }
+  }, [data.id]);
+
   const [fevoriteUnveforite] = useFevoriteUnveforiteMutation();
   const [deleteProd, { isLoading }] = useDeleteProdMutation();
-  console.log(data);
 
   const handleFebandUnfev = async (id: number) => {
     const alldata = {
