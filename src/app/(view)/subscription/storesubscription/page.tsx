@@ -19,7 +19,7 @@ const StoreSubscriptionPage: NextPage = () => {
     // --- State and Data Fetching ---
     const router = useRouter();
     const [selectedAddons, setSelectedAddons] = useState<Record<string, boolean>>({});
-    const [sendSubscriptionToAdmin] = useSendSubscriptionToAdminMutation();
+    const [sendSubscriptionToAdmin, { isLoading: isSubscribing }] = useSendSubscriptionToAdminMutation();
     // Fetch subscription and add-on data
     const { data: subscriptionDetails, isLoading: isLoadingSubscription, refetch } = useGetSubscriptionDetailsQuery({ type: "store" });
     const { data: adonsdata, isLoading: isLoadingAdons } = useGetstoreAdonsQuery();
@@ -133,7 +133,7 @@ const StoreSubscriptionPage: NextPage = () => {
                     )}
 
                     {/* Add-On Cards (Dynamic) */}
-                    <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className={`w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 `}>
                         {addons?.map((addon: any) => (
                             <div key={addon.id} className="w-full rounded-lg bg-white border border-solid border-black p-6 flex flex-col">
                                 <div className="flex-grow">
@@ -167,8 +167,8 @@ const StoreSubscriptionPage: NextPage = () => {
 
                 {/* Action Buttons at the bottom */}
                 <footer className="w-full max-w-md mx-auto mt-16 flex flex-col items-center gap-4 text-center">
-                    <button className="w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors" onClick={onRegisterClick}>
-                        Subscribe
+                    <button className={`w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors ${isSubscribing ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={onRegisterClick}>
+                        {isSubscribing ? '  Subscribeing...' : '  Subscribe'}
                     </button>
                     <div className="text-sm text-zinc-900">
                         <span className="w-full">
