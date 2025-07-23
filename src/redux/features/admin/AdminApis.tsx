@@ -5,6 +5,7 @@ export const adminApis = api.injectEndpoints({
         getallusers: builder.query<any, { page: number; per_page: number; role: number }>({
             query: ({ page, per_page, role }) =>
                 `/admin/manage-users?role=${role}&per_page=${per_page}&page=${page}`,
+            providesTags: ["manageusers"],
         }),
 
         banAuser: builder.mutation<any, { id: number; _method: string }>({
@@ -13,6 +14,7 @@ export const adminApis = api.injectEndpoints({
                 method: "POST",
                 body,
             }),
+            invalidatesTags: ["manageusers"],
         }),
         unBanUser: builder.mutation<any, { id: number; _method: string }>({
             query: (body) => ({
@@ -20,6 +22,15 @@ export const adminApis = api.injectEndpoints({
                 method: "POST",
                 body,
             }),
+            invalidatesTags: ["manageusers"],
+        }),
+
+        deleteUser: builder.mutation<any, { id: number }>({
+            query: ({ id }) => ({
+                url: `/admin/delete-user/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["manageusers"],
         }),
 
         getallbandedusers: builder.query<any, { page: number; per_page: number; }>({
@@ -113,5 +124,6 @@ export const {
     useApproveAddMutation,
     useGetallArticlesQuery,
     useDelteAricalMutation,
-    useGetAdminStatisticsQuery
+    useGetAdminStatisticsQuery,
+    useDeleteUserMutation
 } = adminApis;
