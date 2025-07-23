@@ -4,21 +4,53 @@ import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "@/lib/types/chatTypes";
 import { format } from "date-fns";
+import { Badge } from "../ui/badge";
+import { useMarkAsReadMessageMutation } from "@/redux/features/chat/ChatApi";
+import { toast } from "sonner";
 
 interface UserItemProps {
     user: User & {
         lastMessage?: string;
         lastMessageTime?: string;
+        unread_messages_count?: number | string;
+        sender_id?: number
     };
     onClick: (user: User) => void;
     showLastMessage?: boolean;
 }
 
 export default function UserItem({ user, onClick, showLastMessage = false }: UserItemProps) {
+
+    console.log('user', user);
+
+    const [markAsReadMessage] = useMarkAsReadMessageMutation();
+
+    const handleUserClick = async () => {
+        // Only call the API if there are unread messages
+        if (user?.id && Number(user.unread_messages_count) > 0) {
+            try {
+
+                const response = await markAsReadMessage({ id: user.sender_id }).unwrap();
+                console.log('response', response);
+                console.log('sernder_id', user.sender_id);
+
+
+                if (response?.ok) {
+                    toast.success(response?.message);
+                }
+            } catch (error) {
+                console.error("Failed to mark as read:", error);
+                toast.error("Failed to mark as read.");
+            }
+        }
+
+        onClick(user);
+    };
+
     return (
         <div
             className="flex flex-row justify-start items-center gap-6 !px-6 !py-3 border-b cursor-pointer hover:bg-gray-50"
-            onClick={() => onClick(user)}
+            onClick={handleUserClick}
         >
             <Avatar className="!size-12">
                 <AvatarImage src={user.avatar || "/image/icon/user.jpeg"} />
@@ -27,12 +59,17 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
                 </AvatarFallback>
             </Avatar>
             <div className="overflow-hidden flex-1">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start relative">
                     <Namer name={user.full_name} size="sm" type="brand" />
                     {showLastMessage && user.lastMessageTime && (
                         <span className="text-xs text-gray-500">
                             {format(new Date(user.lastMessageTime), 'HH:mm')}
                         </span>
+                    )}
+                    {Number(user?.unread_messages_count) > 0 && (
+                        <Badge variant="destructive" className="absolute top-0 right-12">
+                            {user?.unread_messages_count}
+                        </Badge>
                     )}
                 </div>
                 {showLastMessage ? (

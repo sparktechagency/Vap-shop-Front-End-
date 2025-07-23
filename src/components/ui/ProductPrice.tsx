@@ -2,6 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -33,24 +34,31 @@ export function ProductPrice({
     initialQuantity = 1,
     description
 }: ProductPriceProps) {
+    const { data: userData } = useGetOwnprofileQuery();
+    const user_id = userData?.data?.id;
     const [quantity, setQuantity] = useState(initialQuantity);
 
     const handleAddToCart = () => {
-        // Get existing cart from localStorage
+        // 3. Check if the user is logged in
+        if (!user_id) {
+            toast.error("Please log in to add items to your cart.");
+            return;
+        }
+
+        // 4. Create a user-specific cart key
+        const cartKey = `cart_${user_id}`;
+
         const existingCart = typeof window !== 'undefined'
-            ? localStorage.getItem('cart')
+            ? localStorage.getItem(cartKey) // Use the dynamic key
             : null;
 
         let cart: CartItem[] = existingCart ? JSON.parse(existingCart) : [];
 
-        // Check if product already exists in cart
         const existingItemIndex = cart.findIndex(item => item.id === productId);
 
         if (existingItemIndex >= 0) {
-            // Update quantity if product exists
             cart[existingItemIndex].quantity += quantity;
         } else {
-            // Add new item if it doesn't exist
             cart.push({
                 id: productId,
                 name: productName,
@@ -61,16 +69,16 @@ export function ProductPrice({
             });
         }
 
-        // Save to localStorage
         if (typeof window !== 'undefined') {
-            localStorage.setItem('cart', JSON.stringify(cart));
-            // Dispatch storage event to trigger updates in other components
+            // Use the dynamic key to save the cart
+            localStorage.setItem(cartKey, JSON.stringify(cart));
             window.dispatchEvent(new Event('storage'));
         }
 
-        // Show success message
         toast.success(`${quantity} ${productName} added to cart`);
     };
+
+
     return (
         <div className="flex flex-col gap-3 font-sans">
             {/* Price display */}

@@ -55,6 +55,9 @@ export function OTPForm({
         Cookies.set("token", response.data.access_token);
         if (isFromRegistration === "true") {
           toast.success(response.message || "Verification successful! Welcome.");
+          if (response?.data?.user?.role === 2) {
+            return router.push("/");
+          }
           if (response?.data?.user?.is_subscribed === false) {
             return router.push("/subscription");
           } else {

@@ -12,6 +12,7 @@ interface UserListProps {
     onUserSelect: (user: User) => void;
     showSearchEmptyState?: boolean;
     isChatList?: boolean;
+
 }
 
 export default function UserList({
@@ -22,7 +23,11 @@ export default function UserList({
     onUserSelect,
     showSearchEmptyState = false,
     isChatList = false,
+
 }: UserListProps) {
+
+
+
     return (
         <div className="col-span-2 border rounded-lg flex flex-col h-[calc(100vh-100px)]">
             <div className="p-4 border-b">
@@ -41,6 +46,7 @@ export default function UserList({
                 ) : users.length > 0 ? (
                     users.map((user) => (
                         <UserItem
+
                             key={user.id}
                             user={user}
                             onClick={onUserSelect}

@@ -26,7 +26,15 @@ export const chatApi = api.injectEndpoints({
             providesTags: ["message"],
         }),
 
+        markAsReadMessage: builder.mutation<any, any>({
+            query: ({ id }) => ({
+                url: `/mark-as-read/${id}`,
+                method: "POST",
+            }),
+            invalidatesTags: ["message"],
+        }),
+
     }),
 });
 
-export const { useSearchuserQuery, useSendMessageMutation, useGetAllmesageByidQuery, useGetChatlistQuery, useLazyGetAllmesageByidQuery } = chatApi;
+export const { useSearchuserQuery, useSendMessageMutation, useGetAllmesageByidQuery, useGetChatlistQuery, useLazyGetAllmesageByidQuery, useMarkAsReadMessageMutation } = chatApi;
