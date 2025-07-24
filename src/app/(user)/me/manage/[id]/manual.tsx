@@ -170,11 +170,15 @@ export default function ProductForm({ prod }: { prod: any }) {
       // Wrap the API call in try-catch inside try to catch unwrap errors safely
       let res;
       try {
+        Object.entries(data).forEach(([key, value]) => {
+          console.log("Key:", key);
+          console.log("Value:", value);
+        });
+
         res = await updateProduct({
           body: formData,
           id: String(prod.id),
         }).unwrap();
-        console.log(res);
       } catch (apiError: any) {
         // If unwrap throws (usually when error response), show toast and exit
         toast.error(apiError?.data?.message || "Update failed");
@@ -190,7 +194,7 @@ export default function ProductForm({ prod }: { prod: any }) {
 
       toast.success("Product has been uploaded successfully.");
       setSelectedFile(null);
-      setImageurl(null);
+      setImageChanged(false);
     } catch (error: any) {
       // Fallback catch for unexpected errors (code bugs, form data issues, etc)
       console.error("Unexpected submission error:", error);
