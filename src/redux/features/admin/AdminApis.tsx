@@ -108,6 +108,16 @@ export const adminApis = api.injectEndpoints({
             query: ({ period }) => `/admin/dashboard?period=${period}`,
         }),
 
+        adminResetPasswrod: builder.mutation<any, { password: string, password_confirmation: string }>({
+            query: (body) => ({
+                url: `/reset-password`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+
 
     }),
 });
@@ -125,5 +135,7 @@ export const {
     useGetallArticlesQuery,
     useDelteAricalMutation,
     useGetAdminStatisticsQuery,
-    useDeleteUserMutation
+    useDeleteUserMutation,
+    useAdminResetPasswrodMutation,
+
 } = adminApis;

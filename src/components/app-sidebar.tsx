@@ -20,6 +20,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+
+
+console.log('');
+
+
 
 // This is sample data.
 const data = {
@@ -168,6 +174,11 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+
+  const { data: usrData } = useGetOwnprofileQuery();
+  console.log('admin', usrData?.data);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -177,7 +188,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={{
+          full_name: usrData?.data?.full_name,
+          email: usrData?.data?.email,
+          avatar: usrData?.data?.avatar
+        }} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

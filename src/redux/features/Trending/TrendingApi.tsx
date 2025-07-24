@@ -64,6 +64,20 @@ export const trendingApi = api.injectEndpoints({
       query: ({ page, per_page }) => `/post?per_page=${per_page}&page=${page}&content_type=article`,
     }),
 
+    getArtialByid: builder.query<any, { id: any }>({
+      query: ({ id }) => `/post/${id}?content_type=article`,
+      providesTags: ["artical"]
+    }),
+
+    createArtical: builder.mutation({
+      query: (formData) => ({
+        url: "/post-comment",
+        method: "POST",
+        body: formData
+      }),
+      invalidatesTags: ['artical']
+    }),
+
     createApost: builder.mutation<any, any>({
       query: (formData) => ({
         url: "/post?content_type=article",
@@ -81,8 +95,12 @@ export const trendingApi = api.injectEndpoints({
       invalidatesTags: ["fevorite"],
     }),
 
+
+
+
+
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation, useStoreProductDetailsByIdQuery } =
+export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation, useStoreProductDetailsByIdQuery, useGetArtialByidQuery, useCreateArticalMutation } =
   trendingApi;
