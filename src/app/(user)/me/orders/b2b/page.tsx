@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,18 +30,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetBtbConnectsQuery } from "@/redux/features/b2b/btbApi";
-import { CheckIcon, ExternalLinkIcon, Trash2Icon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  useBtbStatusUpdateMutation,
+  useGetBtbConnectsQuery,
+} from "@/redux/features/b2b/btbApi";
+import { CheckIcon, ExternalLinkIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 export default function Page() {
   const [page, setPage] = useState(1);
   const per = 8;
-  const { data, isLoading, isError, error } = useGetBtbConnectsQuery<any>({
-    page,
-    per,
-  });
+  const { data, isLoading, isError, error, refetch } =
+    useGetBtbConnectsQuery<any>({
+      page,
+      per,
+    });
+  const [updateStatus] = useBtbStatusUpdateMutation();
 
   const totalPages = data?.data?.last_page ?? 1;
 
@@ -75,7 +93,14 @@ export default function Page() {
                     <TableCell>{x.role_label ?? "N/A"}</TableCell>
                     <TableCell>{x.total_followers ?? 0}</TableCell>
                     <TableCell>
-                      <Badge className="capitalize">
+                      <Badge
+                        className={cn("capitalize")}
+                        variant={
+                          x.pivot.status === "rejected"
+                            ? "destructive"
+                            : "success"
+                        }
+                      >
                         {x.pivot.status ?? "Pending"}
                       </Badge>
                     </TableCell>
@@ -94,12 +119,85 @@ export default function Page() {
                           <ExternalLinkIcon />
                         </Link>
                       </Button>
-                      <Button variant={"outline"} size={"icon"}>
+                      <Button
+                        variant={"outline"}
+                        size={"icon"}
+                        onClick={async () => {
+                          try {
+                            const res: any = await updateStatus({
+                              id: x.id,
+                              status: "approved",
+                            }).unwrap();
+
+                            if (!res.ok) {
+                              toast.error(
+                                res?.message ?? "Couldn't accept the request"
+                              );
+                            } else {
+                              toast.success(res?.message ?? "Request Accepted");
+                            }
+                            refetch();
+                          } catch (error) {
+                            console.error(error);
+                            toast.error("Something went wrong");
+                          }
+                        }}
+                      >
                         <CheckIcon />
                       </Button>
-                      <Button variant={"outline"} size={"icon"}>
-                        <Trash2Icon />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="text-destructive"
+                            size="icon"
+                          >
+                            <XIcon />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Reject this request?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Once rejected, this request will be removed from
+                              the pending list permanently.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                              onClick={async () => {
+                                try {
+                                  const res: any = await updateStatus({
+                                    id: x.id,
+                                    status: "rejected",
+                                  }).unwrap();
+
+                                  if (!res.ok) {
+                                    toast.error(
+                                      res?.message ??
+                                        "Couldn't reject the request"
+                                    );
+                                  } else {
+                                    toast.success(
+                                      res?.message ?? "Request Rejected"
+                                    );
+                                  }
+                                  refetch();
+                                } catch (error) {
+                                  console.error(error);
+                                  toast.error("Something went wrong");
+                                }
+                              }}
+                            >
+                              Reject
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
