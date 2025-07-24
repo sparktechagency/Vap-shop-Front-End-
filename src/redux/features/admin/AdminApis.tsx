@@ -136,6 +136,14 @@ export const adminApis = api.injectEndpoints({
             invalidatesTags: ["user"],
         }),
 
+        unsuspanduser: builder.mutation<any, { user_id: any }>({
+            query: ({ user_id }) => ({
+                url: `/admin/users/${user_id}/unsuspend`,
+                method: "POST",
+            }),
+            invalidatesTags: ["user"],
+        }),
+
 
 
     }),
@@ -157,6 +165,7 @@ export const {
     useDeleteUserMutation,
     useAdminResetPasswrodMutation,
     useNotifyuserMutation,
-    useSuspendUserMutation
+    useSuspendUserMutation,
+    useUnsuspanduserMutation
 
 } = adminApis;

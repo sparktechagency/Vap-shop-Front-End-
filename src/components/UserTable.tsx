@@ -446,7 +446,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 // UPDATED: Added useSuspendUserMutation. You need to create this in your Redux slice.
-import { useBanAuserMutation, useDeleteUserMutation, useGetallusersQuery, useNotifyuserMutation, useSuspendUserMutation } from "@/redux/features/admin/AdminApis";
+import { useBanAuserMutation, useDeleteUserMutation, useGetallusersQuery, useNotifyuserMutation, useSuspendUserMutation, useUnsuspanduserMutation } from "@/redux/features/admin/AdminApis";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -497,6 +497,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const per_page = 8;
 
     const [viewingUser, setViewingUser] = useState<UserData | null>(null);
+    console.log('viewingUser', viewingUser);
 
     // Dialog states
     const [banDialogOpen, setBanDialogOpen] = useState(false);
@@ -516,6 +517,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const [selectedUserForSuspend, setSelectedUserForSuspend] = useState<number | null>(null);
     const [suspensionDays, setSuspensionDays] = useState("");
     const [suspensionReason, setSuspensionReason] = useState("");
+    console.log('selectedUserForSuspend', selectedUserForSuspend);
 
 
     // --- Debounce Search Term ---
@@ -537,10 +539,11 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const [notifyUser, { isLoading: isNotifying }] = useNotifyuserMutation();
     // ADDED: RTK Query hook for suspending a user
     const [suspendUser, { isLoading: isSuspending }] = useSuspendUserMutation();
-
+    const [unsuspendUser, { isLoading: isUnsuspending }] = useUnsuspanduserMutation();
     // --- Data ---
     const users = data?.data || [];
     const totalPages = data?.meta?.last_page || 1;
+    console.log('users', users);
 
     // --- Event Handlers ---
     const handlePageChange = (newPage: number) => {
@@ -648,6 +651,26 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
         }
     };
 
+    // FIXED: Corrected the unsuspend logic
+    const handleUnsuspend = async (userId: number | undefined) => {
+        // 1. Add a check to ensure we have a user ID
+        if (!userId) {
+            toast.error("Could not find user to unsuspend.");
+            return;
+        }
+        try {
+            // 2. Pass the correct payload to the mutation
+            const res = await unsuspendUser({ user_id: userId }).unwrap();
+
+            // 3. The .unwrap() handles errors, so no need for 'if (response.ok)'
+            toast.success(res?.message || "User unsuspended successfully!");
+            await refetch();
+            setViewingUser(null);
+
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to unsuspend user.");
+        }
+    }
 
     // --- Render Logic ---
     if (isLoading && !data) {
@@ -774,16 +797,23 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                         </div>
                         {/* UPDATED: DialogFooter with Suspend Button */}
                         <DialogFooter className="sm:justify-center mt-4">
-                            {/* Suspend Button - Renders if user is not banned or suspended */}
-                            {!viewingUser.is_banned && !viewingUser.is_suspended && (
-                                <Button
-                                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black"
-                                    onClick={() => openSuspendDialog(viewingUser.id)}
-                                >
-                                    <Clock className="mr-2 size-4" />
-                                    Suspend User
-                                </Button>
-                            )}
+                            {/* UPDATED: Combined Suspend/Unsuspend Button */}
+                            <Button
+                                className={`flex-1 ${viewingUser.is_suspended ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'} text-white`}
+                                disabled={isSuspending || isUnsuspending}
+                                onClick={() => {
+                                    if (viewingUser.is_suspended) {
+                                        // Pass the ID directly from the user object in view
+                                        handleUnsuspend(viewingUser.id);
+                                    } else {
+                                        // This flow is correct, it opens the suspend dialog
+                                        openSuspendDialog(viewingUser.id);
+                                    }
+                                }}
+                            >
+                                <Clock className="mr-2 size-4" />
+                                {isUnsuspending ? 'Processing...' : (viewingUser.is_suspended ? 'Unsuspend User' : 'Suspend User')}
+                            </Button>
 
                             {/* Ban Button - Renders if user is not banned */}
                             {!viewingUser.is_banned && (
