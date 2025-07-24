@@ -15,7 +15,7 @@ import BtbProductCard from "@/components/core/btb-product-card";
 
 export default function Catalog({ id }: { id: string }) {
   const [page, setPage] = React.useState(1);
-  const per_page = 8;
+  const per_page = 16;
 
   const { data: brandDetails, isLoading: isBrandLoading } =
     useGetStoreDetailsByIdQuery({ id, page, per_page });

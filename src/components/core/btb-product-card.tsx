@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
 import { Button } from "../ui/button";
 import {
@@ -83,12 +89,33 @@ export default function BtbProductCard({
       >
         <div className="absolute bottom-2 right-2 flex z-50">
           <div className="rounded-full bg-background border border-black">
-            <Button variant={"ghost"} className="rounded-full" size={"icon"}>
-              <ArrowUp01Icon />
-            </Button>
-            <Button variant={"ghost"} className="rounded-full" size={"icon"}>
-              <PackagePlus />
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant={"ghost"} className="rounded-full gap-4">
+                  <ArrowUp01Icon />
+                  <PackagePlus />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side="top" className="px-2!">
+                <CardHeader className="px-2!">
+                  <CardTitle>Add More</CardTitle>
+                </CardHeader>
+                <CardContent className="w-full grid grid-cols-3 gap-2 px-2! mt-3">
+                  <Button className="flex-col h-auto!">
+                    <span>+25</span>
+                    <span>($409)</span>
+                  </Button>
+                  <Button className="flex-col h-auto!">
+                    <span>+50</span>
+                    <span>($1018)</span>
+                  </Button>
+                  <Button className="flex-col h-auto!">
+                    <span>+100</span>
+                    <span>($2026)</span>
+                  </Button>
+                </CardContent>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import Post from "./post";
 import Catalog from "./catalog";
 import About from "./about";
+import Feed from "./feed";
 
 export default function TabsTriggerer() {
   const id = useParams().uid;
@@ -59,7 +60,9 @@ export default function TabsTriggerer() {
             <TabsContent value="post">
               <Post user={user.data} />
             </TabsContent>
-            <TabsContent value="feed">{/* <LatestRevs /> */}</TabsContent>
+            <TabsContent value="feed">
+              <Feed my={user.data} />
+            </TabsContent>
             <TabsContent value="reviews">
               <LatestRevs user={user.data} />
             </TabsContent>

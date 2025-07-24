@@ -15,7 +15,7 @@ import { Loader2Icon } from "lucide-react";
 
 export default function Catalog() {
   const [page, setPage] = useState<number>(1);
-  const per = 8;
+  const per = 16;
   const { data, isLoading, isError, error } = useGetProductsQuery<any>({
     page,
     per,

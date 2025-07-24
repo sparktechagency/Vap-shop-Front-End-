@@ -12,6 +12,7 @@ import Announcement from "./announcement";
 // import Inbox from "./inbox";
 import About from "./about";
 import Groups from "./groups";
+import Feed from "./feed";
 // import Inbox from "./inbox";
 
 export default function TabsTriggerer({ id }: any) {
@@ -23,7 +24,7 @@ export default function TabsTriggerer({ id }: any) {
           <TabsTrigger value="catalog">Store</TabsTrigger>
           {/* <TabsTrigger value="announcement">Announcement</TabsTrigger> */}
           <TabsTrigger value="post">Post</TabsTrigger>
-
+          <TabsTrigger value="feed">Feed</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
           <TabsTrigger value="groups">Groups</TabsTrigger>
           {/* <TabsTrigger value="inbox">Inbox</TabsTrigger> */}
@@ -35,9 +36,9 @@ export default function TabsTriggerer({ id }: any) {
         <TabsContent value="catalog">
           <Catalog id={id} />
         </TabsContent>
-        {/* <TabsContent value="announcement">
-          <Announcement />
-        </TabsContent> */}
+        <TabsContent value="feed">
+          <Feed id={id} />
+        </TabsContent>
         <TabsContent value="post">
           <Announcement />
         </TabsContent>

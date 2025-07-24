@@ -357,30 +357,34 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </div>
           </div>
         )}
-        {["5"].includes(String(my.role)) && (
-          <FormField
-            control={control}
-            name="pl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Participating Locations</FormLabel>
-                <FormControl>
-                  <div className="flex items-center space-x-2 mt-4">
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      id="participating-locations"
-                    />
-                    <Label htmlFor="participating-locations">
-                      {field.value ? "Enabled" : "Disabled"}
-                    </Label>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+        <Card className="rounded-md shadow-none">
+          <CardContent>
+            {["5"].includes(String(my.role)) && (
+              <FormField
+                control={control}
+                name="pl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Participating Locations</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center space-x-2 mt-4">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          id="participating-locations"
+                        />
+                        <Label htmlFor="participating-locations">
+                          {field.value ? "Enabled" : "Disabled"}
+                        </Label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
-        )}
+          </CardContent>
+        </Card>
 
         <div className="col-span-2">
           <Button type="submit" className="w-full" disabled={isLoading}>

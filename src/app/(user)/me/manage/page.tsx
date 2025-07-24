@@ -11,9 +11,9 @@ export default function Page() {
       <h1 className="text-4xl font-semibold !pb-4">Manage Products</h1>
       <Separator />
       <div className="!py-6 flex justify-end gap-4">
-        {/* <Button asChild>
-          <Link href="/me/manage/b2b">B2B</Link>
-        </Button> */}
+        <Button asChild>
+          <Link href="/me/manage/b2b">Manage B2B</Link>
+        </Button>
         <Button asChild>
           <Link href="/me/manage/add">Add New Products</Link>
         </Button>
