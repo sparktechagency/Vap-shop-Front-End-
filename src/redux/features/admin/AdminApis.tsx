@@ -2,9 +2,9 @@ import { api } from "@/redux/baseApi";
 
 export const adminApis = api.injectEndpoints({
     endpoints: (builder) => ({
-        getallusers: builder.query<any, { page: number; per_page: number; role: number }>({
-            query: ({ page, per_page, role }) =>
-                `/admin/manage-users?role=${role}&per_page=${per_page}&page=${page}`,
+        getallusers: builder.query<any, { page: number; per_page: number; role: number, searchterm: string }>({
+            query: ({ page, per_page, role, searchterm }) =>
+                `/admin/manage-users?role=${role}&per_page=${per_page}&page=${page}&search=${searchterm}`,
             providesTags: ["manageusers"],
         }),
 
@@ -117,6 +117,25 @@ export const adminApis = api.injectEndpoints({
             invalidatesTags: ["user"],
         }),
 
+        notifyuser: builder.mutation<any, { user_id: number, body: any }>({
+            query: ({ user_id, body }) => ({
+                url: `/admin/users/${user_id}/notify`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+
+        suspendUser: builder.mutation<any, { user_id: any, body: any }>({
+            query: ({ user_id, body }) => ({
+                url: `/admin/users/${user_id}/suspend`,
+                method: "POST",
+                body: body
+            }),
+            invalidatesTags: ["user"],
+        }),
+
 
 
     }),
@@ -137,5 +156,7 @@ export const {
     useGetAdminStatisticsQuery,
     useDeleteUserMutation,
     useAdminResetPasswrodMutation,
+    useNotifyuserMutation,
+    useSuspendUserMutation
 
 } = adminApis;
