@@ -2,9 +2,9 @@ import { api } from "@/redux/baseApi";
 
 export const adminApis = api.injectEndpoints({
     endpoints: (builder) => ({
-        getallusers: builder.query<any, { page: number; per_page: number; role: number }>({
-            query: ({ page, per_page, role }) =>
-                `/admin/manage-users?role=${role}&per_page=${per_page}&page=${page}`,
+        getallusers: builder.query<any, { page: number; per_page: number; role: number, searchterm: string }>({
+            query: ({ page, per_page, role, searchterm }) =>
+                `/admin/manage-users?role=${role}&per_page=${per_page}&page=${page}&search=${searchterm}`,
             providesTags: ["manageusers"],
         }),
 
@@ -108,6 +108,43 @@ export const adminApis = api.injectEndpoints({
             query: ({ period }) => `/admin/dashboard?period=${period}`,
         }),
 
+        adminResetPasswrod: builder.mutation<any, { password: string, password_confirmation: string }>({
+            query: (body) => ({
+                url: `/reset-password`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+        notifyuser: builder.mutation<any, { user_id: number, body: any }>({
+            query: ({ user_id, body }) => ({
+                url: `/admin/users/${user_id}/notify`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+
+        suspendUser: builder.mutation<any, { user_id: any, body: any }>({
+            query: ({ user_id, body }) => ({
+                url: `/admin/users/${user_id}/suspend`,
+                method: "POST",
+                body: body
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+        unsuspanduser: builder.mutation<any, { user_id: any }>({
+            query: ({ user_id }) => ({
+                url: `/admin/users/${user_id}/unsuspend`,
+                method: "POST",
+            }),
+            invalidatesTags: ["user"],
+        }),
+
+
 
     }),
 });
@@ -125,5 +162,10 @@ export const {
     useGetallArticlesQuery,
     useDelteAricalMutation,
     useGetAdminStatisticsQuery,
-    useDeleteUserMutation
+    useDeleteUserMutation,
+    useAdminResetPasswrodMutation,
+    useNotifyuserMutation,
+    useSuspendUserMutation,
+    useUnsuspanduserMutation
+
 } = adminApis;

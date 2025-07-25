@@ -120,6 +120,7 @@ export default function Page() {
         setAllMessages([]);
         setHasMore(true);
     };
+
     // Message sending handler
     const handleSendMessage = async (message: string) => {
         if (!selectedUser || !message.trim() || isSending) return;

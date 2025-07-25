@@ -1,51 +1,71 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2Icon } from "lucide-react";
-
 import { useEffect, useState } from "react";
 
-export default function ReplyCard() {
+// --- Interfaces for the component's props ---
+// These should match the types used in your Page component
+interface User {
+  id: number;
+  full_name?: string;
+  avatar?: string;
+}
+
+interface Comment {
+  id: number;
+  comment: string;
+  created_at: string;
+  user: User;
+}
+
+// Define the props that the ReplyCard component will accept
+interface ReplyCardProps {
+  comment: Comment;
+}
+// ---
+
+export default function ReplyCard({ comment }: ReplyCardProps) {
   const [mounted, setMouted] = useState(false);
 
   useEffect(() => {
+    // This ensures the component only renders on the client, preventing hydration mismatches.
     setMouted(true);
   }, []);
 
+  // Helper to get initials from a name for the avatar fallback
+  const getInitials = (name?: string) => {
+    if (!name) return "??";
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  // Render a loader until the component is mounted on the client
   if (!mounted) {
     return (
-      <>
-        <div className="!py-12 flex justify-center items-center">
-          <Loader2Icon className="animate-spin" />
-        </div>
-      </>
+      <div className="!py-12 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
     );
   }
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       {/* Header */}
       <div className="border-b !p-4">
         <div className="flex items-center gap-3 font-semibold text-base">
           <Avatar className="size-10">
-            <AvatarImage src="/image/icon/user.jpeg" className="object-cover" />
-            <AvatarFallback>IA</AvatarFallback>
+            {/* Dynamic user avatar */}
+            <AvatarImage src={comment.user.avatar} className="object-cover" />
+            <AvatarFallback>{getInitials(comment.user.full_name)}</AvatarFallback>
           </Avatar>
-          Irene Adler
+          {/* Dynamic user name */}
+          {comment.user.full_name}
         </div>
       </div>
 
       {/* Content */}
       <div className="!p-4 text-xs md:text-sm text-muted-foreground">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nisi odio,
-        auctor sed efficitur a, volutpat a orci. Etiam mollis mi eget ipsum
-        consequat, vitae aliquam dolor hendrerit. Nulla facilisi. Quisque ut
-        risus sed massa placerat mollis ut et augue. Proin volutpat viverra
-        sapien, id euismod ipsum consectetur vitae. Praesent sodales lacus
-        suscipit posuere facilisis. Maecenas tortor purus, lobortis sed posuere
-        ut, auctor eleifend lacus. Donec vitae condimentum neque. In in mollis
-        purus. Sed accumsan porta magna, id porta mi tempus sed. Etiam sed quam
-        at urna molestie posuere ut quis diam. Duis mattis ornare fermentum. Sed
-        eget metus massa. Suspendisse non leo sit amet nisi vestibulum
-        vestibulum. Sed sit amet molestie velit. Nam et ultricies augue.
+        {/* Dynamic comment text */}
+        {comment.comment}
       </div>
     </div>
   );
