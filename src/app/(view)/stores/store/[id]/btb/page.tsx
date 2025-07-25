@@ -9,7 +9,6 @@ import {
   InfoIcon,
   Loader2Icon,
   MapPinIcon,
-  PackageOpenIcon,
   RadioIcon,
 } from "lucide-react";
 import React from "react";
@@ -17,15 +16,9 @@ import React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
-
 import DOMPurify from "dompurify";
 import OpenStatus from "../open-status";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import Catalog from "./catalog";
+import CartManage from "./cart-manage";
 
 export default function Page() {
   const { id } = useParams();
@@ -137,27 +130,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <Catalog id={id as string} />
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              className="fixed bottom-8 right-8 size-12 rounded-full border-black"
-              variant={"outline"}
-              size={"icon"}
-            >
-              <PackageOpenIcon className="size-6" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            side="top"
-            align="end"
-            className="h-[50dvh] w-[400px] bg-background border rounded-lg mb-2"
-          >
-            <div className="text-sm font-bold pb-2 border-b">
-              Your Wholesale Cart
-            </div>
-          </PopoverContent>
-        </Popover>
+        <CartManage id={id as string} />
       </main>
     </>
   );
