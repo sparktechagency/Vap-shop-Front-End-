@@ -7,11 +7,32 @@ import Link from "next/link";
 import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetUserFeedQuery } from "@/redux/features/users/postApi";
+import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
+import { useGetProfileQuery } from "@/redux/features/AuthApi";
 
-export default function Feed({ id }: { id: number }) {
-  const { data, isLoading, isError, isFetching } = useGetUserFeedQuery({ id });
+export default function Post({ id }: { id: number }) {
+  const { data, isLoading, isError, isFetching, error } =
+    useGetPostsByIdQuery<any>({
+      id,
+    });
+  const { data: my } = useGetProfileQuery<any>({
+    id: id,
+  });
+  if (!isLoading) {
+    if (isError) {
+      console.log(error);
+    } else {
+      console.log(data);
+    }
+  }
 
+  if (isError) {
+    return (
+      <section className="py-6 flex items-center justify-center">
+        {error?.data?.message ?? "Something went wrong"}
+      </section>
+    );
+  }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
       {[...Array(3)].map((_, i) => (
@@ -32,11 +53,8 @@ export default function Feed({ id }: { id: number }) {
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
-        key={post.id || index} // Prefer post.id if available
-        user={{
-          name: post?.user?.full_name ?? "Name not found",
-          avatar: post?.user?.avatar,
-        }}
+        key={post.id || index}
+        user={{ name: my?.data.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
       />
     ));

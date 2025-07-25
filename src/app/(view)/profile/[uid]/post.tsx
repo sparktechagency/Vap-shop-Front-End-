@@ -26,7 +26,7 @@ export default function Post({ user: my }: { user: UserData }) {
     }
   }
 
-  if (!isError) {
+  if (isError) {
     return (
       <section className="py-6 flex items-center justify-center">
         {error?.data?.message ?? "Something went wrong"}

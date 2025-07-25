@@ -21,15 +21,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import ProductCard from "@/components/core/product-card";
 import { useSearchQuery } from "@/redux/features/others/otherApi";
-
-import { usePostProductMutation } from "@/redux/features/manage/product";
+import { useBtbProductPricingMutation } from "@/redux/features/b2b/btbApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-// --- util hook ---
+// --- Debounce Hook ---
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedValue(value), delay);
     return () => clearTimeout(handler);
@@ -39,46 +37,40 @@ function useDebounce<T>(value: T, delay: number): T {
 
 // --- Schema ---
 const productSchema = z.object({
-  brandName: z.string().min(1, "Product name is required"),
-  productName: z.string().min(1, "Product name is required"),
+  productId: z.string().min(1, "Please select a product"),
   price: z.string().min(1, "Price is required"),
-  stock: z.string().min(1, "Stock info is required"),
-  description: z.string().min(1, "Description is required"),
+  moq: z.string().min(1, "Minimum Order Quantity is required"),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
-export default function Import() {
+export default function Page() {
   const navig = useRouter();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+    mode: "onSubmit",
     defaultValues: {
-      brandName: "",
-      productName: "",
+      productId: "",
       price: "",
-      stock: "",
-      description: "",
+      moq: "",
     },
   });
 
-  const brandName = form.watch("brandName");
-  const debouncedBrand = useDebounce(brandName, 100);
+  const productSearch = form.watch("productId"); // using 'productId' to control search input
+  const debouncedSearch = useDebounce(productSearch, 100);
 
-  const { data, isLoading, error } = useSearchQuery(
-    { search: debouncedBrand, type: "brand" },
-    { skip: !debouncedBrand }
+  const { data, isLoading } = useSearchQuery(
+    { search: debouncedSearch, type: "products" },
+    { skip: !debouncedSearch }
   );
 
-  if (error) console.error(error);
-  if (data) console.log(data);
-
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
-  const [postProduct] = usePostProductMutation();
+  const [postProduct] = useBtbProductPricingMutation();
 
+  // Close suggestion on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -92,36 +84,25 @@ export default function Import() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // --- Form Submit ---
   const onSubmit = async (data: ProductFormValues) => {
-    toast.info("Under Development!");
+    toast.info("Still under development");
     return;
-
-    if (!selectedProduct) {
-      toast.error("Please select a product.");
-      return;
-    }
-
     try {
-      const finalizer = {
-        brand_name: data.brandName,
-        category_id: selectedProduct.category_id,
-        product_id: selectedProduct.id,
-        product_price: data.price,
-        product_discount: 0,
-        product_discount_unit: 0,
-        product_stock: data.stock,
-        product_description: data.description,
-      };
-      const res: any = await postProduct(finalizer);
-      console.log(res);
+      const res: any = await postProduct({
+        body: {
+          productable_id: data.productId,
+          wholesale_price: data.price,
+          moq: data.moq,
+        },
+      }).unwrap();
 
       if (!res.ok) {
         toast.error(res?.message ?? "Something went wrong.");
       } else {
-        toast.success(res.data?.message ?? "Success!");
+        toast.success(res.data?.message ?? "Product added successfully!");
+        navig.push("/me/manage");
       }
-      toast.success(res?.message ?? "Product added successfully!");
-      navig.push("/me/manage");
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Something went wrong.");
       console.error(error);
@@ -130,14 +111,8 @@ export default function Import() {
 
   return (
     <div className="py-12!">
-      {/* <Button
-        onClick={() => {
-          console.log(selectedProduct);
-        }}
-      >
-        Magic button
-      </Button> */}
       <div className="grid lg:grid-cols-2 gap-6">
+        {/* Product Preview */}
         <div className="order-2 lg:order-1">
           {selectedProduct ? (
             <ProductCard
@@ -155,23 +130,25 @@ export default function Import() {
           )}
         </div>
 
+        {/* Form */}
         <div className="space-y-6! order-1 lg:order-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6!">
-              {/* Brand Name Field */}
+              {/* Product Search Field */}
               <FormField
                 control={form.control}
-                name="brandName"
+                name="productId"
                 render={({ field }) => (
                   <FormItem className="relative" ref={inputRef}>
-                    <FormLabel>Select your product:</FormLabel>
+                    <FormLabel>Search Product Name:</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
-                          {...field}
+                          value={selectedProduct?.product_name || field.value}
                           onFocus={() => setShowSuggestions(true)}
                           onChange={(e) => {
-                            field.onChange(e);
+                            field.onChange(e.target.value);
+                            setSelectedProduct(null); // Clear selection
                             setShowSuggestions(true);
                           }}
                         />
@@ -184,18 +161,20 @@ export default function Import() {
                                 variant="ghost"
                                 className="w-full justify-start text-left"
                                 onClick={() => {
-                                  form.setValue("brandName", item.full_name);
+                                  form.setValue("productId", String(item.id), {
+                                    shouldValidate: true,
+                                  });
+                                  setSelectedProduct(item);
                                   setShowSuggestions(false);
-                                  setSelectedBrand(item.id);
                                 }}
                               >
                                 <Avatar className="size-6">
-                                  <AvatarImage src={item.avatar} />
+                                  <AvatarImage src={item?.product_image} />
                                   <AvatarFallback className="text-xs">
-                                    {item.full_name.slice(0, 2)}
+                                    {item?.product_name?.slice(0, 2)}
                                   </AvatarFallback>
                                 </Avatar>{" "}
-                                {item.full_name}
+                                {item?.product_name}
                               </Button>
                             ))}
                           </div>
@@ -206,6 +185,7 @@ export default function Import() {
                   </FormItem>
                 )}
               />
+
               {/* Price */}
               <FormField
                 control={form.control}
@@ -221,10 +201,10 @@ export default function Import() {
                 )}
               />
 
-              {/* Stock */}
+              {/* MOQ */}
               <FormField
                 control={form.control}
-                name="stock"
+                name="moq"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Minimum Order Quantity:</FormLabel>
