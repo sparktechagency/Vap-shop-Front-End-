@@ -8,11 +8,11 @@ import {
 } from "@/components/custom-tabs";
 // import MostHearted from "./most-hearted";
 import Catalog from "./catalog";
-import Announcement from "./announcement";
 // import Inbox from "./inbox";
 import About from "./about";
 import Groups from "./groups";
 import Feed from "./feed";
+import Post from "./post";
 // import Inbox from "./inbox";
 
 export default function TabsTriggerer({ id }: any) {
@@ -40,9 +40,8 @@ export default function TabsTriggerer({ id }: any) {
           <Feed id={id} />
         </TabsContent>
         <TabsContent value="post">
-          <Announcement />
+          <Post id={id} />
         </TabsContent>
-
         <TabsContent value="about">
           <About id={id} />
         </TabsContent>

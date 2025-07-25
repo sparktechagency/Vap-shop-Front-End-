@@ -13,10 +13,23 @@ export const  btbApi = api.injectEndpoints({
         method:"PUT",
         body:{}
       })
+    }),
+    btbProductPricing: builder.mutation<any,{body:any}>({
+      query:({body})=>({
+        url:`/b2b/product-pricing`,
+        method:"POST",
+        body
+      })
+    }),
+    btbProducts: builder.query<any,{id:number}>({
+      query:({id})=>({
+        url:`/b2b/product-list/${id}`,
+        method:"GET",
+      })
     })
   })
 })
 
-export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation} = btbApi;
+export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery} = btbApi;
 
 
