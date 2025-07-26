@@ -98,7 +98,8 @@ const MapPage: React.FC = () => {
       if (!isNaN(lat) && !isNaN(lng)) {
         setMapCenter({ lat, lng });
         const storeToSelect = allStores.find(
-          store => parseFloat(store.address.latitude) === lat && parseFloat(store.address.longitude) === lng
+          store => parseFloat(store.address?.latitude || '0') === lat && parseFloat(store.address?.longitude || '0') === lng
+
         );
         if (storeToSelect) {
           setSelectedStore(storeToSelect);
@@ -110,8 +111,8 @@ const MapPage: React.FC = () => {
   const handleSelectStore = (store: Store) => {
     setSelectedStore(store);
     setMapCenter({
-      lat: parseFloat(store.address.latitude),
-      lng: parseFloat(store.address.longitude)
+      lat: parseFloat(store.address?.latitude || '0'),
+      lng: parseFloat(store.address?.longitude || '0')
     });
   };
 

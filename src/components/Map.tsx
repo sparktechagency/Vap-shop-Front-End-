@@ -158,7 +158,7 @@ const mapStyles = [
     }
 ];
 
-const libraries = ['places'] as const;
+const libraries: ("places")[] = ['places'];
 const mapContainerStyle = {
     width: '100%',
     height: '80dvh',
