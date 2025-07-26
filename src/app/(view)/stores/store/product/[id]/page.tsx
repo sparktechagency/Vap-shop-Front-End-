@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   useFollowBrandMutation,
   useStoreProductDetailsByIdQuery,
@@ -90,6 +90,12 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
 
 export default function Page() {
   const params = useParams();
+  const { store } = params;
+
+  const pathname = usePathname()
+  const isStorePage = pathname.includes('/stores/');
+  console.log('isStorePage', isStorePage);
+
   const id = params.id;
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
@@ -175,6 +181,9 @@ export default function Page() {
       setIsShareDialogOpen(true);
     }
   };
+  const brandLink = isStorePage
+    ? `/stores/store/${product?.data?.user?.id}`
+    : `/brands/brand/${product?.data?.user?.id}`;
 
   const formatPrice = () => {
     if (!product?.data?.product_price) return "Price not available";
@@ -202,7 +211,8 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={`/brands/brand/${product?.data?.user?.id}`}
+              href={brandLink}
+              // href={`/brands/brand/${product?.data?.user?.id} `}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer
