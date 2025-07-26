@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "@/redux/baseApi";
 
-
 export const trendingApi = api.injectEndpoints({
   endpoints: (builder) => ({
     mosthartedProduct: builder.query<any, void>({
@@ -21,17 +20,20 @@ export const trendingApi = api.injectEndpoints({
       query: () => `/ad-request-most-follower`,
     }),
 
-
-
     trendingProductDetailsById: builder.query<any, void>({
       query: (id) => `/get-product/${id}?role=3`,
       providesTags: ["tranding"],
-
     }),
-    storeProductDetailsById: builder.query<any, void>({
+    storeProductDetailsById: builder.query<any, any>({
       query: (id) => `/get-product/${id}?role=5`,
       providesTags: ["tranding"],
-
+    }),
+    productDetailsByIdRole: builder.query<
+      any,
+      { id: string | number; role: number | string }
+    >({
+      query: ({ id, role }) => `/get-product/${id}?role=${role}`,
+      providesTags: ["tranding"],
     }),
 
     followBrand: builder.mutation({
@@ -40,7 +42,6 @@ export const trendingApi = api.injectEndpoints({
         method: "POST",
         invalidatesTags: ["tranding", "brand"],
       }),
-
     }),
 
     unfollowBrand: builder.mutation({
@@ -55,27 +56,30 @@ export const trendingApi = api.injectEndpoints({
       query: () => `/most-rated-reviews`,
     }),
 
-    getMostratedArtical: builder.query<any, { page: string; per_page: string }>({
-      query: ({ page, per_page }) => `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1`,
-    }),
-
+    getMostratedArtical: builder.query<any, { page: string; per_page: string }>(
+      {
+        query: ({ page, per_page }) =>
+          `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1`,
+      }
+    ),
 
     myartical: builder.query<any, { page: string; per_page: string }>({
-      query: ({ page, per_page }) => `/post?per_page=${per_page}&page=${page}&content_type=article`,
+      query: ({ page, per_page }) =>
+        `/post?per_page=${per_page}&page=${page}&content_type=article`,
     }),
 
     getArtialByid: builder.query<any, { id: any }>({
       query: ({ id }) => `/post/${id}?content_type=article`,
-      providesTags: ["artical"]
+      providesTags: ["artical"],
     }),
 
     createArtical: builder.mutation({
       query: (formData) => ({
         url: "/post-comment",
         method: "POST",
-        body: formData
+        body: formData,
       }),
-      invalidatesTags: ['artical']
+      invalidatesTags: ["artical"],
     }),
 
     createApost: builder.mutation<any, any>({
@@ -94,13 +98,24 @@ export const trendingApi = api.injectEndpoints({
       }),
       invalidatesTags: ["fevorite"],
     }),
-
-
-
-
-
   }),
 });
 
-export const { useMosthartedProductQuery, useTrendingProductDetailsByIdQuery, useFollowBrandMutation, useUnfollowBrandMutation, useGetproductsAdsQuery, useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery, useMostRatedReviewQuery, useGetMostratedArticalQuery, useMyarticalQuery, useCreateApostMutation, useFevoriteUnveforiteMutation, useStoreProductDetailsByIdQuery, useGetArtialByidQuery, useCreateArticalMutation } =
-  trendingApi;
+export const {
+  useMosthartedProductQuery,
+  useTrendingProductDetailsByIdQuery,
+  useFollowBrandMutation,
+  useUnfollowBrandMutation,
+  useGetproductsAdsQuery,
+  useGetmostFollowrsBrandQuery,
+  useGetSponsoredBrandsQuery,
+  useMostRatedReviewQuery,
+  useGetMostratedArticalQuery,
+  useMyarticalQuery,
+  useCreateApostMutation,
+  useFevoriteUnveforiteMutation,
+  useStoreProductDetailsByIdQuery,
+  useGetArtialByidQuery,
+  useCreateArticalMutation,
+  useProductDetailsByIdRoleQuery,
+} = trendingApi;

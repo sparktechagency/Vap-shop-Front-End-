@@ -381,7 +381,6 @@ export default function Page() {
         {/* Reviews Section */}
         <ReviewPost role={5} productId={product?.data?.id} />
         <Separator />
-
         {/* Pass reviews data to Reviewer component */}
         {reviewsData && <Reviewer product={product} role={5} />}
       </div>

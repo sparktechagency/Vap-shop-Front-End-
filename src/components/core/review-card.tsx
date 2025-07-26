@@ -88,7 +88,7 @@ export default function ProductReviewCard({
 }: {
   refetch: any;
   data: any;
-  productData?: ProductReviewCardProps;
+  productData?: { id: string; data: ProductReviewCardProps };
   role: number;
 }) {
   const [helpful, setHelpful] = useState(false);
@@ -145,27 +145,27 @@ export default function ProductReviewCard({
     // 🔧 Add reply submission logic here (API call, mutation etc.)
     setReply("");
   };
-  console.log("rating", data);
+  console.log("rating", productData);
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
       {/* Product Header */}
       <div className="border-b !p-4">
         <div className="flex items-center gap-4">
           <Image
-            src={productData?.product_image || "/placeholder.svg"}
+            src={productData?.data.product_image || "/placeholder.svg"}
             height={600}
             width={600}
-            alt={productData?.product_name || "Product Image"}
+            alt={productData?.data?.product_name || "Product Image"}
             className="w-20 h-20 rounded-lg object-cover border"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 !mb-1">
               <Badge variant="secondary" className="text-xs">
-                {productData?.category?.name}
+                {productData?.data?.category?.name}
               </Badge>
             </div>
             <h3 className="font-semibold text-base truncate">
-              {productData?.product_name}
+              {productData?.data?.product_name}
             </h3>
             {/* <p className="text-lg font-bold text-primary">
               ${productData?.product_price}
