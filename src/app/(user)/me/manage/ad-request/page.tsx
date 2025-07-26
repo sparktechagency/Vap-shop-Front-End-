@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,21 +18,55 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, TrendingUp, Clock, DollarSign } from "lucide-react";
+import { Star, TrendingUp, Clock, DollarSign, Loader2Icon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useProductDetailsByIdRoleQuery } from "@/redux/features/Trending/TrendingApi";
+import { useUser } from "@/context/userContext";
 
 export default function Page() {
+  const id = useSearchParams().get("id");
+  const navig = useRouter();
+  const { role } = useUser();
+  const { data, isLoading, isError, error }: any =
+    useProductDetailsByIdRoleQuery({ id: String(id), role }, { skip: !id });
+
+  if (!id) {
+    navig.back();
+    return <></>;
+  }
+  if (isLoading) {
+    <div className="flex justify-center items-center">
+      <Loader2Icon className="animate-spin" />
+    </div>;
+  }
+
+  if (isError) {
+    <div className="flex justify-center items-center">
+      {error.data.message ?? "Something went wrong"}
+    </div>;
+  }
+
+  console.log(data);
+
   return (
     <div className="min-h-screen bg-background mt-6!">
       {/* Header Section */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-9 !py-12 bg-secondary dark:bg-zinc-900 px-4! gap-8">
-        <div className="col-span-1 lg:col-span-3">
+        <div className="col-span-1 lg:col-span-3 border p-4 rounded-lg bg-background">
           <Image
-            src="/image/shop/item.jpg"
+            src={data?.data?.product_image || "/image/shop/item.jpg"}
             width={400}
             height={400}
             alt="Product Preview"
             className="aspect-square object-cover object-center w-full rounded-md shadow-lg"
           />
+          <div className="w-full mt-2">
+            <p className="text-xl font-bold">{data?.data?.product_name}</p>
+            <p className="text-sm space-x-2">
+              <span className="font-bold">Brand:</span>
+              <span>{data?.data?.brand_name}</span>
+            </p>
+          </div>
           <div className="!mt-4 !space-y-2">
             <Badge variant="secondary" className="w-full justify-center !py-2">
               <TrendingUp className="w-4 h-4 mr-2" />

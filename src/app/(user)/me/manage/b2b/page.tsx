@@ -1,16 +1,18 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import React from "react";
+import { Loader2 } from "lucide-react";
+import React, { Suspense } from "react";
+import BtBList from "./btb-list";
 
 export default function Page() {
   return (
     <section className="mt-12 border-t pt-6">
-      <div className="w-full flex justify-end items-center">
-        <Button asChild>
-          <Link href={"/me/manage/b2b/add"}>Add Wholesale Product</Link>
-        </Button>
+      <h1 className="text-3xl text-center font-semibold pb-4">
+        Your B2B Products
+      </h1>
+      <div>
+        <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
+          <BtBList />
+        </Suspense>
       </div>
-      <div className="mt-6">Products</div>
     </section>
   );
 }

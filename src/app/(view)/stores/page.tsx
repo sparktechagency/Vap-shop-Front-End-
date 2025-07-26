@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import StoreProdCard from "@/components/core/store-prod-card";
 import LoadingScletion from "@/components/LoadingScletion";
@@ -10,16 +11,22 @@ import { useGetAllstoreQuery } from "@/redux/features/store/StoreApi";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function Page() {
   const [page, setPage] = useState(1);
   const [perPage] = useState(4);
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
 
-
-
-  console.log('store data ', data);
+  console.log("store data ", data);
   if (isLoading) {
     return <LoadingScletion />;
   }
@@ -95,23 +102,27 @@ export default function Page() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => handlePageChange(Math.max(1, page - 1))}
-                    className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                    className={
+                      page === 1 ? "pointer-events-none opacity-50" : ""
+                    }
                   />
                 </PaginationItem>
 
-                {Array.from({ length: Math.min(5, pagination.last_page) }).map((_, i) => {
-                  const pageNumber = i + 1;
-                  return (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(pageNumber)}
-                        isActive={pageNumber === page}
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
+                {Array.from({ length: Math.min(5, pagination.last_page) }).map(
+                  (_, i) => {
+                    const pageNumber = i + 1;
+                    return (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(pageNumber)}
+                          isActive={pageNumber === page}
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                )}
 
                 {pagination.last_page > 5 && (
                   <PaginationItem>
@@ -121,8 +132,14 @@ export default function Page() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => handlePageChange(Math.min(pagination.last_page, page + 1))}
-                    className={page === pagination.last_page ? "pointer-events-none opacity-50" : ""}
+                    onClick={() =>
+                      handlePageChange(Math.min(pagination.last_page, page + 1))
+                    }
+                    className={
+                      page === pagination.last_page
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>

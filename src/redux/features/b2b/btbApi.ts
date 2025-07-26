@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../baseApi";
 export const  btbApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getBtbConnects: builder.query({
         query: ({page,per})=>({
@@ -21,15 +22,28 @@ export const  btbApi = api.injectEndpoints({
         body
       })
     }),
-    btbProducts: builder.query<any,{id:number}>({
+    btbProducts: builder.query<any,{id:string|number}>({
       query:({id})=>({
-        url:`/b2b/product-list/${id}`,
+        url:`/b2b/seller-product-list/${id}`,
         method:"GET",
+      })
+    }),
+    myBtbProducts: builder.query<any,void>({
+      query:()=>({
+        url:`/b2b/get-product-list`,
+        method:"GET",
+      })
+    }),
+    sendBtbRequest: builder.mutation<any,{id:string|number}>({
+      query:({id})=>({
+        url:`/b2b/request/${id}`,
+        method:"POST",
+        body:{}
       })
     })
   })
 })
 
-export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery} = btbApi;
+export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery,useMyBtbProductsQuery, useSendBtbRequestMutation} = btbApi;
 
 

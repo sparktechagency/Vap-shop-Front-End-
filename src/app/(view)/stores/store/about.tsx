@@ -21,7 +21,7 @@ export default function About({ id }: { id: any }) {
       <div>
         <h1 className="!mb-4 text-xl lg:text-4xl font-semibold">WHO ARE WE?</h1>
         <p
-          className="text-xs md:text-sm xl:text-base line-clamp-1"
+          className="text-xs md:text-sm xl:text-base"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(data?.data?.content || "No Description"),
           }}

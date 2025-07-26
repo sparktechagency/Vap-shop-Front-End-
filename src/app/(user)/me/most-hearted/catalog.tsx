@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/components/core/product-card";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -12,12 +12,30 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetMyMostHeartedQuery } from "@/redux/features/users/userApi";
 import { useUser } from "@/context/userContext";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Catalog() {
-  const { data: catalog, isLoading } = useGetMyMostHeartedQuery();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const [page, setPage] = useState(currentPage);
+
+  const { data: catalog, isLoading } = useGetMyMostHeartedQuery({
+    per: 16,
+    page: page,
+  });
 
   const products = catalog?.data?.data || [];
   const { role } = useUser();
+
+  useEffect(() => {
+    setPage(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (pageNum: number) => {
+    router.push(`?page=${pageNum}`);
+  };
 
   if (isLoading) {
     return (
@@ -57,7 +75,6 @@ export default function Catalog() {
 
           return (
             <ProductCard
-              // manage
               key={product.id}
               data={productData}
               role={parseInt(role)}
@@ -71,52 +88,63 @@ export default function Catalog() {
         })}
       </div>
 
-      {catalog?.data?.products?.last_page > 1 && (
+      {catalog?.data?.links && (
         <div className="!mt-[100px]">
           <Pagination>
             <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={
-                    catalog.data.products.prev_page_url
-                      ? `?page=${catalog.data.products.current_page - 1}`
-                      : "#"
-                  }
-                  className={
-                    !catalog.data.products.prev_page_url
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
+              {catalog.data.links.map((link: any, index: number) => {
+                const isPrevious = link.label.includes("Previous");
+                const isNext = link.label.includes("Next");
 
-              {Array.from({ length: catalog.data.products.last_page }).map(
-                (_, i) => (
-                  <PaginationItem key={i}>
+                if (isPrevious) {
+                  return (
+                    <PaginationItem key={index}>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (link.url) handlePageChange(page - 1);
+                        }}
+                        className={
+                          !link.url ? "pointer-events-none opacity-50" : ""
+                        }
+                      />
+                    </PaginationItem>
+                  );
+                }
+
+                if (isNext) {
+                  return (
+                    <PaginationItem key={index}>
+                      <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (link.url) handlePageChange(page + 1);
+                        }}
+                        className={
+                          !link.url ? "pointer-events-none opacity-50" : ""
+                        }
+                      />
+                    </PaginationItem>
+                  );
+                }
+
+                return (
+                  <PaginationItem key={index}>
                     <PaginationLink
-                      href={`?page=${i + 1}`}
-                      isActive={i + 1 === catalog.data.products.current_page}
+                      href="#"
+                      isActive={link.active}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(parseInt(link.label));
+                      }}
                     >
-                      {i + 1}
+                      {link.label}
                     </PaginationLink>
                   </PaginationItem>
-                )
-              )}
-
-              <PaginationItem>
-                <PaginationNext
-                  href={
-                    catalog.data.products.next_page_url
-                      ? `?page=${catalog.data.products.current_page + 1}`
-                      : "#"
-                  }
-                  className={
-                    !catalog.data.products.next_page_url
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
+                );
+              })}
             </PaginationContent>
           </Pagination>
         </div>
