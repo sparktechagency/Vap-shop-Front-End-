@@ -96,22 +96,23 @@ export default function Page() {
           </CardContent>
         </Card>
       </div>
-      {!isError ? (
-        <div className="mt-12">
-          <Card>
-            <CardContent className="flex justify-between items-center">
-              <CardTitle>Manage Payment gateway cradentials</CardTitle>
-              <Button asChild>
-                <Link href="/me/settings/payment">
-                  Manage Payment cradentials <ArrowRight />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      ) : (
-        <PaymentAlert />
-      )}
+      {String(my.role) !== String(6) &&
+        (!isError ? (
+          <div className="mt-12">
+            <Card>
+              <CardContent className="flex justify-between items-center">
+                <CardTitle>Manage Payment gateway cradentials</CardTitle>
+                <Button asChild>
+                  <Link href="/me/settings/payment">
+                    Manage Payment cradentials <ArrowRight />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <PaymentAlert />
+        ))}
       <div className="!my-12 !space-y-6">
         <div className="">
           <h1 className="text-center text-3xl font-semibold">Appearance</h1>

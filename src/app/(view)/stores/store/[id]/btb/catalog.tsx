@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
-import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 import {
   Pagination,
   PaginationContent,
@@ -12,13 +11,24 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import BtbProductCard from "@/components/core/btb-product-card";
+import {
+  useBtbProductsQuery,
+  useSendBtbRequestMutation,
+} from "@/redux/features/b2b/btbApi";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Catalog({ id }: { id: string }) {
   const [page, setPage] = React.useState(1);
-  const per_page = 16;
-
-  const { data: brandDetails, isLoading: isBrandLoading } =
-    useGetStoreDetailsByIdQuery({ id, page, per_page });
+  const navig = useRouter();
+  const {
+    data: brandDetails,
+    isLoading: isBrandLoading,
+    isError,
+    error,
+  }: any = useBtbProductsQuery({ id });
+  const [sendRequest] = useSendBtbRequestMutation();
 
   const totalPages = brandDetails?.data?.products?.last_page ?? 1;
   const currentPage = page;
@@ -28,7 +38,6 @@ export default function Catalog({ id }: { id: string }) {
       setPage(newPage);
     }
   };
-
   const renderPaginationItems = () => {
     const items = [];
 
@@ -94,6 +103,38 @@ export default function Catalog({ id }: { id: string }) {
   };
 
   if (isBrandLoading) return <div>Loading...</div>;
+  if (isError) {
+    return (
+      <div className="">
+        <div className="pt-12 pb-6 flex w-full justify-center items-center text-sm font-semibold">
+          {error?.data?.message ?? "Something went wrong"}
+        </div>
+        <div className="flex justify-center">
+          <Button
+            className=""
+            variant={"special"}
+            onClick={async () => {
+              try {
+                const call = await sendRequest({ id }).unwrap();
+                if (!call.ok) {
+                  toast.error(call.message ?? "Failed to send request");
+                } else {
+                  toast.success(call.message ?? "Request sent successfully");
+                  navig.push(`/stores/store/${id}`);
+                }
+              } catch (error) {
+                console.error(error);
+                toast.error("Something went wrong");
+              }
+            }}
+          >
+            Send B2B Request
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!brandDetails?.data?.products?.data?.length)
     return <div>Products not found</div>;
 
@@ -103,17 +144,8 @@ export default function Catalog({ id }: { id: string }) {
         {brandDetails.data.products.data.map((item: any, i: number) => (
           <BtbProductCard
             key={i}
-            data={{
-              id: item.id,
-              image: item.product_image || "/image/shop/item.jpg",
-              title: item.product_name,
-              category: `${item.product_price}`,
-              note: item.product_type,
-              is_hearted: item.is_hearted,
-              hearts: item.total_heart,
-            }}
+            data={item}
             link={`/stores/store/product/${item.id}`}
-            role={5}
           />
         ))}
       </div>

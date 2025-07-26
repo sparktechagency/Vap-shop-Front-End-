@@ -23,7 +23,6 @@ import {
   useFollowBrandMutation,
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
-import DOMPurify from "dompurify";
 import OpenStatus from "./open-status";
 export default function Page() {
   const { id } = useParams();
@@ -137,14 +136,14 @@ export default function Page() {
             </div>
           </div>
           <div className="">
-            <p
+            {/* <p
               className="text-xs md:text-sm xl:text-base line-clamp-1"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
                   data?.data?.about?.content || "No Description"
                 ),
               }}
-            />
+            /> */}
           </div>
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
             <div className="text-xs md:text-sm text-muted-foreground">

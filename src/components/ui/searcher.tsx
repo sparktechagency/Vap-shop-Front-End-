@@ -97,7 +97,7 @@ export default function Searcher({
   const getHref = (x: any) => {
     if (selectedSearch === "store") return `/stores/store/${x.id}`;
     if (selectedSearch === "brand") return `/brands/brand/${x.id}`;
-    if (selectedSearch === "productS") return `/brands/brand/product/${x.id}`;
+    if (selectedSearch === "products") return `/brands/brand/product/${x.id}`;
     if (selectedSearch === "accounts") {
       if (x.role === 5) {
         return `/stores/store/${x.id}`;
@@ -160,7 +160,11 @@ export default function Searcher({
                       <div className="h-[100px] w-full rounded p-2! flex gap-2 hover:bg-secondary">
                         <Card className="aspect-square rounded p-1!">
                           <Image
-                            src={x.avatar}
+                            src={
+                              selectedSearch === "products"
+                                ? x.product_image ?? "/image/shop/item.jpg"
+                                : x.avatar
+                            }
                             height={124}
                             width={124}
                             className="h-full w-full object-cover rounded animate-in"
@@ -168,12 +172,16 @@ export default function Searcher({
                           />
                         </Card>
                         <div className="flex-1 flex flex-col justify-between">
-                          <Namer
-                            name={x.first_name}
-                            type={selectedSearch}
-                            // isVerified
-                            size="sm"
-                          />
+                          {selectedSearch === "products" ? (
+                            <p>{x.product_name}</p>
+                          ) : (
+                            <Namer
+                              name={x.first_name}
+                              type={selectedSearch}
+                              // isVerified
+                              size="sm"
+                            />
+                          )}
                           <div className="flex items-center gap-2 text-muted-foreground text-sm">
                             <StarIcon
                               fill="#ee8500"

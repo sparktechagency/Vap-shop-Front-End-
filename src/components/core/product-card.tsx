@@ -12,6 +12,7 @@ import {
   MailIcon,
   Share2Icon,
   Trash2Icon,
+  WaypointsIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useFevoriteUnveforiteMutation } from "@/redux/features/Trending/TrendingApi";
@@ -57,6 +58,7 @@ export default function ProductCard({
   manage,
   link,
   role,
+  blank,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
@@ -64,6 +66,7 @@ export default function ProductCard({
   manage?: boolean;
   link?: string;
   role?: number;
+  blank?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -116,7 +119,7 @@ export default function ProductCard({
         {data.type === "ad" && (
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
-        {!manage && (
+        {!blank && !manage && (
           <div className="absolute bottom-2 right-2 flex z-50">
             <Button
               className="!text-sm"
@@ -214,6 +217,11 @@ export default function ProductCard({
                     </DialogContent>
                   </Dialog>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/me/manage/b2b/${data.id}`}>
+                    <WaypointsIcon /> B2B
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -252,7 +260,7 @@ export default function ProductCard({
             asChild
             onClick={(e) => e.stopPropagation()}
           >
-            <Link href="/me/manage/ad-request">Ad request</Link>
+            <Link href={`/me/manage/ad-request?id=${data.id}`}>Ad request</Link>
           </Button>
           {link && (
             <Button

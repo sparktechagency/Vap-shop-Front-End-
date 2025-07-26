@@ -4,13 +4,19 @@ import LoadingScletion from "@/components/LoadingScletion";
 import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
 import React from "react";
 
-export default function Reviewer({ product, role }: { product: any; role: any }) {
+export default function Reviewer({
+  product,
+  role,
+}: {
+  product: any;
+  role: any;
+}) {
   const { data, isLoading, refetch } = useGetReviewsQuery({
     role: role,
     id: product?.data?.id,
   });
 
-  console.log('product', product, 'role', role);
+  console.log("product", product, "role", role);
 
   if (isLoading) {
     return (
@@ -20,7 +26,7 @@ export default function Reviewer({ product, role }: { product: any; role: any })
     );
   }
 
-  console.log('review', data);
+  console.log("review", data);
 
   return (
     <div className="">

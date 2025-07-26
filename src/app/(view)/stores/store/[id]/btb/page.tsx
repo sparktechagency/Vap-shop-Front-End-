@@ -16,7 +16,6 @@ import React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
-import DOMPurify from "dompurify";
 import OpenStatus from "../open-status";
 import CartManage from "./cart-manage";
 
@@ -74,16 +73,6 @@ export default function Page() {
                 size="xl"
               />
             </div>
-          </div>
-          <div className="">
-            <p
-              className="text-xs md:text-sm xl:text-base line-clamp-1"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  data?.data?.about?.content || "No Description"
-                ),
-              }}
-            />
           </div>
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
             <div className="text-xs md:text-sm text-muted-foreground">
