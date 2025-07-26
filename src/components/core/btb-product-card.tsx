@@ -3,30 +3,48 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductType } from "@/lib/types/product";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowUp01Icon, PackagePlus } from "lucide-react";
 import Link from "next/link";
-
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
-import { useDeleteProdMutation } from "@/redux/features/manage/product";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useState } from "react";
+
+interface BtbProductCardProps {
+  show?: boolean;
+  data: any;
+  link?: string;
+  onAddToCart?: (product: any, quantity: number) => void;
+  cartQuantity?: number;
+}
+
 export default function BtbProductCard({
   show,
   data,
   link,
-}: {
-  show?: boolean;
-  data: any;
-  link?: string;
-}) {
+  onAddToCart,
+  cartQuantity = 0,
+}: BtbProductCardProps) {
   const [copied, setCopied] = useState(false);
   const currentUrl = `${
     window.location.origin ?? "https://vapeshopmaps.com/"
   }/stores/store/product/${data.id}`;
-  const [deleteProd, { isLoading }] = useDeleteProdMutation();
+
+  const wholesalePrice = Number.parseFloat(data.b2b_details.wholesale_price);
+
+  const handleAddToCart = (quantity: number) => {
+    if (onAddToCart) {
+      onAddToCart(data, quantity);
+    }
+  };
+
+  const calculatePrice = (quantity: number) => {
+    return (wholesalePrice * quantity).toLocaleString();
+  };
+
   console.log(data);
 
   return (
@@ -50,17 +68,26 @@ export default function BtbProductCard({
                     <CardTitle>Add More</CardTitle>
                   </CardHeader>
                   <CardContent className="w-full grid grid-cols-3 gap-2 px-2! mt-3">
-                    <Button className="flex-col h-auto!">
+                    <Button
+                      className="flex-col h-auto!"
+                      onClick={() => handleAddToCart(25)}
+                    >
                       <span>+25</span>
-                      <span>($409)</span>
+                      <span>(${calculatePrice(25)})</span>
                     </Button>
-                    <Button className="flex-col h-auto!">
+                    <Button
+                      className="flex-col h-auto!"
+                      onClick={() => handleAddToCart(50)}
+                    >
                       <span>+50</span>
-                      <span>($1018)</span>
+                      <span>(${calculatePrice(50)})</span>
                     </Button>
-                    <Button className="flex-col h-auto!">
+                    <Button
+                      className="flex-col h-auto!"
+                      onClick={() => handleAddToCart(100)}
+                    >
                       <span>+100</span>
-                      <span>($2026)</span>
+                      <span>(${calculatePrice(100)})</span>
                     </Button>
                   </CardContent>
                 </PopoverContent>
@@ -69,7 +96,6 @@ export default function BtbProductCard({
           </div>
         )}
       </div>
-
       {/* 🔹 Content - click to navigate */}
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
@@ -81,6 +107,11 @@ export default function BtbProductCard({
               <p>${data.b2b_details.wholesale_price}</p>
               <p>Min: {data.b2b_details.moq}</p>
             </div>
+            {cartQuantity > 0 && (
+              <div className="text-xs text-primary font-medium">
+                {cartQuantity} in cart
+              </div>
+            )}
           </CardContent>
         </div>
       </Link>
