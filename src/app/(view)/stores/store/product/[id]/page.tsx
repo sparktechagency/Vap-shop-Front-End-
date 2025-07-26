@@ -211,8 +211,8 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={brandLink}
-              // href={`/brands/brand/${product?.data?.user?.id} `}
+              // href={brandLink}
+              href={`/stores/store/${product?.data?.user?.id} `}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer

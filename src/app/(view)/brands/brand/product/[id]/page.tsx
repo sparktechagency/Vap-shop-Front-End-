@@ -402,7 +402,7 @@ export default function Page() {
         </div>
         <div className="col-span-1 lg:col-span-4">
           <Image
-            src={product?.data?.product_image}
+            src={product?.data?.product_image || "/image/shop/item.jpg"}
             width={800}
             height={800}
             alt={product?.data?.product_name}
@@ -428,7 +428,7 @@ export default function Page() {
                 link={`${relatedProduct.id}`}
                 data={{
                   id: relatedProduct.id,
-                  image: relatedProduct.product_image || "/image/shop/item.jpg",
+                  image: relatedProduct?.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",
                   note: `$${parseFloat(relatedProduct.product_price).toFixed(
