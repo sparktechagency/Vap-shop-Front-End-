@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,16 +11,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function TeamSwitcher() {
+  const router = useRouter();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
+              onClick={() => router.push("/")}
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
                 <Image
