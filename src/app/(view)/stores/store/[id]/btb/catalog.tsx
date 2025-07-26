@@ -18,19 +18,28 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import type { CartItem } from "./cart-manage";
 
-export default function Catalog({ id }: { id: string }) {
+interface CatalogProps {
+  id: string;
+  addToCart: (product: any, quantity: number) => void;
+  cartItems: CartItem[];
+}
+
+export default function Catalog({ id, addToCart, cartItems }: CatalogProps) {
   const [page, setPage] = React.useState(1);
   const navig = useRouter();
+
   const {
     data: brandDetails,
     isLoading: isBrandLoading,
     isError,
     error,
   }: any = useBtbProductsQuery({ id });
+
   const [sendRequest] = useSendBtbRequestMutation();
 
-  const totalPages = brandDetails?.data?.products?.last_page ?? 1;
+  const totalPages = brandDetails?.meta?.last_page ?? 1;
   const currentPage = page;
 
   const handlePageChange = (newPage: number) => {
@@ -38,6 +47,7 @@ export default function Catalog({ id }: { id: string }) {
       setPage(newPage);
     }
   };
+
   const renderPaginationItems = () => {
     const items = [];
 
@@ -102,7 +112,21 @@ export default function Catalog({ id }: { id: string }) {
     return items;
   };
 
-  if (isBrandLoading) return <div>Loading...</div>;
+  const handleAddToCart = (product: any, quantity: number) => {
+    addToCart(product, quantity);
+    toast.success(`Added ${quantity} units of ${product.product_name} to cart`);
+  };
+
+  const getProductCartQuantity = (productId: number) => {
+    const cartItem = cartItems.find((item) => item.product_id === productId);
+    return cartItem ? cartItem.quantity : 0;
+  };
+
+  if (isBrandLoading)
+    return (
+      <div className="flex justify-center items-center py-12">Loading...</div>
+    );
+
   if (isError) {
     return (
       <div className="">
@@ -122,9 +146,12 @@ export default function Catalog({ id }: { id: string }) {
                   toast.success(call.message ?? "Request sent successfully");
                   navig.push(`/stores/store/${id}`);
                 }
-              } catch (error) {
-                console.error(error);
-                toast.error("Something went wrong");
+              } catch (error: any) {
+                const errMessage =
+                  error?.data?.message ||
+                  error?.message ||
+                  "Something went wrong";
+                toast.error(errMessage);
               }
             }}
           >
@@ -135,21 +162,26 @@ export default function Catalog({ id }: { id: string }) {
     );
   }
 
-  if (!brandDetails?.data?.products?.data?.length)
-    return <div>Products not found</div>;
+  if (!brandDetails?.data?.length)
+    return (
+      <div className="flex justify-center items-center py-12">
+        Products not found
+      </div>
+    );
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-6">
-        {brandDetails.data.products.data.map((item: any, i: number) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 my-6">
+        {brandDetails?.data?.map((item: any) => (
           <BtbProductCard
-            key={i}
+            key={item.product_id}
             data={item}
-            link={`/stores/store/product/${item.id}`}
+            link={`/stores/store/product/${item.product_id}`}
+            onAddToCart={handleAddToCart}
+            cartQuantity={getProductCartQuantity(item.product_id)}
           />
         ))}
       </div>
-
       {totalPages > 1 && (
         <div className="mt-24">
           <Pagination>
@@ -157,16 +189,22 @@ export default function Catalog({ id }: { id: string }) {
               <PaginationItem>
                 <PaginationPrevious
                   onClick={() => handlePageChange(currentPage - 1)}
-                  isActive={currentPage > 1}
+                  className={
+                    currentPage <= 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
-
               {renderPaginationItems()}
-
               <PaginationItem>
                 <PaginationNext
                   onClick={() => handlePageChange(currentPage + 1)}
-                  isActive={currentPage < totalPages}
+                  className={
+                    currentPage >= totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
             </PaginationContent>

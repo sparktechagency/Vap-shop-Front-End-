@@ -1,6 +1,7 @@
 "use client";
-
 import { useState } from "react";
+import type React from "react";
+
 import Image from "next/image";
 import {
   Minus,
@@ -10,7 +11,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,40 +20,57 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { CartItem } from "./cart-manage";
+import type { CartItem } from "./cart-manage";
+import { usePathname, useRouter } from "next/navigation";
+
 interface WholesaleCartProps {
   cartItems: CartItem[];
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  updateQuantity: (productId: string, newQuantity: number) => void;
+  removeItem: (productId: string) => void;
+  clearCart: () => void;
+  getCartItemCount: () => number;
+  getCartTotal: () => number;
 }
+
 export default function WholesaleCart({
   cartItems,
-  setCartItems,
+  updateQuantity,
+  removeItem,
+  clearCart,
+  getCartItemCount,
+  getCartTotal,
 }: WholesaleCartProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    setCartItems((items) =>
-      items.map((item) => {
-        if (item.id === id) {
-          const quantity = Math.max(item.minOrderQty, newQuantity);
-          return { ...item, quantity };
-        }
-        return item;
-      })
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.unitPrice * item.quantity,
-    0
-  );
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const path = usePathname();
+  const navig = useRouter();
+  const totalItems = getCartItemCount();
+  const subtotal = getCartTotal();
   const estimatedShipping = subtotal > 10000 ? 0 : 299;
   const total = subtotal + estimatedShipping;
+
+  const handleQuantityChange = (productId: string, newQuantity: number) => {
+    const item = cartItems.find((item) => item.id === productId);
+    if (item) {
+      const quantity = Math.max(item.minOrderQty, newQuantity);
+      updateQuantity(productId, quantity);
+    }
+  };
+
+  const incrementQuantity = (productId: string, increment = 10) => {
+    const item = cartItems.find((item) => item.id === productId);
+    if (item) {
+      updateQuantity(productId, item.quantity + increment);
+    }
+  };
+
+  const decrementQuantity = (productId: string, decrement = 10) => {
+    const item = cartItems.find((item) => item.id === productId);
+    if (item) {
+      const newQuantity = Math.max(item.minOrderQty, item.quantity - decrement);
+      updateQuantity(productId, newQuantity);
+    }
+  };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -76,11 +93,10 @@ export default function WholesaleCart({
           </div>
         </Button>
       </PopoverTrigger>
-
       <PopoverContent
         side="top"
         align="end"
-        className="w-[420px] h-[600px] p-0! mb-4 shadow-2xl border-2"
+        className="w-[420px] h-[600px] p-0 mb-4 shadow-2xl border-2"
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -92,14 +108,26 @@ export default function WholesaleCart({
                 products
               </p>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="size-8"
-            >
-              <X className="size-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {cartItems.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearCart}
+                  className="text-xs text-muted-foreground hover:text-destructive"
+                >
+                  Clear All
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                className="size-8"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Cart Items */}
@@ -121,14 +149,15 @@ export default function WholesaleCart({
                     <div className="flex gap-3">
                       <div className="relative">
                         <Image
-                          src={item.image || "/placeholder.svg"}
+                          src={
+                            item.image || "/placeholder.svg?height=80&width=80"
+                          }
                           alt={item.name}
                           width={80}
                           height={80}
                           className="rounded-lg border object-cover"
                         />
                       </div>
-
                       <div className="flex-1 space-y-2">
                         <div className="flex items-start justify-between">
                           <div>
@@ -149,11 +178,10 @@ export default function WholesaleCart({
                             <Trash2 className="size-3" />
                           </Button>
                         </div>
-
                         <div className="flex items-center justify-between">
                           <div className="text-sm">
                             <span className="font-semibold">
-                              ${item.unitPrice}
+                              ${item.unitPrice.toLocaleString()}
                             </span>
                             <span className="text-muted-foreground">
                               {" "}
@@ -164,25 +192,21 @@ export default function WholesaleCart({
                             ${(item.unitPrice * item.quantity).toLocaleString()}
                           </div>
                         </div>
-
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 10)
-                            }
+                            onClick={() => decrementQuantity(item.id, 10)}
                             disabled={item.quantity <= item.minOrderQty}
                             className="size-7"
                           >
                             <Minus className="size-3" />
                           </Button>
-
                           <Input
                             type="number"
                             value={item.quantity}
                             onChange={(e) =>
-                              updateQuantity(
+                              handleQuantityChange(
                                 item.id,
                                 Number.parseInt(e.target.value) ||
                                   item.minOrderQty
@@ -191,18 +215,14 @@ export default function WholesaleCart({
                             className="w-20 h-7 text-center text-sm"
                             min={item.minOrderQty}
                           />
-
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 10)
-                            }
+                            onClick={() => incrementQuantity(item.id, 10)}
                             className="size-7"
                           >
                             <Plus className="size-3" />
                           </Button>
-
                           <span className="text-xs text-muted-foreground ml-1">
                             units
                           </span>
@@ -219,16 +239,35 @@ export default function WholesaleCart({
           {cartItems.length > 0 && (
             <div className="border-t bg-slate-50 p-4 space-y-4">
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-sm font-bold">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Estimated Shipping</span>
+                  <span>
+                    {estimatedShipping === 0 ? "Free" : `$${estimatedShipping}`}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm font-bold border-t pt-2">
                   <span>Total ({totalItems.toLocaleString()} items)</span>
                   <span>${total.toLocaleString()}</span>
                 </div>
               </div>
-
               <div className="space-y-2">
-                <Button className="w-full" size="lg">
-                  Confirm Order
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => {
+                    localStorage.setItem("btbCart", JSON.stringify(cartItems));
+                    navig.push(`${path}/payment`);
+                  }}
+                >
+                  Request Quote
                 </Button>
+                <p className="text-xs text-center text-muted-foreground">
+                  Final pricing will be confirmed after quote review
+                </p>
               </div>
             </div>
           )}

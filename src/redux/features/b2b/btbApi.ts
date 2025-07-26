@@ -40,10 +40,17 @@ export const  btbApi = api.injectEndpoints({
         method:"POST",
         body:{}
       })
-    })
+    }),
+    btbCheckout: builder.mutation<any,any>({
+      query:(body)=>({
+        url:`/b2b/checkout`,
+        method:"POST",
+        body
+      })
+    }),
   })
 })
 
-export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery,useMyBtbProductsQuery, useSendBtbRequestMutation} = btbApi;
+export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery,useMyBtbProductsQuery, useSendBtbRequestMutation, useBtbCheckoutMutation} = btbApi;
 
 
