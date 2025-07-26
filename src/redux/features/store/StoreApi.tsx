@@ -38,6 +38,14 @@ export const storeApi = api.injectEndpoints({
         body,
       }),
     }),
+
+    getllstoreinMap: builder.query<any, { sw_lat: any; sw_lng: any; ne_lat: any; ne_lng: any }>({
+      query: ({ sw_lat, sw_lng, ne_lat, ne_lng }) =>
+        `/stores-by-location?sw_lat=${sw_lat}&sw_lng=${sw_lng}&ne_lat=${ne_lat}&ne_lng=${ne_lng}`,
+    }),
+
+
+
   }),
 });
 
@@ -48,4 +56,5 @@ export const {
   useStoreGroupListQuery,
   useFevoritestoreMutation,
   useCheckoutMutation,
+  useGetllstoreinMapQuery
 } = storeApi;
