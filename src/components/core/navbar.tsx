@@ -334,7 +334,7 @@ export default function Navbar() {
     if (token) {
       refetch();
     }
-  }, [pathname, token, refetch]);
+  }, [pathname, token, refetch, user]);
 
   return (
     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
