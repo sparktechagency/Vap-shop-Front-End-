@@ -27,7 +27,16 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { Loader2Icon } from "lucide-react";
+import { ArrowRight, Loader2Icon } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   brand_name: z.string().min(2),
@@ -74,148 +83,176 @@ export default function BrandEditForm({ my }: { my: UserData }) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-2 gap-6"
-      >
-        <FormField
-          control={control}
-          name="brand_name"
-          render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Brand name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your email" {...field} readOnly />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone number</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your phone number"
-                  type="tel"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="address"
-          render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="zip_code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Zip Code</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter zip code" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="region_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Region</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value || ""}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select your region" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Canada</SelectItem>
-                    <SelectItem value="2">US</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="latitude"
-          render={({ field }) => (
-            <FormItem className="hidden">
-              <FormLabel>Latitude</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="longitude"
-          render={({ field }) => (
-            <FormItem className="hidden">
-              <FormLabel>Longitude</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="col-span-2">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? (
-              <Loader2Icon className="size-5 animate-spin" />
-            ) : (
-              "Save"
+    <>
+      {" "}
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-2 gap-6"
+        >
+          <FormField
+            control={control}
+            name="brand_name"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Brand name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
+          />
+
+          <FormField
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email address</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your email" {...field} readOnly />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone number</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your phone number"
+                    type="tel"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="address"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="zip_code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zip Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter zip code" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="region_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Region</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your region" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Canada</SelectItem>
+                      <SelectItem value="2">US</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="latitude"
+            render={({ field }) => (
+              <FormItem className="hidden">
+                <FormLabel>Latitude</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="longitude"
+            render={({ field }) => (
+              <FormItem className="hidden">
+                <FormLabel>Longitude</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="col-span-2">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <Loader2Icon className="size-5 animate-spin" />
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <Separator className="mt-6" />
+      <Card className="w-full mt-6 border border-border shadow-lg rounded-xl">
+        <CardHeader className="space-y-2 p-6">
+          <CardTitle className="text-2xl font-bold text-foreground">
+            Send Ad Request to Admin
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Your brand will be featured in Trending (Most Followers tab).
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6 pt-0">
+          <Button
+            asChild
+            className="w-full py-6 text-lg font-semibold rounded-lg"
+          >
+            <Link
+              href={"/me/ad"}
+              className="flex items-center justify-center gap-2"
+            >
+              Make an Ad request
+              <ArrowRight className="h-5 w-5" />
+            </Link>
           </Button>
-        </div>
-      </form>
-    </Form>
+        </CardContent>
+      </Card>
+    </>
   );
 }

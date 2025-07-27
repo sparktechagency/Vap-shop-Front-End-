@@ -31,55 +31,6 @@ import {
 import Namer from "./internal/namer";
 import Link from "next/link";
 
-interface ProductReviewCardProps {
-  id: any;
-  product_image: string;
-  category: any;
-  product_name: string;
-  average_rating: string;
-  product?: {
-    id: number;
-    name: string;
-    image: string;
-    price: string;
-    category: {
-      id: number;
-      name: string;
-    };
-    slug: string;
-    role: number;
-    roleLabel: string;
-    isHearted: boolean;
-    totalHeart: number;
-    averageRating: string;
-  };
-  review?: {
-    id: number;
-    rating: number;
-    comment: string;
-    date: string;
-    parentId: number | null;
-  };
-  reviewer?: {
-    id: number;
-    name: string;
-    avatar: string;
-    role: number;
-    roleLabel: string;
-    isFollowing: boolean;
-    totalFollowers: number;
-    totalFollowing: number;
-    avgRating: number;
-    totalReviews: number;
-    isFavourite: boolean;
-    isBanned: boolean;
-  };
-  stats?: {
-    helpful: number;
-    replies: number;
-  };
-}
-
 export default function ProductReviewCard({
   data,
   productData,
@@ -152,20 +103,29 @@ export default function ProductReviewCard({
       <div className="border-b !p-4">
         <div className="flex items-center gap-4">
           <Image
-            src={productData?.data.product_image || "/placeholder.svg"}
+            src={
+              productData?.data?.product_image ??
+              productData?.product_image ??
+              "/placeholder.svg"
+            }
             height={600}
             width={600}
-            alt={productData?.data?.product_name || "Product Image"}
+            alt={
+              productData?.data?.product_name ??
+              productData?.product_name ??
+              "Product Image"
+            }
             className="w-20 h-20 rounded-lg object-cover border"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 !mb-1">
               <Badge variant="secondary" className="text-xs">
-                {productData?.data?.category?.name}
+                {productData?.data?.category?.name ??
+                  productData?.category?.name}
               </Badge>
             </div>
             <h3 className="font-semibold text-base truncate">
-              {productData?.data?.product_name}
+              {productData?.data?.product_name ?? productData?.product_name}
             </h3>
             {/* <p className="text-lg font-bold text-primary">
               ${productData?.product_price}
@@ -209,8 +169,8 @@ export default function ProductReviewCard({
                   data?.user.role === 5
                     ? `/stores/store/${data?.user.id}`
                     : data?.user.role === 4
-                      ? `/brands/brand/${data?.user.id}`
-                      : `/profile/${data?.user.id}`
+                    ? `/brands/brand/${data?.user.id}`
+                    : `/profile/${data?.user.id}`
                 }
                 className="text-sm font-medium"
               >
@@ -254,7 +214,8 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${
+                      data?.user?.full_name
                     }'s review as helpful`
                   );
                 }
@@ -310,8 +271,8 @@ export default function ProductReviewCard({
                             data?.user.role === 5
                               ? `/stores/store/${data?.user.id}`
                               : data?.user.role === 4
-                                ? `/brands/brand/${data?.user.id}`
-                                : `/profile/${data?.user.id}`
+                              ? `/brands/brand/${data?.user.id}`
+                              : `/profile/${data?.user.id}`
                           }
                         >
                           <Namer

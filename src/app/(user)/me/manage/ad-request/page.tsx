@@ -22,6 +22,22 @@ import { Star, TrendingUp, Clock, DollarSign, Loader2Icon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProductDetailsByIdRoleQuery } from "@/redux/features/Trending/TrendingApi";
 import { useUser } from "@/context/userContext";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { toast } from "sonner";
+import { usePostAdMutation } from "@/redux/features/ad/adApi";
+
+// Zod Schema
+const adRequestSchema = z.object({
+  duration: z.string().min(1, "Duration is required"),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms",
+  }),
+});
+
+type AdRequestForm = z.infer<typeof adRequestSchema>;
 
 export default function Page() {
   const id = useSearchParams().get("id");
@@ -29,24 +45,64 @@ export default function Page() {
   const { role } = useUser();
   const { data, isLoading, isError, error }: any =
     useProductDetailsByIdRoleQuery({ id: String(id), role }, { skip: !id });
+  const [postAd] = usePostAdMutation();
+  const [selectedDuration, setSelectedDuration] = useState<
+    string | undefined
+  >();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<AdRequestForm>({
+    resolver: zodResolver(adRequestSchema),
+    defaultValues: {
+      duration: "",
+      termsAccepted: false,
+    },
+  });
+
+  const onSubmit = async (formData: AdRequestForm) => {
+    const finalizer = {
+      product_id: id,
+      preferred_duration: formData.duration,
+    };
+    try {
+      const call = await postAd(finalizer).unwrap();
+
+      if (!call.ok) {
+        toast.error(call.message ?? "Failed to send ad request");
+      } else {
+        toast.success(call.message ?? "Ad request sent to Admin");
+        navig.back();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
 
   if (!id) {
     navig.back();
     return <></>;
   }
+
   if (isLoading) {
-    <div className="flex justify-center items-center">
-      <Loader2Icon className="animate-spin" />
-    </div>;
+    return (
+      <div className="flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
   }
 
   if (isError) {
-    <div className="flex justify-center items-center">
-      {error.data.message ?? "Something went wrong"}
-    </div>;
+    return (
+      <div className="flex justify-center items-center">
+        {error.data.message ?? "Something went wrong"}
+      </div>
+    );
   }
-
-  console.log(data);
 
   return (
     <div className="min-h-screen bg-background mt-6!">
@@ -74,6 +130,7 @@ export default function Page() {
             </Badge>
           </div>
         </div>
+
         <div className="col-span-1 lg:col-span-6">
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
             Request Trending Ad Placement
@@ -115,77 +172,97 @@ export default function Page() {
       </div>
 
       {/* Form Section */}
-      <div className="w-full lg:w-2/3 mx-auto! px-4! lg:px-[7%]! py-12!">
-        <div className="w-full">
-          <div className="">
-            {/* Ad Preferences */}
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5" />
-                  Advertisement Preferences
-                </CardTitle>
-                <CardDescription>
-                  Specify your advertising requirements
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="">
-                  <div className="space-y-4!">
-                    <Label htmlFor="ad-duration">Preferred Duration *</Label>
-                    <Select>
-                      <SelectTrigger className="mt-1! w-full">
-                        <SelectValue placeholder="Select duration" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1-week">1 Week</SelectItem>
-                        <SelectItem value="2-weeks">2 Weeks</SelectItem>
-                        <SelectItem value="1-month">1 Month</SelectItem>
-                        <SelectItem value="3-months">3 Months</SelectItem>
-                        <SelectItem value="6-months">6 Months</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full lg:w-2/3 mx-auto! px-4! lg:px-[7%]! py-12!"
+      >
+        <div className="">
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5" />
+                Advertisement Preferences
+              </CardTitle>
+              <CardDescription>
+                Specify your advertising requirements
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4!">
+                <Label htmlFor="ad-duration">Preferred Duration *</Label>
+                <Select
+                  onValueChange={(val) => {
+                    setSelectedDuration(val);
+                    setValue("duration", val);
+                  }}
+                  value={selectedDuration}
+                >
+                  <SelectTrigger className="mt-1! w-full">
+                    <SelectValue placeholder="Select duration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1_week">1 Week</SelectItem>
+                    <SelectItem value="2_weeks">2 Weeks</SelectItem>
+                    <SelectItem value="1_month">1 Month</SelectItem>
+                    <SelectItem value="3_months">3 Months</SelectItem>
+                    <SelectItem value="6_months">6 Months</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.duration && (
+                  <p className="text-sm text-red-500">
+                    {errors.duration.message}
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Terms and Submit */}
-            <Card className="mt-8!">
-              <CardContent className="pt-6!">
-                <div className="space-y-4!">
-                  <div className="flex items-start space-x-2!">
-                    <input type="checkbox" id="terms" className="mt-1!" />
-                    <Label
-                      htmlFor="terms"
-                      className="inline-block text-sm leading-relaxed"
-                    >
-                      I agree to the{" "}
-                      <span className="text-primary underline cursor-pointer">
-                        Terms of Service
-                      </span>{" "}
-                      and
-                      <span className="text-primary underline cursor-pointer">
-                        {" "}
-                        Privacy Policy
-                      </span>
-                      . I understand that ad placement is subject to approval
-                      and availability.
-                    </Label>
-                  </div>
+          <Card className="mt-8!">
+            <CardContent className="pt-6!">
+              <div className="space-y-4!">
+                <div className="flex items-start space-x-2!">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    {...register("termsAccepted")}
+                    className="mt-1!"
+                  />
+                  <Label
+                    htmlFor="terms"
+                    className="inline-block text-sm leading-relaxed"
+                  >
+                    I agree to the{" "}
+                    <span className="text-primary underline cursor-pointer">
+                      Terms of Service
+                    </span>{" "}
+                    and
+                    <span className="text-primary underline cursor-pointer">
+                      {" "}
+                      Privacy Policy
+                    </span>
+                    . I understand that ad placement is subject to approval and
+                    availability.
+                  </Label>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-8!">
-                  <Button className="flex-1">Submit Ad Request</Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-4! text-center">
-                  Admin will review your request within 24-48 hours and contact
-                  you with next steps.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+                {errors.termsAccepted && (
+                  <p className="text-sm text-red-500">
+                    {errors.termsAccepted.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 mt-8!">
+                <Button type="submit" className="flex-1">
+                  Submit Ad Request
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4! text-center">
+                Admin will review your request within 24-48 hours and contact
+                you with next steps.
+              </p>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
