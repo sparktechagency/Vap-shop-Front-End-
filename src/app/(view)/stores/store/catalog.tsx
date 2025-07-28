@@ -15,7 +15,7 @@ import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 
 export default function Catalog({ id }: any) {
   const [page, setPage] = React.useState(1);
-  const per_page = 12;
+  const per_page = 16;
 
   const {
     data: brandDetails,

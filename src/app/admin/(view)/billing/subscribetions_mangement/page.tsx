@@ -59,7 +59,7 @@ const formatInvoiceStatus = (status: string): InvoiceStatus => {
 };
 
 const formatPlans = (planDetails: PlanDetail[]): string => {
-    if (!planDetails || planDetails.length === 0) return 'No plans selected';
+    if (!planDetails || planDetails?.length === 0) return 'No plans selected';
     return planDetails
         .map(p => `${p.name} ($${parseFloat(p.price).toFixed(2)})`)
         .join(', ');
@@ -208,13 +208,13 @@ const SubscriptionsManagement: FC = () => {
 
     const subscriptions: Subscription[] = useMemo(() => {
         return apiResponse?.data?.data.map((sub: ApiSubscription) => ({
-            id: sub.id,
-            name: sub.user.full_name,
-            email: sub.user.email,
-            plans: formatPlans(sub.plan_details),
-            total: parseFloat(sub.total_cost),
-            date: new Date(sub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            status: formatInvoiceStatus(sub.invoice_status),
+            id: sub?.id,
+            name: sub?.user?.full_name,
+            email: sub?.user?.email,
+            plans: formatPlans(sub?.plan_details),
+            total: parseFloat(sub?.total_cost),
+            date: new Date(sub?.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            status: formatInvoiceStatus(sub?.invoice_status),
         })) ?? [];
     }, [apiResponse]);
 

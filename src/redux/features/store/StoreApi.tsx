@@ -5,7 +5,7 @@ export const storeApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllstore: builder.query({
       query: ({ page }) =>
-        `/get-all-store-brand-wholesaler?type=store&per_page=8&page=${page}`,
+        `/get-all-store-brand-wholesaler?type=store&per_page=16&page=${page}`,
     }),
     getStoreDetailsById: builder.query<
       any,

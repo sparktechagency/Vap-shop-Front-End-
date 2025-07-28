@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -13,21 +13,56 @@ import {
 import ReviewCard from "@/components/core/review-card";
 import { useMostRatedReviewQuery } from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 
+// Define interfaces for strong typing
+interface Product {
+  product_image: string;
+  product_name: string;
+  role?: number;
+  category?: { name: string; id: number };
+  average_rating?: string;
+}
+
+interface Review {
+  id: number;
+  manage_product_id: number;
+  manage_products: Product;
+  // Add other review properties here e.g., comment: string, rating: number
+}
+
+// Main Component
 export default function MostRated() {
+  const [region, setRegion] = useState("uni"); // Default filter
   const { data, isLoading, isError, refetch } = useMostRatedReviewQuery();
 
   console.log("most rated review", data);
 
+  // Render states
   if (isLoading) return <LoadingSkeleton />;
-  if (isError) return <p>can&apos;t loading reviews</p>;
-  if (!data?.data?.length) return <p>No reviews found</p>;
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <p className="mb-4 text-red-500">Error: Couldn't load reviews.</p>
+        <Button onClick={() => refetch()}>Try Again</Button>
+      </div>
+    );
+  }
+
+  if (!data?.data?.length) {
+    return (
+      <div className="text-center py-12">
+        <p>No reviews found for this region.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
         <h2 className="text-3xl font-bold">Top Most Rated Reviews</h2>
-        <Select>
+        <Select value={region} onValueChange={setRegion}>
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder="Region" />
           </SelectTrigger>
@@ -59,6 +94,7 @@ export default function MostRated() {
             refetch={refetch}
             key={review?.id}
             data={review}
+            // FIX: Rename 'productData' to 'product'
             productData={{
               id: review?.manage_product_id,
               product_image:
@@ -76,6 +112,7 @@ export default function MostRated() {
   );
 }
 
+// Skeleton component (no changes needed)
 const LoadingSkeleton = () => (
   <div className="container mx-auto px-4 py-8 space-y-6">
     <div className="flex justify-between items-center mb-12">

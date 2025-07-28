@@ -169,8 +169,8 @@ export default function ProductReviewCard({
                   data?.user.role === 5
                     ? `/stores/store/${data?.user.id}`
                     : data?.user.role === 4
-                    ? `/brands/brand/${data?.user.id}`
-                    : `/profile/${data?.user.id}`
+                      ? `/brands/brand/${data?.user.id}`
+                      : `/profile/${data?.user.id}`
                 }
                 className="text-sm font-medium"
               >
@@ -214,8 +214,7 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${
-                      data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
                     }'s review as helpful`
                   );
                 }
@@ -271,8 +270,8 @@ export default function ProductReviewCard({
                             data?.user.role === 5
                               ? `/stores/store/${data?.user.id}`
                               : data?.user.role === 4
-                              ? `/brands/brand/${data?.user.id}`
-                              : `/profile/${data?.user.id}`
+                                ? `/brands/brand/${data?.user.id}`
+                                : `/profile/${data?.user.id}`
                           }
                         >
                           <Namer

@@ -160,6 +160,10 @@ export default function Notifications() {
   const totalPages = data?.last_page || 1;
   const unreadCount = notifications.filter((n) => !n.read_at).length;
 
+
+
+  console.log('notifications', notifications);
+
   return (
     <div className="space-y-6 p-6 w-full mx-auto">
       {/* Header */}
@@ -220,15 +224,14 @@ export default function Notifications() {
             )
               ? "accepted"
               : notification.data.message.includes("rejected")
-              ? "rejected"
-              : notification.data.status;
+                ? "rejected"
+                : notification.data.status;
 
             return (
               <Card
                 key={notification.id}
-                className={`transition-all hover:shadow-md ${
-                  isUnread ? "border-l-4 border-l-primary" : ""
-                }`}
+                className={`transition-all hover:shadow-md ${isUnread ? "border-l-4 border-l-primary" : ""
+                  }`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-4">
@@ -319,8 +322,8 @@ export default function Notifications() {
                             notification.data.status === "pending"
                               ? "secondary"
                               : notificationStatus === "accepted"
-                              ? "default"
-                              : "destructive"
+                                ? "default"
+                                : "destructive"
                           }
                           className="mt-1 text-xs"
                         >
