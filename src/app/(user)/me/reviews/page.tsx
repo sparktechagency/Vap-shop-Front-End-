@@ -16,9 +16,6 @@ export default function LatestRevs() {
   const { data, isLoading, isError, refetch } = useGetMyReviewsQuery({ id });
   const my = useUser();
   const reviews = data?.data;
-  if (data) {
-    console.log(data);
-  }
 
   if (isLoading) {
     return (

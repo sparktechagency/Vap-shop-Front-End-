@@ -4,6 +4,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import { Loader2Icon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 export default function LatestReviewCard({
   data,
@@ -14,6 +16,7 @@ export default function LatestReviewCard({
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
+  console.log(data);
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +30,29 @@ export default function LatestReviewCard({
   }
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
-      <div className="p-4 flex items-center gap-2 bg-secondary">
+      <Link
+        href={
+          data.product.role === 3
+            ? `/brands/brand/product/${data.product.id}`
+            : `/stores/store/product/${data.product.id}`
+        }
+      >
+        <div className="p-4 flex items-center gap-6">
+          <Image
+            src={data.product.product_image ?? "/image/shop/item.jpg"}
+            width={100}
+            height={100}
+            alt="icon"
+            className="size-24 object-cover object-center rounded-lg"
+          />
+          <div className="">
+            <h4 className="font-semibold text-xl">
+              {data.product.product_name ?? ""}
+            </h4>
+          </div>
+        </div>
+      </Link>
+      <div className="p-4 flex items-center gap-2 border-t border-b">
         <Avatar>
           <AvatarImage src={me?.data?.avatar} className="object-cover" />
           <AvatarFallback>UI</AvatarFallback>

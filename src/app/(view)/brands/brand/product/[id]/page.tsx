@@ -112,7 +112,6 @@ interface AccordionItemType {
   content: string | React.ReactNode;
 }
 
-
 const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title }) => {
   return (
     <div className="flex justify-center gap-4 pt-4">
@@ -157,9 +156,6 @@ export default function Page() {
   const [unfollowBrand, { isLoading: isUnFollowing }] =
     useUnfollowBrandMutation();
   console.log("product", product);
-
-
-
 
   const getFAQAccordionItems = (): AccordionItemType[] => {
     if (!product?.data?.product_faqs?.length) return [];
@@ -274,8 +270,6 @@ export default function Page() {
     return updatedAccordionData;
   };
 
-
-
   console.log("product", product);
   if (!product) {
     return (
@@ -297,7 +291,8 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={`/brands/brand/${product?.data?.user?.id}?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+              href={`/brands/brand/${product?.data?.user?.id
+                }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer
@@ -413,7 +408,11 @@ export default function Page() {
       <div className="!px-4 lg:!px-[7%] !py-20">
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
-          <Link className="text-black hover:text-[#3a3a3a] underline font-semibold" href={`/brands/brand/${product?.data?.user?.id}?${product?.data?.user?.full_name.toLocaleLowerCase()}`} >
+          <Link
+            className="text-black hover:text-[#3a3a3a] underline font-semibold"
+            href={`/brands/brand/${product?.data?.user?.id
+              }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+          >
             {product?.data?.user?.full_name || "Brand"}
           </Link>
           ?
@@ -427,8 +426,9 @@ export default function Page() {
                 key={relatedProduct?.id}
                 link={`${relatedProduct?.id}`}
                 data={{
-                  id: relatedProduct?.id,
-                  image: relatedProduct?.product_image || "/image/shop/item.jpg",
+                  id: relatedProduct.id,
+                  image:
+                    relatedProduct?.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",
                   note: `$${parseFloat(relatedProduct.product_price).toFixed(

@@ -12,8 +12,10 @@ import {
 } from "@/components/ui/pagination";
 import { useGetProductsQuery } from "@/redux/features/manage/product";
 import { Loader2Icon } from "lucide-react";
+import { useUser } from "@/context/userContext";
 
 export default function Catalog() {
+  const { role } = useUser();
   const [page, setPage] = useState<number>(1);
   const per = 16;
   const { data, isLoading, isError, error } = useGetProductsQuery<any>({
@@ -55,6 +57,7 @@ export default function Catalog() {
             }}
             link={`/stores/store/product/${x.id}`}
             manage
+            isBrand={String(role) === String(3)}
           />
         ))}
       </div>

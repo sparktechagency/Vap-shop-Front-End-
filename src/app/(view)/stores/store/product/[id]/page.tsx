@@ -92,9 +92,9 @@ export default function Page() {
   const params = useParams();
   const { store } = params;
 
-  const pathname = usePathname()
-  const isStorePage = pathname.includes('/stores/');
-  console.log('isStorePage', isStorePage);
+  const pathname = usePathname();
+  const isStorePage = pathname.includes("/stores/");
+  console.log("isStorePage", isStorePage);
 
   const id = params.id;
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -114,7 +114,6 @@ export default function Page() {
       id: product?.data?.id,
     }
   );
-  console.log("reviewsData", reviewsData);
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
@@ -127,7 +126,6 @@ export default function Page() {
       </div>
     );
   }
-
   // Simplified FAQ accordion data mapping
   const faqAccordionItems =
     product?.data?.product_faqs?.map((faq: any, index: number) => ({
@@ -349,7 +347,10 @@ export default function Page() {
       <div className="!px-4 lg:!px-[7%] !py-20">
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
-          <Link href={`#`} className="underline font-semibold">
+          <Link
+            href={`/stores/store/${product.data.user.id ?? ""}`}
+            className="underline font-semibold"
+          >
             {product?.data?.user?.full_name || "Brand"}
           </Link>
           ?
