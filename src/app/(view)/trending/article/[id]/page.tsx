@@ -1,14 +1,18 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import ReplyCard from "@/components/core/reply-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 // Assuming the mutation is for creating comments, even if named useCreateArticalMutation
-import { useCreateArticalMutation, useGetArtialByidQuery } from "@/redux/features/Trending/TrendingApi";
+import {
+  useCreateArticalMutation,
+  useGetArtialByidQuery,
+} from "@/redux/features/Trending/TrendingApi";
 import { toast } from "sonner";
 
 // --- Interfaces to match the API response ---
@@ -27,31 +31,32 @@ interface Comment {
   replies: Comment[]; // For nested comments
 }
 
-interface ArticleData {
-  id: number;
-  title: string;
-  content: string;
-  article_image: string;
-  created_at: string;
-  user: User;
-  comments: Comment[];
-}
+// interface ArticleData {
+//   id: number;
+//   title: string;
+//   content: string;
+//   article_image: string;
+//   created_at: string;
+//   user: User;
+//   comments: Comment[];
+// }
 
-interface ApiResponse {
-  ok: boolean;
-  message: string;
-  data: ArticleData;
-}
+// interface ApiResponse {
+//   ok: boolean;
+//   message: string;
+//   data: ArticleData;
+// }
 // ---
 
 export default function Page() {
   const params = useParams();
   const id = params.id as string;
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
 
   // refetch is returned by the hook to refresh data after a mutation
   const { data, isLoading, isError, refetch } = useGetArtialByidQuery({ id });
-  const [createComment, { isLoading: isCommenting }] = useCreateArticalMutation();
+  const [createComment, { isLoading: isCommenting }] =
+    useCreateArticalMutation();
 
   const article = data?.data;
 
@@ -62,11 +67,14 @@ export default function Page() {
     }
     try {
       // The payload should match what your API expects
-      const response = await createComment({ post_id: id, comment: comment }).unwrap();
+      const response = await createComment({
+        post_id: id,
+        comment: comment,
+      }).unwrap();
       if (response.ok) {
         toast.success(response.message || "Comment posted successfully");
-        setComment(''); // Clear the input field
-        refetch(); // Refetch the article data to show the new comment
+        setComment("");
+        refetch();
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to post comment.");
@@ -103,18 +111,16 @@ export default function Page() {
         <p className="text-muted-foreground text-sm">
           Posted by: {article.user.full_name}
         </p>
-        <p className="text-muted-foreground text-sm">
-          Date posted: {postDate}
-        </p>
+        <p className="text-muted-foreground text-sm">Date posted: {postDate}</p>
       </div>
 
       {article.article_image && (
-        <div className="relative w-full h-96 mb-8 rounded-lg overflow-hidden">
+        <div className="relative w-full aspect-video object-contain mb-8 rounded-lg overflow-hidden">
           <Image
             src={article.article_image}
             alt={article.title}
             fill
-            className="object-cover"
+            className="object-contain"
             priority
           />
         </div>
@@ -127,7 +133,9 @@ export default function Page() {
 
       <Separator className="my-12" />
 
-      <h2 className="text-2xl font-semibold mb-6">Comments ({article.comments.length})</h2>
+      <h2 className="text-2xl font-semibold mb-6">
+        Comments ({article.comments.length})
+      </h2>
       <div className="flex flex-row justify-between items-center gap-6">
         <Input
           onChange={(e) => setComment(e.target.value)}
