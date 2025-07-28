@@ -60,9 +60,12 @@ export default async function RootLayout({
             >
               <Link href={"/admin/notification"}>
                 <BellIcon />
-                <span className="size-4 flex items-center justify-center bg-destructive rounded-full absolute -top-1 -right-1 !text-[8px] font-semibold text-background">
-                  {res?.data?.unread_notifications}
-                </span>
+                {
+                  // @ts-ignore
+                  res?.data?.unread_notification_count > 0 && <span className="size-4 flex items-center justify-center bg-destructive rounded-full absolute -top-1 -right-1 !text-[8px] font-semibold text-background">
+                    {res?.data?.unread_notifications}
+                  </span>
+                }
               </Link>
             </Button>
           </div>

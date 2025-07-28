@@ -424,10 +424,10 @@ export default function Page() {
             .map((relatedProduct: any) => (
               <ProductCard
                 refetch={refetch}
-                key={relatedProduct.id}
-                link={`${relatedProduct.id}`}
+                key={relatedProduct?.id}
+                link={`${relatedProduct?.id}`}
                 data={{
-                  id: relatedProduct.id,
+                  id: relatedProduct?.id,
                   image: relatedProduct?.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",

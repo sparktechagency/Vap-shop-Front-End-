@@ -220,15 +220,14 @@ export default function Notifications() {
             )
               ? "accepted"
               : notification.data.message.includes("rejected")
-              ? "rejected"
-              : notification.data.status;
+                ? "rejected"
+                : notification.data.status;
 
             return (
               <Card
                 key={notification.id}
-                className={`transition-all hover:shadow-md ${
-                  isUnread ? "border-l-4 border-l-primary" : ""
-                }`}
+                className={`transition-all hover:shadow-md ${isUnread ? "border-l-4 border-l-primary" : ""
+                  }`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-4">
@@ -319,8 +318,8 @@ export default function Notifications() {
                             notification.data.status === "pending"
                               ? "secondary"
                               : notificationStatus === "accepted"
-                              ? "default"
-                              : "destructive"
+                                ? "default"
+                                : "destructive"
                           }
                           className="mt-1 text-xs"
                         >

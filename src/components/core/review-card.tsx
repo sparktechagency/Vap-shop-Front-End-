@@ -152,7 +152,7 @@ export default function ProductReviewCard({
       <div className="border-b !p-4">
         <div className="flex items-center gap-4">
           <Image
-            src={productData?.data.product_image || "/placeholder.svg"}
+            src={productData?.data?.product_image || "/placeholder.svg"}
             height={600}
             width={600}
             alt={productData?.data?.product_name || "Product Image"}
