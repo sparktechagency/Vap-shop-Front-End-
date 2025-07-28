@@ -12,7 +12,7 @@ export const brandApis = api.injectEndpoints({
     }),
     getMostHurtedBrand: builder.query<any, void>({
       query: (id) =>
-        `/get/${id}/products?type=brand&is_most_hearted=1&per_page=8`,
+        `/get/${id}/products?type=brand&is_most_hearted=1&per_page=16`,
     }),
 
     getBrandGroup: builder.query<any, void>({

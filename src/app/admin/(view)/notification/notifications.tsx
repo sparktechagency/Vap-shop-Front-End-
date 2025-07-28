@@ -160,6 +160,10 @@ export default function Notifications() {
   const totalPages = data?.last_page || 1;
   const unreadCount = notifications.filter((n) => !n.read_at).length;
 
+
+
+  console.log('notifications', notifications);
+
   return (
     <div className="space-y-6 p-6 w-full mx-auto">
       {/* Header */}
