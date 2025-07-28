@@ -59,6 +59,7 @@ export default function ProductCard({
   link,
   role,
   blank,
+  isBrand,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
@@ -67,6 +68,7 @@ export default function ProductCard({
   link?: string;
   role?: number;
   blank?: boolean;
+  isBrand?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -255,16 +257,21 @@ export default function ProductCard({
       {/* 🔹 Manage buttons */}
       {manage && (
         <CardFooter className="!p-4 grid grid-cols-2 gap-4">
-          <Button
-            variant="special"
-            asChild
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Link href={`/me/manage/ad-request?id=${data.id}`}>Ad request</Link>
-          </Button>
+          {isBrand && (
+            <Button
+              variant="special"
+              asChild
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Link href={`/me/manage/ad-request?id=${data.id}`}>
+                Ad request
+              </Link>
+            </Button>
+          )}
           {link && (
             <Button
               variant="outline"
+              className={!isBrand ? "col-span-2" : ""}
               asChild
               onClick={(e) => e.stopPropagation()}
             >

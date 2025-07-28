@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   CheckCircle2Icon,
   CircleOffIcon,
-  InfoIcon,
   Loader2Icon,
   MapPinIcon,
   MessageSquareMoreIcon,
@@ -166,10 +165,6 @@ export default function Page() {
           </div>
           <div className="!mt-4">
             <div className="grid grid-cols-1 md:flex gap-8 items-center">
-              <div className="text-xs flex items-center gap-2 cursor-pointer hover:text-foreground/80">
-                <InfoIcon className="size-4" />
-                About us
-              </div>
               <div className="text-xs cursor-pointer hover:text-foreground/80">
                 <Link
                   href="/stores/store/connected-stores"

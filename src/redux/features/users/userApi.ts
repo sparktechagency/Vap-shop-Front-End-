@@ -9,6 +9,7 @@ const MyApi = api.injectEndpoints({
         method: "GET",
       }),
     }),
+
     updateUser: builder.mutation({
       query: (body) => ({
         url: `/update-profile`,
@@ -30,7 +31,6 @@ const MyApi = api.injectEndpoints({
         url:`/product-manage?is_most_hearted=1&per_page=${per}&page=${page}`,
       })
     }),
-
     getOrders:builder.query<any, void>({
       query: () => "/orders",
       providesTags:["order"]
@@ -72,15 +72,25 @@ const MyApi = api.injectEndpoints({
     getCheckouts : builder.query<any,void>({
       query : () => ({
         url:`/checkouts`
-      })
+      }),
+      providesTags:["order"]
+    }),
+    cancelCheckout:builder.mutation<any,{id:string}>({
+      query:({id})=>({
+        url:`/checkout/${id}/cancel`,
+        method:"POST",
+        body:{}
+      }),
+      invalidatesTags:["order"]
     }),
     getCheckout:builder.query<any,any>({
       query : ({id}) => ({
         url:`/checkouts/${id}`
-      })
+      }),
+      providesTags:["order"]
     })
   }),
 
 });
 
-export const { useGetMyReviewsQuery, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation , useGetCheckoutsQuery,useGetCheckoutQuery} = MyApi;
+export const { useGetMyReviewsQuery, useCancelCheckoutMutation, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation , useGetCheckoutsQuery,useGetCheckoutQuery} = MyApi;

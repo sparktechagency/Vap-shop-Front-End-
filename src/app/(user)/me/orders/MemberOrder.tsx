@@ -11,7 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 // import { Badge } from "@/components/ui/badge";
-import { useGetCheckoutsQuery } from "@/redux/features/users/userApi";
+import {
+  useCancelCheckoutMutation,
+  useGetCheckoutsQuery,
+} from "@/redux/features/users/userApi";
 import { EyeIcon, Loader2Icon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +39,7 @@ export default function MemberOrder() {
   const { data, isLoading, isError, error } = useGetCheckoutsQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [cancelOrder] = useCancelCheckoutMutation();
 
   const handleViewInvoice = (orderId: string) => {
     setSelectedOrderId(orderId);
@@ -130,13 +134,23 @@ export default function MemberOrder() {
                       size="icon"
                       onClick={async () => {
                         try {
-                          //  const res = await
-                          toast.info(
-                            "This feature is currently under development"
+                          const res = await cancelOrder({
+                            id: String(x.checkout_id),
+                          }).unwrap();
+                          if (!res.ok) {
+                            toast.error(
+                              res.message ?? "Failed to Cancel Order"
+                            );
+                          } else {
+                            toast.success(
+                              res.message ?? "Cancelled your order"
+                            );
+                          }
+                        } catch (error: any) {
+                          // console.error(error);
+                          toast.error(
+                            error.data.message ?? "Something went wrong"
                           );
-                        } catch (error) {
-                          console.error(error);
-                          toast.error("Something went wrong");
                         }
                       }}
                     >
