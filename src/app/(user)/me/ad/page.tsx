@@ -36,6 +36,7 @@ const formSchema = z.object({
   preferred_duration: z.enum(["1_week", "2_weeks", "1_month", "3_months"], {
     required_error: "Please select a preferred duration.",
   }),
+  amount: z.string().min(1, { message: "Amount is required." }),
 });
 
 export default function AdRequestPage() {
@@ -46,6 +47,7 @@ export default function AdRequestPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       preferred_duration: undefined,
+      amount: "",
     },
   });
 
@@ -57,7 +59,7 @@ export default function AdRequestPage() {
         toast.error(call.message ?? "Ad request failed to submit.");
       } else {
         toast.success(call.message ?? "Ad Request Submitted!");
-        setSubmitted(true); // Lock form after success
+        setSubmitted(true);
       }
     } catch (error) {
       console.error(error);
@@ -119,6 +121,31 @@ export default function AdRequestPage() {
                     </Select>
                     <FormDescription className="text-muted-foreground">
                       Choose how long you&apos;d like your ad to be featured.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Amount Field */}
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-foreground">Amount</FormLabel>
+                    <FormControl>
+                      <input
+                        type="number"
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)} // Keep it as string
+                        disabled={submitted}
+                        placeholder="Enter amount"
+                        className="w-full bg-card text-foreground border border-border rounded-md p-2 focus:ring-primary"
+                      />
+                    </FormControl>
+                    <FormDescription className="text-muted-foreground">
+                      Specify the amount of offer for your ad.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

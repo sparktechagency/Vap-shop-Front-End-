@@ -16,7 +16,14 @@ import {
 } from "@/redux/features/others/otherApi";
 import Link from "next/link";
 
-const categories = ["store", "brand", "products", "accounts"];
+const categories = [
+  "store",
+  "brand",
+  "products",
+  "wholesaler",
+  "association",
+  "accounts",
+];
 
 // const getImageSrc = (category: string) => {
 //   switch (category) {
@@ -97,6 +104,8 @@ export default function Searcher({
   const getHref = (x: any) => {
     if (selectedSearch === "store") return `/stores/store/${x.id}`;
     if (selectedSearch === "brand") return `/brands/brand/${x.id}`;
+    if (selectedSearch === "wholesaler") return `/profile/${x.id}`;
+    if (selectedSearch === "association") return `/profile/${x.id}`;
     if (selectedSearch === "products") return `/brands/brand/product/${x.id}`;
     if (selectedSearch === "accounts") {
       if (x.role === 5) {
