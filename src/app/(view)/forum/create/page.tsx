@@ -37,10 +37,13 @@ export default function Page() {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("Forum Group Created:", data);
+    const allData = {
+      ...data,
+      type: "public",
+    }
 
     try {
-      const res = await createGroup(data).unwrap();
+      const res = await createGroup(allData).unwrap();
       console.log(res);
 
       if (!res.ok) {
