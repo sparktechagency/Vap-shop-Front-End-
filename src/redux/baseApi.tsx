@@ -39,7 +39,8 @@ export const api = createApi({
     "inbox",
     "subscription",
     "manageusers",
-    "artical"
+    "artical",
+    "location",
   ],
   endpoints: () => ({}),
 });

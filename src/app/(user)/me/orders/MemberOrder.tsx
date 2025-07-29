@@ -20,6 +20,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CheckOutDetail from "./checkout-detail";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface OrderType {
   checkout_date: string;
@@ -129,33 +140,54 @@ export default function MemberOrder() {
                     >
                       <EyeIcon />
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={async () => {
-                        try {
-                          const res = await cancelOrder({
-                            id: String(x.checkout_id),
-                          }).unwrap();
-                          if (!res.ok) {
-                            toast.error(
-                              res.message ?? "Failed to Cancel Order"
-                            );
-                          } else {
-                            toast.success(
-                              res.message ?? "Cancelled your order"
-                            );
-                          }
-                        } catch (error: any) {
-                          // console.error(error);
-                          toast.error(
-                            error.data.message ?? "Something went wrong"
-                          );
-                        }
-                      }}
-                    >
-                      <Trash2Icon className="text-destructive" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <Trash2Icon className="text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you sure you want to cancel this order?
+                          </AlertDialogTitle>
+                        </AlertDialogHeader>
+                        <AlertDialogDescription>
+                          This action will cancel your order and it cannot be
+                          undone. If you proceed, the order will be removed from
+                          your purchases and any ongoing processing will be
+                          stopped.
+                        </AlertDialogDescription>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>No, Keep it</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={async () => {
+                              try {
+                                const res = await cancelOrder({
+                                  id: String(x.checkout_id),
+                                }).unwrap();
+                                if (!res.ok) {
+                                  toast.error(
+                                    res.message ?? "Failed to Cancel Order"
+                                  );
+                                } else {
+                                  toast.success(
+                                    res.message ?? "Cancelled your order"
+                                  );
+                                }
+                              } catch (error: any) {
+                                // console.error(error);
+                                toast.error(
+                                  error.data.message ?? "Something went wrong"
+                                );
+                              }
+                            }}
+                          >
+                            Cancel Order
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
 
                     <CheckOutDetail
                       id={selectedOrderId}

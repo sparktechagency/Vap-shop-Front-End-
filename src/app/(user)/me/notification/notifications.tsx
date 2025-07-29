@@ -42,6 +42,7 @@ interface NotificationData {
     status?: string;
     customer_name?: string;
     product_name?: string;
+    description?: string;
     order_id?: number;
   };
   read_at: string | null;
@@ -246,6 +247,7 @@ export default function Notifications() {
                         <h4 className="text-sm font-medium">
                           {getNotificationTitle(notification.type)}
                         </h4>
+
                         {isUnread && (
                           <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
                         )}
@@ -254,6 +256,14 @@ export default function Notifications() {
                       <p className="text-sm text-gray-700 mb-2">
                         {notification.data.message}
                       </p>
+                      {notification?.data?.description && (
+                        <p className="text-sm text-muted-foreground">
+                          {notification.data.description}
+                        </p>
+                      )}
+                      {/* <pre className="rounded-xl bg-black text-green-400 border border-green-600 p-4 overflow-x-auto text-sm font-mono leading-relaxed">
+                        {JSON.stringify(notification, null, 2)}
+                      </pre> */}
 
                       {/* Additional Info */}
                       {notification.data.customer_name && (
