@@ -29,19 +29,18 @@ import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function Featured() {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const { data, isLoading, isError } = useGetMostratedArticalQuery({
+  const { data, isLoading, isError, error } = useGetMostratedArticalQuery({
     page: currentPage.toString(),
-    per_page: "6",
+    per_page: "16",
   });
 
   const { data: my, isLoading: myLoading } = useGetOwnprofileQuery();
 
   if (isLoading) return <LoadingSkeleton />;
-  if (isError) return <p>Error loading articles</p>;
   if (!data?.data?.data?.length) return <p>No articles found</p>;
 
   const totalPages = data.data.last_page;
-  const visiblePages = 5; // Number of page buttons to show
+  const visiblePages = 5;
 
   // Calculate range of pages to display
   let startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
@@ -107,7 +106,7 @@ export default function Featured() {
       <h2 className="text-3xl">🔥 Featured Articles</h2>
 
       <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {data.data.data.map((article: any) => (
+        {data?.data?.data.map((article: any) => (
           <ArticleCard
             key={article.id}
             article={{
