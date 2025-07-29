@@ -69,6 +69,13 @@ export default async function ProfileLayoutShell({
                 <FlagIcon />
               </Button> */}
               <Button
+                variant="outline"
+                className="!text-sm font-extrabold"
+                asChild
+              >
+                <Link href={`/stores/store/${id}/btb`}>B2B</Link>
+              </Button>
+              <Button
                 // size="icon"
                 variant="outline"
                 className="hidden md:flex"

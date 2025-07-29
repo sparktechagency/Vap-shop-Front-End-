@@ -52,6 +52,33 @@ export const otherApi = api.injectEndpoints({
         }`,
       }),
     }),
+    createConnect: builder.mutation({
+      query: (body) => ({
+        url: `/connected-location`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["location"],
+    }),
+    getLocations: builder.query<any, void>({
+      query: () => ({
+        url: `/branches`,
+      }),
+      providesTags: ["location"],
+    }),
+    cancelConnect: builder.mutation({
+      query: ({ id }) => ({
+        url: `/branches/${id}/cancel`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["location"],
+    }),
+    getActiveLocations: builder.query({
+      query: ({ id }) => ({
+        url: `/users/${id}/active-branches`,
+      }),
+      providesTags: ["location"],
+    }),
   }),
 });
 
@@ -63,4 +90,8 @@ export const {
   useReplyReviewMutation,
   usePostLikeMutation,
   useSearchQuery,
+  useCreateConnectMutation,
+  useGetLocationsQuery,
+  useCancelConnectMutation,
+  useGetActiveLocationsQuery,
 } = otherApi;
