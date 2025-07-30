@@ -53,27 +53,51 @@ import { Skeleton } from "./ui/skeleton";
 import { Label } from "@/components/ui/label";
 
 // --- Interfaces ---
-interface UserData {
+export interface Address {
+    address_id: number;
+    address: string | null;
+    zip: string | null;
+    region_id: number;
+    region: string | null;
+    country: string | null;
+}
+
+export interface FavouriteStore {
+    id: number;
+    full_name: string;
+}
+
+export interface FavouriteBrand {
+    id: number;
+    name: string;
+}
+
+export interface UserData {
     id: number;
     first_name: string;
     last_name: string | null;
-    email: string;
-    role: number;
-    avatar: string;
     full_name: string;
+    email: string;
+    phone: string | null;
+    dob: string | null;
+    avatar: string;
+    role: number;
     role_label: string;
     total_followers: number;
     total_following: number;
     avg_rating: number;
     total_reviews: number;
-    phone: string | null;
     is_banned: boolean;
+    is_suspended?: boolean;
     created_at: string;
     updated_at: string;
-    // ADDED: is_suspended field to track suspension status
-    is_suspended?: boolean; // Optional, assuming your API will provide this
-    favourite_stores: { id: number; full_name: string }[];
-    favourite_brands: { id: number; name: string }[];
+    is_favourite: boolean;
+    is_active: boolean;
+    ein: string | null;
+    is_following: boolean;
+    address: Address | null; // 🔥 this is now an object, not a string
+    favourite_stores: FavouriteStore[];
+    favourite_brands: FavouriteBrand[];
 }
 
 interface UserTableProps {
@@ -346,11 +370,13 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
             {/* --- Modals & Dialogs --- */}
             <Dialog open={!!viewingUser} onOpenChange={(isOpen) => !isOpen && setViewingUser(null)}>
                 {viewingUser && (
-                    <DialogContent className="!max-w-[40dvw] space-y-4">
+                    <DialogContent className="!max-w-[40dvw] max-h-[95vh] overflow-y-auto space-y-4">
+
                         <DialogHeader>
                             <DialogTitle>User Details</DialogTitle>
                         </DialogHeader>
-                        <div className=" bg-white  rounded-2xl p-6 space-y-4 border border-gray-100">
+                        <div className="bg-white rounded-2xl p-6 space-y-4 border border-gray-100">
+                            {/* Header with Avatar and Name */}
                             <div className="flex items-center space-x-4">
                                 <img
                                     src={viewingUser?.avatar}
@@ -363,7 +389,16 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                            {/* Grid Information */}
+                            <div className="grid grid-cols-3 gap-4 text-sm text-gray-700">
+                                <div>
+                                    <p className="font-semibold">First Name:</p>
+                                    <p>{viewingUser?.first_name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Last Name:</p>
+                                    <p>{viewingUser?.last_name}</p>
+                                </div>
                                 <div>
                                     <p className="font-semibold">Email:</p>
                                     <p>{viewingUser?.email}</p>
@@ -373,12 +408,36 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                                     <p>{viewingUser?.phone}</p>
                                 </div>
                                 <div>
+                                    <p className="font-semibold">EIN:</p>
+                                    <p>{viewingUser?.ein || "N/A"}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Date of Birth:</p>
+                                    <p>{viewingUser?.dob || "N/A"}</p>
+                                </div>
+                                <div>
                                     <p className="font-semibold">Average Rating:</p>
                                     <p>{viewingUser?.avg_rating}</p>
                                 </div>
                                 <div>
                                     <p className="font-semibold">Total Reviews:</p>
                                     <p>{viewingUser?.total_reviews}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Total Followers:</p>
+                                    <p>{viewingUser?.total_followers}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Total Following:</p>
+                                    <p>{viewingUser?.total_following}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Is Following:</p>
+                                    <p>{viewingUser?.is_following ? "Yes" : "No"}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">Is Favourite:</p>
+                                    <p>{viewingUser?.is_favourite ? "Yes" : "No"}</p>
                                 </div>
                                 <div>
                                     <p className="font-semibold">Banned:</p>
@@ -397,11 +456,39 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                                     <p>{new Date(viewingUser?.updated_at).toLocaleDateString()}</p>
                                 </div>
                             </div>
+
+                            {/* Address Section */}
+                            <div className="pt-4">
+                                <h3 className="text-md font-semibold text-gray-800 mb-2">Address</h3>
+                                <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                                    <div>
+                                        <p className="font-semibold">Address:</p>
+                                        <p>{viewingUser?.address?.address}</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Region:</p>
+                                        <p>{viewingUser?.address?.region}</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Region ID:</p>
+                                        <p>{viewingUser?.address?.region_id}</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">Country:</p>
+                                        <p>{viewingUser?.address?.country}</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold">ZIP Code:</p>
+                                        <p>{viewingUser?.address?.zip || "N/A"}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Favourites Section */}
+
                         </div>
-                        <div className="flex flex-row justify-between items-center text-sm">
-                            <p>Followers: {viewingUser.total_followers}</p>
-                            <p>Following: {viewingUser.total_following}</p>
-                        </div>
+
+
 
 
 

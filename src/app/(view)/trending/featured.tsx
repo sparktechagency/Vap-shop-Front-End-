@@ -66,16 +66,16 @@ export default function Featured() {
     <div className="container mx-auto px-4 py-8">
       <div className="!my-12 grid grid-cols-1 md:flex justify-between items-center gap-4">
         <div className="md:flex gap-4 w-full grid">
-          {!myLoading && my?.data?.role !== 6 && (
-            <>
-              <Button variant="special" asChild>
-                <Link href="trending/my-articles/post">Post an Article</Link>
-              </Button>
-              <Button asChild>
-                <Link href="trending/my-articles">My Articles</Link>
-              </Button>
-            </>
-          )}
+
+          <>
+            <Button variant="special" asChild>
+              <Link href="trending/my-articles/post">Post an Article</Link>
+            </Button>
+            <Button asChild>
+              <Link href="trending/my-articles">My Articles</Link>
+            </Button>
+          </>
+
         </div>
 
         <Select>

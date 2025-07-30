@@ -56,6 +56,12 @@ export default function Threader({ id }: { id: string }) {
     page,
     per_page: perPage,
   });
+
+
+  console.log('data', data);
+  console.log('id', id);
+
+
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   if (isLoading) {
