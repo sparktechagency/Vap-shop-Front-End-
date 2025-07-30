@@ -89,7 +89,7 @@ export interface ThreadDetails {
 
 export default function Page() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError, refetch } =
+  const { data, isLoading, isError, refetch, error } =
     useGetThreadDetailsByIdQuery(id);
   const [createcomment, { isLoading: isCommentLoading }] =
     useCreatecommentMutation();
@@ -120,10 +120,15 @@ export default function Page() {
     return <LoadingScletion />;
   }
 
-  if (isError) {
-    return <div>Error loading thread details</div>;
-  }
+  if (isError && error) {
 
+    if ("status" in error) {
+      const errorData = error.data as { message?: string };
+      return <div>{errorData?.message || "An error occurred"}</div>;
+    } else {
+      return <div>{error.message}</div>;
+    }
+  }
   if (!data) {
     return <div>No thread data found</div>;
   }
@@ -149,8 +154,8 @@ export default function Page() {
                   thread?.user.role === 5
                     ? `/stores/store/${thread?.user.id}`
                     : thread?.user.role === 4
-                    ? `/brands/brand/${thread.user.id}`
-                    : `/profile/${thread?.user.id}`
+                      ? `/brands/brand/${thread.user.id}`
+                      : `/profile/${thread?.user.id}`
                 }
                 className="text-base md:text-xl font-bold hover:text-primary/80"
               >
