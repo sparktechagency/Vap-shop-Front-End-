@@ -40,7 +40,7 @@ const formSchema = z.object({
   product_price: z.string().optional(),
   product_discount: z.string().optional(),
   product_stock: z.string().optional(),
-  brand_name: z.string().min(1, "Brand name is required"),
+  brand_name: z.string().optional(),
   category_id: z.string().min(1, "Please select a category"),
   product_description: z
     .string()
@@ -315,7 +315,7 @@ export default function ProductForm() {
                 name="brand_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Brand Name</FormLabel>
+                    <FormLabel>Brand Name (Optional)</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter brand name" {...field} />
                     </FormControl>
