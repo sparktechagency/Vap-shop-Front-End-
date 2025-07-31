@@ -37,9 +37,10 @@ export default function Featured() {
   const { data: my, isLoading: myLoading } = useGetOwnprofileQuery();
 
   if (isLoading) return <LoadingSkeleton />;
-  if (!data?.data?.data?.length) return <p>No articles found</p>;
 
-  const totalPages = data.data.last_page;
+
+  const totalPages = data?.data?.last_page || 1;
+
   const visiblePages = 5;
 
   // Calculate range of pages to display
@@ -105,23 +106,28 @@ export default function Featured() {
 
       <h2 className="text-3xl">🔥 Featured Articles</h2>
 
-      <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {data?.data?.data.map((article: any) => (
-          <ArticleCard
-            key={article.id}
-            article={{
-              id: article.id,
-              title: article.title,
-              content: article.content,
-              image: article.article_image || "/image/trends.jpg",
-              likeCount: article.like_count,
-              isLiked: article.is_post_liked,
-              role: article.role,
-              createdAt: article.created_at,
-            }}
-          />
-        ))}
-      </div>
+      {data?.data?.data?.length > 0 ? (
+        <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {data?.data?.data?.map((article: any) => (
+            <ArticleCard
+              key={article?.id}
+              article={{
+                id: article?.id,
+                title: article?.title,
+                content: article?.content,
+                image: article?.article_image || "/image/trends.jpg",
+                likeCount: article?.like_count,
+                isLiked: article?.is_post_liked,
+                role: article?.role,
+                createdAt: article?.created_at,
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center my-12 text-gray-500">No articles found.</p>
+      )}
+
 
       {/* Pagination Controls */}
       <div className="mt-8 flex justify-center">
