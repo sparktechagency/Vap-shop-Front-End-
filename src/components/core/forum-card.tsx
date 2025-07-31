@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
-import { EditIcon, MessagesSquareIcon } from "lucide-react";
+import { EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
+import { toast } from "sonner";
 
 interface ForumGroupType {
   id: number;
@@ -35,7 +38,8 @@ export default function ForumCard({
     month: "short",
     day: "numeric",
   });
-
+  const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
+  const [deleteForum] = useDeleteThreadMutation();
   // Determine if the group is new (created within the last 7 days)
   const isNew =
     new Date().getTime() - new Date(data?.created_at).getTime() <
@@ -80,6 +84,29 @@ export default function ForumCard({
               <Link href={`/me/manage-group?id=${data.id}`}>
                 <EditIcon /> Manage Group
               </Link>
+            </Button>
+          </div>
+        )}
+        {!userLoading && String(user.data.role) === "1" && (
+          <div className="h-full flex items-center justify-center pl-6">
+            <Button
+              variant="outline"
+              size={"icon"}
+              onClick={async () => {
+                try {
+                  const call = await deleteForum({ id: user.data.id }).unwrap();
+                  if (!call.ok) {
+                    toast.error(call.message ?? "Failed to delete");
+                  } else {
+                    toast.success(call.message ?? "Successfully deleted Forum");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  toast.error("Something went wrong");
+                }
+              }}
+            >
+              <Trash2Icon className="text-destructive" />
             </Button>
           </div>
         )}
