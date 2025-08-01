@@ -3,10 +3,9 @@
 
 import StoreProdCard from "@/components/core/store-prod-card";
 import LoadingScletion from "@/components/LoadingScletion";
-import ProductCarousel from "@/components/product-carousel";
 import SliderWithSkeleton from "@/components/SliderWithSkeleton";
 import { Button } from "@/components/ui/button";
-import { BrandType, ProductType } from "@/lib/types/product";
+import { BrandType } from "@/lib/types/product";
 import { useGetAllstoreQuery } from "@/redux/features/store/StoreApi";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
@@ -23,7 +22,6 @@ import {
 
 export default function Page() {
   const [page, setPage] = useState(1);
-  const [perPage] = useState(4);
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
 
   console.log("store data ", data);
