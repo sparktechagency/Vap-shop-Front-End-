@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { EyeIcon, HeartIcon, StarIcon } from "lucide-react";
 import Link from "next/link";
@@ -16,15 +17,15 @@ interface StoreProdCardProps {
 
 export default function StoreProdCard({ data, refetch }: StoreProdCardProps) {
   const [fevoritestore, { isLoading }] = useFevoritestoreMutation();
-  console.log('single store', data);
+  console.log("single store", data);
   const handleFavorite = async (id: string) => {
     try {
       const response = await fevoritestore({ favourite_id: id }).unwrap();
-      console.log('response', response);
+      console.log("response", response);
       toast.success(response.message || "Favorite status updated");
       refetch?.(); // Only call refetch if it exists
     } catch (error) {
-      console.error('Favorite error:', error);
+      console.error("Favorite error:", error);
       toast.error("Failed to update favorite status");
     }
   };
@@ -62,7 +63,9 @@ export default function StoreProdCard({ data, refetch }: StoreProdCardProps) {
           size="icon"
           onClick={() => handleFavorite(data.id)}
           disabled={isLoading}
-          aria-label={data.is_favourite ? "Remove from favorites" : "Add to favorites"}
+          aria-label={
+            data.is_favourite ? "Remove from favorites" : "Add to favorites"
+          }
         >
           <HeartIcon
             fill={data.is_favourite ? "#e7000b" : "transparent"}
@@ -101,7 +104,9 @@ export default function StoreProdCard({ data, refetch }: StoreProdCardProps) {
           <StarIcon fill="#ee8500" stroke="none" className="w-4 h-4" />
           <span>{data.rating.value}</span>
           <Link
-            href={`/stores/store/${data.id}?${data?.storeName.toLowerCase()}#reviews`}
+            href={`/stores/store/${
+              data.id
+            }?${data?.storeName.toLowerCase()}#reviews`}
             className="text-primary underline hover:text-primary/80 transition-colors"
           >
             ({data.rating.reviews} Reviews)

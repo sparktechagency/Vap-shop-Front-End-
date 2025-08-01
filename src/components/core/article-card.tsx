@@ -33,7 +33,7 @@ import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import Link from "next/link";
 // import { formatDate } from "@/lib/utils";
-
+import DOMPurify from "dompurify";
 interface ArticleProps {
   id: number;
   title: string;
@@ -109,9 +109,12 @@ export default function ArticleCard({ article }: { article: ArticleProps }) {
         {/* <div className="text-sm text-muted-foreground">
           {formatDate(article.createdAt)} • {article.role}
         </div> */}
-        <CardDescription className="line-clamp-3">
-          {article.content}
-        </CardDescription>
+        <CardDescription
+          className="line-clamp-3"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(article.content),
+          }}
+        />
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6 mt-auto">
         <Link href={`/trending/article/${article.id}`}>
