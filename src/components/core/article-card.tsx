@@ -38,7 +38,7 @@ import Link from "next/link";
 import { useDelteArticalMutation } from "@/redux/features/Trending/TrendingApi";
 import { usePathname } from "next/navigation";
 // import { formatDate } from "@/lib/utils";
-import DOMPurify from "dompurify";
+
 interface ArticleProps {
   id: number;
   title: string;
@@ -158,7 +158,8 @@ export default function ArticleCard({ article, refetch }: { article: ArticleProp
           </Dialog>
         }
 
-
+        <CardDescription
+          className="line-clamp-3"
 
 
           dangerouslySetInnerHTML={{
