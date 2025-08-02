@@ -31,7 +31,7 @@ export default function AdminPolicyPage() {
 
     // 1. Data fetching is now centralized in the main component.
     // The query automatically re-fetches when `activePolicyId` changes.
-    const { data: pageData, error, isLoading, refetch } = useGettermspagesQuery({ type: activePolicyId });
+    const { data: pageData, isLoading, refetch } = useGettermspagesQuery({ type: activePolicyId });
 
     // 2. The mutation hook for saving data.
     const [admintermsConditions, { isLoading: isSaving }] = useAdmintermsConditionsMutation();
@@ -130,17 +130,16 @@ export default function AdminPolicyPage() {
 
                     {isLoading ? (
                         <div style={{ height: '500px' }}><Spinner /></div>
-                    ) : error ? (
-                        <div className="text-red-500 text-center p-4">Failed to load content. Please select another policy or try again.</div>
-                    ) : (
-                        <Editor
-                            value={content}
-                            onTextChange={(e: EditorTextChangeEvent) => setContent(e.htmlValue || '')}
-                            headerTemplate={editorHeader}
-                            style={{ height: '500px' }}
-                            className="border border-gray-300 rounded-md"
-                        />
-                    )}
+                    )
+                        : (
+                            <Editor
+                                value={content}
+                                onTextChange={(e: EditorTextChangeEvent) => setContent(e.htmlValue || '')}
+                                headerTemplate={editorHeader}
+                                style={{ height: '500px' }}
+                                className="border border-gray-300 rounded-md"
+                            />
+                        )}
                 </div>
             </main>
         </div>

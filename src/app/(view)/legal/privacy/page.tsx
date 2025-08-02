@@ -8,16 +8,13 @@ import DOMPurify from 'dompurify'; // 1. Import DOMPurify
 export default function Page() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'privacy-policy'; // Set a default type
-  const { data: pageData, error, isLoading } = useGettermspagesQuery({ type: type });
+  const { data: pageData, isLoading } = useGettermspagesQuery({ type: type });
 
   // 2. Handle loading and error states
   if (isLoading) {
     return <div className="!my-[100px] !px-4 md:!px-[7%]">Loading...</div>;
   }
 
-  if (error || !pageData?.data?.content) {
-    return <div className="!my-[100px] !px-4 md:!px-[7%]">Error: Could not load content.</div>;
-  }
 
   // 3. Sanitize the HTML content from the API response
   const sanitizedContent = DOMPurify.sanitize(pageData.data.content);
