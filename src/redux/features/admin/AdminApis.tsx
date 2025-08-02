@@ -145,6 +145,24 @@ export const adminApis = api.injectEndpoints({
         }),
 
 
+        admintermsConditions: builder.mutation<any, { body: any }>({
+            query: ({ body }) => {
+                console.log("Request body from RTK mutation:", body);
+                return {
+                    url: `/admin/pages/update`,
+                    method: "POST",
+                    body,
+                };
+            },
+            invalidatesTags: ["user"],
+        }),
+
+
+        gettermspages: builder.query<any, { type: string }>({
+            query: ({ type }) => `/admin/pages/${type}`,
+        }),
+
+
 
     }),
 });
@@ -166,6 +184,8 @@ export const {
     useAdminResetPasswrodMutation,
     useNotifyuserMutation,
     useSuspendUserMutation,
-    useUnsuspanduserMutation
+    useUnsuspanduserMutation,
+    useAdmintermsConditionsMutation,
+    useGettermspagesQuery
 
 } = adminApis;

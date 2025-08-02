@@ -16,7 +16,7 @@ import React from "react";
 export default function Groups() {
   const my = useUser();
 
-  const { data, isLoading } = useGetDashboardForumQuery({ id: my.id });
+  const { data, isLoading, refetch } = useGetDashboardForumQuery({ id: my.id });
 
   if (!isLoading) {
     console.log(data);
@@ -48,6 +48,7 @@ export default function Groups() {
         ) : (
           data?.data?.data.map((x: any) => (
             <ForumCard
+              refetch={refetch}
               key={x.id}
               data={x}
               to={`/forum/thread/${x.id}`}

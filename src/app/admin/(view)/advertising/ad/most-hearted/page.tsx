@@ -170,11 +170,14 @@ export default function AdProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const per_page = 8;
 
-  const { data, isLoading, isError, refetch } = useGetallAddRequestQuery({
+  const { data, isLoading, refetch } = useGetallAddRequestQuery({
     page,
     per_page,
     type: "products",
   });
+
+  console.log('data', data);
+
 
   const [approveAdd, { isLoading: isApproving }] = useApproveAddMutation();
 
@@ -224,6 +227,11 @@ export default function AdProductsPage() {
     return matchesSearch && matchesStatus;
   }) || [];
 
+
+  console.log('filteredProducts', filteredProducts);
+
+
+
   if (isLoading) {
     return (
       <div className="h-full w-full flex flex-col justify-start items-baseline p-4 sm:p-12 gap-6">
@@ -255,16 +263,7 @@ export default function AdProductsPage() {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="h-full w-full flex items-center justify-center p-12">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500">Error loading ad products</h2>
-          <p className="text-muted-foreground">Please try again later</p>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="h-full w-full flex flex-col justify-start items-baseline p-4 md:p-12 gap-6">

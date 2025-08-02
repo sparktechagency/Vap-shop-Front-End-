@@ -22,21 +22,24 @@ export default function Footer() {
           ></div>
           <span>Vape Shop Maps</span>
         </div>
-        <p className="text-sm sm:text-base">
-          <span className="font-bold">🚫 For Adults 21+:</span> Access limited
-          to users in jurisdictions where vape-related products are legal.
-        </p>
-        <p className="text-sm sm:text-base">
-          <span className="font-bold">⚠️ No Sales or Payments in App: </span>
-          Vape Shop Maps facilitates information and store discovery only. Any
-          consumer purchases are completed in-store. B2B transactions are
-          managed externally.
-        </p>
-        <p className="text-sm sm:text-base">
-          <span className="font-bold">📚 Built for the Community: </span>
-          Vape Shop Maps connects vape enthusiasts, shops, and businesses —
-          explore, learn, and grow together.
-        </p>
+        <div className="flex flex-col gap-3">
+
+          <p className="text-sm sm:text-base">
+            <span className="font-bold">🚫 For Adults 21+:</span> Access limited
+            to users in jurisdictions where vape-related products are legal.
+          </p>
+          <p className="text-sm sm:text-base">
+            <span className="font-bold">⚠️ No Sales or Payments in App: </span>
+            Vape Shop Maps facilitates information and store discovery only. Any
+            consumer purchases are completed in-store. B2B transactions are
+            managed externally.
+          </p>
+          <p className="text-sm sm:text-base">
+            <span className="font-bold">📚 Built for the Community: </span>
+            Vape Shop Maps connects vape enthusiasts, shops, and businesses —
+            explore, learn, and grow together.
+          </p>
+        </div>
       </div>
 
       {footer_navs.map((nav, index) => (
@@ -48,7 +51,7 @@ export default function Footer() {
             nav.links.map((link, linkIndex) => (
               <Link
                 key={linkIndex}
-                href={link.target}
+                href={`${link.target}?type=${link.type}`}
                 className="text-sm sm:text-sm text-foreground hover:text-foreground hover:underline flex items-center gap-2"
               >
                 {/* {resolvedTheme === "dark" ? link.icon?.light : link.icon?.dark} */}
