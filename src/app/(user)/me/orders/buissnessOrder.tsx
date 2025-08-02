@@ -110,103 +110,115 @@ export default function BuissnessOrder() {
             No order is made yet
           </div>
         ) : (
-          <Table className="!text-xs">
-            <TableCaption>A list of your recent orders.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.data.map((x: OrderType) => (
-                <TableRow key={x.order_id}>
-                  <TableCell className="font-medium"># {x.order_id}</TableCell>
-                  <TableCell>{x.order_date}</TableCell>
-                  <TableCell>{x.customer.name}</TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <Badge
-                      className="capitalize"
-                      variant={
-                        x.status === "pending"
-                          ? "special"
-                          : x.status === "accepted"
-                          ? "success"
-                          : x.status === "partially_accepted"
-                          ? "outline"
-                          : x.status === "delivered"
-                          ? "success"
-                          : x.status === "rejected"
-                          ? "destructive"
-                          : x.status === "cancelled"
-                          ? "destructive"
-                          : "secondary"
-                      }
-                    >
-                      {x.status === "delivered" ? "Completed" : x.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">${x.sub_total}</TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="outline">
-                          <EditIcon />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("accepted", String(x.order_id));
-                          }}
-                        >
-                          Accept
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("rejected", String(x.order_id));
-                          }}
-                        >
-                          Reject
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("delivered", String(x.order_id));
-                          }}
-                        >
-                          Completed
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            statusChange("cancelled", String(x.order_id));
-                          }}
-                          variant="destructive"
-                        >
-                          Cancel
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button
-                      onClick={() => handleViewInvoice(String(x.order_id))}
-                      variant="outline"
-                      size="icon"
-                    >
-                      <EyeIcon />
-                    </Button>
-                    <InvoiceDetail
-                      id={selectedOrderId}
-                      isOpen={isModalOpen}
-                      onClose={() => setIsModalOpen(false)}
-                    />
-                  </TableCell>
+          <>
+            <Table className="!text-xs">
+              <TableCaption>A list of your recent orders.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {data.data.map((x: OrderType) => (
+                  <TableRow key={x.order_id}>
+                    <TableCell className="font-medium">
+                      # {x.order_id}
+                    </TableCell>
+                    <TableCell>{x.order_date}</TableCell>
+                    <TableCell>{x.customer.name}</TableCell>
+                    <TableCell className="flex items-center gap-2">
+                      <Badge
+                        className="capitalize"
+                        variant={
+                          x.status === "pending"
+                            ? "special"
+                            : x.status === "accepted"
+                            ? "success"
+                            : x.status === "partially_accepted"
+                            ? "outline"
+                            : x.status === "delivered"
+                            ? "success"
+                            : x.status === "rejected"
+                            ? "destructive"
+                            : x.status === "cancelled"
+                            ? "destructive"
+                            : "secondary"
+                        }
+                      >
+                        {x.status === "delivered" ? "Completed" : x.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">${x.sub_total}</TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="outline">
+                            <EditIcon />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              statusChange("accepted", String(x.order_id));
+                            }}
+                          >
+                            Accept
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              statusChange("rejected", String(x.order_id));
+                            }}
+                          >
+                            Reject
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              statusChange("delivered", String(x.order_id));
+                            }}
+                          >
+                            Completed
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              statusChange("cancelled", String(x.order_id));
+                            }}
+                            variant="destructive"
+                          >
+                            Cancel
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <Button
+                        onClick={() => handleViewInvoice(String(x.order_id))}
+                        variant="outline"
+                        size="icon"
+                      >
+                        <EyeIcon />
+                      </Button>
+                      <InvoiceDetail
+                        user={x.customer}
+                        id={selectedOrderId}
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                      />
+                    </TableCell>
+                    <TableCell className="hidden">
+                      <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+                        <code className="whitespace-pre-wrap">
+                          {JSON.stringify(x, null, 2)}
+                        </code>
+                      </pre>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
         ))}
     </div>
   );

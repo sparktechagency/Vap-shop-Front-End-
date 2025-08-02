@@ -74,8 +74,8 @@ export const otherApi = api.injectEndpoints({
       invalidatesTags: ["location"],
     }),
     getActiveLocations: builder.query({
-      query: ({ id }) => ({
-        url: `/users/${id}/active-branches`,
+      query: ({ id, page }) => ({
+        url: `/users/${id}/active-branches?per_page=16&page=${page ?? 1}`,
       }),
       providesTags: ["location"],
     }),

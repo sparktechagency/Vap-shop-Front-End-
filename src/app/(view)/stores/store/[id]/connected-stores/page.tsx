@@ -4,16 +4,16 @@ import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
+  ArrowLeftIcon,
   CheckCircle2Icon,
   CircleOffIcon,
   Loader2Icon,
   MapPinIcon,
   MessageSquareMoreIcon,
-  RadioIcon,
   Share2Icon,
 } from "lucide-react";
 import React from "react";
-import TabsTriggerer from "../tabs-trigger";
+
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
@@ -22,12 +22,25 @@ import {
   useFollowBrandMutation,
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
-import OpenStatus from "./open-status";
+import OpenStatus from "../open-status";
+import { useGetActiveLocationsQuery } from "@/redux/features/others/otherApi";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 export default function Page() {
   const { id } = useParams();
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
     id: id as any,
   });
+  const {
+    data: locations,
+    isLoading: locationLoading,
+    isError: locationError,
+  } = useGetActiveLocationsQuery({ id });
   console.log(data?.data);
   const navigation = useRouter();
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
@@ -40,7 +53,7 @@ export default function Page() {
     if (navigator.share) {
       navigator
         .share({
-          title: `Check out ${user?.full_name} on our platform`,
+          title: `Check out ${user?.full_name} on our Vape shop maps`,
           text: `I found this amazing brand ${user?.full_name} that you might like!`,
           url: window.location.href,
         })
@@ -134,16 +147,7 @@ export default function Page() {
               />
             </div>
           </div>
-          <div className="">
-            {/* <p
-              className="text-xs md:text-sm xl:text-base line-clamp-1"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  data?.data?.about?.content || "No Description"
-                ),
-              }}
-            /> */}
-          </div>
+
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
             <div className="text-xs md:text-sm text-muted-foreground">
               <OpenStatus
@@ -167,11 +171,11 @@ export default function Page() {
             <div className="grid grid-cols-1 md:flex gap-8 items-center">
               <div className="text-xs cursor-pointer hover:text-foreground/80">
                 <Link
-                  href={`/stores/store/${data?.data?.id}/connected-stores`}
+                  href={`/stores/store/${data?.data?.id}`}
                   className="flex items-center gap-2 "
                 >
-                  <RadioIcon className="size-4" />
-                  Connected Stores
+                  <ArrowLeftIcon className="size-4" />
+                  Go back
                 </Link>
               </div>
               <div className="text-xs flex items-center gap-1">
@@ -231,7 +235,32 @@ export default function Page() {
           </div>
         </div>
         <div className="w-full">
-          <TabsTriggerer id={id} />
+          <h2 className="w-full border-b text-3xl font-bold">
+            Connected Locations
+          </h2>
+          <div className="grid grid-cols-4 gap-6 mt-6">
+            {!locationLoading &&
+              !locationError &&
+              locations?.data?.data?.map((item: any) => (
+                <Card key={item.id} className="pt-0!">
+                  <CardContent
+                    className="h-64 w-full bg-cover bg-center rounded-t-xl"
+                    style={{ backgroundImage: `url('${item?.owner?.avatar}')` }}
+                  />
+                  <CardHeader>
+                    <CardTitle>{item?.branch_name}</CardTitle>
+                    <CardDescription>{item?.address.address}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+          </div>
+          {/* {!locationLoading && (
+            <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+              <code className="whitespace-pre-wrap">
+                {JSON.stringify(locations.data.data, null, 2)}
+              </code>
+            </pre>
+          )} */}
         </div>
       </main>
     </>

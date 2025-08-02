@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetOrderQuery } from "@/redux/features/users/userApi";
 import {
   Dialog,
@@ -18,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Package, Receipt } from "lucide-react";
+import Image from "next/image";
 
 interface OrderItem {
   product_id: number;
@@ -25,15 +27,20 @@ interface OrderItem {
   quantity: number;
   price_at_order: string;
   line_total: number;
+  product_image: {
+    product_image: string;
+  };
 }
 
 interface InvoiceDetailProps {
   id: string;
   isOpen: boolean;
   onClose: () => void;
+  user: any;
 }
 
 export default function InvoiceDetail({
+  user,
   id,
   isOpen,
   onClose,
@@ -63,16 +70,41 @@ export default function InvoiceDetail({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="min-w-[90dvw] lg:min-w-[60dvw] max-h-[80vh] p-0">
+      <DialogContent className="min-w-[90dvw] lg:min-w-[60dvw] max-h-[80vh] p-0 overflow-y-auto">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Receipt className="h-5 w-5" />
             Invoice Details - Order #{id}
           </DialogTitle>
         </DialogHeader>
-
         <div className="px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <Card className="col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  User Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-2">
+                <div className="grid grid-cols-2 gap-6 text-sm border-b pb-2">
+                  <span className="font-bold">Name:</span>
+                  <span className="">{user.name}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-6 text-sm border-b pb-2">
+                  <span className="font-bold">Email:</span>
+                  <span className="">{user.email}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-6 text-sm border-b pb-2">
+                  <span className="font-bold">Date of birth:</span>
+                  <span className="">{user?.dob ?? ""}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-6 text-sm border-b pb-2">
+                  <span className="font-bold">Address:</span>
+                  <span className="">{JSON.stringify(user.address)}</span>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -119,6 +151,18 @@ export default function InvoiceDetail({
                       {index + 1}
                     </TableCell>
                     <TableCell>
+                      <div className="">
+                        <Image
+                          src={
+                            item.product_image.product_image ??
+                            "/image/shop/item.jpg"
+                          }
+                          className="size-18 object-cover rounded-lg"
+                          height={100}
+                          width={100}
+                          alt="icon"
+                        />
+                      </div>
                       <div className="flex flex-col">
                         <span className="font-medium">{item.product_name}</span>
                         <span className="text-sm text-muted-foreground">
@@ -136,6 +180,13 @@ export default function InvoiceDetail({
                     </TableCell>
                     <TableCell className="text-right font-mono font-medium">
                       ${item.line_total.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="hidden">
+                      <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+                        <code className="whitespace-pre-wrap">
+                          {JSON.stringify(item, null, 2)}
+                        </code>
+                      </pre>
                     </TableCell>
                   </TableRow>
                 ))}
