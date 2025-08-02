@@ -19,6 +19,7 @@ export default function Featured() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [createApost, { isLoading }] = useCreateApostMutation();
+  console.log('content', content);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -38,7 +39,7 @@ export default function Featured() {
 
   const formData = new FormData();
   formData.append("title", title);
-  formData.append("content", plainTextContent); // Using plain text instead of HTML
+  formData.append("content", content); // Using plain text instead of HTML
   formData.append("article_image", image || "");
 
   const handleSubmit = async () => {

@@ -1,11 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
+
+import { Delete, EditIcon, MessagesSquareIcon } from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "../ui/button";
+import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
+
 import { EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
+
 import { toast } from "sonner";
 
 interface ForumGroupType {
@@ -25,9 +33,11 @@ interface ForumCardProps {
   data: ForumGroupType;
   to?: string;
   editable?: boolean;
+  refetch?: () => void
 }
 
 export default function ForumCard({
+  refetch,
   data,
   to,
   editable,
@@ -38,12 +48,36 @@ export default function ForumCard({
     month: "short",
     day: "numeric",
   });
+
+
+  const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
+
   const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
   const [deleteForum] = useDeleteThreadMutation();
+
   // Determine if the group is new (created within the last 7 days)
   const isNew =
     new Date().getTime() - new Date(data?.created_at).getTime() <
     7 * 24 * 60 * 60 * 1000;
+
+
+
+  const handleDeleteGroup = async (id: any) => {
+    const confirmed = window.confirm("Are you sure you want to delete this group?");
+    if (!confirmed) return;
+
+    console.log('delete', id);
+    try {
+      const res = await deleteGroup({ id }).unwrap();
+      console.log('res', res);
+      toast.success("Group deleted successfully");
+      refetch();
+    } catch (error) {
+      console.error("Failed to delete group:", error);
+      toast.error("Failed to delete group");
+    }
+  };
+
 
   return (
     <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary/80 lg:rounded-xl lg:hover:border dark:hover:bg-background/30 lg:hover:scale-[102%] transition-all">
@@ -79,11 +113,16 @@ export default function ForumCard({
           </div>
         </Link>
         {editable && (
-          <div className="h-full flex items-center justify-center pl-6">
+          <div className="h-full flex items-center justify-center gap-2 pl-6">
             <Button variant="outline" asChild>
               <Link href={`/me/manage-group?id=${data.id}`}>
                 <EditIcon /> Manage Group
               </Link>
+            </Button>
+            <Button onClick={() => handleDeleteGroup(data.id)} variant="destructive" asChild>
+
+              <p>Delete</p>
+
             </Button>
           </div>
         )}

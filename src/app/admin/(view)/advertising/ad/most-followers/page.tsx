@@ -45,7 +45,7 @@ export default function AdProductsPage() {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const per_page = 8;
 
-  const { data, isLoading, isError, refetch } = useGetallAddRequestQuery({
+  const { data, isLoading, refetch } = useGetallAddRequestQuery({
     page,
     per_page,
     type: "followers",
@@ -147,16 +147,6 @@ export default function AdProductsPage() {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="h-full w-full flex items-center justify-center p-12">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500">Error loading follower ads</h2>
-          <p className="text-muted-foreground">Please try again later</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-full w-full flex flex-col justify-start items-baseline !p-12 gap-6">

@@ -9,6 +9,7 @@ interface FooterNav {
 interface FooterLink {
   label: string;
   target: string;
+  type?: string
   // icon?: { light: JSX.Element; dark: JSX.Element };
 }
 
@@ -25,21 +26,23 @@ export const footer_navs: FooterNav[] = [
       { label: "Featured", target: "/trending" },
     ],
   },
+  // privacy-policy,terms-of-service,vape-&-age-restriction-policy,brand,content-&-review-moderation-policy,dmca-copyright,community-guidelines,acceptance-of-terms
+
   {
     title: "Legal & Policies",
     links: [
-      { label: "Privacy Policy", target: "/legal/privacy" },
-      { label: "Terms of Service", target: "/legal/terms" },
-      { label: "Vape & Age Restriction Policy", target: "/legal/vape-age" },
+      { label: "Privacy Policy", target: "/legal/privacy", type: 'privacy-policy' },
+      { label: "Terms of Service", target: "/legal/privacy", type: 'terms-of-service' },
+      { label: "Vape & Age Restriction Policy", target: "/legal/privacy", type: 'vape-&-age-restriction-policy' },
       // { label: "Refund & Subscription Cancellation Policy", target: "/legal/refund-cancel" },
-      { label: "Liability & Store/Brand", target: "/legal/liability" },
+      { label: "Liability & Store/Brand", target: "/legal/privacy", type: 'brand' },
       {
         label: "Content & Review Moderation Policy",
-        target: "/legal/moderation",
+        target: "/legal/privacy", type: 'content-&-review-moderation-policy'
       },
-      { label: "DMCA Copyright", target: "/legal/dmca" },
-      { label: "Community Guidelines", target: "/legal/guidelines" },
-      { label: "Acceptance of Terms", target: "/legal/acceptance" },
+      { label: "DMCA Copyright", target: "/legal/privacy", type: 'dmca-copyright' },
+      { label: "Community Guidelines", target: "/legal/privacy", type: 'community-guidelines' },
+      { label: "Acceptance of Terms", target: "/legal/privacy", type: 'acceptance-of-terms' },
     ],
   },
 ];
