@@ -2,7 +2,6 @@
 import ForumCard from "@/components/core/forum-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { group } from "console";
 import Link from "next/link";
 import React from "react";
 
@@ -10,9 +9,11 @@ interface ForumGroup {
   id: number;
   title: string;
   description: string;
+  type: string;
   user_id: number;
   created_at: string;
   updated_at: string;
+  threads_count: number;
   total_threads: number;
   total_comments: number;
 }
@@ -21,11 +22,10 @@ interface VapeTalkProps {
   forumGroups?: ForumGroup[];
 }
 
-export default function VapeTalk({ forumGroups }: VapeTalkProps) {
-  console.log("forumGroups", forumGroups);
-  if (!forumGroups || forumGroups.length === 0) {
+export default function VapeTalk({ forumGroups = [] }: VapeTalkProps) {
+  if (!forumGroups || !Array.isArray(forumGroups) || forumGroups.length === 0) {
     return (
-      <div className="!py-12">
+      <div className="!py-12 w-full">
         <Card className="gap-0">
           <div className="w-full flex justify-center items-center p-8">
             <p>No forum groups available</p>
@@ -43,42 +43,30 @@ export default function VapeTalk({ forumGroups }: VapeTalkProps) {
         </Button>
       </div>
       <Card className="gap-0">
-        {forumGroups?.map((group) => (
-          <ForumCard
-            key={group.id}
-            data={{
-              id: group.id,
-              title: group.title,
-              description: group.description,
-              user_id: group.user_id,
-              created_at: group.created_at,
-              updated_at: group.updated_at,
-              threads_count: group.total_threads,
-              total_threads: group.total_threads,
-              total_comments: group.total_comments,
-              date: group.created_at,
-            }}
-            to={`/forum/thread/${group.id}`}
-          />
-        ))}
+        {forumGroups.map((group) => {
+          if (!group || typeof group !== 'object') return null;
+
+          return (
+            <ForumCard
+              key={group.id}
+              data={{
+                id: group.id,
+                title: group.title || 'Untitled',
+                description: group.description || '',
+                type: group.type || 'public',
+                user_id: group.user_id || 0,
+                created_at: group.created_at || new Date().toISOString(),
+                updated_at: group.updated_at || new Date().toISOString(),
+                threads_count: group.threads_count || 0,
+                total_threads: group.total_threads || 0,
+                total_comments: group.total_comments || 0,
+                date: group.created_at || new Date().toISOString(),
+              }}
+              to={`/forum/thread/${group.id}`}
+            />
+          );
+        })}
       </Card>
     </div>
   );
-}
-
-function isNewGroup(createdAt: string): boolean {
-  const createdDate = new Date(createdAt);
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - createdDate.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays <= 7;
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 }

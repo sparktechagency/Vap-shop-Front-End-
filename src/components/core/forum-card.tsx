@@ -1,38 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
-
-import { Delete, EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
 import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
-
-
-
-
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
-import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
-
 import { toast } from "sonner";
 
 interface ForumGroupType {
-  id: number;
-  title: string;
-  description: string;
-  user_id: number | string;
-  created_at: string;
-  updated_at: string;
-  threads_count: number | string;
-  total_threads: number | string;
-  total_comments: number | string;
-  date: string | null;
+  id?: number;
+  title?: string;
+  description?: string;
+  user_id?: number | string;
+  type?: string;
+  created_at?: string;
+  updated_at?: string;
+  threads_count?: number | string;
+  total_threads?: number | string;
+  total_comments?: number | string;
+  date?: string | null;
 }
 
 interface ForumCardProps {
-  data: ForumGroupType;
+  data?: ForumGroupType;
   to?: string;
   editable?: boolean;
-  refetch?: () => void
+  refetch?: () => void;
 }
 
 export default function ForumCard({
@@ -40,43 +33,47 @@ export default function ForumCard({
   data,
   to,
   editable,
-}: ForumCardProps | any) {
-  // Format the date to be more readable
-  const formattedDate = new Date(data?.created_at).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+}: ForumCardProps) {
+  // Safely access data with fallbacks
+  const safeData = data || {};
 
+  // Format the date with fallback
+  const formattedDate = safeData.created_at
+    ? new Date(safeData.created_at).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+    : "Unknown date";
 
   const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
-
   const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
-  const [deleteForum] = useDeleteThreadMutation();
 
   // Determine if the group is new (created within the last 7 days)
-  const isNew =
-    new Date().getTime() - new Date(data?.created_at).getTime() <
-    7 * 24 * 60 * 60 * 1000;
+  const isNew = safeData.created_at
+    ? new Date().getTime() - new Date(safeData.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+    : false;
 
+  const handleDeleteGroup = async (id?: number) => {
+    if (!id) return;
 
-
-  const handleDeleteGroup = async (id: any) => {
     const confirmed = window.confirm("Are you sure you want to delete this group?");
     if (!confirmed) return;
 
-    console.log('delete', id);
     try {
-      const res = await deleteGroup({ id }).unwrap();
-      console.log('res', res);
+      await deleteGroup({ id }).unwrap();
       toast.success("Group deleted successfully");
-      refetch();
+      refetch?.();
     } catch (error) {
       console.error("Failed to delete group:", error);
       toast.error("Failed to delete group");
     }
   };
 
+  // Loading state if data is not available yet
+  if (!safeData.id) {
+    return <ForumCardSkeleton />;
+  }
 
   return (
     <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary/80 lg:rounded-xl lg:hover:border dark:hover:bg-background/30 lg:hover:scale-[102%] transition-all">
@@ -85,25 +82,25 @@ export default function ForumCard({
           <MessagesSquareIcon className="size-6 sm:size-8 md:size-10 text-muted-foreground" />
         </div>
         <Link
-          href={to ? to : `/forum/thread/${data?.id}`}
-          className="w-full h-full  mb-0! p-0!"
+          href={to || `/forum/thread/${safeData.id}`}
+          className="w-full h-full mb-0! p-0!"
         >
           <div className="flex flex-col justify-between !py-0 md:!py-1 w-full">
             <div className="flex flex-col lg:flex-row gap-1 md:gap-3 items-start lg:items-center">
               <h2 className="text-xs md:text-sm lg:text-xl line-clamp-2 lg:line-clamp-1">
-                {data?.title}
+                {safeData.title || "Untitled Forum"}
               </h2>
               {isNew && (
                 <Badge className="text-xs whitespace-nowrap">New!</Badge>
               )}
             </div>
             <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-              {data?.description}
+              {safeData.description || "No description available"}
             </p>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-1 sm:mt-0">
               <div className="text-xs md:text-sm text-muted-foreground flex gap-4">
-                <p>{data?.total_threads} Threads</p>
-                <p>{data?.total_comments} Comments</p>
+                <p>{safeData.total_threads || 0} Threads</p>
+                <p>{safeData.total_comments || 0} Comments</p>
               </div>
               <div className="text-muted-foreground text-xs md:text-sm mt-1 sm:mt-0">
                 Created: {formattedDate}
@@ -114,37 +111,28 @@ export default function ForumCard({
         {editable && (
           <div className="h-full flex items-center justify-center gap-2 pl-6">
             <Button variant="outline" asChild>
-              <Link href={`/me/manage-group?id=${data.id}`}>
-                <EditIcon /> Manage Group
+              <Link href={`/me/manage-group?id=${safeData.id}`}>
+                <EditIcon className="mr-2" /> Manage Group
               </Link>
             </Button>
-            <Button onClick={() => handleDeleteGroup(data.id)} variant="destructive" asChild>
-
-              <p>Delete</p>
-
+            <Button
+              onClick={() => handleDeleteGroup(safeData.id)}
+              variant="destructive"
+              disabled={isLoading}
+            >
+              Delete
             </Button>
           </div>
         )}
-        {!userLoading && String(user.data.role) === "1" && (
+        {!userLoading && user?.data?.role === "1" && (
           <div className="h-full flex items-center justify-center pl-6">
             <Button
-              variant="outline"
-              size={"icon"}
-              onClick={async () => {
-                try {
-                  const call = await deleteForum({ id: user.data.id }).unwrap();
-                  if (!call.ok) {
-                    toast.error(call.message ?? "Failed to delete");
-                  } else {
-                    toast.success(call.message ?? "Successfully deleted Forum");
-                  }
-                } catch (error) {
-                  console.error(error);
-                  toast.error("Something went wrong");
-                }
-              }}
+              onClick={() => handleDeleteGroup(safeData.id)}
+              variant="destructive"
+              size="icon"
+              disabled={isLoading}
             >
-              <Trash2Icon className="text-destructive" />
+              <Trash2Icon />
             </Button>
           </div>
         )}
