@@ -75,36 +75,33 @@ export default function ProductForm({ prod }: { prod: any }) {
     },
   });
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "faqs",
   });
 
   useEffect(() => {
     if (!prod || !cats?.data) return;
+    console.log(prod.product_discount);
+    console.log(prod.product_discount === "0.00%");
 
-    form.setValue("product_name", String(prod.product_name || ""));
-    form.setValue("product_price", String(prod.product_price || ""));
-    form.setValue("product_discount", String(prod.product_discount || ""));
-    form.setValue("product_stock", String(prod.product_stock || ""));
-    form.setValue(
-      "product_description",
-      String(prod.product_description || "")
-    );
-    form.setValue("brand_name", String(prod.brand_name || ""));
-    form.setValue("category_id", String(prod.category_id || ""));
-    form.setValue("thc_percentage", String(prod.thc_percentage || ""));
-
-    setImageurl(prod.product_image);
-
-    replace(
-      prod.product_faqs?.length > 0
-        ? prod.product_faqs.map((f: any) => ({
-            question: String(f.question || ""),
-            answer: String(f.answer || ""),
-          }))
-        : []
-    );
+    form.reset({
+      product_name: String(prod.product_name ?? ""),
+      product_price: String(prod.product_price ?? ""),
+      product_discount: String(
+        prod.product_discount === "0.00%" ? "0" : prod.product_discount ?? "0"
+      ),
+      product_stock: String(prod.product_stock ?? ""),
+      brand_name: String(prod.brand_name ?? ""),
+      category_id: String(prod.category_id ?? ""),
+      product_description: String(prod.product_description ?? ""),
+      thc_percentage: String(prod.thc_percentage ?? ""),
+      faqs:
+        prod.product_faqs?.map((f: any) => ({
+          question: String(f.question ?? ""),
+          answer: String(f.answer ?? ""),
+        })) || [],
+    });
   }, [prod, cats]);
 
   const { getRootProps, getInputProps } = useDropzone({
