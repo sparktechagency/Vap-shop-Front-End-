@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import CommentCard from "@/components/core/comment-card";
 import GoBack from "@/components/core/internal/go-back";
 import LoadingScletion from "@/components/LoadingScletion";
@@ -20,7 +21,6 @@ import {
   useLikeThreadMutation,
 } from "@/redux/features/Forum/ForumApi";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
 import { toast } from "sonner";
 import SafeHtml from "./safeHtml";
 import Link from "next/link";
@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dialog";
 import PostUpdate from "./update-post";
 
+// --- Interface Definitions ---
 interface User {
   id: number;
   first_name: string;
@@ -59,7 +60,7 @@ interface Group {
 
 interface Comment {
   id: number;
-  comment: string; // Changed from 'body' to match your data
+  comment: string;
   user_id: number;
   thread_id: number;
   parent_id: number | null;
@@ -89,24 +90,31 @@ export interface ThreadDetails {
 
 export default function Page() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
+  // --- State and Data Fetching ---
+  const [comment, setComment] = React.useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   const { data, isLoading, isError, refetch, error } =
     useGetThreadDetailsByIdQuery(id);
+  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
+
   const [createcomment, { isLoading: isCommentLoading }] =
     useCreatecommentMutation();
   const [threadUpvote] = useLikeThreadMutation();
-  const [comment, setComment] = React.useState("");
-  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
-  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [deleteThread] = useDeleteThreadMutation();
-  const navig = useRouter();
+
+  // --- Event Handlers ---
   const handleComment = async () => {
     if (!comment) return;
     try {
       const res = await createcomment({
         thread_id: Number(id),
         comment,
-      });
-      if (res?.data?.ok) {
+      }).unwrap();
+
+      if (res?.ok) {
         toast.success("Comment created successfully");
         setComment("");
         refetch();
@@ -116,29 +124,68 @@ export default function Page() {
       toast.error("Failed to create comment");
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      const res = await deleteThread({ id: thread.id }).unwrap();
+      if (!res.ok) {
+        toast.error(res.message);
+      } else {
+        toast.success(res.message);
+        router.push("/forum");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while deleting the thread.");
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      const res = await threadUpvote({ id: thread.id }).unwrap();
+      if (!res.ok) {
+        toast.error(res.message);
+      } else {
+        toast.success(res.message);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while liking the thread.");
+    }
+  };
+
+  // --- Render States ---
   if (isLoading) {
     return <LoadingScletion />;
   }
 
   if (isError && error) {
-
     if ("status" in error) {
       const errorData = error.data as { message?: string };
       return <div>{errorData?.message || "An error occurred"}</div>;
     } else {
-      return <div>{error.message}</div>;
+      return <div>{error.message || "An unknown error occurred"}</div>;
     }
   }
-  if (!data) {
-    return <div>No thread data found</div>;
+
+  // FIX: Added a more robust check for nested data to prevent crashes.
+  if (!data?.data) {
+    return <div>No thread data found. It might have been deleted.</div>;
   }
 
-  const thread = data?.data as ThreadDetails;
+  const thread = data.data as ThreadDetails;
 
-  console.log("thread", thread);
+
+
+
+  // FIX: Safely check if the current user's data exists and matches the thread author.
+  const isOwner = !meLoading && me?.data?.user?.role === thread.user.role;
+
   return (
     <main className="!my-12 !px-4 lg:!px-[7%] !space-y-12">
       <GoBack />
+
+      {/* --- Author Information Card --- */}
       <Card className="flex flex-row justify-between items-center">
         <CardHeader className="flex flex-row justify-between w-full h-full">
           <div className="flex flex-row gap-4 h-full items-center">
@@ -179,12 +226,14 @@ export default function Page() {
           </div>
         </CardHeader>
       </Card>
+
+      {/* --- Thread Content Card --- */}
       <Card>
         <CardHeader className="border-b">
           <CardTitle className="flex items-center justify-between">
             <h2 className="text-lg font-bold">{thread.title}</h2>
             <div className="flex items-center gap-2">
-              {!meLoading && thread.user.id === me.data.id && (
+              {isOwner && (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="secondary">Edit thread</Button>
@@ -204,30 +253,8 @@ export default function Page() {
                   </DialogContent>
                 </Dialog>
               )}
-
-              {!meLoading && thread.user.id === me.data.id && (
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={async () => {
-                    try {
-                      const res = await deleteThread({
-                        id: thread.id,
-                      }).unwrap();
-                      console.log(res);
-
-                      if (!res.ok) {
-                        toast.error(res.message);
-                      } else {
-                        toast.success(res.message);
-                        navig.push("/forum");
-                      }
-                    } catch (error) {
-                      console.error(error);
-                      toast.error("Something went wrong");
-                    }
-                  }}
-                >
+              {isOwner && (
+                <Button size="icon" variant="outline" onClick={handleDelete}>
                   <Trash2Icon className="text-destructive" />
                 </Button>
               )}
@@ -239,27 +266,12 @@ export default function Page() {
         </CardContent>
         <CardFooter className="border-t flex items-center">
           <div className="mt-2! text-sm text-muted-foreground flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={async () => {
-                try {
-                  const res = await threadUpvote({ id: thread.id }).unwrap();
-                  if (!res.ok) {
-                    toast.error(res.message);
-                    return;
-                  } else {
-                    toast.success(res.message);
-                  }
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-            >
+            <Button variant="outline" onClick={handleLike}>
               <ArrowBigUpIcon
-                fill={thread.is_liked ? "#191919" : "#ffffff"}
-                stroke={thread.is_liked ? "#191919" : "#000000"}
-              />{" "}
-              {thread.total_likes}
+                fill={thread.is_liked ? "#191919" : "none"}
+                className={thread.is_liked ? "text-white" : "text-black"}
+              />
+              <span className="ml-2">{thread.total_likes}</span>
             </Button>
             {thread.views} view{thread.views !== 1 ? "s" : ""} •{" "}
             {thread.total_replies} comment
@@ -267,6 +279,8 @@ export default function Page() {
           </div>
         </CardFooter>
       </Card>
+
+      {/* --- Group Info Card --- */}
       <Card>
         <CardContent>
           <h3 className="text-md font-semibold mb-2">
@@ -280,18 +294,22 @@ export default function Page() {
           </div>
         </CardContent>
       </Card>
+
+      {/* --- New Comment Input --- */}
       <div className="flex flex-row gap-4">
         <Input
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           type="text"
-          placeholder="what's on your mind??"
+          placeholder="What's on your mind?"
           className="text-xs sm:text-sm lg:text-base"
         />
-        <Button onClick={handleComment}>
-          {isCommentLoading ? "Loading..." : "Comment"}
+        <Button onClick={handleComment} disabled={isCommentLoading}>
+          {isCommentLoading ? "Posting..." : "Comment"}
         </Button>
       </div>
+
+      {/* --- Comments Section --- */}
       <Card>
         <CardContent className="!space-y-4">
           {thread.comments?.length > 0 ? (
