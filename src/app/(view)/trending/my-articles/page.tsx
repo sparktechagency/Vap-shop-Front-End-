@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 export default function MyArticles() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading, isError, error } = useMyarticalQuery({
+  const { data, isLoading, isError, error, refetch } = useMyarticalQuery({
     page: currentPage.toString(),
     per_page: "10",
   });
@@ -71,6 +71,7 @@ export default function MyArticles() {
         <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data.data.data.map((article: any) => (
             <ArticleCard
+              refetch={refetch}
               key={article.id}
               article={{
                 id: article.id,

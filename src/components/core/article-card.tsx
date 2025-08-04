@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
+import DOMPurify from "dompurify";
 import {
   Card,
   CardContent,
@@ -32,8 +34,10 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useDelteArticalMutation } from "@/redux/features/Trending/TrendingApi";
+import { usePathname } from "next/navigation";
 // import { formatDate } from "@/lib/utils";
-import DOMPurify from "dompurify";
+
 interface ArticleProps {
   id: number;
   title: string;
@@ -44,8 +48,19 @@ interface ArticleProps {
   role: string;
   createdAt: string;
 }
+export default function ArticleCard({
+  article,
+  refetch,
+}: {
+  article: ArticleProps;
+  refetch?: any;
+}) {
+  const pathname = usePathname();
+  console.log("pathnanme", pathname);
+  const isMyarticalPage = pathname.includes("my-articles");
 
-export default function ArticleCard({ article }: { article: ArticleProps }) {
+  console.log("articleFrom article card", article);
+  const [delteArtical] = useDelteArticalMutation();
   const [copied, setCopied] = useState(false);
   const articleUrl = `${window.location.origin}/trending/article/${article.id}`;
 
@@ -91,12 +106,30 @@ export default function ArticleCard({ article }: { article: ArticleProps }) {
     },
   ];
 
+  const handleDelete = async (articleId: any) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this article?"
+    );
+    if (!confirmed) return;
+
+    console.log("article id", articleId);
+    try {
+      const response = await delteArtical({ id: articleId }).unwrap();
+      console.log("response", response);
+      toast.success("Article deleted successfully");
+      refetch();
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      toast.error("Failed to delete article");
+    }
+  };
+
   const handleShare = (url: string) => {
     window.open(url, "_blank", "width=600,height=400");
   };
-
+  const sanitizedContent = DOMPurify.sanitize(article.content);
   return (
-    <Card className="!pt-0 overflow-hidden h-full flex flex-col">
+    <Card className="!pt-0 overflow-hidden h-full flex flex-col relative">
       <Image
         src={article.image}
         height={500}
@@ -109,6 +142,23 @@ export default function ArticleCard({ article }: { article: ArticleProps }) {
         {/* <div className="text-sm text-muted-foreground">
           {formatDate(article.createdAt)} • {article.role}
         </div> */}
+        <CardDescription
+          className="line-clamp-3"
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+        />
+        {isMyarticalPage && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                onClick={() => handleDelete(article.id)}
+                className="absolute top-4 right-4 bg-[#FF0000] text-white px-2 py-1 rounded cursor-pointer"
+              >
+                <p>Delete</p>
+              </button>
+            </DialogTrigger>
+          </Dialog>
+        )}
+
         <CardDescription
           className="line-clamp-3"
           dangerouslySetInnerHTML={{
