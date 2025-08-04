@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { toast } from "sonner";
-
+import Cookies from "js-cookie";
 // Interface for the forum group data structure
 interface ForumGroupType {
   id?: number;
@@ -51,6 +51,8 @@ export default function ForumCard({
   // Redux hooks for deleting a group and fetching user profile
   const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
+  const token = Cookies.get("token");
+  console.log('user', user?.data?.role);
 
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at
@@ -153,7 +155,7 @@ export default function ForumCard({
         )}
 
         {/* Delete control for admin */}
-        {!userLoading && user?.data?.role === "1" && (
+        {token && user?.data?.role === 1 && (
           <div className="h-full flex items-center justify-center pl-6">
             <Button
               onClick={() => handleDeleteGroup(safeData.id)}

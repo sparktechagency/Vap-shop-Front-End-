@@ -175,8 +175,11 @@ export default function Page() {
 
   const thread = data.data as ThreadDetails;
 
+
+
+
   // FIX: Safely check if the current user's data exists and matches the thread author.
-  const isOwner = !meLoading && me?.data && thread.user.id === me.data.id;
+  const isOwner = !meLoading && me?.data?.user?.role === thread.user.role;
 
   return (
     <main className="!my-12 !px-4 lg:!px-[7%] !space-y-12">

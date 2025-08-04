@@ -20,9 +20,10 @@ interface ForumGroup {
 
 interface VapeTalkProps {
   forumGroups?: ForumGroup[];
+  refetch?: () => void;
 }
 
-export default function VapeTalk({ forumGroups = [] }: VapeTalkProps) {
+export default function VapeTalk({ forumGroups = [], refetch }: VapeTalkProps) {
   if (!forumGroups || !Array.isArray(forumGroups) || forumGroups.length === 0) {
     return (
       <div className="!py-12 w-full">
@@ -48,6 +49,7 @@ export default function VapeTalk({ forumGroups = [] }: VapeTalkProps) {
 
           return (
             <ForumCard
+              refetch={refetch}
               key={group.id}
               data={{
                 id: group.id,
