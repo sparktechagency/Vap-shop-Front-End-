@@ -7,6 +7,7 @@ import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { toast } from "sonner";
 
+// Interface for the forum group data structure
 interface ForumGroupType {
   id?: number;
   title?: string;
@@ -21,6 +22,7 @@ interface ForumGroupType {
   date?: string | null;
 }
 
+// Interface for the component's props
 interface ForumCardProps {
   data?: ForumGroupType;
   to?: string;
@@ -34,10 +36,10 @@ export default function ForumCard({
   to,
   editable,
 }: ForumCardProps) {
-  // Safely access data with fallbacks
+  // Safely access data with a fallback to an empty object to prevent errors
   const safeData = data || {};
 
-  // Format the date with fallback
+  // Format the creation date for display, with a fallback for missing dates
   const formattedDate = safeData.created_at
     ? new Date(safeData.created_at).toLocaleDateString("en-US", {
       year: "numeric",
@@ -46,18 +48,41 @@ export default function ForumCard({
     })
     : "Unknown date";
 
+  // Redux hooks for deleting a group and fetching user profile
   const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
 
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at
-    ? new Date().getTime() - new Date(safeData.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+    ? new Date().getTime() - new Date(safeData.created_at).getTime() <
+    7 * 24 * 60 * 60 * 1000
     : false;
 
+  // --- START: URL Construction Logic ---
+  // 1. Define the base URL. Use the 'to' prop if it exists, otherwise use the default path.
+  const baseUrl = to || `/forum/thread/${safeData.id}`;
+
+  // 2. Serialize the data object and encode it to be URL-safe.
+  // This prevents errors from special characters like '{', '}', '"', etc.
+  const serializedData = encodeURIComponent(JSON.stringify(safeData));
+
+  // 3. Determine the correct separator. If the baseUrl already has a query string,
+  // use '&' to append the new parameter. Otherwise, use '?'.
+  const separator = baseUrl.includes('?') ? '&' : '?';
+
+  // 4. Construct the final, complete URL.
+  const finalUrl = `${baseUrl}${separator}data=${serializedData}`;
+  // --- END: URL Construction Logic ---
+
+
+  // Function to handle the deletion of a group
   const handleDeleteGroup = async (id?: number) => {
     if (!id) return;
 
-    const confirmed = window.confirm("Are you sure you want to delete this group?");
+    // Use a custom modal/toast for confirmation instead of window.confirm in real apps
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this group?"
+    );
     if (!confirmed) return;
 
     try {
@@ -70,7 +95,7 @@ export default function ForumCard({
     }
   };
 
-  // Loading state if data is not available yet
+  // Display a loading skeleton if the data is not yet available
   if (!safeData.id) {
     return <ForumCardSkeleton />;
   }
@@ -78,13 +103,13 @@ export default function ForumCard({
   return (
     <div className="w-full flex flex-row justify-between items-center !py-2 lg:!py-6 cursor-pointer hover:bg-secondary/80 lg:rounded-xl lg:hover:border dark:hover:bg-background/30 lg:hover:scale-[102%] transition-all">
       <div className="min-h-[5rem] h-full !px-3 sm:!px-6 flex gap-2 sm:gap-4 w-full">
+        {/* Icon */}
         <div className="h-12 w-12 sm:h-16 sm:w-16 md:h-full md:aspect-square border rounded-xl bg-secondary flex justify-center items-center shrink-0">
           <MessagesSquareIcon className="size-6 sm:size-8 md:size-10 text-muted-foreground" />
         </div>
-        <Link
-          href={to || `/forum/thread/${safeData.id}`}
-          className="w-full h-full mb-0! p-0!"
-        >
+
+        {/* Use the final, correctly constructed URL in the Link component */}
+        <Link href={finalUrl} className="w-full h-full mb-0! p-0!">
           <div className="flex flex-col justify-between !py-0 md:!py-1 w-full">
             <div className="flex flex-col lg:flex-row gap-1 md:gap-3 items-start lg:items-center">
               <h2 className="text-xs md:text-sm lg:text-xl line-clamp-2 lg:line-clamp-1">
@@ -108,6 +133,8 @@ export default function ForumCard({
             </div>
           </div>
         </Link>
+
+        {/* Editable controls for group owner */}
         {editable && (
           <div className="h-full flex items-center justify-center gap-2 pl-6">
             <Button variant="outline" asChild>
@@ -124,6 +151,8 @@ export default function ForumCard({
             </Button>
           </div>
         )}
+
+        {/* Delete control for admin */}
         {!userLoading && user?.data?.role === "1" && (
           <div className="h-full flex items-center justify-center pl-6">
             <Button
