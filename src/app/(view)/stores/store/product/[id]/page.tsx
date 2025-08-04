@@ -184,7 +184,7 @@ export default function Page() {
     : `/brands/brand/${product?.data?.user?.id}`;
 
   const formatPrice = () => {
-    if (!product?.data?.product_price) return "Price not available";
+    if (!product?.data?.product_price) return "Contact for pricing";
     const price = parseFloat(product.data.product_price);
     return `$${price.toFixed(2)}`;
   };
@@ -330,11 +330,14 @@ export default function Page() {
 
           <div className="flex items-center justify-end mt-4">
             <ProductPrice
-              currentPrice={parseFloat(product?.data?.product_price || "0")}
+              currentPrice={
+                parseFloat(product?.data?.product_price || "0.0") ??
+                "Contact for Pricing"
+              }
               originalPrice={
                 product?.data?.original_price
-                  ? parseFloat(product.data.original_price)
-                  : undefined
+                  ? parseFloat(product.data.original_price ?? 0.0)
+                  : 0.0
               }
               productId={product?.data?.id || ""}
               description={product?.data?.product_description || ""}
