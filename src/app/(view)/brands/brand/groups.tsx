@@ -54,7 +54,7 @@ export default function Groups({ id }: any) {
                 total_comments: item.total_comments,
               }
             }
-            diffData={diffData}
+
           />
         )) : (
           <div>
