@@ -123,8 +123,9 @@ export default function Catalog({ id }: any) {
               id: item.id,
               image: item.product_image || "/image/shop/item.jpg",
               title: item.product_name,
-              category: `${item.product_price}`,
+              category: `${item.product_type}`,
               note: item.product_type,
+              price: `${item.product_price}`,
               is_hearted: item.is_hearted,
               hearts: item.total_heart,
             }}

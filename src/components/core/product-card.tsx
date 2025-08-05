@@ -234,9 +234,9 @@ export default function ProductCard({
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
-            {data?.category !== null && (
+            {!data?.category && (
               <p className="text-muted-foreground font-bold text-sm md:text-base">
-                {data?.category}
+                ${data?.category}
               </p>
             )}
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
@@ -245,6 +245,15 @@ export default function ProductCard({
             {data.thc_percentage && (
               <div className="text-sm text-muted-foreground">
                 {data?.thc_percentage}% THC
+              </div>
+            )}
+            {data.price ? (
+              <div className="text-xs md:text-sm text-muted-foreground">
+                <span>${data.price}</span>
+              </div>
+            ) : (
+              <div className="text-xs md:text-sm text-muted-foreground">
+                <span>Contact for pricing</span>
               </div>
             )}
             <div className="text-xs md:text-sm text-muted-foreground">
