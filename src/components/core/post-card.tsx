@@ -25,6 +25,7 @@ import {
 } from "@/redux/features/users/postApi";
 import Namer from "./internal/namer";
 import { usePostLikeMutation } from "@/redux/features/others/otherApi";
+import Link from "next/link";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -35,7 +36,10 @@ export default function PostCard({
   user,
 }: {
   data: any;
-  user: { name: string; avatar: string };
+  user: {
+    name: string;
+    avatar: string;
+  };
 }) {
   const [liked, setLiked] = useState<boolean>(false);
   const [liking, setLiking] = useState(false);
@@ -86,13 +90,22 @@ export default function PostCard({
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       {/* Header */}
       <div className="border-b !p-4">
-        <div className="flex items-center gap-3 font-semibold text-base">
+        <Link
+          href={
+            String(data.user.role) === "3"
+              ? `/brands/brand/${data.user.id}`
+              : String(data.user.role) === "5"
+              ? `/stores/store/${data.user.id}`
+              : `/profile/${data.user.id}`
+          }
+          className="flex items-center gap-3 font-semibold text-base hover:font-bold hover:text-purple-500"
+        >
           <Avatar className="size-10">
             <AvatarImage src={user.avatar} />
             <AvatarFallback>IA</AvatarFallback>
           </Avatar>
           {user.name}
-        </div>
+        </Link>
       </div>
       {/* <div className="!p-4 border-b text-sm leading-relaxed font-semibold">
         {data?.title}

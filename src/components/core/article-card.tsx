@@ -158,13 +158,6 @@ export default function ArticleCard({
             </DialogTrigger>
           </Dialog>
         )}
-
-        <CardDescription
-          className="line-clamp-3"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(article.content),
-          }}
-        />
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6 mt-auto">
         <Link href={`/trending/article/${article.id}`}>

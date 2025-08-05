@@ -37,7 +37,7 @@ export default function TabsTriggerer({ id }: any) {
           <Announcement />
         </TabsContent> */}
         <TabsContent value="feed">
-          <Announcement />
+          <Announcement id={id} />
         </TabsContent>
         {/* <TabsContent value="inbox">
           <Inbox />

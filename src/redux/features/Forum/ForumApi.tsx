@@ -44,7 +44,7 @@ export const forumApi = api.injectEndpoints({
       }),
       invalidatesTags: ["thread"],
     }),
-    deleteThread: builder.mutation({
+    deleteThread: builder.mutation<any, any>({
       query: ({ id }) => ({
         url: `/forum-thread/${id}`,
         method: "DELETE",

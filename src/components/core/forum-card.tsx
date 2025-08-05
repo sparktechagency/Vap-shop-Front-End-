@@ -3,10 +3,10 @@ import { EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
-import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
+import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
 // Interface for the forum group data structure
 interface ForumGroupType {
   id?: number;
@@ -42,22 +42,22 @@ export default function ForumCard({
   // Format the creation date for display, with a fallback for missing dates
   const formattedDate = safeData.created_at
     ? new Date(safeData.created_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
-  const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
-  const { data: user, isLoading: userLoading } = useGetOwnprofileQuery();
+  const [deleteGroup, { isLoading }] = useDeleteThreadMutation();
+  const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
-  console.log('user', user?.data?.role);
+  console.log("user", user?.data?.role);
 
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at
     ? new Date().getTime() - new Date(safeData.created_at).getTime() <
-    7 * 24 * 60 * 60 * 1000
+      7 * 24 * 60 * 60 * 1000
     : false;
 
   // --- START: URL Construction Logic ---
@@ -70,12 +70,11 @@ export default function ForumCard({
 
   // 3. Determine the correct separator. If the baseUrl already has a query string,
   // use '&' to append the new parameter. Otherwise, use '?'.
-  const separator = baseUrl.includes('?') ? '&' : '?';
+  const separator = baseUrl.includes("?") ? "&" : "?";
 
   // 4. Construct the final, complete URL.
   const finalUrl = `${baseUrl}${separator}data=${serializedData}`;
   // --- END: URL Construction Logic ---
-
 
   // Function to handle the deletion of a group
   const handleDeleteGroup = async (id?: number) => {

@@ -44,6 +44,15 @@ export default function Page() {
             ))}
         </CardContent>
       </Card>
+      <div className="w-full mt-6">
+        <h3 className="font-semibold text-sm">Description:</h3>
+        <p className="text-sm text-muted-foreground">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere sit
+          ad laboriosam ullam aut quos nemo? Labore molestiae cupiditate, et
+          voluptates rerum expedita similique, voluptatum in ullam quos totam
+          ratione!
+        </p>
+      </div>
       <div className="mt-6 grid grid-cols-2 gap-6">
         <Input placeholder="Price" type="number" readOnly />
         <Select>

@@ -102,20 +102,25 @@ export const trendingApi = api.injectEndpoints({
     delteArtical: builder.mutation<any, any>({
       query: ({ id }) => ({
         url: `/post/${id}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
-      invalidatesTags: ["artical"]
+      invalidatesTags: ["artical"],
     }),
     deleteGroup: builder.mutation<any, any>({
       query: ({ id }) => ({
         url: `/forum-group/${id}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
-      invalidatesTags: ["tranding"]
-    })
+      invalidatesTags: ["tranding"],
+    }),
 
-
-
+    deleteThread: builder.mutation<any, any>({
+      query: ({ id }) => ({
+        url: `/forum-thread/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["tranding"],
+    }),
   }),
 });
 
@@ -137,5 +142,5 @@ export const {
   useCreateArticalMutation,
   useProductDetailsByIdRoleQuery,
   useDelteArticalMutation,
-  useDeleteGroupMutation
+  useDeleteGroupMutation,
 } = trendingApi;
