@@ -125,7 +125,12 @@ export default function Catalog({ id }: any) {
               title: item.product_name,
               category: `${item.product_type}`,
               note: item.product_type,
-              price: `${item.product_price}`,
+              price:
+                parseFloat(item.product_price) >= 0 &&
+                !isNaN(parseFloat(item.product_price))
+                  ? `${item.product_price}`
+                  : undefined,
+
               is_hearted: item.is_hearted,
               hearts: item.total_heart,
             }}

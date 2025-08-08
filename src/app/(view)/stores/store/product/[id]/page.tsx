@@ -335,9 +335,10 @@ export default function Page() {
                 "Contact for Pricing"
               }
               originalPrice={
-                product?.data?.original_price
-                  ? parseFloat(product.data.original_price ?? 0.0)
-                  : 0.0
+                product?.data?.original_price &&
+                parseFloat(product.data.original_price) > 0
+                  ? parseFloat(product.data.original_price)
+                  : undefined
               }
               productId={product?.data?.id || ""}
               description={product?.data?.product_description || ""}

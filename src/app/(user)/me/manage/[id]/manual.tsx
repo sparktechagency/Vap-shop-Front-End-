@@ -84,7 +84,7 @@ export default function ProductForm({ prod }: { prod: any }) {
     if (!prod || !cats?.data) return;
     console.log(prod.product_discount);
     console.log(prod.product_discount === "0.00%");
-
+    setImageurl(prod?.product_image_url ?? null);
     form.reset({
       product_name: String(prod.product_name ?? ""),
       product_price: String(prod.product_price ?? ""),
@@ -102,7 +102,7 @@ export default function ProductForm({ prod }: { prod: any }) {
           answer: String(f.answer ?? ""),
         })) || [],
     });
-  }, [prod, cats]);
+  }, [cats?.data, form, prod]);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -238,6 +238,15 @@ export default function ProductForm({ prod }: { prod: any }) {
                       </Button>
                     </div>
                   </div>
+                )}
+                {!imageurl && !imageChanged && (
+                  <Button
+                    type="button"
+                    onClick={() => setImageChanged(true)}
+                    variant={"outline"}
+                  >
+                    Upload Image
+                  </Button>
                 )}
 
                 {imageChanged && (

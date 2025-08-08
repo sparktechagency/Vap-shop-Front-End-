@@ -249,7 +249,11 @@ export default function ProductCard({
             )}
             {data.price ? (
               <div className="text-xs md:text-sm text-muted-foreground">
-                <span>${data.price}</span>
+                <span>
+                  {parseFloat(data.price) <= 0
+                    ? "Contact for pricing"
+                    : `$${data.price}`}
+                </span>
               </div>
             ) : (
               <div className="text-xs md:text-sm text-muted-foreground">

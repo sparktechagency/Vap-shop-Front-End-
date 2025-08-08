@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { Metadata } from "next";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -62,9 +63,11 @@ export default async function RootLayout({
                 <BellIcon />
                 {
                   // @ts-ignore
-                  res?.data?.unread_notification_count > 0 && <span className="size-4 flex items-center justify-center bg-destructive rounded-full absolute -top-1 -right-1 !text-[8px] font-semibold text-background">
-                    {res?.data?.unread_notifications}
-                  </span>
+                  res?.data?.unread_notification_count > 0 && (
+                    <span className="size-4 flex items-center justify-center bg-destructive rounded-full absolute -top-1 -right-1 !text-[8px] font-semibold text-background">
+                      {res?.data?.unread_notifications}
+                    </span>
+                  )
                 }
               </Link>
             </Button>

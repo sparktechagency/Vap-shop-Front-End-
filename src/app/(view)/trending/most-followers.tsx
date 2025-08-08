@@ -1,28 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-'use client';
+"use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import React from "react";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { BrandType } from "@/lib/types/product";
-import { useGetmostFollowrsBrandQuery, useGetSponsoredBrandsQuery } from "@/redux/features/Trending/TrendingApi";
+  useGetmostFollowrsBrandQuery,
+  useGetSponsoredBrandsQuery,
+} from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCountysQuery } from "@/redux/features/AuthApi";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 export default function MostFollowers() {
-
   const { data, isLoading } = useGetmostFollowrsBrandQuery();
-  const { data: sponsored, isLoading: sponsoredLoading } = useGetSponsoredBrandsQuery();
-  console.log('sponsored', sponsored);
-
-
-
-
+  const { data: sponsored, isLoading: sponsoredLoading } =
+    useGetSponsoredBrandsQuery();
+  const { data: countries, isLoading: cLoading } = useCountysQuery();
+  console.log("sponsored", sponsored);
 
   if (isLoading || sponsoredLoading) {
     return (
@@ -31,34 +33,40 @@ export default function MostFollowers() {
           <Skeleton key={i} className="h-64 w-full rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
-
-
-
-  const mockData: BrandType = {
-    id: "1",
-    image: "/image/shop/brand.webp",
-    type: "ad",
-    storeName: "Vape Juice Deport",
-    isVerified: true,
-    location: {
-      city: "BROOKLYN, New York",
-      distance: "4 mi",
-    },
-    rating: {
-      value: 4.9,
-      reviews: 166,
-    },
-    isOpen: true,
-    closingTime: "10 PM",
-  };
   return (
     <>
+      <div className="flex justify-end mt-6">
+        {!cLoading && (
+          <Select>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value=" ">Worldwide</SelectItem>
+              <SelectSeparator />
+              {countries?.data?.map((x: any, i: number) => (
+                <React.Fragment key={`country-${x.id}`}>
+                  <SelectGroup key={`group-${x.id}`}>
+                    <SelectLabel>{x.name}</SelectLabel>
+                    {x.regions.map((y: any) => (
+                      <SelectItem value={y.id} key={`region-${y.id}`}>
+                        {y.name}({y.code})
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                </React.Fragment>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {sponsored?.data.map((item: any, i: number) => (
-          <BrandProdCard data={
-            {
+          <BrandProdCard
+            data={{
               id: item?.id,
               image: item?.user?.avatar,
               storeName: item?.full_name,
@@ -76,9 +84,10 @@ export default function MostFollowers() {
               closingTime: item?.end_date,
               type: "ad",
               isFollowing: item?.is_following,
-              totalFollowers: item?.total_followers
-            }
-          } key={i} />
+              totalFollowers: item?.total_followers,
+            }}
+            key={i}
+          />
         ))}
       </div>
       <h2 className="font-semibold text-2xl !mt-12">
@@ -86,8 +95,8 @@ export default function MostFollowers() {
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {data?.data?.map((item: any, i: number) => (
-          <BrandProdCard data={
-            {
+          <BrandProdCard
+            data={{
               id: item?.id,
               image: item?.avatar,
               storeName: item?.full_name,
@@ -105,12 +114,12 @@ export default function MostFollowers() {
               closingTime: "10 PM",
               type: "normal",
               isFollowing: item?.is_following,
-              totalFollowers: item?.total_followers
-            }
-          } key={i} />
+              totalFollowers: item?.total_followers,
+            }}
+            key={i}
+          />
         ))}
       </div>
-
     </>
   );
 }

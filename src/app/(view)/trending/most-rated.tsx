@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React from "react";
 import {
   Select,
   SelectContent,
@@ -14,28 +14,12 @@ import ReviewCard from "@/components/core/review-card";
 import { useMostRatedReviewQuery } from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button"; // Assuming you have a Button component
-
-// Define interfaces for strong typing
-interface Product {
-  product_image: string;
-  product_name: string;
-  role?: number;
-  category?: { name: string; id: number };
-  average_rating?: string;
-}
-
-interface Review {
-  id: number;
-  manage_product_id: number;
-  manage_products: Product;
-  // Add other review properties here e.g., comment: string, rating: number
-}
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 // Main Component
 export default function MostRated() {
-  const [region, setRegion] = useState("uni"); // Default filter
   const { data, isLoading, isError, refetch } = useMostRatedReviewQuery();
-
+  const { data: countries, isLoading: cLoading } = useCountysQuery();
   console.log("most rated review", data);
 
   // Render states
@@ -44,7 +28,7 @@ export default function MostRated() {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <p className="mb-4 text-red-500">Error: Couldn't load reviews.</p>
+        <p className="mb-4 text-red-500">Error: Couldn&apos;t load reviews.</p>
         <Button onClick={() => refetch()}>Try Again</Button>
       </div>
     );
@@ -62,29 +46,30 @@ export default function MostRated() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
         <h2 className="text-3xl font-bold">Top Most Rated Reviews</h2>
-        <Select value={region} onValueChange={setRegion}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="uni">Worldwide</SelectItem>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>Canada</SelectLabel>
-              <SelectItem value="on">Ontario</SelectItem>
-              <SelectItem value="br">British Columbia</SelectItem>
-              <SelectItem value="al">Alberta</SelectItem>
-            </SelectGroup>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>United States</SelectLabel>
-              <SelectItem value="tn">Tennessee (TN)</SelectItem>
-              <SelectItem value="ga">Georgia (GA)</SelectItem>
-              <SelectItem value="tx">Texas (TX)</SelectItem>
-              <SelectItem value="fl">Florida (FL)</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        {!cLoading && (
+          <Select>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value=" ">Worldwide</SelectItem>
+              <SelectSeparator />
+              {countries?.data?.map((x: any, i: number) => (
+                <React.Fragment key={`country-${x.id}`}>
+                  <SelectGroup key={`group-${x.id}`}>
+                    <SelectLabel>{x.name}</SelectLabel>
+                    {x.regions.map((y: any) => (
+                      <SelectItem value={y.id} key={`region-${y.id}`}>
+                        {y.name}({y.code})
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                </React.Fragment>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <div className="space-y-6">
