@@ -10,6 +10,7 @@ import Link from "next/link";
 export default function Home() {
   const { data: categorys, isLoading: isCategoriesLoading } =
     useGetallCategorysQuery();
+  console.log(categorys);
 
   const trendingCategories = categorys?.data?.map(
     (category: any) => category.name
@@ -30,7 +31,7 @@ export default function Home() {
           <h1 className="font-bold text-2xl md:text-4xl text-center mb-12 opacity-10">
             Trending
           </h1>
-          <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-6 gap-6">
+          <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-7 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="flex flex-col items-center">
                 <div className="size-20 lg:size-[150px] xl:size-[200px] rounded-3xl bg-gray-200 animate-pulse" />
@@ -49,6 +50,7 @@ export default function Home() {
     "/image/home/brands.webp",
     "/image/home/nic.webp",
     "/image/home/accessories.webp",
+    "/image/home/others.jpg",
   ];
   return (
     <>
@@ -60,7 +62,7 @@ export default function Home() {
             Trending
           </h1>
           <div className="flex justify-center">
-            <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-6 gap-6 justify-center place-items-center">
+            <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-7 gap-6 justify-center place-items-center">
               {trendingCategories.map((title: string, i: number) => (
                 <Link href={`/trending?title=${title}`} key={i}>
                   <div className="w-full flex flex-col justify-center items-center hover:scale-105 transition-transform cursor-pointer">

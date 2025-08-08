@@ -15,11 +15,12 @@ import {
   useGetproductsAdsQuery,
   useMosthartedProductQuery,
 } from "@/redux/features/Trending/TrendingApi";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 export default function MostHearted() {
   const { data: mosthartedproducts, refetch } = useMosthartedProductQuery();
   const { data: ProductsAds, refetch: refetchAds } = useGetproductsAdsQuery();
-
+  const { data: countries, isLoading } = useCountysQuery();
   console.log("ProductsAds", ProductsAds);
 
   return (
@@ -42,22 +43,22 @@ export default function MostHearted() {
             <SelectValue placeholder="Region" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="uni">Worldwide</SelectItem>
+            <SelectItem value=" ">Worldwide</SelectItem>
             <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>Canada</SelectLabel>
-              <SelectItem value="on">Ontario</SelectItem>
-              <SelectItem value="br">British Columbia</SelectItem>
-              <SelectItem value="al">Alberta</SelectItem>
-            </SelectGroup>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>United States</SelectLabel>
-              <SelectItem value="tn">Tennessee (TN)</SelectItem>
-              <SelectItem value="ga">Georgia (GA)</SelectItem>
-              <SelectItem value="tx">Texas (TX)</SelectItem>
-              <SelectItem value="fl">Florida (FL)</SelectItem>
-            </SelectGroup>
+            {!isLoading &&
+              countries?.data?.map((x: any, i: number) => (
+                <React.Fragment key={`country-${x.id}`}>
+                  <SelectGroup key={`group-${x.id}`}>
+                    <SelectLabel>{x.name}</SelectLabel>
+                    {x.regions.map((y: any) => (
+                      <SelectItem value={y.id} key={`region-${y.id}`}>
+                        {y.name}({y.code})
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                </React.Fragment>
+              ))}
           </SelectContent>
         </Select>
       </div>

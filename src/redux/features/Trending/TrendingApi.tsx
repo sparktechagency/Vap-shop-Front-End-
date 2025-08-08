@@ -2,6 +2,7 @@
 import { api } from "@/redux/baseApi";
 
 export const trendingApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     mosthartedProduct: builder.query<any, void>({
       query: () => `/most-hearted-products`,
@@ -113,7 +114,6 @@ export const trendingApi = api.injectEndpoints({
       }),
       invalidatesTags: ["tranding"],
     }),
-
     deleteThread: builder.mutation<any, any>({
       query: ({ id }) => ({
         url: `/forum-thread/${id}`,

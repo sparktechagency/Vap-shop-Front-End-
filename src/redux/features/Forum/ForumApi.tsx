@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../baseApi";
 export const forumApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getForum: builder.query<
       any,

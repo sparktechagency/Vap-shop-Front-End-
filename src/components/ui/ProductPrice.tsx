@@ -99,11 +99,13 @@ export function ProductPrice({
             <span className="text-3xl font-bold text-green-600">
               ${currentPrice.toFixed(2)}
             </span>
-            {originalPrice && originalPrice > currentPrice && (
-              <span className="text-xl line-through text-gray-400">
-                ${originalPrice.toFixed(2)}
-              </span>
-            )}
+            {originalPrice &&
+              originalPrice > currentPrice &&
+              originalPrice > 0 && (
+                <span className="text-xl line-through text-gray-400">
+                  ${originalPrice.toFixed(2)}
+                </span>
+              )}
           </>
         ) : (
           <span className="text-3xl text-muted-foreground">

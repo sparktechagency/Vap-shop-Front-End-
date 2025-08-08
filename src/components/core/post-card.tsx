@@ -92,11 +92,11 @@ export default function PostCard({
       <div className="border-b !p-4">
         <Link
           href={
-            String(data.user.role) === "3"
+            String(data?.user?.role) === "3"
               ? `/brands/brand/${data.user.id}`
-              : String(data.user.role) === "5"
-              ? `/stores/store/${data.user.id}`
-              : `/profile/${data.user.id}`
+              : String(data?.user?.role) === "5"
+              ? `/stores/store/${data?.user?.id}`
+              : `/profile/${data?.user?.id}`
           }
           className="flex items-center gap-3 font-semibold text-base hover:font-bold hover:text-purple-500"
         >

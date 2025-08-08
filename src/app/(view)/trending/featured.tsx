@@ -25,7 +25,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import {
+  useCountysQuery,
+  useGetOwnprofileQuery,
+} from "@/redux/features/AuthApi";
 
 export default function Featured() {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -35,7 +38,7 @@ export default function Featured() {
   });
 
   const { data: user } = useGetOwnprofileQuery();
-
+  const { data: countries, isLoading: cLoading } = useCountysQuery();
   if (isLoading) return <LoadingSkeleton />;
 
   const totalPages = data?.data?.last_page || 1;
@@ -80,29 +83,31 @@ export default function Featured() {
           )}
         </div>
 
-        <Select>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="uni">Worldwide</SelectItem>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>Canada</SelectLabel>
-              <SelectItem value="on">Ontario</SelectItem>
-              <SelectItem value="br">British Columbia</SelectItem>
-              <SelectItem value="al">Alberta</SelectItem>
-            </SelectGroup>
-            <SelectSeparator />
-            <SelectGroup>
-              <SelectLabel>United States</SelectLabel>
-              <SelectItem value="tn">Tennessee (TN)</SelectItem>
-              <SelectItem value="ga">Georgia (GA)</SelectItem>
-              <SelectItem value="tx">Texas (TX)</SelectItem>
-              <SelectItem value="fl">Florida (FL)</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        {!cLoading && (
+          <Select>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value=" ">Worldwide</SelectItem>
+              <SelectSeparator />
+
+              {countries?.data?.map((x: any, i: number) => (
+                <React.Fragment key={`country-${x.id}`}>
+                  <SelectGroup key={`group-${x.id}`}>
+                    <SelectLabel>{x.name}</SelectLabel>
+                    {x.regions.map((y: any) => (
+                      <SelectItem value={y.id} key={`region-${y.id}`}>
+                        {y.name}({y.code})
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                </React.Fragment>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <h2 className="text-3xl">🔥 Featured Articles</h2>
