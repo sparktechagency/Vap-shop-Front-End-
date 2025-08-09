@@ -2,6 +2,7 @@
 import { api } from "@/redux/baseApi";
 
 export const otherApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getCountries: builder.query<any, void>({
       query: () => `/get-all-countries`,
@@ -79,10 +80,39 @@ export const otherApi = api.injectEndpoints({
       }),
       providesTags: ["location"],
     }),
+    createRegion: builder.mutation<any, any>({
+      query: (data) => {
+        return {
+          url: `/admin/region`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    editRegion: builder.mutation<any, any>({
+      query: ({ id, data }) => {
+        return {
+          url: `/admin/region/${id}`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    deleteRegion: builder.mutation<any, any>({
+      query: ({ id }) => {
+        return {
+          url: `/admin/region/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 
 export const {
+  useCreateRegionMutation,
+  useEditRegionMutation,
+  useDeleteRegionMutation,
   useGetCountriesQuery,
   useGetReviewsQuery,
   usePostReviewMutation,

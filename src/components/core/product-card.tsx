@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
+
 export default function ProductCard({
   refetchAds,
   refetch,
@@ -234,9 +235,13 @@ export default function ProductCard({
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
-            {!data?.category && (
+            {data?.category === "undefined" ? (
+              ""
+            ) : !data?.category ? (
+              ""
+            ) : (
               <p className="text-muted-foreground font-bold text-sm md:text-base">
-                ${data?.category}
+                {data.category}
               </p>
             )}
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
@@ -247,18 +252,16 @@ export default function ProductCard({
                 {data?.thc_percentage}% THC
               </div>
             )}
-            {data.price ? (
-              <div className="text-xs md:text-sm text-muted-foreground">
-                <span>
-                  {parseFloat(data.price) <= 0
-                    ? "Contact for pricing"
-                    : `$${data.price}`}
-                </span>
-              </div>
-            ) : (
+            {!data.price || parseFloat(data.price) <= 0 ? (
               <div className="text-xs md:text-sm text-muted-foreground">
                 <span>Contact for pricing</span>
               </div>
+            ) : (
+              typeof data.price === "number" && (
+                <div className="text-xs md:text-sm text-muted-foreground">
+                  <span>${data.price}</span>
+                </div>
+              )
             )}
             <div className="text-xs md:text-sm text-muted-foreground">
               <span>{data.note}</span>
