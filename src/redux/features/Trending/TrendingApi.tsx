@@ -4,21 +4,26 @@ import { api } from "@/redux/baseApi";
 export const trendingApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    mosthartedProduct: builder.query<any, void>({
-      query: () => `/most-hearted-products`,
+    mosthartedProduct: builder.query<
+      any,
+      { category: string | number; region: string | number }
+    >({
+      query: ({ category, region }) =>
+        `/most-hearted-products?category_id=${category}&region_id=${region}`,
     }),
 
-    getproductsAds: builder.query<any, void>({
-      query: () => `/ad-request-trending-products`,
+    getproductsAds: builder.query<any, { region: string | number }>({
+      query: ({ region }) =>
+        `/ad-request-trending-products?region_id=${region}`,
       providesTags: ["tranding", "fevorite"],
     }),
 
-    getmostFollowrsBrand: builder.query<any, void>({
-      query: () => `/most-followers-brand`,
+    getmostFollowrsBrand: builder.query<any, { region: string | number }>({
+      query: ({ region }) => `/most-followers-brand?region_id=${region}`,
     }),
 
-    getSponsoredBrands: builder.query<any, void>({
-      query: () => `/ad-request-most-follower`,
+    getSponsoredBrands: builder.query<any, { region: string | number }>({
+      query: ({ region }) => `/ad-request-most-follower?region_id=${region}`,
     }),
 
     trendingProductDetailsById: builder.query<any, void>({
@@ -57,12 +62,13 @@ export const trendingApi = api.injectEndpoints({
       query: () => `/most-rated-reviews`,
     }),
 
-    getMostratedArtical: builder.query<any, { page: string; per_page: string }>(
-      {
-        query: ({ page, per_page }) =>
-          `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1`,
-      }
-    ),
+    getMostratedArtical: builder.query<
+      any,
+      { page: string; per_page: string; region: string | number }
+    >({
+      query: ({ page, per_page, region }) =>
+        `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1&region_id=${region}`,
+    }),
 
     myartical: builder.query<any, { page: string; per_page: string }>({
       query: ({ page, per_page }) =>

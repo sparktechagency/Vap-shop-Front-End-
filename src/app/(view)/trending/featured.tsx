@@ -32,24 +32,24 @@ import {
 
 export default function Featured() {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const { data, isLoading } = useGetMostratedArticalQuery({
+  const [region, setRegion] = React.useState<string>("");
+
+  // Destructure error info from query
+  const { data, isLoading, isError, error }: any = useGetMostratedArticalQuery({
     page: currentPage.toString(),
     per_page: "16",
+    region,
   });
 
   const { data: user } = useGetOwnprofileQuery();
   const { data: countries, isLoading: cLoading } = useCountysQuery();
-  if (isLoading) return <LoadingSkeleton />;
 
   const totalPages = data?.data?.last_page || 1;
-
   const visiblePages = 5;
 
-  // Calculate range of pages to display
   let startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
   let endPage = Math.min(totalPages, startPage + visiblePages - 1);
 
-  // Adjust if we're at the start or end
   if (endPage - startPage + 1 < visiblePages) {
     if (currentPage < totalPages / 2) {
       endPage = Math.min(totalPages, startPage + visiblePages - 1);
@@ -65,7 +65,7 @@ export default function Featured() {
     }
   };
 
-  console.log("user", user);
+  if (isLoading) return <LoadingSkeleton />;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -84,7 +84,13 @@ export default function Featured() {
         </div>
 
         {!cLoading && (
-          <Select>
+          <Select
+            onValueChange={(val) => {
+              setRegion(val.trim());
+              setCurrentPage(1);
+            }}
+            value={region || " "}
+          >
             <SelectTrigger className="w-full md:w-[180px]">
               <SelectValue placeholder="Region" />
             </SelectTrigger>
@@ -97,8 +103,11 @@ export default function Featured() {
                   <SelectGroup key={`group-${x.id}`}>
                     <SelectLabel>{x.name}</SelectLabel>
                     {x.regions.map((y: any) => (
-                      <SelectItem value={y.id} key={`region-${y.id}`}>
-                        {y.name}({y.code})
+                      <SelectItem
+                        value={y.id.toString()}
+                        key={`region-${y.id}`}
+                      >
+                        {y.name} ({y.code})
                       </SelectItem>
                     ))}
                   </SelectGroup>
@@ -112,9 +121,13 @@ export default function Featured() {
 
       <h2 className="text-3xl">🔥 Featured Articles</h2>
 
-      {data?.data?.data?.length > 0 ? (
+      {isError ? (
+        <div className="py-4 text-center text-red-600">
+          {error?.data?.message || "Failed to load articles."}
+        </div>
+      ) : data?.data?.data?.length > 0 ? (
         <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {data?.data?.data?.map((article: any) => (
+          {data.data.data.map((article: any) => (
             <ArticleCard
               key={article?.id}
               article={{
@@ -135,78 +148,77 @@ export default function Featured() {
       )}
 
       {/* Pagination Controls */}
-      <div className="mt-8 flex justify-center">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(currentPage - 1)}
-                isActive={currentPage > 1}
-              />
-            </PaginationItem>
-
-            {/* Show first page if not in current range */}
-            {startPage > 1 && (
-              <>
-                <PaginationItem>
-                  <PaginationLink
-                    onClick={() => handlePageChange(1)}
-                    isActive={1 === currentPage}
-                  >
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-                {startPage > 2 && (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )}
-              </>
-            )}
-
-            {/* Visible page numbers */}
-            {Array.from(
-              { length: endPage - startPage + 1 },
-              (_, i) => startPage + i
-            ).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => handlePageChange(page)}
-                  isActive={page === currentPage}
-                >
-                  {page}
-                </PaginationLink>
+      {!isError && data?.data?.data?.length > 0 && (
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  isActive={currentPage > 1}
+                />
               </PaginationItem>
-            ))}
 
-            {/* Show last page if not in current range */}
-            {endPage < totalPages && (
-              <>
-                {endPage < totalPages - 1 && (
+              {startPage > 1 && (
+                <>
                   <PaginationItem>
-                    <PaginationEllipsis />
+                    <PaginationLink
+                      onClick={() => handlePageChange(1)}
+                      isActive={1 === currentPage}
+                    >
+                      1
+                    </PaginationLink>
                   </PaginationItem>
-                )}
-                <PaginationItem>
+                  {startPage > 2 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                </>
+              )}
+
+              {Array.from(
+                { length: endPage - startPage + 1 },
+                (_, i) => startPage + i
+              ).map((page) => (
+                <PaginationItem key={page}>
                   <PaginationLink
-                    onClick={() => handlePageChange(totalPages)}
-                    isActive={totalPages === currentPage}
+                    onClick={() => handlePageChange(page)}
+                    isActive={page === currentPage}
                   >
-                    {totalPages}
+                    {page}
                   </PaginationLink>
                 </PaginationItem>
-              </>
-            )}
+              ))}
 
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(currentPage + 1)}
-                isActive={currentPage < totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              {endPage < totalPages && (
+                <>
+                  {endPage < totalPages - 1 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <PaginationLink
+                      onClick={() => handlePageChange(totalPages)}
+                      isActive={totalPages === currentPage}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                </>
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  isActive={currentPage < totalPages}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 }

@@ -79,7 +79,6 @@ export default function MostRated() {
             refetch={refetch}
             key={review?.id}
             data={review}
-            // FIX: Rename 'productData' to 'product'
             productData={{
               id: review?.manage_product_id,
               product_image:
