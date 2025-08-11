@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import ForumCard from "@/components/core/forum-card";
+import ForumGroupCard from "@/components/core/forum-Group-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
@@ -48,7 +49,7 @@ export default function VapeTalk({ forumGroups = [], refetch }: VapeTalkProps) {
           if (!group || typeof group !== 'object') return null;
 
           return (
-            <ForumCard
+            <ForumGroupCard
               refetch={refetch}
               key={group.id}
               data={{

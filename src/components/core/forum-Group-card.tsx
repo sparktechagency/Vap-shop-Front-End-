@@ -7,6 +7,7 @@ import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
+import { useDeleteGroupMutation } from "@/redux/features/Trending/TrendingApi";
 // Interface for the forum group data structure
 interface ForumGroupType {
   id?: number;
@@ -30,7 +31,7 @@ interface ForumCardProps {
   refetch?: () => void;
 }
 
-export default function ForumCard({
+export default function ForumGroupCard({
   refetch,
   data,
   to,
@@ -49,7 +50,7 @@ export default function ForumCard({
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
-  const [deleteGroup, { isLoading }] = useDeleteThreadMutation();
+  const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
   console.log("user", user?.data?.role);

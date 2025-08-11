@@ -63,6 +63,8 @@ export default function PostCard({
       setLiked(data?.is_post_liked);
     }
   }, [data]);
+  console.log('data', data);
+
   const onSubmit = async (values: FormSchema) => {
     try {
       const response: { ok?: string } = await comment({
@@ -93,10 +95,10 @@ export default function PostCard({
         <Link
           href={
             String(data?.user?.role) === "3"
-              ? `/brands/brand/${data.user.id}`
+              ? `/brands/brand/${data.user_id}`
               : String(data?.user?.role) === "5"
-              ? `/stores/store/${data?.user?.id}`
-              : `/profile/${data?.user?.id}`
+                ? `/stores/store/${data?.user_id}`
+                : `/profile/${data?.user_id}`
           }
           className="flex items-center gap-3 font-semibold text-base hover:font-bold hover:text-purple-500"
         >
@@ -149,7 +151,7 @@ export default function PostCard({
 
                 toast.error(
                   err?.data?.message ||
-                    "Something went wrong. Please try again."
+                  "Something went wrong. Please try again."
                 );
                 console.error("Like error:", err);
               } finally {

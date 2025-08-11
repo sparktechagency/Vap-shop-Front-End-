@@ -35,7 +35,9 @@ import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useDelteArticalMutation } from "@/redux/features/Trending/TrendingApi";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+
 // import { formatDate } from "@/lib/utils";
 
 interface ArticleProps {
@@ -58,6 +60,12 @@ export default function ArticleCard({
   const pathname = usePathname();
   console.log("pathnanme", pathname);
   const isMyarticalPage = pathname.includes("my-articles");
+  const { data: user } = useGetOwnprofileQuery();
+  const router = useRouter();
+  const isAdmin = user?.data?.role === 1;
+
+
+
 
   console.log("articleFrom article card", article);
   const [delteArtical] = useDelteArticalMutation();
@@ -115,15 +123,19 @@ export default function ArticleCard({
     console.log("article id", articleId);
     try {
       const response = await delteArtical({ id: articleId }).unwrap();
-      console.log("response", response);
-      toast.success("Article deleted successfully");
-      refetch();
-    } catch (error) {
+
+      if (response.ok) {
+        toast.success(response.message || "Article deleted successfully");
+      }
+    } catch (error: any) {
       console.error("Error deleting article:", error);
-      toast.error("Failed to delete article");
+      toast.error(error?.message);
     }
   };
 
+  const handleEdit = (articleId: any) => {
+    router.push(`/trending/my-articles/edit/${articleId}`);
+  }
   const handleShare = (url: string) => {
     window.open(url, "_blank", "width=600,height=400");
   };
@@ -146,18 +158,34 @@ export default function ArticleCard({
           className="line-clamp-3"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
-        {isMyarticalPage && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <button
-                onClick={() => handleDelete(article.id)}
-                className="absolute top-4 right-4 bg-[#FF0000] text-white px-2 py-1 rounded cursor-pointer"
-              >
-                <p>Delete</p>
-              </button>
-            </DialogTrigger>
-          </Dialog>
+        {(isMyarticalPage || isAdmin) && (
+          <div className="absolute top-4 right-4 flex gap-2">
+            {/* Edit Button */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  onClick={() => handleEdit(article.id)}
+                  className="bg-green-500 text-white px-2 py-1 rounded cursor-pointer"
+                >
+                  <p>Edit</p>
+                </button>
+              </DialogTrigger>
+            </Dialog>
+
+            {/* Delete Button */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  onClick={() => handleDelete(article.id)}
+                  className="bg-[#FF0000] text-white px-2 py-1 rounded cursor-pointer"
+                >
+                  <p>Delete</p>
+                </button>
+              </DialogTrigger>
+            </Dialog>
+          </div>
         )}
+
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6 mt-auto">
         <Link href={`/trending/article/${article.id}`}>

@@ -74,6 +74,11 @@ export default function ProductCard({
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
 
+
+  console.log('data', data);
+
+
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const origin = window.location.origin;
@@ -131,9 +136,8 @@ export default function ProductCard({
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${
-                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
-                }`}
+                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                  }`}
               />
             </Button>
           </div>
@@ -252,6 +256,7 @@ export default function ProductCard({
                 {data?.thc_percentage}% THC
               </div>
             )}
+
             {!data.price || parseFloat(data.price) <= 0 ? (
               <div className="text-xs md:text-sm text-muted-foreground">
                 <span>Contact for pricing</span>
@@ -264,7 +269,7 @@ export default function ProductCard({
               )
             )}
             <div className="text-xs md:text-sm text-muted-foreground">
-              <span>{data.note}</span>
+              {data?.note && <span>{data.note}</span>}
             </div>
           </CardContent>
         </div>

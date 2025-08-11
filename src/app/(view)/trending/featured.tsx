@@ -35,7 +35,7 @@ export default function Featured() {
   const [region, setRegion] = React.useState<string>("");
 
   // Destructure error info from query
-  const { data, isLoading, isError, error }: any = useGetMostratedArticalQuery({
+  const { data, isLoading, isError, error, refetch }: any = useGetMostratedArticalQuery({
     page: currentPage.toString(),
     per_page: "16",
     region,
@@ -129,6 +129,7 @@ export default function Featured() {
         <div className="!my-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data.data.data.map((article: any) => (
             <ArticleCard
+
               key={article?.id}
               article={{
                 id: article?.id,

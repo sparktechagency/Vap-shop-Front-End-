@@ -41,6 +41,8 @@ export const api = createApi({
     "manageusers",
     "artical",
     "location",
+    "group",
+    "",
   ],
   endpoints: () => ({}),
 });
