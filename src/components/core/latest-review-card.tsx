@@ -30,6 +30,21 @@ export default function LatestReviewCard({
   }
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
+
+      <div className="p-4 flex items-center gap-6">
+        <Image
+          src={data.product.product_image ?? "/image/shop/item.jpg"}
+          width={100}
+          height={100}
+          alt="icon"
+          className="size-24 object-cover object-center rounded-lg"
+        />
+        <div className="">
+          <h4 className="font-semibold text-xl">
+            {data.product.product_name ?? ""}
+          </h4>
+        </div>
+      </div>
       <Link
         href={
           data.product.role === 3
@@ -37,28 +52,17 @@ export default function LatestReviewCard({
             : `/stores/store/product/${data.product.id}`
         }
       >
-        <div className="p-4 flex items-center gap-6">
-          <Image
-            src={data.product.product_image ?? "/image/shop/item.jpg"}
-            width={100}
-            height={100}
-            alt="icon"
-            className="size-24 object-cover object-center rounded-lg"
-          />
-          <div className="">
-            <h4 className="font-semibold text-xl">
-              {data.product.product_name ?? ""}
-            </h4>
-          </div>
+
+
+
+        <div className="p-4 flex items-center gap-2 border-t border-b">
+          <Avatar>
+            <AvatarImage src={me?.data?.avatar} className="object-cover" />
+            <AvatarFallback>UI</AvatarFallback>
+          </Avatar>
+          <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
         </div>
       </Link>
-      <div className="p-4 flex items-center gap-2 border-t border-b">
-        <Avatar>
-          <AvatarImage src={me?.data?.avatar} className="object-cover" />
-          <AvatarFallback>UI</AvatarFallback>
-        </Avatar>
-        <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
-      </div>
       {/* Review Content */}
       <div className="p-4 !pb-1">
         <p className="text-sm leading-relaxed !mb-4">{data?.comment}</p>

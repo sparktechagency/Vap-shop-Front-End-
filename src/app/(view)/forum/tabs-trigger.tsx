@@ -132,11 +132,11 @@ export default function TabsTriggererForum() {
         </TabsContent>
 
         <TabsContent value="trending">
-          <VapeTalk forumGroups={data.data.data} />
+          <VapeTalk refetch={refetch} forumGroups={data.data.data} />
         </TabsContent>
 
         <TabsContent value="latest">
-          <VapeTalk forumGroups={data.data.data} />
+          <VapeTalk refetch={refetch} forumGroups={data.data.data} />
         </TabsContent>
       </Tabs>
     </div>

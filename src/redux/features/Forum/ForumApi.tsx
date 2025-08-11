@@ -22,7 +22,14 @@ export const forumApi = api.injectEndpoints({
     }),
     getGroup: builder.query<any, { id: string | number }>({
       query: ({ id }) => `/forum-group/${id}`,
-      providesTags: ["thread"],
+      providesTags: ["group"],
+    }),
+    deleteGroup: builder.mutation<any, any>({
+      query: ({ id }) => ({
+        url: `/forum-group/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["group"],
     }),
 
     getThreadDetailsById: builder.query({
@@ -52,6 +59,9 @@ export const forumApi = api.injectEndpoints({
       }),
       invalidatesTags: ["thread"],
     }),
+
+
+
     getDashboardForum: builder.query({
       query: ({ id }) => `/forum-group?&user_id=${id}`,
     }),
@@ -101,4 +111,5 @@ export const {
   useUpdateThreadMutation,
   useDeleteThreadMutation,
   useGetGroupQuery,
+  useDeleteGroupMutation,
 } = forumApi;

@@ -50,6 +50,7 @@ export default function ProductReviewCard({
   const [likeIt] = useToggleLikeMutation();
   const [liking, setLiking] = useState(false);
   const [replier] = useReplyReviewMutation();
+  console.log('productData', productData);
 
   useEffect(() => {
     setMounted(true);
@@ -60,6 +61,7 @@ export default function ProductReviewCard({
       setHelpfulCount(parseInt(data?.like_count));
     }
   }, []);
+  console.log('data', data);
 
   if (!mounted) {
     return (
@@ -78,7 +80,7 @@ export default function ProductReviewCard({
     try {
       const finalizer = {
         role,
-        product_id: productData?.id,
+        product_id: productData?.data?.id,
         comment: reply,
         parent_id: data.id,
       };
@@ -101,10 +103,10 @@ export default function ProductReviewCard({
         <Link
           href={
             String(role) === "3"
-              ? `/brands/brand/product/${productData.id}`
+              ? `/brands/brand/product/${productData?.data?.id}`
               : String(role) === "5"
-              ? `/stores/store/product/${productData.id}`
-              : "#"
+                ? `/stores/store/product/${productData?.data?.id}`
+                : "#"
           }
         >
           <div className="flex items-center gap-4">
@@ -174,10 +176,10 @@ export default function ProductReviewCard({
               <Link
                 href={
                   data?.user.role === 5
-                    ? `/stores/store/${data?.user.id}`
+                    ? `/stores/store/${data?.user_id}`
                     : data?.user.role === 4
-                    ? `/brands/brand/${data?.user.id}`
-                    : `/profile/${data?.user.id}`
+                      ? `/brands/brand/${data?.user_id}`
+                      : `/profile/${data?.user_id}`
                 }
                 className="text-sm font-medium"
               >
@@ -221,8 +223,7 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${
-                      data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
                     }'s review as helpful`
                   );
                 }
@@ -278,8 +279,8 @@ export default function ProductReviewCard({
                             data?.user.role === 5
                               ? `/stores/store/${data?.user.id}`
                               : data?.user.role === 4
-                              ? `/brands/brand/${data?.user.id}`
-                              : `/profile/${data?.user.id}`
+                                ? `/brands/brand/${data?.user.id}`
+                                : `/profile/${data?.user.id}`
                           }
                         >
                           <Namer

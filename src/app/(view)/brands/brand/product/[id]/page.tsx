@@ -434,6 +434,7 @@ export default function Page() {
                   note: `$${parseFloat(relatedProduct.product_price).toFixed(
                     2
                   )}`,
+                  price: relatedProduct.product_price,
                   discount: relatedProduct.product_discount,
                   hearts: relatedProduct.total_heart,
                   rating: parseFloat(

@@ -2,7 +2,7 @@ export interface ProductType {
   image: string | null;
   title: string;
   category: string;
-  note: string;
+  note?: string;
   price?: string;
   type?: "ad" | string;
   discount?: string;
@@ -11,7 +11,7 @@ export interface ProductType {
   reviews?: number;
   id?: number;
   is_hearted?: boolean;
-  thc_percentage?:string
+  thc_percentage?: string;
 }
 
 export interface BrandType {

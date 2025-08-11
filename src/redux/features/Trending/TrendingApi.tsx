@@ -68,11 +68,13 @@ export const trendingApi = api.injectEndpoints({
     >({
       query: ({ page, per_page, region }) =>
         `/post?per_page=${per_page}&page=${page}&content_type=article&is_global=1&region_id=${region}`,
+      providesTags: ["artical"],
     }),
 
     myartical: builder.query<any, { page: string; per_page: string }>({
       query: ({ page, per_page }) =>
         `/post?per_page=${per_page}&page=${page}&content_type=article`,
+      providesTags: ["artical"],
     }),
 
     getArtialByid: builder.query<any, { id: any }>({
@@ -89,12 +91,24 @@ export const trendingApi = api.injectEndpoints({
       invalidatesTags: ["artical"],
     }),
 
+
+
     createApost: builder.mutation<any, any>({
       query: (formData) => ({
         url: "/post?content_type=article",
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["artical"],
+    }),
+
+    updateArtical: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/post/${id}`,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["artical"],
     }),
 
     fevoriteUnveforite: builder.mutation<any, any>({
@@ -118,7 +132,7 @@ export const trendingApi = api.injectEndpoints({
         url: `/forum-group/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["tranding"],
+      invalidatesTags: ["tranding", "group"],
     }),
     deleteThread: builder.mutation<any, any>({
       query: ({ id }) => ({
@@ -149,4 +163,5 @@ export const {
   useProductDetailsByIdRoleQuery,
   useDelteArticalMutation,
   useDeleteGroupMutation,
+  useUpdateArticalMutation,
 } = trendingApi;

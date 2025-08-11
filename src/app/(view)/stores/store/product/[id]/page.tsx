@@ -114,6 +114,11 @@ export default function Page() {
       id: product?.data?.id,
     }
   );
+
+
+  console.log('product', product);
+
+
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
@@ -327,8 +332,16 @@ export default function Page() {
             alt={product?.data?.product_name}
             className="aspect-square object-cover object-center w-full rounded-md shadow-lg"
           />
+          {
+            product?.data?.stock < 1 ? (
+              <div className="flex items-center justify-end mt-4">
+                <p className="text-red-500 font-bold">Out of Stock</p>
+              </div>
+            ) : null
+          }
+          <div className={`flex items-center justify-end mt-4 ${product?.data?.stock < 1 ? "opacity-50 pointer-events-none" : ""
+            }`}>
 
-          <div className="flex items-center justify-end mt-4">
             <ProductPrice
               currentPrice={
                 parseFloat(product?.data?.product_price || "0.0") ??
@@ -336,7 +349,7 @@ export default function Page() {
               }
               originalPrice={
                 product?.data?.original_price &&
-                parseFloat(product.data.original_price) > 0
+                  parseFloat(product.data.original_price) > 0
                   ? parseFloat(product.data.original_price)
                   : undefined
               }
@@ -370,9 +383,8 @@ export default function Page() {
                   image: relatedProduct.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",
-                  note: `$${parseFloat(relatedProduct.product_price).toFixed(
-                    2
-                  )}`,
+
+                  price: relatedProduct.product_price,
                   discount: relatedProduct.product_discount,
                   hearts: relatedProduct.total_heart,
                   rating: parseFloat(
