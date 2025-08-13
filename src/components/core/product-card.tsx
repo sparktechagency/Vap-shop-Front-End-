@@ -74,10 +74,7 @@ export default function ProductCard({
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
 
-
-  console.log('data', data);
-
-
+  console.log("data", data);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -136,8 +133,9 @@ export default function ProductCard({
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""
-                  }`}
+                className={`ml-1 size-5 ${
+                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                }`}
               />
             </Button>
           </div>

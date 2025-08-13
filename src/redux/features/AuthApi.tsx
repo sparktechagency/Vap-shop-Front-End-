@@ -62,6 +62,7 @@ const AuthApi = api.injectEndpoints({
         url: `/get-all-countries`,
         method: "GET",
       }),
+      providesTags:["tranding"]
     }),
 
     //getLogin user
