@@ -58,8 +58,8 @@ export const trendingApi = api.injectEndpoints({
       }),
     }),
 
-    mostRatedReview: builder.query<any, void>({
-      query: () => `/most-rated-reviews`,
+    mostRatedReview: builder.query<any, { region: string }>({
+      query: ({ region }) => `/most-rated-reviews?region_id=${region}`,
     }),
 
     getMostratedArtical: builder.query<
@@ -90,8 +90,6 @@ export const trendingApi = api.injectEndpoints({
       }),
       invalidatesTags: ["artical"],
     }),
-
-
 
     createApost: builder.mutation<any, any>({
       query: (formData) => ({
