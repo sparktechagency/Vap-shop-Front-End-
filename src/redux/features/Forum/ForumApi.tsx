@@ -13,8 +13,9 @@ export const forumApi = api.injectEndpoints({
         ).toString();
         return `/forum-group?${queryString}`;
       },
-    }),
 
+      providesTags: ["group"],
+    }),
     getallThredsByGropId: builder.query({
       query: ({ page, per_page, id }) =>
         `/forum-thread/?group_id=${id}&per_page=${per_page}&page=${page}`,
@@ -29,7 +30,7 @@ export const forumApi = api.injectEndpoints({
         url: `/forum-group/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["group"],
+      invalidatesTags: ["group", "thread"],
     }),
 
     getThreadDetailsById: builder.query({
@@ -57,7 +58,7 @@ export const forumApi = api.injectEndpoints({
         url: `/forum-thread/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["thread"],
+      invalidatesTags: ["thread", "group"],
     }),
 
 
@@ -79,6 +80,7 @@ export const forumApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["group"],
     }),
 
     likeThread: builder.mutation({

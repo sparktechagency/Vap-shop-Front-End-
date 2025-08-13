@@ -274,11 +274,10 @@ export default function ProductForm({ prod }: { prod: any }) {
                 {imageChanged && (
                   <div
                     {...getRootProps()}
-                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
-                      isDragging
+                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${isDragging
                         ? "border-blue-500 bg-blue-50"
                         : "border-gray-300 hover:border-gray-400"
-                    }`}
+                      }`}
                   >
                     <input {...getInputProps()} />
                     {imageurl ? (
@@ -422,14 +421,14 @@ export default function ProductForm({ prod }: { prod: any }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {(!catLoading ? cats?.data : []).map((x) => (
+                        {(!catLoading ? cats?.data : []).map((x: any) => (
                           <SelectItem value={String(x.id)} key={x.id}>
                             {x.name}
                           </SelectItem>
                         ))}
                         {field.value &&
                           !cats?.data?.some(
-                            (x) => String(x.id) === field.value
+                            (x: any) => String(x.id) === field.value
                           ) && (
                             <SelectItem value={field.value}>
                               Current category
