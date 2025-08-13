@@ -239,15 +239,12 @@ export default function ProductCard({
       <Link href={link ? link : "#"}>
         <div className="cursor-pointer">
           <CardContent className="!p-4 !space-y-1 transition-colors hover:text-primary">
-            {data?.category === "undefined" ? (
-              ""
-            ) : !data?.category ? (
-              ""
-            ) : (
+            {data?.category && (
               <p className="text-muted-foreground font-bold text-sm md:text-base">
                 {data.category}
               </p>
             )}
+
             <h3 className="lg:text-base font-semibold text-xs md:text-sm">
               {data.title}
             </h3>
@@ -257,17 +254,16 @@ export default function ProductCard({
               </div>
             )}
 
-            {!data.price || parseFloat(data.price) <= 0 ? (
+            {!data?.price || parseFloat(data.price) <= 0 ? (
               <div className="text-xs md:text-sm text-muted-foreground">
                 <span>Contact for pricing</span>
               </div>
             ) : (
-              typeof data.price === "number" && (
-                <div className="text-xs md:text-sm text-muted-foreground">
-                  <span>${data.price}</span>
-                </div>
-              )
+              <div className="text-xs md:text-sm text-muted-foreground">
+                <span>${parseFloat(data.price)}</span>
+              </div>
             )}
+
             <div className="text-xs md:text-sm text-muted-foreground">
               {data?.note && <span>{data.note}</span>}
             </div>

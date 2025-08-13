@@ -226,8 +226,19 @@ export default function Page() {
   };
 
   const formatPrice = () => {
-    if (!product) return "$0.00";
-    const price = parseFloat(product?.data?.product_price);
+    const rawPrice = product?.data?.product_price;
+    const price = parseFloat(rawPrice);
+
+    // দাম নাই বা 0 হলে Contact for pricing
+    if (!rawPrice || isNaN(price) || price <= 0) {
+      return (
+        <span className="text-muted-foreground text-sm">
+          Contact for pricing
+        </span>
+      );
+    }
+
+    // ডিসকাউন্ট থাকলে
     if (product.product_discount) {
       const discount = parseFloat(product.product_discount) / 100;
       const discountedPrice = price * (1 - discount);
@@ -245,6 +256,8 @@ export default function Page() {
         </>
       );
     }
+
+    // শুধু দাম দেখানো
     return `$${price.toFixed(2)}`;
   };
 
@@ -308,9 +321,9 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
-            <Button variant="outline" className="!text-sm font-extrabold">
+            {/* <Button variant="outline" className="!text-sm font-extrabold">
               B2B
-            </Button>
+            </Button> */}
             <Button variant="outline" size="icon">
               <Link href={`/chat?email=${product?.data?.user?.email}`}>
                 <MessageSquareMoreIcon />
@@ -431,9 +444,7 @@ export default function Page() {
                     relatedProduct?.product_image || "/image/shop/item.jpg",
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",
-                  note: `$${parseFloat(relatedProduct.product_price).toFixed(
-                    2
-                  )}`,
+                  note: `${relatedProduct.average_rating}★`,
                   price: relatedProduct.product_price,
                   discount: relatedProduct.product_discount,
                   hearts: relatedProduct.total_heart,

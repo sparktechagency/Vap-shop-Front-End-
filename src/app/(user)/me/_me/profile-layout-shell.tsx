@@ -125,24 +125,23 @@ export default async function ProfileLayoutShell({
                   <MessageSquareMoreIcon />
                 </Link>
               </Button>
-              {/* <Button variant="outline">Follow this account</Button>
-<Button variant="outline">Block this account</Button> */}
+
               <Button variant="outline" asChild>
                 <Link
                   href={
                     String(my.role) === "6"
                       ? `/profile/${my.id}?user=${my.full_name?.replace(
-                          /\s+/g,
-                          ""
-                        )}`
+                        /\s+/g,
+                        ""
+                      )}`
                       : String(my.role) === "5"
-                      ? `/stores/store/${my.id}`
-                      : String(my.role) === "3"
-                      ? `/brands/brand/${my.id}`
-                      : `/profile/${my.id}?user=${my.full_name?.replace(
-                          /\s+/g,
-                          ""
-                        )}`
+                        ? `/stores/store/${my.id}`
+                        : String(my.role) === "3"
+                          ? `/brands/brand/${my.id}`
+                          : `/profile/${my.id}?user=${my.full_name?.replace(
+                            /\s+/g,
+                            ""
+                          )}`
                   }
                 >
                   Preview Profile

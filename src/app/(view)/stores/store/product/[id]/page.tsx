@@ -231,9 +231,9 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
-            <Button variant="outline" className="!text-sm font-extrabold">
+            {/* <Button variant="outline" className="!text-sm font-extrabold">
               B2B
-            </Button>
+            </Button> */}
             <Button variant="outline" size="icon" asChild>
               <Link href={`/chat?email=${product?.data?.user?.email}`}>
                 <MessageSquareMoreIcon />

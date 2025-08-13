@@ -62,10 +62,9 @@ export default function Catalog() {
           const productData = {
             image: product.product_image || "/image/shop/item.jpg",
             title: product.product_name,
-            category: `${product.product_price}`,
-            note: `${product.average_rating ?? "0.0"}★ (${
-              product.total_heart
-            } hearts)`,
+            category: product.category_name ? product.category_name : null,
+            note: `${product.average_rating ?? "0.0"}★ (${product.total_heart
+              } hearts)`,
             price: product.product_price,
             discount: product.product_discount,
             hearts: product.total_heart,

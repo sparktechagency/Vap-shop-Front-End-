@@ -85,7 +85,7 @@ export default async function ProfileLayoutShell({
                   <MessageSquareMoreIcon /> Send a message
                 </Link>
               </Button>
-              <Button variant="outline">Follow this account</Button>
+              <Button variant="outline">Follow</Button>
             </div>
 
             <div className="">{children}</div>

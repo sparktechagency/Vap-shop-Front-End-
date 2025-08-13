@@ -44,8 +44,11 @@ export default function MostRated() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold text-center">Top Most Rated Reviews</h2>
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
-        <h2 className="text-3xl font-bold">Top Most Rated Reviews</h2>
+        <div>
+
+        </div>
         {!cLoading && (
           <Select>
             <SelectTrigger className="w-full md:w-[180px]">

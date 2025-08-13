@@ -103,9 +103,9 @@ export default function ProductReviewCard({
         <Link
           href={
             String(role) === "3"
-              ? `/brands/brand/product/${productData?.data?.id}`
+              ? `/brands/brand/product/${productData?.data?.id ?? productData.id}`
               : String(role) === "5"
-                ? `/stores/store/product/${productData?.data?.id}`
+                ? `/stores/store/product/${productData.data?.id ?? productData.id}`
                 : "#"
           }
         >
