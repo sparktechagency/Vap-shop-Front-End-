@@ -54,7 +54,14 @@ type FormData = z.infer<typeof formSchema>;
 export default function ProductForm({ prod }: { prod: any }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
+  const { data: cats, isLoading: catLoading } = useGetallCategorysQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: false,
+      refetchOnReconnect: false,
+    }
+  );
+
   const [updateProduct] = useUpdateProductMutation();
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
@@ -63,15 +70,21 @@ export default function ProductForm({ prod }: { prod: any }) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product_name: "",
-      product_price: "",
-      product_discount: "",
-      product_stock: "",
-      brand_name: "",
-      category_id: "",
-      product_description: "",
-      faqs: [],
-      thc_percentage: "",
+      product_name: String(prod?.product_name ?? ""),
+      product_price: String(prod?.product_price ?? ""),
+      product_discount: String(
+        prod?.product_discount === "0.00%" ? "0" : prod?.product_discount ?? "0"
+      ),
+      product_stock: String(prod?.product_stock ?? ""),
+      brand_name: String(prod?.brand_name ?? ""),
+      category_id: String(prod?.category_id ?? ""), // ✅ set from prod here
+      product_description: String(prod?.product_description ?? ""),
+      faqs:
+        prod?.product_faqs?.map((f: any) => ({
+          question: String(f.question ?? ""),
+          answer: String(f.answer ?? ""),
+        })) || [],
+      thc_percentage: String(prod?.thc_percentage ?? ""),
     },
   });
 
@@ -93,7 +106,7 @@ export default function ProductForm({ prod }: { prod: any }) {
       ),
       product_stock: String(prod.product_stock ?? ""),
       brand_name: String(prod.brand_name ?? ""),
-      category_id: String(prod.category_id ?? ""),
+      category_id: String(prod.category_id),
       product_description: String(prod.product_description ?? ""),
       thc_percentage: String(prod.thc_percentage ?? ""),
       faqs:
@@ -164,7 +177,6 @@ export default function ProductForm({ prod }: { prod: any }) {
         formData.append("product_id", prod.product_id);
       }
       formData.append("_method", "PUT");
-      // Wrap the API call in try-catch inside try to catch unwrap errors safely
       let res;
       try {
         Object.entries(data).forEach(([key, value]) => {
@@ -240,13 +252,23 @@ export default function ProductForm({ prod }: { prod: any }) {
                   </div>
                 )}
                 {!imageurl && !imageChanged && (
-                  <Button
-                    type="button"
-                    onClick={() => setImageChanged(true)}
-                    variant={"outline"}
-                  >
-                    Upload Image
-                  </Button>
+                  <>
+                    <Image
+                      src={prod.product_image ?? ""}
+                      height={800}
+                      width={800}
+                      className="size-[300px] rounded-lg"
+                      alt="product_image"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => setImageChanged(true)}
+                      variant={"outline"}
+                      className="mt-6"
+                    >
+                      Upload Image
+                    </Button>
+                  </>
                 )}
 
                 {imageChanged && (
@@ -400,12 +422,19 @@ export default function ProductForm({ prod }: { prod: any }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {!catLoading &&
-                          cats?.data?.map((x: { id: number; name: string }) => (
-                            <SelectItem value={String(x.id)} key={x.id}>
-                              {x.name}
+                        {(!catLoading ? cats?.data : []).map((x) => (
+                          <SelectItem value={String(x.id)} key={x.id}>
+                            {x.name}
+                          </SelectItem>
+                        ))}
+                        {field.value &&
+                          !cats?.data?.some(
+                            (x) => String(x.id) === field.value
+                          ) && (
+                            <SelectItem value={field.value}>
+                              Current category
                             </SelectItem>
-                          ))}
+                          )}
                       </SelectContent>
                     </Select>
                     <FormMessage />
