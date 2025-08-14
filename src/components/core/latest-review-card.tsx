@@ -2,6 +2,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { imageUrl } from "@/redux/baseApi";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
@@ -18,7 +19,8 @@ export default function LatestReviewCard({
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
-  console.log(data);
+  console.log('data', data);
+
 
   useEffect(() => {
     setMounted(true);
@@ -31,7 +33,7 @@ export default function LatestReviewCard({
     );
   }
 
-  console.log('product_user', product_user);
+  console.log('product_user', data);
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
@@ -46,7 +48,7 @@ export default function LatestReviewCard({
         >
 
           <Image
-            src={data.product.product_image ?? "/image/shop/item.jpg"}
+            src={data?.product.product_image ?? "/image/shop/item.jpg"}
             width={100}
             height={100}
             alt="icon"
@@ -66,18 +68,18 @@ export default function LatestReviewCard({
 
       <Link
         href={
-          product_user?.role === 3
-            ? `/brands/brand/${product_user?.id}`
-            : product_user?.role === 5
-              ? `/stores/store/${product_user?.id}`
-              : `/profile/${product_user?.id}`
+          data?.product_user?.role === 3
+            ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
+            : data?.product_user?.role === 5
+              ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
+              : `/profile/${product_user?.id ?? data?.product_user?.id}`
         }
       >
 
 
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
-            <AvatarImage src={product_user?.avatar} className="object-cover" />
+            <AvatarImage src={data?.product_user?.avatar} className="object-cover" />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
           <h4 className="text-sm font-semibold">{product_user?.full_name}</h4>
