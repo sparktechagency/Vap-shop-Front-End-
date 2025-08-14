@@ -18,7 +18,7 @@ import { useCountysQuery } from "@/redux/features/AuthApi";
 export default function MostRated() {
   const [region, setRegion] = useState(""); // "" means worldwide
 
-  const { data, isLoading, isError, refetch, error }: any =
+  const { data, isLoading, refetch }: any =
     useMostRatedReviewQuery({
       region,
     });
@@ -74,12 +74,7 @@ export default function MostRated() {
       {/* Results Section */}
       {isLoading ? (
         <LoadingSkeleton />
-      ) : isError ? (
-        <div className="flex flex-col items-center justify-center py-12">
-          <p className="mb-4 text-red-500">
-            {error?.data?.message || "Error: Couldn’t load reviews."}
-          </p>
-        </div>
+
       ) : data?.data?.length ? (
         <div className="space-y-6">
           {data?.data?.map((review: any) => (

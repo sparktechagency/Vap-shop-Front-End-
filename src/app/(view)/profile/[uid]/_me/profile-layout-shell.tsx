@@ -70,7 +70,7 @@ export default async function ProfileLayoutShell({
               </Button> */}
               <Button
                 variant="outline"
-                className="!text-sm font-extrabold"
+                className={`!text-sm font-extrabold ${my.role === 6 || my.role === 2 ? "hidden" : "hidden"}`}
                 asChild
               >
                 <Link href={`/stores/store/${id}/btb`}>B2B</Link>
@@ -85,7 +85,7 @@ export default async function ProfileLayoutShell({
                   <MessageSquareMoreIcon /> Send a message
                 </Link>
               </Button>
-              <Button variant="outline">Follow</Button>
+              {/* <Button variant="outline">Follow</Button> */}
             </div>
 
             <div className="">{children}</div>

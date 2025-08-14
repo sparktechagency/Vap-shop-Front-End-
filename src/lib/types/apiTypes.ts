@@ -29,7 +29,7 @@ export interface UserData {
   last_name: string;
   dob: string | null;
   email?: string;
-  role: string;
+  role: any;
   avatar: string;
   phone?: string;
   created_at: string;
