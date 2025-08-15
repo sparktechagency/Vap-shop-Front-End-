@@ -35,7 +35,7 @@ export default async function Page() {
                 case 3:
                   return <BrandEditForm my={my} />;
                 case 4:
-                  return <WholesalerEditForm />;
+                  return <WholesalerEditForm my={my} />;
                 case 5:
                   return <StoreEditForm my={my} />;
                 case 6:

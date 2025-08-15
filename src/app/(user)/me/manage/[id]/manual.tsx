@@ -422,14 +422,14 @@ export default function ProductForm({ prod }: { prod: any }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {(!catLoading ? cats?.data : []).map((x) => (
+                        {(!catLoading ? cats?.data : []).map((x: any) => (
                           <SelectItem value={String(x.id)} key={x.id}>
                             {x.name}
                           </SelectItem>
                         ))}
                         {field.value &&
                           !cats?.data?.some(
-                            (x) => String(x.id) === field.value
+                            (x: any) => String(x.id) === field.value
                           ) && (
                             <SelectItem value={field.value}>
                               Current category
