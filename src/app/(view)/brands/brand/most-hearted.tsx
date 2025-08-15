@@ -44,12 +44,13 @@ export default function MostHearted({ id }: any) {
           const productData = {
             image: product.product_image || "/image/shop/item.jpg",
             title: product.product_name,
-            category: `$${product.product_price}`,
+            category: product.category_name ? product.category_name : null,
             note: `${product.average_rating}★ (${product.total_heart} hearts)`,
             hearts: product.total_heart,
             is_hearted: product.is_hearted,
             id: product.id,
-            slug: product.slug
+            slug: product.slug,
+            price: product.product_price,
           };
 
           return (

@@ -2,6 +2,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { imageUrl } from "@/redux/baseApi";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
@@ -10,13 +11,16 @@ import { useEffect, useState } from "react";
 export default function LatestReviewCard({
   data,
   userId,
+  product_user,
 }: {
   data: any;
   userId: number | string;
+  product_user?: any;
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
-  console.log(data);
+  console.log('data', data);
+
 
   useEffect(() => {
     setMounted(true);
@@ -28,41 +32,60 @@ export default function LatestReviewCard({
       </div>
     );
   }
+
+  console.log('product_user', data);
+
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
 
       <div className="p-4 flex items-center gap-6">
-        <Image
-          src={data.product.product_image ?? "/image/shop/item.jpg"}
-          width={100}
-          height={100}
-          alt="icon"
-          className="size-24 object-cover object-center rounded-lg"
-        />
+        <Link
+          href={
+            data.product.role === 3
+              ? `/brands/brand/product/${data.product.id}`
+              : `/stores/store/product/${data.product.id}`
+          }
+        >
+
+          <Image
+            src={data?.product.product_image ?? "/image/shop/item.jpg"}
+            width={100}
+            height={100}
+            alt="icon"
+            className="size-24 object-cover object-center rounded-lg"
+          />
+
+        </Link>
         <div className="">
           <h4 className="font-semibold text-xl">
             {data.product.product_name ?? ""}
           </h4>
         </div>
       </div>
+
+
+
+
       <Link
         href={
-          data.product.role === 3
-            ? `/brands/brand/product/${data.product.id}`
-            : `/stores/store/product/${data.product.id}`
+          data?.product_user?.role === 3
+            ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
+            : data?.product_user?.role === 5
+              ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
+              : `/profile/${product_user?.id ?? data?.product_user?.id}`
         }
       >
 
 
-
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
-            <AvatarImage src={me?.data?.avatar} className="object-cover" />
+            <AvatarImage src={data?.product_user?.avatar} className="object-cover" />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
-          <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
+          <h4 className="text-sm font-semibold">{product_user?.full_name}</h4>
         </div>
       </Link>
+
       {/* Review Content */}
       <div className="p-4 !pb-1">
         <p className="text-sm leading-relaxed !mb-4">{data?.comment}</p>
@@ -87,6 +110,6 @@ export default function LatestReviewCard({
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }

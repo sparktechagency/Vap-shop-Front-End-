@@ -274,11 +274,10 @@ export default function ProductForm({ prod }: { prod: any }) {
                 {imageChanged && (
                   <div
                     {...getRootProps()}
-                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
-                      isDragging
+                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${isDragging
                         ? "border-blue-500 bg-blue-50"
                         : "border-gray-300 hover:border-gray-400"
-                    }`}
+                      }`}
                   >
                     <input {...getInputProps()} />
                     {imageurl ? (

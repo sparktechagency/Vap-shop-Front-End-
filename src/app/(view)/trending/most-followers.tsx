@@ -137,7 +137,7 @@ export default function MostFollowers() {
         )}
       </div>
 
-      <h2 className="font-semibold text-2xl text-center !mt-12">
+      <h2 className="font-semibold text-2xl !mt-12 text-center">
         Top 50 Most Followed Brands
       </h2>
 

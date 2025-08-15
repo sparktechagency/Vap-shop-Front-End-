@@ -28,9 +28,13 @@ interface ForumCardProps {
   to?: string;
   editable?: boolean;
   refetch?: () => void;
+  onDeleteSuccess?: () => void;
+  length?: any
 }
 
 export default function ForumCard({
+  length,
+  onDeleteSuccess,
   refetch,
   data,
   to,
@@ -49,7 +53,7 @@ export default function ForumCard({
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
-  const [deleteGroup, { isLoading }] = useDeleteThreadMutation();
+  const [deleteThread, { isLoading }] = useDeleteThreadMutation();
   const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
   console.log("user", user?.data?.role);
@@ -82,21 +86,26 @@ export default function ForumCard({
 
     // Use a custom modal/toast for confirmation instead of window.confirm in real apps
     const confirmed = window.confirm(
-      "Are you sure you want to delete this group?"
+      "Are you sure you want to delete this thread?"
     );
     if (!confirmed) return;
 
     try {
-      const response = await deleteGroup({ id }).unwrap();
+      const response = await deleteThread({ id }).unwrap();
       if (!response.ok) throw new Error(response.message);
       if (response.ok) {
-
-        toast.success(response.message || "Group deleted successfully");
-        refetch?.();
+        toast.success(response.message || "thread deleted successfully");
+        // Call the new handler function from the parent
+        if (length === 1) {
+          window.location.reload();
+        }
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+        }
       }
     } catch (error) {
-      console.error("Failed to delete group:", error);
-      toast.error("Failed to delete group");
+      console.error("Failed to delete thread:", error);
+      toast.error("Failed to delete thread");
     }
   };
 

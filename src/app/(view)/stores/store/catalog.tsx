@@ -123,11 +123,11 @@ export default function Catalog({ id }: any) {
               id: item.id,
               image: item.product_image || "/image/shop/item.jpg",
               title: item.product_name,
-              category: `${item.product_type}`,
+              category: item.category_name ? item.category_name : null,
               note: item.product_type,
               price:
                 parseFloat(item.product_price) >= 0 &&
-                !isNaN(parseFloat(item.product_price))
+                  !isNaN(parseFloat(item.product_price))
                   ? `${item.product_price}`
                   : undefined,
 

@@ -51,35 +51,30 @@ interface Thread {
 export default function Threader({ id }: { id: string }) {
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(8);
-  const { data, isLoading } = useGetallThredsByGropIdQuery({
+  const { data, isLoading, refetch } = useGetallThredsByGropIdQuery({
     id: JSON.parse(id),
     page,
     per_page: perPage,
   });
 
-
-  console.log('data', data);
-  console.log('id', id);
-
-
   const [dialogOpen, setDialogOpen] = React.useState(false);
+
+
+  const handleItemDeletion = () => {
+    // Check if the data exists and there is only one item left on the current page.
+    if (data?.data?.data?.length === 1 && page > 1) {
+      // If it's the last item, force a full page reload.
+      window.location.reload();
+    } else {
+      // If there are other items, just refetch the data to update the list.
+      refetch();
+    }
+  };
+
 
   if (isLoading) {
     return <LoadingScletion />;
   }
-
-  // Transform API data to match ForumCardType
-  const transformThreadToCardData = (thread: Thread): ForumCardType => ({
-    title: thread.title,
-    date: new Date(thread.created_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }),
-    secondaryA: `Replies: ${thread.total_replies}`,
-    secondaryB: `Views: ${thread.views}`,
-    new: false, // You can add logic to determine if a thread is new
-  });
 
   // Empty state component
   const EmptyState = () => (
@@ -157,7 +152,9 @@ export default function Threader({ id }: { id: string }) {
         {data && data?.data?.data?.length > 0 ? (
           data?.data?.data?.map((thread: Thread) => (
             <ForumCard
+              onDeleteSuccess={handleItemDeletion}
               key={thread.id}
+              length={data?.data?.data?.length}
               data={{
                 id: thread.id,
                 title: thread.title,

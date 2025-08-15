@@ -20,6 +20,11 @@ export default function Page() {
     const { data: brandDetails, isLoading, refetch } = useGetBrandDetailsByIdQuery(id as any);
     const [followOrUnfollowBrand, { isLoading: isFollowing }] = useFollowBrandMutation();
     const [unfollowBrand, { isLoading: isUnFollowing }] = useUnfollowBrandMutation();
+
+    const { data } = useGetOwnprofileQuery();
+    const Userrole = data?.data?.role;
+
+
     const user = brandDetails?.data?.user;
     const handleShare = () => {
         if (navigator.share) {
@@ -126,13 +131,24 @@ export default function Page() {
                     </div>
                     <div className="flex-1 md:h-24 grid grid-cols-1 md:flex flex-row justify-end items-center gap-4">
                         <p className="font-semibold text-sm">{user?.total_followers} followers</p>
+
                         <Button
                             variant="outline"
-                            className="!text-sm font-extrabold"
+                            className={`${Userrole === 2 || Userrole === 6 ? "hidden" : ""} !text-sm font-extrabold `}
                             asChild
                         >
-                            <Link href="/stores/store/btb">B2B</Link>
+
+                            <Button
+                                variant="outline"
+                                className="!text-sm font-extrabold"
+                                asChild
+                            >
+                                <Link href="/stores/store/btb">B2B</Link>
+                            </Button>
+
                         </Button>
+
+
                         <Button
                             variant="outline"
                             className="w-full md:w-9"
