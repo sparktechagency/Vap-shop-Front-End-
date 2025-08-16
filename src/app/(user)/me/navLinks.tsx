@@ -125,7 +125,6 @@ export const createNavLinks = (
         baseLinks.viewProfile,
         baseLinks.editProfile,
         baseLinks.inbox,
-        baseLinks.reviews,
         baseLinks.settings,
         baseLinks.logout,
       ];

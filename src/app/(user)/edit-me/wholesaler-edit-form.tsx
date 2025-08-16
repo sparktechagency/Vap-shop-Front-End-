@@ -40,6 +40,8 @@ const formSchema = z.object({
   region_id: z.string(),
   latitude: z.string(),
   longitude: z.string(),
+  open_from: z.string(),
+  close_at: z.string(),
 });
 export default function BrandEditForm({ my }: { my: UserData }) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -53,6 +55,8 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       region_id: String(my?.address?.region_id || ""),
       latitude: String(my?.address?.latitude || ""),
       longitude: String(my?.address?.longitude || ""),
+      open_from: String(my?.open_from || ""),
+      close_at: String(my?.close_at || ""),
     },
   });
 
@@ -62,7 +66,10 @@ export default function BrandEditForm({ my }: { my: UserData }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const res = await updateUser(values).unwrap();
+      const res = await updateUser({
+        ...values,
+        first_name: values.full_name,
+      }).unwrap();
 
       toast.success("Store updated successfully ✅");
       console.log("Store update response:", res);
@@ -204,6 +211,32 @@ export default function BrandEditForm({ my }: { my: UserData }) {
                 <FormLabel>Longitude</FormLabel>
                 <FormControl>
                   <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="open_from"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Open from</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter zip code" type="time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="close_at"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Closed at</FormLabel>
+                <FormControl>
+                  <Input placeholder="" type="time" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
