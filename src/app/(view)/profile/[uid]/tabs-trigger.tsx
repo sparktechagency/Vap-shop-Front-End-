@@ -41,7 +41,9 @@ export default function TabsTriggerer() {
           )}
           <TabsTrigger value="post">Post</TabsTrigger>
           <TabsTrigger value="feed">Feed</TabsTrigger>
-          <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
+          {!isLoading && user?.data.role !== 2 && (
+            <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
+          )}
           <TabsTrigger value="create-group">Group</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>

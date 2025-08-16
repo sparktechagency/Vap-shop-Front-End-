@@ -31,11 +31,11 @@ export default async function Page() {
               const role = parseInt(my.role);
               switch (role) {
                 case 2:
-                  return <AssociationEditForm />;
+                  return <AssociationEditForm my={my} />;
                 case 3:
                   return <BrandEditForm my={my} />;
                 case 4:
-                  return <WholesalerEditForm />;
+                  return <WholesalerEditForm my={my} />;
                 case 5:
                   return <StoreEditForm my={my} />;
                 case 6:

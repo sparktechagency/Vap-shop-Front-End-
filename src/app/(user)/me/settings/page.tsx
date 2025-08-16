@@ -97,6 +97,7 @@ export default function Page() {
         </Card>
       </div>
       {String(my.role) !== String(6) &&
+        String(my.role) !== String(2) &&
         (!isError ? (
           <div className="mt-12">
             <Card>
