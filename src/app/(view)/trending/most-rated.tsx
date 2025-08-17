@@ -18,10 +18,9 @@ import { useCountysQuery } from "@/redux/features/AuthApi";
 export default function MostRated() {
   const [region, setRegion] = useState(""); // "" means worldwide
 
-  const { data, isLoading, refetch }: any =
-    useMostRatedReviewQuery({
-      region,
-    });
+  const { data, isLoading, refetch }: any = useMostRatedReviewQuery({
+    region,
+  });
 
   const { data: countries, isLoading: cLoading } = useCountysQuery();
 
@@ -32,10 +31,11 @@ export default function MostRated() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Filter Section - Always visible */}
+      <h2 className="text-3xl font-bold text-center!">
+        Top Most Rated Reviews
+      </h2>
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
-        <div>
-
-        </div>
+        <div></div>
         {!cLoading && (
           <Select
             onValueChange={(val) => {
@@ -74,7 +74,6 @@ export default function MostRated() {
       {/* Results Section */}
       {isLoading ? (
         <LoadingSkeleton />
-
       ) : data?.data?.length ? (
         <div className="space-y-6">
           {data?.data?.map((review: any) => (

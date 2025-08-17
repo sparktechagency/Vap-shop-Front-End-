@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCountysQuery } from "@/redux/features/AuthApi";
+import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import React, { useState } from "react";
 
 export default function Page() {
   const [selectedSlot, setSelectedSlot] = useState(1);
+  const { data, isLoading } = useCountysQuery();
+  const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   return (
     <section className="pt-6">
       <Card>
@@ -74,10 +79,15 @@ export default function Page() {
         <Input placeholder="Product Name" type="number" readOnly disabled />
         <Select>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select Duration" />
+            <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={"1"}>Vape Kits</SelectItem>
+            {!catLoading &&
+              cats.data.map((x: any) => (
+                <SelectItem value={x.id} key={x.id}>
+                  {x.name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Select>
@@ -85,7 +95,14 @@ export default function Page() {
             <SelectValue placeholder="Select Region" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={"1"}>NY, USA</SelectItem>
+            {!isLoading &&
+              data.data.map((x: any) =>
+                x.regions.map((y: any) => (
+                  <SelectItem value={y.id} key={y.id}>
+                    {y.name}({y.code}) , {x.name}
+                  </SelectItem>
+                ))
+              )}
           </SelectContent>
         </Select>
         <Button>Submit Ad Request</Button>
