@@ -116,6 +116,10 @@ const data = {
           url: "/admin/moderation/footercontent",
         },
         {
+          title: "Manage Categories",
+          url: "/admin/moderation/mangecategories",
+        },
+        {
           title: "Legal & Policies",
           url: "/admin/moderation/legal-policies",
         },
