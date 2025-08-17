@@ -7,6 +7,7 @@ import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
 import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import { UserData } from "@/lib/types/apiTypes";
+import FollowUnfollow from "@/components/ui/FollowUnfollow";
 export default async function ProfileLayoutShell({
   children,
   id,
@@ -75,6 +76,7 @@ export default async function ProfileLayoutShell({
               >
                 <Link href={`/stores/store/${id}/btb`}>B2B</Link>
               </Button>
+              <FollowUnfollow user={my} />
               <Button
                 // size="icon"
                 variant="outline"
@@ -86,6 +88,8 @@ export default async function ProfileLayoutShell({
                 </Link>
               </Button>
               {/* <Button variant="outline">Follow</Button> */}
+
+
             </div>
 
             <div className="">{children}</div>
