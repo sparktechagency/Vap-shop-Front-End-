@@ -79,14 +79,14 @@ export default function Page() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
           {isLoading
             ? Array.from({ length: 8 }).map((_, index) => (
-              <BrandProdCardSkeleton key={index} />
-            ))
+                <BrandProdCardSkeleton key={index} />
+              ))
             : brandsResponse?.data?.data?.map((brand: any) => (
-              <BrandProdCard
-                data={transformBrandData(brand)}
-                key={brand.id}
-              />
-            ))}
+                <BrandProdCard
+                  data={transformBrandData(brand)}
+                  key={brand.id}
+                />
+              ))}
         </div>
       </div>
     </div>

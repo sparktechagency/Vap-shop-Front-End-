@@ -186,7 +186,17 @@ export default function Searcher({
                           ) : (
                             <Namer
                               name={x.first_name}
-                              type={selectedSearch}
+                              type={
+                                x.role === 3
+                                  ? "brand"
+                                  : x.role === 4
+                                  ? "wholesaler"
+                                  : x.role === 5
+                                  ? "store"
+                                  : x.role === 2
+                                  ? "association"
+                                  : "member"
+                              }
                               // isVerified
                               size="sm"
                             />

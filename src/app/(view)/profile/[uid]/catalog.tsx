@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/pagination";
 import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
 
-export default function Catalog({ id }: any) {
+export default function Catalog({ id, role }: any) {
   const [page, setPage] = React.useState(1);
   const per_page = 12;
 
@@ -124,7 +124,7 @@ export default function Catalog({ id }: any) {
               image: item.product_image || "/image/shop/item.jpg",
               title: item.product_name,
               category: item.category_name ? item.category_name : null,
-              price: item.product_price,
+              price: role === 4 ? null : item.product_price,
               note: item.product_type,
               is_hearted: item.is_hearted,
               hearts: item.total_heart,
