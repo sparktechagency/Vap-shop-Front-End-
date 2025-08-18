@@ -19,7 +19,7 @@ export default function TabsTriggerer({ id }: any) {
     <div className="!py-10">
       <Tabs defaultValue="hearted">
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
-          <TabsTrigger value="hearted">Most Hearted Products</TabsTrigger>
+          {/* <TabsTrigger value="hearted">Most Hearted Products</TabsTrigger> */}
           <TabsTrigger value="catalog">Catalog</TabsTrigger>
           {/* <TabsTrigger value="announcement">Announcement</TabsTrigger> */}
           <TabsTrigger value="post">Post</TabsTrigger>
@@ -29,9 +29,9 @@ export default function TabsTriggerer({ id }: any) {
           <TabsTrigger value="groups">Groups</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="hearted">
+        {/* <TabsContent value="hearted">
           <MostHearted id={id} />
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="catalog">
           <Catalog id={id} />
         </TabsContent>

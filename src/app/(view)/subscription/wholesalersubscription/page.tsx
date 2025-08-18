@@ -43,6 +43,11 @@ const WholesalerPage: NextPage = () => {
 
         console.log('plan_ids', plan_ids);
 
+        if (!plan_ids) {
+            toast.error('Please select at least one addon');
+            return;
+        }
+
         try {
             const response = await sendSubscriptionToAdmin({ plan_ids }).unwrap();
             console.log('response', response);

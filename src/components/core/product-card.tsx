@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function ProductCard({
   refetchAds,
@@ -74,6 +75,10 @@ export default function ProductCard({
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
 
+  const { data: user } = useGetOwnprofileQuery();
+  const userRole = user?.data?.role
+
+  console.log('userRole', userRole);
 
 
   useEffect(() => {
@@ -250,16 +255,18 @@ export default function ProductCard({
                 {data?.thc_percentage}% THC
               </div>
             )}
-
-            {!data?.price || parseFloat(data.price) <= 0 ? (
-              <div className="text-xs md:text-sm text-muted-foreground">
-                <span>Contact for pricing</span>
-              </div>
-            ) : (
-              <div className="text-xs md:text-sm text-muted-foreground">
-                <span>${parseFloat(data.price)}</span>
-              </div>
+            {userRole !== 6 && (
+              !data?.price || parseFloat(data.price) <= 0 ? (
+                <div className="text-xs md:text-sm text-muted-foreground">
+                  <span>Contact for pricing</span>
+                </div>
+              ) : (
+                <div className="text-xs md:text-sm text-muted-foreground">
+                  <span>${parseFloat(data.price)}</span>
+                </div>
+              )
             )}
+
 
             <div className="text-xs md:text-sm text-muted-foreground">
               {data?.note && <span>{data.note}</span>}

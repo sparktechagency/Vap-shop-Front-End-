@@ -42,7 +42,7 @@ export const api = createApi({
     "artical",
     "location",
     "group",
-    "",
+    "category",
   ],
   endpoints: () => ({}),
 });
