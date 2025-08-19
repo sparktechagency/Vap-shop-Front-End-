@@ -1,24 +1,19 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import ProductCard from "@/components/core/product-card";
 import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import Link from "next/link";
 import { useGetMostHurtedBrandQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MostHearted({ id }: any) {
-  const { data: brandData, isLoading, refetch } = useGetMostHurtedBrandQuery(id as any);
+  const {
+    data: brandData,
+    isLoading,
+    refetch,
+  } = useGetMostHurtedBrandQuery(id as any);
   const products = brandData?.data?.products?.data || [];
-  console.log('brandData', brandData);
+  console.log("brandData", brandData);
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
@@ -50,7 +45,7 @@ export default function MostHearted({ id }: any) {
             is_hearted: product.is_hearted,
             id: product.id,
             slug: product.slug,
-            price: product.product_price,
+            // price: product.product_price,
           };
 
           return (
@@ -64,8 +59,6 @@ export default function MostHearted({ id }: any) {
           );
         })}
       </div>
-
-
     </>
   );
 }

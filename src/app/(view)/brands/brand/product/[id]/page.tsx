@@ -228,6 +228,7 @@ export default function Page() {
   const formatPrice = () => {
     const rawPrice = product?.data?.product_price;
     const price = parseFloat(rawPrice);
+    return "";
 
     // দাম নাই বা 0 হলে Contact for pricing
     if (!rawPrice || isNaN(price) || price <= 0) {
@@ -304,8 +305,9 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={`/brands/brand/${product?.data?.user?.id
-                }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+              href={`/brands/brand/${
+                product?.data?.user?.id
+              }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer
@@ -423,8 +425,9 @@ export default function Page() {
           Looking more from{" "}
           <Link
             className="text-black hover:text-[#3a3a3a] underline font-semibold"
-            href={`/brands/brand/${product?.data?.user?.id
-              }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+            href={`/brands/brand/${
+              product?.data?.user?.id
+            }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
           >
             {product?.data?.user?.full_name || "Brand"}
           </Link>
@@ -445,7 +448,7 @@ export default function Page() {
                   title: relatedProduct.product_name,
                   category: relatedProduct.category?.name || "Product",
                   note: `${relatedProduct.average_rating}★`,
-                  price: relatedProduct.product_price,
+                  // price: relatedProduct.product_price,
                   discount: relatedProduct.product_discount,
                   hearts: relatedProduct.total_heart,
                   rating: parseFloat(
