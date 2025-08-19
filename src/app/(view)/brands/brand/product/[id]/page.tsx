@@ -50,6 +50,21 @@ import ProductReviewCard from "@/components/core/review-card";
 import Reviewer from "./reviewer";
 import ReviewPost from "./review-post";
 
+
+
+
+
+import DOMPurify from 'dompurify';
+
+
+// Define the props for your component
+interface SafeHtmlRendererProps {
+  dirtyHtml: string;
+  className?: string; // Optional className for styling
+}
+
+
+
 const accordionData = [
   {
     id: "features",
@@ -305,9 +320,8 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-center">
             <Link
-              href={`/brands/brand/${
-                product?.data?.user?.id
-              }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+              href={`/brands/brand/${product?.data?.user?.id
+                }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer
@@ -389,16 +403,24 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+
+
       <div className="w-full grid grid-cols-1 lg:grid-cols-9 !py-12 bg-secondary dark:bg-zinc-900 !px-4 lg:!px-[7%] gap-8">
         <div className="col-span-1 lg:col-span-5">
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
             {product?.data?.product_name || "Brand"}
           </h1>
           <div className="text-2xl font-bold !mb-4">{formatPrice()}</div>
-          <p className="text-muted-foreground !mb-8">
-            {product.product_description ||
-              "Premium product with excellent features."}
-          </p>
+          <div
+            className="text-muted-foreground !mb-8 prose dark:prose-invert"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                product?.data?.product_description ||
+                "<p>Premium product with excellent features.</p>"
+              ),
+            }}
+          />
           <div className="w-full lg:w-2/3">
             <Accordion type="single" collapsible>
               {getFAQAccordionItems().map((item: AccordionItemType) => (
@@ -420,14 +442,17 @@ export default function Page() {
           />
         </div>
       </div>
+
+
+
+
       <div className="!px-4 lg:!px-[7%] !py-20">
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
           <Link
             className="text-black hover:text-[#3a3a3a] underline font-semibold"
-            href={`/brands/brand/${
-              product?.data?.user?.id
-            }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
+            href={`/brands/brand/${product?.data?.user?.id
+              }?${product?.data?.user?.full_name.toLocaleLowerCase()}`}
           >
             {product?.data?.user?.full_name || "Brand"}
           </Link>
