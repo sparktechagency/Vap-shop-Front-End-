@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import InvoiceDetail from "./invoice-detail";
+import { useUser } from "@/context/userContext";
 
 interface OrderType {
   order_id: number;
@@ -52,7 +53,7 @@ export default function BuissnessOrder() {
   const [updateOrder] = useUpdateOrderStatusMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("12345");
-
+  const { role } = useUser();
   const handleViewInvoice = (orderId: string) => {
     setSelectedOrderId(orderId);
     setIsModalOpen(true);
@@ -86,6 +87,15 @@ export default function BuissnessOrder() {
     } catch (error: any) {
       toast.error(error?.data?.message || "Something went wrong");
     }
+  }
+  if (isError && role === 3) {
+    return (
+      <div className="!p-6">
+        <div className="h-12 w-full flex justify-center items-center">
+          {"No order found"}
+        </div>
+      </div>
+    );
   }
   if (isError) {
     return (

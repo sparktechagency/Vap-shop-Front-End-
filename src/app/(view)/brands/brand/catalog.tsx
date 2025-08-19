@@ -44,7 +44,7 @@ export default function Catalog({ id }: any) {
             title: product.product_name,
             category: product.category_name ? product.category_name : null,
             note: `${product.average_rating}★ (${product.total_heart} hearts)`,
-            price: product.product_price,
+            // price: product.product_price,
             discount: product.product_discount,
             hearts: product.total_heart,
             rating: product.average_rating,
