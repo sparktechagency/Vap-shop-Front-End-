@@ -13,15 +13,15 @@ export default function Home() {
   console.log(categorys);
 
   const trendingCategories = categorys?.data?.map(
-    (category: any) => category.name
+    (category: any) => category
   ) || [
-    "Pod Systems",
-    "Mod Kits",
-    "Disposable Vapes",
-    "Nicotine Pouches",
-    "E-Liquids",
-    "Coils & Pods",
-  ];
+      "Pod Systems",
+      "Mod Kits",
+      "Disposable Vapes",
+      "Nicotine Pouches",
+      "E-Liquids",
+      "Coils & Pods",
+    ];
 
   if (isCategoriesLoading) {
     return (
@@ -63,17 +63,17 @@ export default function Home() {
           </h1>
           <div className="flex justify-center">
             <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-7 gap-6 justify-center place-items-center">
-              {trendingCategories.map((title: string, i: number) => (
-                <Link href={`/trending?title=${title}`} key={i}>
+              {trendingCategories.map((cat: any, i: number) => (
+                <Link href={`/trending?title=${cat.name}`} key={i}>
                   <div className="w-full flex flex-col justify-center items-center hover:scale-105 transition-transform cursor-pointer">
                     <div
                       className="size-20 lg:size-[150px] xl:size-[220px] rounded-3xl border bg-cover bg-center bg-no-repeat overflow-hidden"
                       style={{
-                        backgroundImage: `url(${categoryImageSet[i]})`,
+                        backgroundImage: `url(${cat.image})`,
                       }}
                     />
                     <div className="w-full text-center font-semibold !pt-4 text-xs sm:text-sm md:text-xl">
-                      {title}
+                      {cat.name}
                     </div>
                   </div>
                 </Link>

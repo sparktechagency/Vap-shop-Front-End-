@@ -11,6 +11,11 @@ export const homePageApi = api.injectEndpoints({
       providesTags: ["category"],
     }),
 
+    getAllAdminCategory: builder.query<any, void>({
+      query: () => `/admin/category`,
+      providesTags: ["category"],
+    }),
+
     createACategory: builder.mutation<any, any>({
       query: (formData) => ({
         url: `/admin/category`,
@@ -41,4 +46,4 @@ export const homePageApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetHomeBannerQuery, useGetallCategorysQuery, useCreateACategoryMutation, useDelteACategoryMutation, useUpdateCategoryMutation } = homePageApi;
+export const { useGetHomeBannerQuery, useGetallCategorysQuery, useCreateACategoryMutation, useDelteACategoryMutation, useUpdateCategoryMutation, useGetAllAdminCategoryQuery } = homePageApi;
