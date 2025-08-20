@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/pagination";
 import { useGetProductsQuery } from "@/redux/features/manage/product";
 import { Loader2Icon } from "lucide-react";
+import { useUser } from "@/context/userContext";
 
 export default function Catalog() {
   const [page, setPage] = useState<number>(1);
@@ -20,7 +21,7 @@ export default function Catalog() {
     page,
     per,
   });
-
+  const { role } = useUser();
   const totalPages = data?.data?.last_page || 1;
 
   if (isLoading) {
@@ -53,7 +54,11 @@ export default function Catalog() {
               note: "",
               thc_percentage: x.thc_percentage,
             }}
-            link={`/stores/store/product/${x.id}`}
+            link={
+              role === 4
+                ? `/profile/product/${x.id}`
+                : `/stores/store/product/${x.id}`
+            }
             manage
           />
         ))}

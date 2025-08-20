@@ -29,6 +29,7 @@ import ProductCard from "@/components/core/product-card";
 import { useParams, usePathname } from "next/navigation";
 import {
   useFollowBrandMutation,
+  useProductDetailsByIdRoleQuery,
   useStoreProductDetailsByIdQuery,
   useTrendingProductDetailsByIdQuery,
   useUnfollowBrandMutation,
@@ -51,10 +52,10 @@ import {
 } from "react-share";
 import { Separator } from "@/components/ui/separator";
 import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
-import ProductReviewCard from "@/components/core/review-card";
-import ReviewPost from "../../[id]/review-post";
-import Reviewer from "../../[id]/reviewer";
+
 import { ProductPrice } from "@/components/ui/ProductPrice";
+import ReviewPost from "@/app/(view)/stores/store/[id]/review-post";
+import Reviewer from "@/app/(view)/stores/store/[id]/reviewer";
 import DOMPurify from "dompurify";
 
 interface ShareButtonsProps {
@@ -106,12 +107,15 @@ export default function Page() {
     data: product,
     isLoading,
     refetch,
-  } = useStoreProductDetailsByIdQuery(id as any);
+  } = useProductDetailsByIdRoleQuery(
+    { id: String(id), role: 4 },
+    { skip: !id }
+  );
 
   // Add this hook to fetch reviews
   const { data: reviewsData, isLoading: isReviewsLoading } = useGetReviewsQuery(
     {
-      role: 5,
+      role: 4,
       id: product?.data?.id,
     }
   );
@@ -301,7 +305,7 @@ export default function Page() {
           <h1 className="text-4xl lg:text-6xl font-semibold !mb-6">
             {product?.data?.product_name || "Brand"}
           </h1>
-          <div className="text-2xl font-bold !mb-4">{formatPrice()}</div>
+          {/* <div className="text-2xl font-bold !mb-4">{formatPrice()}</div> */}
           <p
             className="text-muted-foreground !mb-8"
             dangerouslySetInnerHTML={{
@@ -346,7 +350,7 @@ export default function Page() {
               product?.data?.stock < 1 ? "opacity-50 pointer-events-none" : ""
             }`}
           >
-            <ProductPrice
+            {/* <ProductPrice
               currentPrice={
                 parseFloat(product?.data?.product_price || "0.0") ??
                 "Contact for Pricing"
@@ -361,7 +365,7 @@ export default function Page() {
               description={product?.data?.product_description || ""}
               productName={product?.data?.product_name || ""}
               productImage={product?.data?.product_image}
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -369,7 +373,7 @@ export default function Page() {
         <h3 className="text-2xl !mb-20">
           Looking more from{" "}
           <Link
-            href={`/stores/store/${product.data.user.id ?? ""}`}
+            href={`/profile/${product.data.user.id ?? ""}`}
             className="underline font-semibold"
           >
             {product?.data?.user?.full_name || "Brand"}
@@ -400,10 +404,10 @@ export default function Page() {
         </div>
 
         {/* Reviews Section */}
-        <ReviewPost role={5} productId={product?.data?.id} />
+        <ReviewPost role={4} productId={product?.data?.id} />
         <Separator />
         {/* Pass reviews data to Reviewer component */}
-        {reviewsData && <Reviewer product={product} role={5} />}
+        {reviewsData && <Reviewer product={product} role={4} />}
       </div>
     </main>
   );

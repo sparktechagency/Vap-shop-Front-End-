@@ -55,7 +55,13 @@ export default function Catalog() {
               note: "",
               thc_percentage: x.thc_percentage,
             }}
-            link={`${x.role == 3 ? "/brands/brand" : "/stores/store"}/product/${x.id}`}
+            link={`${
+              x.role == 3
+                ? "/brands/brand"
+                : x.role == 4
+                ? "/profile"
+                : "/stores/store"
+            }/product/${x.id}`}
             manage
             isBrand={String(role) === String(3)}
           />
