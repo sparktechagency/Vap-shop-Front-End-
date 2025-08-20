@@ -56,7 +56,7 @@ export default function TabsTriggerer() {
               <TopBrands user={user.data} />
             </TabsContent>
             <TabsContent value="wholesale">
-              <Catalog id={user.id} role={user.role} />
+              <Catalog id={user.id} role={4} />
             </TabsContent>
             <TabsContent value="post">
               <Post user={user.data} />

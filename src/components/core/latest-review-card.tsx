@@ -19,8 +19,7 @@ export default function LatestReviewCard({
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
-  console.log('data', data);
-
+  console.log("data", data);
 
   useEffect(() => {
     setMounted(true);
@@ -33,20 +32,19 @@ export default function LatestReviewCard({
     );
   }
 
-  console.log('product_user', data);
+  console.log("product_user", data);
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">
-
       <div className="p-4 flex items-center gap-6">
         <Link
+          className="flex items-center"
           href={
             data.product.role === 3
               ? `/brands/brand/product/${data.product.id}`
               : `/stores/store/product/${data.product.id}`
           }
         >
-
           <Image
             src={data?.product.product_image ?? "/image/shop/item.jpg"}
             width={100}
@@ -54,35 +52,30 @@ export default function LatestReviewCard({
             alt="icon"
             className="size-24 object-cover object-center rounded-lg"
           />
-
+          <div className="">
+            <h4 className="font-semibold text-xl">
+              {data.product.product_name ?? ""}
+            </h4>
+          </div>
         </Link>
-        <div className="">
-          <h4 className="font-semibold text-xl">
-            {data.product.product_name ?? ""}
-          </h4>
-        </div>
       </div>
-
-
-
 
       <Link
         href={
           data?.product_user?.role === 3
             ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
             : data?.product_user?.role === 5
-              ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
-              : `/profile/${product_user?.id ?? data?.product_user?.id}`
+            ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
+            : `/profile/${product_user?.id ?? data?.product_user?.id}`
         }
       >
-
-
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
-            <AvatarImage src={data?.product_user?.avatar} className="object-cover" />
+            <AvatarImage src={me.data.avatar} className="object-cover" />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
-          <h4 className="text-sm font-semibold">{product_user?.full_name}</h4>
+
+          <h4 className="text-sm font-semibold">{me.data.full_name}</h4>
         </div>
       </Link>
 
@@ -110,6 +103,6 @@ export default function LatestReviewCard({
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 }
