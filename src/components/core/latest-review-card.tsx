@@ -2,7 +2,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { imageUrl } from "@/redux/baseApi";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 import { Loader2Icon } from "lucide-react";
 import Image from "next/image";
