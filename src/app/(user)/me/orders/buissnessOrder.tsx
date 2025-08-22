@@ -62,9 +62,9 @@ export default function BuissnessOrder() {
   if (error) {
     console.log(error);
   }
-  if (!isLoading && !isError) {
-    console.log(data);
-  }
+  // if (!isLoading && !isError) {
+  //   console.log(data);
+  // }
 
   async function statusChange(
     x: "accepted" | "rejected" | "delivered" | "cancelled",

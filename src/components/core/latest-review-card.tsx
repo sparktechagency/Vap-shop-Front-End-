@@ -40,8 +40,8 @@ export default function LatestReviewCard({
           className="flex items-center"
           href={
             data.product.role === 3
-              ? `/brands/brand/product/${data.product.id}`
-              : `/stores/store/product/${data.product.id}`
+              ? `/brands/brand/product/${data?.product?.id}`
+              : `/stores/store/product/${data?.product?.id}`
           }
         >
           <Image
@@ -70,11 +70,11 @@ export default function LatestReviewCard({
       >
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
-            <AvatarImage src={me.data.avatar} className="object-cover" />
+            <AvatarImage src={me?.data?.avatar} className="object-cover" />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
 
-          <h4 className="text-sm font-semibold">{me.data.full_name}</h4>
+          <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
         </div>
       </Link>
 

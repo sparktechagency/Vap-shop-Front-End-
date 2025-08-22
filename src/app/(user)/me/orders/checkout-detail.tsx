@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useGetCheckoutQuery } from "@/redux/features/users/userApi";
@@ -21,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Package, Receipt, User, Mail, MapPin, Calendar } from "lucide-react";
+import Image from "next/image";
 
 // --- Type Definitions ---
 
@@ -220,19 +222,33 @@ export default function CheckOutDetail({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {subOrder.order_items.map((item, index) => (
+                    {subOrder.order_items.map((item: any, index) => (
                       <TableRow key={index} className="hover:bg-muted/50">
                         <TableCell className="font-medium text-muted-foreground">
                           {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-medium">
-                              {item.product_name}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              ID: {String(item.product_id)}
-                            </span>
+                          <div className="flex items-center gap-4">
+                            <Image
+                              src={
+                                item.product_image?.startsWith("http")
+                                  ? item.product_image
+                                  : "/image/shop/item.jpg"
+                              }
+                              className="size-8 object-cover rounded-lg"
+                              height={100}
+                              width={100}
+                              alt="icon"
+                            />
+
+                            <div className="flex flex-col">
+                              <span className="font-medium">
+                                {item.product_name}
+                              </span>
+                              <span className="text-sm text-muted-foreground">
+                                ID: {String(item.product_id)}
+                              </span>
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
