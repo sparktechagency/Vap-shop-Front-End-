@@ -16,7 +16,7 @@ export default function LatestRevs() {
   const { data, isLoading, isError, refetch } = useGetMyReviewsQuery({ id });
   const my = useUser();
   const reviews = data?.data;
-  console.log('reviews', data);
+  console.log("reviews", data);
 
   if (isLoading) {
     return (
@@ -43,7 +43,12 @@ export default function LatestRevs() {
     <div className="!p-6">
       <div className="!my-12 !space-y-6">
         {reviews.map((review) => (
-          <LatestReviewCard key={review?.id} data={review} userId={review?.user_id} product_user={review?.product_user} />
+          <LatestReviewCard
+            key={review?.id}
+            data={review}
+            userId={review?.user_id}
+            product_user={review?.product_user}
+          />
         ))}
       </div>
     </div>

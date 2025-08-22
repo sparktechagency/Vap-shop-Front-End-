@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,6 +29,7 @@ import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import { useUpdateProductMutation } from "@/redux/features/manage/product";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
+import JoditEditor from "jodit-react";
 
 const faqSchema = z.object({
   question: z.string().min(1, "Question is required"),
@@ -61,7 +62,18 @@ export default function ProductForm({ prod }: { prod: any }) {
       refetchOnReconnect: false,
     }
   );
+  const editor = useRef(null);
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      placeholder: "Start typing your product description here...",
+      height: "400px",
 
+      // ADD `as const` TO THE VALUE 👇
+      enter: "p" as const,
+    }),
+    []
+  );
   const [updateProduct] = useUpdateProductMutation();
   const [imageurl, setImageurl] = useState<string | null>(null);
   const { role } = useUser();
@@ -274,10 +286,11 @@ export default function ProductForm({ prod }: { prod: any }) {
                 {imageChanged && (
                   <div
                     {...getRootProps()}
-                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${isDragging
+                    className={`border-2 border-dashed rounded-lg p-6 h-[200px] flex items-center justify-center text-center cursor-pointer transition-colors overflow-hidden ${
+                      isDragging
                         ? "border-blue-500 bg-blue-50"
                         : "border-gray-300 hover:border-gray-400"
-                      }`}
+                    }`}
                   >
                     <input {...getInputProps()} />
                     {imageurl ? (
@@ -443,6 +456,7 @@ export default function ProductForm({ prod }: { prod: any }) {
             </div>
 
             {/* Product Description */}
+            {/* --- PRODUCT DESCRIPTION (UPDATED) --- */}
             <FormField
               control={form.control}
               name="product_description"
@@ -450,16 +464,22 @@ export default function ProductForm({ prod }: { prod: any }) {
                 <FormItem className="col-span-full">
                   <FormLabel>Product Description:</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter product description"
-                      className="h-[160px]"
-                      {...field}
+                    <JoditEditor
+                      ref={editor}
+                      value={field.value}
+                      config={config}
+                      onBlur={field.onChange} // Use onBlur to update the form state
+                      onChange={() => {
+                        /* You can leave this empty or use for real-time logic */
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            {/* --- END PRODUCT DESCRIPTION --- */}
+
             <FormField
               control={form.control}
               name="thc_percentage"
