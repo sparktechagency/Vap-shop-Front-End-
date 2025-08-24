@@ -98,6 +98,8 @@ export interface UserData {
     address: Address | null; // 🔥 this is now an object, not a string
     favourite_stores: FavouriteStore[];
     favourite_brands: FavouriteBrand[];
+    invoice_status?: string;
+    remaining_days?: number;
 }
 
 interface UserTableProps {
@@ -315,6 +317,8 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                         <TableHead>User ID</TableHead>
                         <TableHead>Username</TableHead>
                         <TableHead>Email</TableHead>
+                        <TableHead>invoice_status</TableHead>
+                        <TableHead>remaining_days</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
@@ -325,6 +329,11 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                             <TableCell className="font-medium">{user.id}</TableCell>
                             <TableCell>{user.full_name}</TableCell>
                             <TableCell>{user.email}</TableCell>
+
+                            <TableCell>{user?.invoice_status ? user.invoice_status : "N/A"}</TableCell>
+                            <TableCell>{user?.remaining_days ? user.remaining_days + " days" : "N/A"}</TableCell>
+
+
                             <TableCell>{user.role_label}</TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button variant="secondary" size="sm" className="bg-gray-900 text-white hover:bg-gray-800" onClick={() => setViewingUser(user)}>

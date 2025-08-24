@@ -5,7 +5,7 @@ import React, { useState, useEffect, FC, useMemo } from 'react';
 import { toast } from 'sonner';
 
 // --- TYPE DEFINITIONS ---
-type InvoiceStatus = 'pending_invoice' | 'invoice_sent' | 'paid' | 'cancelled';
+type InvoiceStatus = 'pending_invoice' | 'invoice_sent' | 'paid' | 'cancelled' | 'expired';
 interface Subscription {
     id: number;
     name: string;
@@ -54,6 +54,7 @@ const formatInvoiceStatus = (status: string): InvoiceStatus => {
         case 'invoice_sent': return 'invoice_sent';
         case 'paid': return 'paid';
         case 'cancelled': return 'cancelled';
+        case 'expired': return 'expired';
         default: return 'pending_invoice';
     }
 };
@@ -73,6 +74,7 @@ const StatusBadge: FC<{ status: InvoiceStatus }> = ({ status }) => {
         'invoice_sent': 'bg-blue-100 text-blue-800',
         'paid': 'bg-green-100 text-green-800',
         'cancelled': 'bg-red-100 text-red-800',
+        'expired': 'bg-red-400 text-white',
     };
     return (
         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[status]}`}>
@@ -217,6 +219,8 @@ const SubscriptionsManagement: FC = () => {
             status: formatInvoiceStatus(sub?.invoice_status),
         })) ?? [];
     }, [apiResponse]);
+
+    console.log('subscriptions', apiResponse?.data?.data);
 
     const pendingCount = useMemo(() => subscriptions.filter(s => s.status === 'pending_invoice').length, [subscriptions]);
 
