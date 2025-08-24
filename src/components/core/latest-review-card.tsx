@@ -11,10 +11,12 @@ export default function LatestReviewCard({
   data,
   userId,
   product_user,
+  noLinker,
 }: {
   data: any;
   userId: number | string;
   product_user?: any;
+  noLinker?: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
@@ -59,15 +61,7 @@ export default function LatestReviewCard({
         </Link>
       </div>
 
-      <Link
-        href={
-          data?.product_user?.role === 3
-            ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
-            : data?.product_user?.role === 5
-            ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
-            : `/profile/${product_user?.id ?? data?.product_user?.id}`
-        }
-      >
+      {noLinker ? (
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
             <AvatarImage src={me?.data?.avatar} className="object-cover" />
@@ -76,7 +70,26 @@ export default function LatestReviewCard({
 
           <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
         </div>
-      </Link>
+      ) : (
+        <Link
+          href={
+            data?.product_user?.role === 3
+              ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
+              : data?.product_user?.role === 5
+              ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
+              : `/profile/${product_user?.id ?? data?.product_user?.id}`
+          }
+        >
+          <div className="p-4 flex items-center gap-2 border-t border-b">
+            <Avatar>
+              <AvatarImage src={me?.data?.avatar} className="object-cover" />
+              <AvatarFallback>UI</AvatarFallback>
+            </Avatar>
+
+            <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
+          </div>
+        </Link>
+      )}
 
       {/* Review Content */}
       <div className="p-4 !pb-1">
