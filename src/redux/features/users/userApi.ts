@@ -26,6 +26,7 @@ const MyApi = api.injectEndpoints({
       }),
       invalidatesTags: ["user"], 
     }),
+    
     getMyMostHearted:builder.query<any, {per:number,page:number}>({
       query: ({per,page}) => ({
         url:`/product-manage?is_most_hearted=1&per_page=${per}&page=${page}`,

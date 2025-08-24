@@ -45,7 +45,12 @@ export default function LatestRevs({ user }: { user: UserData }) {
     <div className="!p-6">
       <div className="!my-12 !space-y-6">
         {reviews.map((review) => (
-          <LatestReviewCard key={review?.id} data={review} userId={user.id} />
+          <LatestReviewCard
+            key={review?.id}
+            data={review}
+            userId={user.id}
+            noLinker
+          />
         ))}
       </div>
     </div>

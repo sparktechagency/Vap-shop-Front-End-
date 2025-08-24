@@ -30,6 +30,18 @@ export const trendingApi = api.injectEndpoints({
       query: (id) => `/get-product/${id}?role=3`,
       providesTags: ["tranding"],
     }),
+
+    //!!
+
+    getWholesalerProdById: builder.query<
+      any,
+      { id: string; per_page: string | number; page: string | number }
+    >({
+      query: ({ id, per_page, page }) =>
+        `/get/${id}/products?type=wholesaler&per_page=${per_page}&page=${page}`,
+      providesTags: ["store"],
+    }),
+
     storeProductDetailsById: builder.query<any, any>({
       query: (id) => `/get-product/${id}?role=5`,
       providesTags: ["tranding"],
@@ -162,4 +174,5 @@ export const {
   useDelteArticalMutation,
   useDeleteGroupMutation,
   useUpdateArticalMutation,
+  useGetWholesalerProdByIdQuery,
 } = trendingApi;

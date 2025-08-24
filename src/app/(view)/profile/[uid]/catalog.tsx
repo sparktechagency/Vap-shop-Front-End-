@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
+import { useGetWholesalerProdByIdQuery } from "@/redux/features/Trending/TrendingApi";
 
 export default function Catalog({ id, role }: any) {
   const [page, setPage] = React.useState(1);
@@ -20,9 +20,17 @@ export default function Catalog({ id, role }: any) {
   const {
     data: brandDetails,
     isLoading: isBrandLoading,
+    isError,
+    error,
     refetch,
-  } = useGetStoreDetailsByIdQuery({ id, page, per_page });
+  } = useGetWholesalerProdByIdQuery({ id, per_page, page });
 
+  if (!isBrandLoading) {
+    console.log(brandDetails);
+  }
+  if (isError) {
+    console.log(error);
+  }
   const totalPages = brandDetails?.data?.products?.last_page || 1;
   const products = brandDetails?.data?.products?.data || [];
 
