@@ -26,6 +26,7 @@ import {
 import Namer from "./internal/namer";
 import { usePostLikeMutation } from "@/redux/features/others/otherApi";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -63,7 +64,7 @@ export default function PostCard({
       setLiked(data?.is_post_liked);
     }
   }, [data]);
-  console.log('data', data);
+  console.log("data", data);
 
   const onSubmit = async (values: FormSchema) => {
     try {
@@ -97,8 +98,8 @@ export default function PostCard({
             String(data?.user?.role) === "3"
               ? `/brands/brand/${data.user_id}`
               : String(data?.user?.role) === "5"
-                ? `/stores/store/${data?.user_id}`
-                : `/profile/${data?.user_id}`
+              ? `/stores/store/${data?.user_id}`
+              : `/profile/${data?.user_id}`
           }
           className="flex items-center gap-3 font-semibold text-base hover:font-bold hover:text-purple-500"
         >
@@ -113,9 +114,10 @@ export default function PostCard({
         {data?.title}
       </div> */}
       {/* Content */}
-      <div className="!p-4 text-sm text-muted-foreground leading-relaxed">
-        {data.content}
-      </div>
+      <div
+        className="!p-4 text-sm text-muted-foreground leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}
+      />
 
       {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
@@ -151,7 +153,7 @@ export default function PostCard({
 
                 toast.error(
                   err?.data?.message ||
-                  "Something went wrong. Please try again."
+                    "Something went wrong. Please try again."
                 );
                 console.error("Like error:", err);
               } finally {

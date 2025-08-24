@@ -17,7 +17,7 @@ export default function LatestRevs() {
   const my = useUser();
   const reviews = data?.data;
   console.log("reviews", data);
-
+  
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">
