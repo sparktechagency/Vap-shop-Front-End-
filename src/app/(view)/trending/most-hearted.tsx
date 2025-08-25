@@ -117,7 +117,7 @@ export default function MostHearted() {
                 category: item?.brand || "PODS",
                 price: item?.wholesale_price,
                 discount: item.product_discount,
-                hearts: item.total_heart,
+                hearts: item.hearts_count,
                 is_hearted: item.is_hearted,
                 type: "ad",
               }}
