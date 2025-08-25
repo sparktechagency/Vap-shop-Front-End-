@@ -38,7 +38,7 @@ export const storeApi = api.injectEndpoints({
         body,
       }),
     }),
-
+    
     getllstoreinMap: builder.query<
       any,
       { sw_lat: any; sw_lng: any; ne_lat: any; ne_lng: any }
