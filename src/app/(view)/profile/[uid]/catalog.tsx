@@ -29,8 +29,6 @@ export default function Catalog({ id, role }: any) {
   } = useGetWholesalerProdByIdQuery({ id, per_page, page });
 
 
-  console.log('brandDetails', brandDetails);
-
 
   if (!isBrandLoading) {
     console.log(brandDetails);
@@ -39,7 +37,9 @@ export default function Catalog({ id, role }: any) {
     console.log(error);
   }
   const totalPages = brandDetails?.products?.last_page || 1;
-  const products = brandDetails?.products?.data || [];
+  const products = brandDetails?.products?.data || brandDetails?.data?.products?.data || [];
+
+  console.log('products', products);
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
