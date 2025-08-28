@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/pagination";
 import { useGetWholesalerProdByIdQuery } from "@/redux/features/Trending/TrendingApi";
 
+
 export default function Catalog({ id, role }: any) {
+  console.log("id", id);
+
   const [page, setPage] = React.useState(1);
   const per_page = 12;
 
@@ -24,6 +27,10 @@ export default function Catalog({ id, role }: any) {
     error,
     refetch,
   } = useGetWholesalerProdByIdQuery({ id, per_page, page });
+
+
+  console.log('brandDetails', brandDetails);
+
 
   if (!isBrandLoading) {
     console.log(brandDetails);
@@ -118,8 +125,7 @@ export default function Catalog({ id, role }: any) {
 
   if (isBrandLoading)
     return <div className="py-12 text-center">Loading...</div>;
-  if (!products.length)
-    return <div className="py-12 text-center">Products not found.</div>;
+
 
   return (
     <>
