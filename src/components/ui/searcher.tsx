@@ -144,7 +144,7 @@ export default function Searcher({
           <MapPinIcon className="size-4 md:size-5" />
           <Input
             className="border-none outline-none !ring-0 !bg-background text-xs text-foreground! md:text-base !pl-1 sm:!pl-2"
-            placeholder="California, PA"
+
             value={locationInput}
             onFocus={() => {
               setSearchFocus(true);
@@ -190,12 +190,12 @@ export default function Searcher({
                                 x.role === 3
                                   ? "brand"
                                   : x.role === 4
-                                  ? "wholesaler"
-                                  : x.role === 5
-                                  ? "store"
-                                  : x.role === 2
-                                  ? "association"
-                                  : "member"
+                                    ? "wholesaler"
+                                    : x.role === 5
+                                      ? "store"
+                                      : x.role === 2
+                                        ? "association"
+                                        : "member"
                               }
                               // isVerified
                               size="sm"

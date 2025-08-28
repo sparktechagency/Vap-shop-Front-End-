@@ -113,7 +113,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-    const per_page = 8;
+    const per_page = 20;
 
     const [viewingUser, setViewingUser] = useState<UserData | null>(null);
     console.log('viewingUser', viewingUser);
