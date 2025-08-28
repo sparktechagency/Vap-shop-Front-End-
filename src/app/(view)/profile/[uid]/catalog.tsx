@@ -38,8 +38,8 @@ export default function Catalog({ id, role }: any) {
   if (isError) {
     console.log(error);
   }
-  const totalPages = brandDetails?.data?.products?.last_page || 1;
-  const products = brandDetails?.data?.products?.data || [];
+  const totalPages = brandDetails?.products?.last_page || 1;
+  const products = brandDetails?.products?.data || [];
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -143,7 +143,7 @@ export default function Catalog({ id, role }: any) {
               is_hearted: item.is_hearted,
               hearts: item.total_heart,
             }}
-            link={`/stores/store/product/${item.id}`}
+            link={`/profile/product/${item.id}`}
             refetch={refetch}
             role={5}
           />
