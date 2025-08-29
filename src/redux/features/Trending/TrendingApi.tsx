@@ -31,8 +31,6 @@ export const trendingApi = api.injectEndpoints({
       providesTags: ["tranding"],
     }),
 
-    //!!
-
     getWholesalerProdById: builder.query<
       any,
       { id: string; per_page: string | number; page: string | number }
@@ -44,7 +42,7 @@ export const trendingApi = api.injectEndpoints({
 
     storeProductDetailsById: builder.query<any, any>({
       query: (id) => `/get-product/${id}?role=5`,
-      providesTags: ["tranding"],
+      providesTags: ["tranding", "fevorite"],
     }),
     productDetailsByIdRole: builder.query<
       any,
@@ -127,7 +125,7 @@ export const trendingApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["fevorite"],
+      invalidatesTags: ["fevorite", "brand"],
     }),
 
     delteArtical: builder.mutation<any, any>({

@@ -2,11 +2,9 @@
 "use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import SliderWithSkeleton from "@/components/SliderWithSkeleton";
-import { Button } from "@/components/ui/button";
 import { BrandType } from "@/lib/types/product";
 import { useGetallBrandsQuery } from "@/redux/features/brand/brandApis";
-import { ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
+
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
