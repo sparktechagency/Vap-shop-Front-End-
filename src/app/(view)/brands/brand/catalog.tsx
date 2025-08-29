@@ -40,6 +40,7 @@ export default function Catalog({ id }: any) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {products.map((product: any) => {
           const productData = {
+            id: product.id,
             image: product.product_image || "/image/shop/item.jpg",
             title: product.product_name,
             category: product.category_name ? product.category_name : null,
@@ -47,6 +48,7 @@ export default function Catalog({ id }: any) {
             // price: product.product_price,
             discount: product.product_discount,
             hearts: product.total_heart,
+            is_hearted: product.is_hearted,
             rating: product.average_rating,
             reviews: product.hearts_count,
           };
@@ -56,6 +58,7 @@ export default function Catalog({ id }: any) {
               key={product.id}
               data={productData}
               link={`/brands/brand/product/${product.id}`}
+              role={3}
             />
           );
         })}
