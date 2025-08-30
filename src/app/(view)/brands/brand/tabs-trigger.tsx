@@ -6,7 +6,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/custom-tabs";
-import MostHearted from "./most-hearted";
 import Catalog from "./catalog";
 import Announcement from "./announcement";
 // import Inbox from "./inbox";

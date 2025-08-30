@@ -1,4 +1,5 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import React, { useState } from "react";
 import ArticleCard from "@/components/core/article-card";
@@ -10,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -25,19 +25,20 @@ export default function MyArticles() {
     page: currentPage.toString(),
     per_page: "10",
   });
-  console.log('data', data);
+  console.log("data", data);
   if (isLoading) return <LoadingSkeleton />;
   if (isError) {
-    console.log(error, 'error');
+    console.log(error, "error");
   }
-  if (!data?.data?.data?.length) return (
-    <div className="text-center py-12">
-      <p>No articles found</p>
-      <Button variant="special" className="mt-4" asChild>
-        <Link href="my-articles/post">Post your first article</Link>
-      </Button>
-    </div>
-  );
+  if (!data?.data?.data?.length)
+    return (
+      <div className="text-center py-12">
+        <p>No articles found</p>
+        <Button variant="special" className="mt-4" asChild>
+          <Link href="my-articles/post">Post your first article</Link>
+        </Button>
+      </div>
+    );
 
   const totalPages = data.data.last_page;
   const visiblePages = 5;
@@ -60,7 +61,7 @@ export default function MyArticles() {
           onClick={() => router.push("/trending/my-articles/post")}
           placeholder="Search your articles..."
           className="w-full"
-        // Add search functionality here if needed
+          // Add search functionality here if needed
         />
         <Button variant="special" asChild>
           <Link href="my-articles/post">Post a new article</Link>
@@ -81,10 +82,12 @@ export default function MyArticles() {
                 likeCount: article.like_count,
                 isLiked: article.is_post_liked,
                 role: article.role,
-                createdAt: article.created_at
+                createdAt: article.created_at,
               }}
+              me
             />
           ))}
+         
         </div>
       </div>
 
@@ -106,7 +109,10 @@ export default function MyArticles() {
                   let pageNum;
                   if (currentPage <= Math.floor(visiblePages / 2)) {
                     pageNum = i + 1;
-                  } else if (currentPage > totalPages - Math.floor(visiblePages / 2)) {
+                  } else if (
+                    currentPage >
+                    totalPages - Math.floor(visiblePages / 2)
+                  ) {
                     pageNum = totalPages - visiblePages + i + 1;
                   } else {
                     pageNum = currentPage - Math.floor(visiblePages / 2) + i;

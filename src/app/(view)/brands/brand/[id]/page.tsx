@@ -25,7 +25,7 @@ export default function Page() {
     data: brandDetails,
     isLoading,
     refetch,
-  } = useGetBrandDetailsByIdQuery(id as any);
+  } = useGetBrandDetailsByIdQuery({ id, page: 1 });
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
@@ -125,6 +125,7 @@ export default function Page() {
       </main>
     );
   }
+  console.log(brandDetails);
 
   return (
     <main className="">
@@ -143,7 +144,7 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-between">
             <Namer name={user?.full_name} isVerified type="brand" size="xl" />
-            {JSON.stringify(user.address, null, 2)}
+            {JSON.stringify(user?.address, null, 2)}
             <Link
               href={"#"}
               className="text-purple-700 hover:text-purple-900 underline"

@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/components/core/product-card";
-import React from "react";
+import React, { useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -14,7 +14,19 @@ import { useGetBrandDetailsByIdQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Catalog({ id }: any) {
-  const { data: catalog, isLoading } = useGetBrandDetailsByIdQuery(id as any);
+  const [page, setPage] = useState(1);
+  const handlePageChange = (newPage: number) => {
+    if (newPage !== page) {
+      setPage(newPage);
+    }
+  };
+  const {
+    data: catalog,
+    isLoading,
+    isError,
+    error,
+  } = useGetBrandDetailsByIdQuery({ id, page });
+
   const products = catalog?.data?.products?.data || [];
 
   if (isLoading) {
@@ -26,7 +38,13 @@ export default function Catalog({ id }: any) {
       </div>
     );
   }
-
+  if (isError) {
+    <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+      <code className="whitespace-pre-wrap">
+        {JSON.stringify(error, null, 2)}
+      </code>
+    </pre>;
+  }
   if (!products.length) {
     return (
       <div className="text-center py-12">
@@ -70,16 +88,8 @@ export default function Catalog({ id }: any) {
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
-                  href={
-                    catalog.data.products.prev_page_url
-                      ? `?page=${catalog.data.products.current_page - 1}`
-                      : "#"
-                  }
-                  className={
-                    !catalog.data.products.prev_page_url
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
+                  onClick={() => handlePageChange(page - 1)}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
                 />
               </PaginationItem>
 
@@ -87,8 +97,8 @@ export default function Catalog({ id }: any) {
                 (_, i) => (
                   <PaginationItem key={i}>
                     <PaginationLink
-                      href={`?page=${i + 1}`}
-                      isActive={i + 1 === catalog.data.products.current_page}
+                      onClick={() => handlePageChange(i + 1)}
+                      isActive={i + 1 === page}
                     >
                       {i + 1}
                     </PaginationLink>
@@ -98,13 +108,9 @@ export default function Catalog({ id }: any) {
 
               <PaginationItem>
                 <PaginationNext
-                  href={
-                    catalog.data.products.next_page_url
-                      ? `?page=${catalog.data.products.current_page + 1}`
-                      : "#"
-                  }
+                  onClick={() => handlePageChange(page + 1)}
                   className={
-                    !catalog.data.products.next_page_url
+                    page === catalog.data.products.last_page
                       ? "pointer-events-none opacity-50"
                       : ""
                   }
