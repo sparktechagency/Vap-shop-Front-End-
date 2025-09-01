@@ -99,6 +99,7 @@ export default function ProductCard({
 
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
+      console.log('response', response);
 
       if (response.ok) {
         refetchAds && refetchAds();

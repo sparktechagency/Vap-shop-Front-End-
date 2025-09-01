@@ -19,7 +19,7 @@ import { useCountysQuery } from "@/redux/features/AuthApi";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 
 export default function MostHearted() {
-  const [category, setCategory] = useState(1);
+  const [category, setCategory] = useState<any>("");
   const [region, setRegion] = useState(""); // empty string means worldwide
 
   // Query with filters

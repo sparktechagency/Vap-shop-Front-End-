@@ -39,8 +39,6 @@ export default function Catalog({ id, role }: any) {
   const totalPages = brandDetails?.products?.last_page || 1;
   const products = brandDetails?.products?.data || brandDetails?.data?.products?.data || [];
 
-  console.log('products', products);
-
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
   };

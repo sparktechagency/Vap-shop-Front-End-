@@ -15,9 +15,8 @@ import { useSearchParams } from "next/navigation";
 
 export default function TabsTriggerer() {
   const searchParams = useSearchParams();
+  const title = searchParams.get("title")
 
-  const title = searchParams.get("title");
-  console.log("title", title);
   return (
     <div className="container !py-10">
       <Tabs defaultValue="hearted">
@@ -27,18 +26,23 @@ export default function TabsTriggerer() {
           <TabsTrigger value="rated">Most Rated ⬆️</TabsTrigger>
           <TabsTrigger value="featured">Featured 🔍</TabsTrigger>
         </TabsList>
+
         <TabsContent value="hearted">
           <MostHearted />
         </TabsContent>
+
         <TabsContent value="followers">
           <MostFollowers />
         </TabsContent>
+
         <TabsContent value="rated">
           <MostRated />
         </TabsContent>
+
         <TabsContent value="featured">
           <Featured />
         </TabsContent>
+
       </Tabs>
     </div>
   );

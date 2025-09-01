@@ -146,6 +146,18 @@ const data = {
           title: "Ad Approvals",
           url: "/admin/advertising/ad",
         },
+        {
+          title: "Most Hearted Ad Manager",
+          url: "/admin/advertising/most-hearted-ad-manager",
+        },
+        {
+          title: "Most followers Ad Manager",
+          url: "/admin/advertising/most-followers-ad-manager",
+        },
+        {
+          title: "Featured Ad Manager",
+          url: "/admin/advertising/featured-ad-manager",
+        },
       ],
     },
     {
