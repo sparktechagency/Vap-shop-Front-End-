@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { useGetBrandDetailsByIdQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 export default function Page() {
   const params = useParams();
@@ -24,7 +25,7 @@ export default function Page() {
     data: brandDetails,
     isLoading,
     refetch,
-  } = useGetBrandDetailsByIdQuery(id as any);
+  } = useGetBrandDetailsByIdQuery({ id, page: 1 });
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
@@ -93,6 +94,7 @@ export default function Page() {
     return (
       <main className="!py-12 !p-4 lg:!px-[7%]">
         <div className="">
+          <Skeleton className="w-full h-[40dvh] rounded-t-lg" />
           <div className="flex flex-col md:flex-row !py-4 gap-4">
             <Skeleton className="size-24 rounded-full" />
             <div className="h-24 flex flex-col !py-3 justify-between gap-2">
@@ -123,10 +125,18 @@ export default function Page() {
       </main>
     );
   }
+  console.log(brandDetails);
 
   return (
-    <main className="!py-12 !p-4 lg:!px-[7%]">
-      <div className="">
+    <main className="">
+      <Image
+        src={user?.cover_photo ?? "/image/noData.png"}
+        height={400}
+        width={800}
+        alt="banner"
+        className="w-full aspect-[4/1] bg-secondary object-center object-cover"
+      />
+      <div className="!py-12 !p-4 lg:!px-[7%]">
         <div className="flex flex-col md:flex-row !py-4 gap-4">
           <Avatar className="size-24">
             <AvatarImage src={`${user?.avatar}`} />
@@ -134,7 +144,7 @@ export default function Page() {
           </Avatar>
           <div className="h-24 flex flex-col !py-3 justify-between">
             <Namer name={user?.full_name} isVerified type="brand" size="xl" />
-            {JSON.stringify(user.address, null, 2)}
+            {JSON.stringify(user?.address, null, 2)}
             <Link
               href={"#"}
               className="text-purple-700 hover:text-purple-900 underline"
@@ -196,7 +206,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full !pb-12 !p-4 lg:!px-[7%]">
         <TabsTriggerer id={id} />
       </div>
     </main>

@@ -76,10 +76,9 @@ export default function ProductCard({
   const [currentUrl, setCurrentUrl] = useState("");
 
   const { data: user } = useGetOwnprofileQuery();
-  const userRole = user?.data?.role
+  const userRole = user?.data?.role;
 
-  console.log('userRole', userRole);
-
+  console.log("userRole", userRole);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -93,9 +92,12 @@ export default function ProductCard({
 
   const handleFebandUnfev = async (id: number) => {
     const alldata = {
-      product_id: id,
+      product_id: data.id,
       role: role || 3,
     };
+    console.log(`id`, data);
+
+    console.log(alldata);
 
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
@@ -104,10 +106,12 @@ export default function ProductCard({
       if (response.ok) {
         refetchAds && refetchAds();
         refetch && refetch();
-        toast.success(response.message || "Fevorited successfully");
+        toast.success(response.message || "Favourite successfully");
       }
     } catch (error) {
-      toast.error("Failed to fevorite");
+      console.log(error);
+
+      toast.error("Failed to favourite");
     }
   };
   const copyToClipboard = async () => {
@@ -139,8 +143,9 @@ export default function ProductCard({
             >
               {data?.hearts || 0}
               <HeartIcon
-                className={`ml-1 size-5 ${data?.is_hearted ? "text-red-500 fill-red-500" : ""
-                  }`}
+                className={`ml-1 size-5 ${
+                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                }`}
               />
             </Button>
           </div>
@@ -256,8 +261,8 @@ export default function ProductCard({
                 {data?.thc_percentage}% THC
               </div>
             )}
-            {userRole !== 6 && (
-              !data?.price || parseFloat(data.price) <= 0 ? (
+            {userRole !== 6 &&
+              (!data?.price || parseFloat(data.price) <= 0 ? (
                 <div className="text-xs md:text-sm text-muted-foreground">
                   <span>Contact for pricing</span>
                 </div>
@@ -265,9 +270,7 @@ export default function ProductCard({
                 <div className="text-xs md:text-sm text-muted-foreground">
                   <span>${parseFloat(data.price)}</span>
                 </div>
-              )
-            )}
-
+              ))}
 
             <div className="text-xs md:text-sm text-muted-foreground">
               {data?.note && <span>{data.note}</span>}

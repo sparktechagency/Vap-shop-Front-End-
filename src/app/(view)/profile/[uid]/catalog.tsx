@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/pagination";
 import { useGetWholesalerProdByIdQuery } from "@/redux/features/Trending/TrendingApi";
 
-
 export default function Catalog({ id, role }: any) {
   console.log("id", id);
 
@@ -28,8 +27,6 @@ export default function Catalog({ id, role }: any) {
     refetch,
   } = useGetWholesalerProdByIdQuery({ id, per_page, page });
 
-
-
   if (!isBrandLoading) {
     console.log(brandDetails);
   }
@@ -37,7 +34,8 @@ export default function Catalog({ id, role }: any) {
     console.log(error);
   }
   const totalPages = brandDetails?.products?.last_page || 1;
-  const products = brandDetails?.products?.data || brandDetails?.data?.products?.data || [];
+  const products =
+    brandDetails?.products?.data || brandDetails?.data?.products?.data || [];
 
   const handlePrevPage = () => {
     if (page > 1) setPage(page - 1);
@@ -124,7 +122,6 @@ export default function Catalog({ id, role }: any) {
   if (isBrandLoading)
     return <div className="py-12 text-center">Loading...</div>;
 
-
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-6">
@@ -143,7 +140,7 @@ export default function Catalog({ id, role }: any) {
             }}
             link={`/profile/product/${item.id}`}
             refetch={refetch}
-            role={5}
+            role={4}
           />
         ))}
       </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState } from "react";
@@ -6,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -53,9 +55,11 @@ interface ArticleProps {
 export default function ArticleCard({
   article,
   refetch,
+  me,
 }: {
   article: ArticleProps;
   refetch?: any;
+  me: boolean;
 }) {
   const pathname = usePathname();
   console.log("pathnanme", pathname);
@@ -63,9 +67,6 @@ export default function ArticleCard({
   const { data: user } = useGetOwnprofileQuery();
   const router = useRouter();
   const isAdmin = user?.data?.role === 1;
-
-
-
 
   console.log("articleFrom article card", article);
   const [delteArtical] = useDelteArticalMutation();
@@ -135,7 +136,7 @@ export default function ArticleCard({
 
   const handleEdit = (articleId: any) => {
     router.push(`/trending/my-articles/edit/${articleId}`);
-  }
+  };
   const handleShare = (url: string) => {
     window.open(url, "_blank", "width=600,height=400");
   };
@@ -185,7 +186,6 @@ export default function ArticleCard({
             </Dialog>
           </div>
         )}
-
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-6 mt-auto">
         <Link href={`/trending/article/${article.id}`}>
@@ -305,6 +305,15 @@ export default function ArticleCard({
           </DialogContent>
         </Dialog>
       </CardContent>
+      {me && (
+        <CardFooter className="w-full">
+          <Button className="w-full" size={"lg"} variant={"special"} asChild>
+            <Link href={`/trending/my-articles/ad-request/${article.id}`}>
+              Ad Request
+            </Link>
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
