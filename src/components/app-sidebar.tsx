@@ -69,10 +69,7 @@ const data = {
           title: "Associations",
           url: "/admin/users/associations",
         },
-        // {
-        //   title: "Verification",
-        //   url: "/admin/users/verification",
-        // },
+
         {
           title: "Suspensions & Bans",
           url: "/admin/users/suspensions-bans",
@@ -84,14 +81,6 @@ const data = {
       url: "/admin/business",
       icon: BriefcaseBusinessIcon,
       items: [
-        // {
-        //   title: "Approvals",
-        //   url: "/admin/business/approvals",
-        // },
-        // {
-        //   title: "Listing Editor",
-        //   url: "/admin/business/listing-editor",
-        // },
         {
           title: "Subscriptions & Billing",
           url: "/admin/business/subscriptions-billing",
