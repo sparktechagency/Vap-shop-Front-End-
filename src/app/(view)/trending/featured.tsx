@@ -139,6 +139,7 @@ export default function Featured() {
                 isLiked: article?.is_post_liked,
                 role: article?.role,
                 createdAt: article?.created_at,
+
               }}
             />
           ))}

@@ -59,7 +59,7 @@ export default function ArticleCard({
 }: {
   article: ArticleProps;
   refetch?: any;
-  me: boolean;
+  me?: boolean;
 }) {
   const pathname = usePathname();
   console.log("pathnanme", pathname);
