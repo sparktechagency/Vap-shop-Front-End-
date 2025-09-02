@@ -22,6 +22,8 @@ export default function TabsTriggerer() {
   const id = useParams().uid;
 
   const { data: user, isLoading } = useGetProfileQuery({ id });
+
+
   if (!isLoading) {
     console.log(user);
   }

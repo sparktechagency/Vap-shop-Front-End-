@@ -145,8 +145,8 @@ export default function Featured() {
             ref={editor}
             value={content}
             config={config}
-            onBlur={newContent => setContent(newContent)} // preferred to limit re-renders
-            onChange={newContent => { }} // can be used for real-time updates
+            onBlur={newContent => setContent(newContent)}
+            onChange={newContent => { }}
           />
 
           <Button onClick={handleSubmit} disabled={isLoading}>

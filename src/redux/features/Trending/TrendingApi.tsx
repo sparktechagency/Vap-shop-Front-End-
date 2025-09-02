@@ -37,7 +37,7 @@ export const trendingApi = api.injectEndpoints({
     >({
       query: ({ id, per_page, page }) =>
         `/get/${id}/products?type=wholesaler&per_page=${per_page}&page=${page}`,
-      providesTags: ["store"],
+      providesTags: ["store", "manage"],
     }),
 
     storeProductDetailsById: builder.query<any, any>({

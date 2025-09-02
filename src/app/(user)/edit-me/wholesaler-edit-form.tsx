@@ -30,6 +30,8 @@ import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
+import { Label } from "recharts";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 const formSchema = z.object({
   full_name: z.string().min(2),
@@ -44,6 +46,23 @@ const formSchema = z.object({
   close_at: z.string(),
 });
 export default function BrandEditForm({ my }: { my: UserData }) {
+  console.log('my', my);
+  const { data: countriesResponse, isLoading: isLoadingCountries } =
+    useCountysQuery();
+
+  const [selectedCountryId, setSelectedCountryId] = React.useState<string>("");
+  const [regions, setRegions] = React.useState<any[]>([]);
+
+  const handleCountryChange = (countryId: string) => {
+    setSelectedCountryId(countryId);
+    const selectedCountry = countriesResponse?.data?.find(
+      (c: { id: { toString: () => string } }) => c.id.toString() === countryId
+    );
+    setRegions(selectedCountry?.regions || []);
+
+  };
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,6 +84,8 @@ export default function BrandEditForm({ my }: { my: UserData }) {
   const { control, handleSubmit } = form;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('values', values);
+
     try {
       const res = await updateUser({
         ...values,
@@ -72,7 +93,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       }).unwrap();
 
       toast.success("Store updated successfully ✅");
-      console.log("Store update response:", res);
+      console.log(" update response:", res);
     } catch (error: any) {
       const message =
         error?.data?.message || "Something went wrong. Please try again.";
@@ -150,19 +171,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
             )}
           />
 
-          <FormField
-            control={control}
-            name="zip_code"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Zip Code</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter zip code" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={control}
@@ -183,6 +191,47 @@ export default function BrandEditForm({ my }: { my: UserData }) {
                       <SelectItem value="2">US</SelectItem>
                     </SelectContent>
                   </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* <Label >Region</Label>
+          <Select
+            onValueChange={(value) => setValue("region_id", value)}
+            disabled={!selectedCountryId || regions.length === 0}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue
+                placeholder={
+                  regions.length
+                    ? "Select state"
+                    : "Select state first"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {regions.map((region) => (
+                <SelectItem
+                  key={region.id}
+                  value={region.id.toString()}
+                >
+                  {region.name} ({region.code})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select> */}
+
+
+          <FormField
+            control={control}
+            name="zip_code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zip Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter zip code" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
