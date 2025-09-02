@@ -29,6 +29,9 @@ export default function MostHearted() {
     isError,
     error,
   }: any = useMosthartedProductQuery({ category, region });
+
+  console.log('mosthartedproducts', mosthartedproducts);
+
   const {
     data: ProductsAds,
     refetch: refetchAds,
@@ -148,7 +151,7 @@ export default function MostHearted() {
                 category: product.brand || "PODS",
                 price: product.product_price,
                 discount: product.product_discount,
-                hearts: product.total_heart,
+                hearts: product.hearts_count,
                 is_hearted: product.is_hearted,
               }}
               link={`/brands/brand/product/${product.id}`}

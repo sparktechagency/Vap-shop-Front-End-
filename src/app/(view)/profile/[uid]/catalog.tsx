@@ -27,6 +27,10 @@ export default function Catalog({ id, role }: any) {
     refetch,
   } = useGetWholesalerProdByIdQuery({ id, per_page, page });
 
+
+  console.log('brandDetails', brandDetails);
+
+
   if (!isBrandLoading) {
     console.log(brandDetails);
   }

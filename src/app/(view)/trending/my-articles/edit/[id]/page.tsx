@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Editor } from "primereact/editor";
 import { Button } from "@/components/ui/button";
 import { UploadCloud } from "lucide-react";
@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import JoditEditor from "jodit-react";
 
 export default function Featured() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function Featured() {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const editor = useRef(null);
   // Use the update mutation hook
   const [updateArtical, { isLoading }] = useUpdateArticalMutation();
 
@@ -55,7 +56,14 @@ export default function Featured() {
       reader.readAsDataURL(selectedImage);
     }
   };
-
+  const config = useMemo(
+    () => ({
+      readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+      placeholder: 'Start typing your article here...',
+      height: '50dvh'
+    }),
+    []
+  );
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("title", title);
@@ -156,11 +164,12 @@ export default function Featured() {
 
           <Label>Article Description:</Label>
           {/* The value is now controlled by state, which is set by useEffect */}
-          <Editor
+          <JoditEditor
+            ref={editor}
             value={content}
-            onTextChange={handleEditorChange}
-            className=""
-            style={{ height: "50dvh", borderRadius: "5px" }}
+            config={config}
+            onBlur={newContent => setContent(newContent)}
+            onChange={newContent => { }}
           />
 
 

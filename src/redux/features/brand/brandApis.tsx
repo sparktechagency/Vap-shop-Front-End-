@@ -8,7 +8,7 @@ export const brandApis = api.injectEndpoints({
     }),
     getBrandDetailsById: builder.query<any, { id: any; page: any }>({
       query: ({ id, page = 1 }) =>
-        `/get/${id}/products?type=brand&page=${page}`,
+        `/get/${id}/products?type=brand&page=${page}&per_page=16`,
       providesTags: ["brand"],
     }),
     getMostHurtedBrand: builder.query<any, void>({
