@@ -31,8 +31,6 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
             try {
 
                 const response = await markAsReadMessage({ id: user.sender_id }).unwrap();
-                console.log('response', response);
-                console.log('sernder_id', user.sender_id);
 
 
                 if (response?.ok) {
@@ -80,9 +78,6 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
                     <p className="text-sm text-purple-500 font-bold truncate">
                         {user.role_label || "User"}
                     </p>
-                )}
-                {user.phone && !showLastMessage && (
-                    <p className="text-xs text-gray-500 truncate">{user.phone}</p>
                 )}
             </div>
         </div>

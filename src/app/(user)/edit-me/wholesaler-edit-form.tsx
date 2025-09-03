@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { Button } from "@/components/ui/button";
 import { UserData } from "@/lib/types/apiTypes";
 import {
@@ -28,60 +27,91 @@ import {
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
-
 import { Separator } from "@/components/ui/separator";
-import { Label } from "recharts";
 import { useCountysQuery } from "@/redux/features/AuthApi";
 
+// --- UPDATED: Schema with country_id ---
 const formSchema = z.object({
   full_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
   address: z.string().min(2),
   zip_code: z.string().min(2),
+  country_id: z.string(), // ADDED
   region_id: z.string(),
   latitude: z.string(),
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
 });
+
+// --- ADDED: Interfaces for type safety ---
+interface Country {
+  id: string;
+  name: string;
+  regions: Region[];
+}
+interface Region {
+  id: number;
+  name: string;
+}
+
 export default function BrandEditForm({ my }: { my: UserData }) {
-  console.log('my', my);
   const { data: countriesResponse, isLoading: isLoadingCountries } =
     useCountysQuery();
-
-  const [selectedCountryId, setSelectedCountryId] = React.useState<string>("");
-  const [regions, setRegions] = React.useState<any[]>([]);
-
-  const handleCountryChange = (countryId: string) => {
-    setSelectedCountryId(countryId);
-    const selectedCountry = countriesResponse?.data?.find(
-      (c: { id: { toString: () => string } }) => c.id.toString() === countryId
-    );
-    setRegions(selectedCountry?.regions || []);
-
-  };
-
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // --- UPDATED: Default values to include country_id ---
     defaultValues: {
-      full_name: my?.first_name || "",
-      email: my?.email || "",
-      phone: my?.phone || "",
-      address: my?.address?.address || "",
-      zip_code: my?.address?.zip_code || "",
-      region_id: String(my?.address?.region_id || ""),
-      latitude: String(my?.address?.latitude || ""),
-      longitude: String(my?.address?.longitude || ""),
-      open_from: String(my?.open_from || ""),
-      close_at: String(my?.close_at || ""),
+      full_name: "",
+      email: "",
+      phone: "",
+      address: "",
+      zip_code: "",
+      country_id: "",
+      region_id: "",
+      latitude: "",
+      longitude: "",
+      open_from: "",
+      close_at: "",
     },
   });
 
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  // --- UPDATED: useEffect to handle pre-population of all fields ---
+  useEffect(() => {
+    if (my) {
+      form.setValue("full_name", my?.first_name || "");
+      form.setValue("email", my?.email || "");
+      form.setValue("phone", my?.phone || "");
+      form.setValue("address", my?.address?.address || "");
+      form.setValue("zip_code", my?.address?.zip_code || "");
+      form.setValue("region_id", String(my?.address?.region_id || ""));
+      form.setValue("latitude", String(my?.address?.latitude || ""));
+      form.setValue("longitude", String(my?.address?.longitude || ""));
+      form.setValue("open_from", String(my?.open_from || ""));
+      form.setValue("close_at", String(my?.close_at || ""));
 
-  const { control, handleSubmit } = form;
+      // Logic to find and set the initial country and corresponding regions
+      if (countriesResponse?.data && my?.address?.region_id) {
+        const userRegionId = my.address.region_id;
+        const initialCountry = countriesResponse.data.find((country: Country) =>
+          country.regions.some((region: any) => region.id === userRegionId)
+        );
+
+        if (initialCountry) {
+          form.setValue("country_id", initialCountry.id.toString());
+          setRegions(initialCountry.regions);
+        }
+      }
+    }
+  }, [my, countriesResponse, form]);
+
+
+  const { control, handleSubmit, watch } = form;
+  const countryId = watch("country_id");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('values', values);
@@ -105,7 +135,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
 
   return (
     <>
-      {" "}
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -171,72 +200,94 @@ export default function BrandEditForm({ my }: { my: UserData }) {
             )}
           />
 
-
-          <FormField
-            control={control}
-            name="region_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Region</FormLabel>
-                <FormControl>
+          {/* === START: UPDATED LAYOUT FOR ADDRESS FIELDS === */}
+          <div className="col-span-2 grid grid-cols-2 gap-6">
+            <FormField
+              control={control}
+              name="country_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      const selectedCountry = countriesResponse?.data?.find(
+                        (c: Country) => c.id.toString() === value
+                      );
+                      setRegions(selectedCountry?.regions || []);
+                      form.setValue("region_id", "");
+                    }}
+                    value={field.value}
+                    disabled={isLoadingCountries}
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select your region" />
-                    </SelectTrigger>
+                    <FormControl>
+                      <SelectTrigger className="col-span-2 w-full">
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                    </FormControl>
                     <SelectContent>
-                      <SelectItem value="1">Canada</SelectItem>
-                      <SelectItem value="2">US</SelectItem>
+                      {countriesResponse?.data?.map((country: Country) => (
+                        <SelectItem
+                          key={country.id}
+                          value={country.id.toString()}
+                        >
+                          {country.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* <Label >Region</Label>
-          <Select
-            onValueChange={(value) => setValue("region_id", value)}
-            disabled={!selectedCountryId || regions.length === 0}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue
-                placeholder={
-                  regions.length
-                    ? "Select state"
-                    : "Select state first"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {regions.map((region) => (
-                <SelectItem
-                  key={region.id}
-                  value={region.id.toString()}
-                >
-                  {region.name} ({region.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
+            <FormField
+              control={control}
+              name="region_id"
+              render={({ field }) => (
+                <FormItem >
+                  <FormLabel>Region</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={!countryId || regions.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="col-span-2 w-full">
+                        <SelectValue placeholder="Select a region" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {regions.map((region) => (
+                        <SelectItem
+                          key={region.id}
+                          value={region.id.toString()}
+                        >
+                          {region.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-
-          <FormField
-            control={control}
-            name="zip_code"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Zip Code</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter zip code" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={control}
+              name="zip_code"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Zip Code</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter zip code" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* === END: UPDATED LAYOUT === */}
 
           <FormField
             control={control}
@@ -265,6 +316,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+
           <FormField
             control={control}
             name="open_from"
@@ -272,7 +324,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               <FormItem>
                 <FormLabel>Open from</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter zip code" type="time" {...field} />
+                  <Input placeholder="Enter opening time" type="time" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -285,7 +337,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               <FormItem>
                 <FormLabel>Closed at</FormLabel>
                 <FormControl>
-                  <Input placeholder="" type="time" {...field} />
+                  <Input placeholder="Enter closing time" type="time" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -304,30 +356,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
         </form>
       </Form>
       <Separator className="mt-6" />
-      {/* <Card className="w-full mt-6 border border-border shadow-lg rounded-xl">
-        <CardHeader className="space-y-2 p-6">
-          <CardTitle className="text-2xl font-bold text-foreground">
-            Send Ad Request to Admin
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Your brand will be featured in Trending (Most Followers tab).
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6 pt-0">
-          <Button
-            asChild
-            className="w-full py-6 text-lg font-semibold rounded-lg"
-          >
-            <Link
-              href={"/me/ad"}
-              className="flex items-center justify-center gap-2"
-            >
-              Make an Ad request
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </Button>
-        </CardContent>
-      </Card> */}
     </>
   );
 }

@@ -27,7 +27,6 @@ export function useCart() {
       setCartItems(cart); // Also update the state of the current component
     } catch (error) {
       toast.error("Could not update your cart.");
-      console.error(error);
     }
   };
 
