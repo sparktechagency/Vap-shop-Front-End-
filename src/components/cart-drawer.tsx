@@ -34,9 +34,7 @@ export default function CartDrawer() {
 
   const { data: userData } = useGetOwnprofileQuery()
   const user_id = userData?.data?.id
-  console.log('userData', userData);
 
-  console.log('user_id', user_id);
   const cartKey = user_id ? `cart_${user_id}` : null;
 
   // Ensure we're on the client before accessing localStorage

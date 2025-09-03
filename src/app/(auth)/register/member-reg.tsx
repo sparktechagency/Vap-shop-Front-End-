@@ -218,6 +218,7 @@ export default function MemberRegister({
                       </span>
                     )}
                   </div>
+
                   <div className="grid grid-cols-2 gap-4 w-full">
                     <div className="grid gap-2 w-full">
                       <Label htmlFor="country">Country</Label>
@@ -281,6 +282,7 @@ export default function MemberRegister({
                       {...formRegister("zip_code")}
                     />
                   </div>
+
                   <div className="col-span-2 grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="email">Email</Label>
