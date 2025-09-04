@@ -124,7 +124,7 @@ const Membersubscriptionpackage: NextPage = () => {
                                 <h3 className="font-semibold text-base">What's Included:</h3>
                                 <ul className="mt-4 space-y-3 text-sm">
                                     {
-                                        freePlan.features.map((feature: string, index: number) => (
+                                        freePlan?.features?.map((feature: string, index: number) => (
                                             <li key={index} className="flex items-start gap-3">
                                                 <CheckIcon />
                                                 <span className="flex-1">{feature}</span>
@@ -151,14 +151,14 @@ const Membersubscriptionpackage: NextPage = () => {
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</div>
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-8">
                                 <div className="flex flex-col">
-                                    <b className="text-lg text-purple-600">{paidPlan.name}</b>
-                                    <p className="mt-2 text-base text-zinc-500">{paidPlan.description}</p>
-                                    <div className={`mt-4 text-4xl md:text-6xl font-semibold ${isPaidPlanSelected ? 'text-purple-600' : 'text-black'}`}>${parseFloat(paidPlan.price).toFixed(0)}/month</div>
+                                    <b className="text-lg text-purple-600">{paidPlan?.name}</b>
+                                    <p className="mt-2 text-base text-zinc-500">{paidPlan?.description}</p>
+                                    <div className={`mt-4 text-4xl md:text-6xl font-semibold ${isPaidPlanSelected ? 'text-purple-600' : 'text-black'}`}>${parseFloat(paidPlan?.price).toFixed(0)}/month</div>
                                     <div className="mt-auto pt-6 text-sm">
                                         <div className="flex items-center gap-2">
                                             <b>Badge:</b>
                                             <div className="rounded-full bg-gradient-to-r from-[#6941C6] to-[#A583F4] px-3 py-0.5 text-white flex items-center justify-center">
-                                                <b className="text-xs">{paidPlan.badge}</b>
+                                                <b className="text-xs">{paidPlan?.badge}</b>
                                             </div>
                                         </div>
                                         <p className="m-0 mt-2"><b>Discounts/Perks: </b><span>Real-world savings, voting power, and visibility</span></p>
@@ -168,7 +168,7 @@ const Membersubscriptionpackage: NextPage = () => {
                                     <h3 className="font-semibold text-base">Member-Only Perks:</h3>
                                     <ul className="mt-4 space-y-3 text-sm">
                                         {
-                                            freePlan.features.map((feature: string, index: number) => (
+                                            freePlan?.features?.map((feature: string, index: number) => (
                                                 <li key={index} className="flex items-start gap-3">
                                                     <CheckIcon />
                                                     <span className="flex-1">{feature}</span>
@@ -180,7 +180,7 @@ const Membersubscriptionpackage: NextPage = () => {
                                     <div className="mt-auto pt-6 flex justify-end">
                                         <button
                                             className={`w-full sm:w-auto rounded px-6 py-2 font-medium text-sm cursor-pointer transition-colors ${isPaidPlanSelected ? 'bg-purple-600 text-white' : 'bg-zinc-900 text-white hover:bg-zinc-700'}`}
-                                            onClick={() => handleSelectPlan(paidPlan.id)}
+                                            onClick={() => handleSelectPlan(paidPlan?.id)}
                                         >
                                             {isPaidPlanSelected ? 'Selected' : 'Select'}
                                         </button>
@@ -196,20 +196,20 @@ const Membersubscriptionpackage: NextPage = () => {
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                                 <div>
                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                                        <b className="text-lg text-teal-800">{hempAddon.name}</b>
+                                        <b className="text-lg text-teal-800">{hempAddon?.name}</b>
                                         <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full">ADD-ON</span>
                                     </div>
-                                    <p className="mt-2 text-base text-zinc-500">{hempAddon.description}</p>
+                                    <p className="mt-2 text-base text-zinc-500">{hempAddon?.description}</p>
                                     <p className="mt-4 text-sm text-zinc-600"><b>Eligibility: </b><span>Must be an active Core Club Member</span></p>
                                     <div className="mt-2 flex items-center gap-2 text-sm">
                                         <b>Badge: </b>
                                         <div className="rounded-full bg-gradient-to-r from-[#0C7953] to-[#15DF99] px-3 py-0.5 text-white flex items-center justify-center">
-                                            <b className="text-xs">{hempAddon.badge} Supporter</b>
+                                            <b className="text-xs">{hempAddon?.badge} Supporter</b>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-start md:items-end flex-shrink-0 mt-4 md:mt-0">
-                                    <b className="text-3xl md:text-4xl">${parseFloat(hempAddon.price).toFixed(0)}/month</b>
+                                    <b className="text-3xl md:text-4xl">${parseFloat(hempAddon?.price).toFixed(0)}/month</b>
                                     <div className="mt-4 flex items-center gap-3">
                                         <label htmlFor="activate-toggle" className={`relative inline-flex items-center ${isPaidPlanSelected ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
                                             <input
