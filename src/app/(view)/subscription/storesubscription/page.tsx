@@ -91,16 +91,6 @@ const StoreSubscriptionPage: NextPage = () => {
     );
   }
 
-  // --- Error/Empty State ---
-  if (!subscription) {
-    return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-white">
-        <p className="text-lg font-semibold text-red-500">
-          Could not load subscription plan.
-        </p>
-      </div>
-    );
-  }
 
   // --- Render Logic ---
   return (
@@ -222,9 +212,8 @@ const StoreSubscriptionPage: NextPage = () => {
         {/* Action Buttons at the bottom */}
         <footer className="w-full max-w-md mx-auto mt-16 flex flex-col items-center gap-4 text-center">
           <button
-            className={`w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors ${
-              isSubscribing ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors ${isSubscribing ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             onClick={onRegisterClick}
           >
             {isSubscribing ? "  Subscribeing..." : "  Subscribe"}

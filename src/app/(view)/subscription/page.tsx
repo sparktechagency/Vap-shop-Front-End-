@@ -66,8 +66,6 @@ export default function Page() {
       </div>
     );
   }
-
-  // Define the role-based component to render
   let RoleBasedComponent = null;
   if (user.role_label === "Member") {
     RoleBasedComponent = <Membersubscriptionpackage />;

@@ -23,6 +23,7 @@ import {
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import OpenStatus from "./open-status";
+import Image from "next/image";
 export default function Page() {
   const { id } = useParams();
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
@@ -38,6 +39,7 @@ export default function Page() {
     useUnfollowBrandMutation();
 
   const user = data?.data;
+
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -120,7 +122,10 @@ export default function Page() {
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
           <AvatarImage src={data?.data?.avatar || "/image/icon/store.png"} />
           <AvatarFallback>VD</AvatarFallback>
+
         </Avatar>
+
+
       </div>
       <main className="!py-12 !p-4 lg:!px-[7%]">
         <div className="">
