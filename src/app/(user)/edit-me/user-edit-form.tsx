@@ -222,7 +222,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
                     disabled={isLoadingCountries}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a country" />
                       </SelectTrigger>
                     </FormControl>
@@ -254,7 +254,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
                     disabled={!countryId || regions.length === 0}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a region" />
                       </SelectTrigger>
                     </FormControl>
@@ -278,7 +278,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
               control={control}
               name="zip_code"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>Zip Code</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter zip code" {...field} />
