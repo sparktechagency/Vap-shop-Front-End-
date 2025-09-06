@@ -29,8 +29,22 @@ export const manageApi = api.injectEndpoints({
         method:"DELETE"
       }),
       invalidatesTags:["manage"]
+    }),
+    trendAdProduct: builder.mutation<any, any>({
+      query:(body)=>({
+        url:`/trending-ad-product`,
+        method:"POST",
+        body
+      })
+    }),
+    trendAdBrand: builder.mutation<any, any>({
+      query:(body)=>({
+        url:`/most-followers-ad`,
+        method:"POST",
+        body
+      })
     })
   }),
 });
 
-export const { usePostProductMutation, useGetProductsQuery,useDeleteProdMutation,useUpdateProductMutation } = manageApi;
+export const { usePostProductMutation, useGetProductsQuery,useDeleteProdMutation,useUpdateProductMutation , useTrendAdProductMutation ,useTrendAdBrandMutation } = manageApi;
