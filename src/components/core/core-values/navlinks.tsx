@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BellIcon, MessageSquareIcon } from "lucide-react";
+import { Bell, MessageSquare } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { useEffect, useState } from "react";
@@ -69,7 +70,7 @@ export const NavActions = () => {
 
   const dynamicNavActions: NavActionType[] = [
     {
-      icon: <BellIcon className="size-4" />,
+      icon: <Bell className="size-4" />,
       variant: "ghost",
       size: "icon",
       href: "/me/notification",
@@ -77,7 +78,7 @@ export const NavActions = () => {
       requiresAuth: true,
     },
     {
-      icon: <MessageSquareIcon className="size-4" />,
+      icon: <MessageSquare className="size-4" />,
       variant: "ghost",
       size: "icon",
       href: "/chat",

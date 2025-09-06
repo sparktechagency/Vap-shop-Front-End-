@@ -7,42 +7,42 @@ const baseLinks = {
     to: "/me",
   },
   editProfile: {
-    icon: <Lucide.UserPlus className="size-5" />,
+    icon: <Lucide.UserCog className="size-5" />, // User with settings
     label: "Edit Profile",
     to: "/edit-me",
   },
   editBrand: {
-    icon: <Lucide.UserPlus className="size-5" />,
+    icon: <Lucide.Building2 className="size-5" />, // Brand/Business vibe
     label: "Edit Brand",
     to: "/edit-me",
   },
   editStore: {
-    icon: <Lucide.UserPlus className="size-5" />,
+    icon: <Lucide.Store className="size-5" />, // Store-specific icon
     label: "Edit Store",
     to: "/edit-me",
   },
   manageProducts: {
-    icon: <Lucide.BookCopy className="size-5" />,
+    icon: <Lucide.Package className="size-5" />, // Product/Package
     label: "Manage Products",
     to: "/me/manage",
   },
   orders: {
-    icon: <Lucide.MailOpen className="size-5" />,
+    icon: <Lucide.ShoppingCart className="size-5" />, // Fits orders
     label: "Orders & Requests",
     to: "/me/orders",
   },
   favs: {
-    icon: <Lucide.HeartIcon className="size-5" />,
+    icon: <Lucide.Heart className="size-5" />,
     label: "Your Favourites",
     to: "/me/favs",
   },
   mostHearted: {
-    icon: <Lucide.HeartIcon className="size-5" />,
+    icon: <Lucide.Heart className="size-5" />,
     label: "Most Hearted",
     to: "/me/most-hearted",
   },
   manageLocations: {
-    icon: <Lucide.LocationEditIcon className="size-5" />,
+    icon: <Lucide.MapPin className="size-5" />,
     label: "Manage Locations",
     to: "/me/locations",
   },
@@ -57,7 +57,7 @@ const baseLinks = {
     to: "/me/settings",
   },
   inbox: {
-    icon: <Lucide.MessageSquareDotIcon className="size-5" />,
+    icon: <Lucide.MessageSquareDot className="size-5" />,
     label: "Inbox",
     to: "/me/inbox",
   },
