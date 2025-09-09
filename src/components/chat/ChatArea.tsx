@@ -4,8 +4,7 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import { User, Message } from "@/lib/types/chatTypes";
 import MessageBubble from "./MessageBubble";
-import { Button } from "@/components/ui/button";
-import { useEffect, useLayoutEffect } from "react";
+import {  useLayoutEffect } from "react";
 
 interface ChatAreaProps {
     user: User | null;
@@ -23,9 +22,7 @@ interface ChatAreaProps {
 export default function ChatArea({
     user,
     messages,
-    isLoading,
     isSending,
-    hasMore,
     isLoadingMore,
 
     onSendMessage,

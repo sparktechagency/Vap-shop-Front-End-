@@ -21,7 +21,7 @@ interface UserItemProps {
 
 export default function UserItem({ user, onClick, showLastMessage = false }: UserItemProps) {
 
-    console.log('user', user);
+    console.log('-----user', user);
 
     const [markAsReadMessage] = useMarkAsReadMessageMutation();
 
@@ -56,6 +56,8 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
                     {user.full_name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
             </Avatar>
+  
+
             <div className="overflow-hidden flex-1">
                 <div className="flex justify-between items-start relative">
                     <Namer name={user.full_name} size="sm" type="brand" />
@@ -64,6 +66,11 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
                             {format(new Date(user.lastMessageTime), 'HH:mm')}
                         </span>
                     )}
+                            {user?.role_label?.toLowerCase() === "store" && (
+  <p className="text-xs text-gray-500 truncate">
+    {user.phone || user.phone || user?.phone || "No phone number available"}
+  </p>
+)}
                     {Number(user?.unread_messages_count) > 0 && (
                         <Badge variant="destructive" className="absolute top-0 right-12">
                             {user?.unread_messages_count}
@@ -79,7 +86,9 @@ export default function UserItem({ user, onClick, showLastMessage = false }: Use
                         {user.role_label || "User"}
                     </p>
                 )}
+               
             </div>
+                
         </div>
     );
 }
