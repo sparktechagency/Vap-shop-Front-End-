@@ -26,7 +26,7 @@ export default function Page() {
   let groupData: ForumGroupType | null = null;
 
   // Get the raw data string from the URL
-  const dataString = searchParams.get('data');
+  const dataString = searchParams.get("data");
 
   // Safely parse the data string if it exists
   if (dataString) {
@@ -42,10 +42,10 @@ export default function Page() {
   // Format the creation date for display
   const formattedDate = groupData?.created_at
     ? new Date(groupData.created_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
     : null;
 
   return (
@@ -54,13 +54,13 @@ export default function Page() {
 
       {/* Display the title from the captured data */}
       <h1 className="text-center font-semibold text-2xl md:text-4xl lg:text-6xl">
-        {groupData?.title || 'Forum'}
+        {groupData?.title || "Forum"}
       </h1>
 
       <div className="!my-12">
         {/* Display the description from the captured data */}
         <h3 className="text-sm md:text-xl font-semibold">
-          {groupData?.description || 'Welcome to the forum.'}
+          {groupData?.description || "Welcome to the forum."}
         </h3>
 
         {/* You can keep or remove this static list as needed */}
@@ -91,7 +91,8 @@ export default function Page() {
           )}
           {groupData?.total_comments !== undefined && (
             <div className="text-sm text-muted-foreground">
-              <strong>Total Comments:</strong> {String(groupData.total_comments)}
+              <strong>Total Comments:</strong>{" "}
+              {String(groupData.total_comments)}
             </div>
           )}
         </div>
@@ -99,10 +100,6 @@ export default function Page() {
       {/* --- NEW CONTENT END --- */}
 
       <div className="">
-        {/* Pass the ID to the Threader component. 
-            'id' is already a string or array of strings, so JSON.stringify might be unnecessary.
-            If 'id' is guaranteed to be a string, you can just pass it directly.
-        */}
         <Threader id={id as string} />
       </div>
     </main>
