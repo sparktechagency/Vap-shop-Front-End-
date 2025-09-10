@@ -46,7 +46,6 @@ export default function UserList({
                 ) : users.length > 0 ? (
                     users.map((user) => (
                         <UserItem
-
                             key={user.id}
                             user={user}
                             onClick={onUserSelect}
@@ -58,7 +57,9 @@ export default function UserList({
                         {searchQuery.length === 0
                             ? "No recent chats available"
                             : "Type at least 2 characters to search"}
+                          
                     </div>
+                    
                 )}
             </div>
         </div>
