@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import CommentCard from "@/components/core/comment-card";
 import GoBack from "@/components/core/internal/go-back";
@@ -13,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   useCreatecommentMutation,
   useDeleteThreadMutation,
@@ -34,6 +34,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PostUpdate from "./update-post";
+import { Editor } from "primereact/editor";
 
 // --- Interface Definitions ---
 interface User {
@@ -93,7 +94,7 @@ export default function Page() {
   const router = useRouter();
 
   // --- State and Data Fetching ---
-  const [comment, setComment] = React.useState("");
+  const [comment, setComment] = React.useState<any>();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const { data, isLoading, isError, refetch, error } =
@@ -107,6 +108,8 @@ export default function Page() {
 
   // --- Event Handlers ---
   const handleComment = async () => {
+    console.log({ thread_id: id, comment });
+
     if (!comment) return;
     try {
       const res = await createcomment({
@@ -120,7 +123,7 @@ export default function Page() {
         refetch();
       }
     } catch (error) {
-      console.log("error", error);
+      console.log(error);
       toast.error("Failed to create comment");
     }
   };
@@ -175,9 +178,6 @@ export default function Page() {
 
   const thread = data.data as ThreadDetails;
 
-
-
-
   // FIX: Safely check if the current user's data exists and matches the thread author.
   const isOwner = !meLoading && me?.data?.user?.role === thread.user.role;
 
@@ -201,8 +201,8 @@ export default function Page() {
                   thread?.user.role === 5
                     ? `/stores/store/${thread?.user.id}`
                     : thread?.user.role === 4
-                      ? `/brands/brand/${thread.user.id}`
-                      : `/profile/${thread?.user.id}`
+                    ? `/brands/brand/${thread.user.id}`
+                    : `/profile/${thread?.user.id}`
                 }
                 className="text-base md:text-xl font-bold hover:text-primary/80"
               >
@@ -297,13 +297,16 @@ export default function Page() {
 
       {/* --- New Comment Input --- */}
       <div className="flex flex-row gap-4">
-        <Input
+        <Editor
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          // onChange={(e) => setComment(e.target.value)}
+          onTextChange={(e) => setComment(e.htmlValue)}
           type="text"
           placeholder="What's on your mind?"
-          className="text-xs sm:text-sm lg:text-base"
+          className="text-xs sm:text-sm lg:text-base w-full"
         />
+      </div>
+      <div className="flex justify-end items-end">
         <Button onClick={handleComment} disabled={isCommentLoading}>
           {isCommentLoading ? "Posting..." : "Comment"}
         </Button>

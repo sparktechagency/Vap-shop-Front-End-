@@ -15,13 +15,13 @@ export default function Home() {
   const trendingCategories = categorys?.data?.map(
     (category: any) => category
   ) || [
-      "Pod Systems",
-      "Mod Kits",
-      "Disposable Vapes",
-      "Nicotine Pouches",
-      "E-Liquids",
-      "Coils & Pods",
-    ];
+    "Pod Systems",
+    "Mod Kits",
+    "Disposable Vapes",
+    "Nicotine Pouches",
+    "E-Liquids",
+    "Coils & Pods",
+  ];
 
   if (isCategoriesLoading) {
     return (
@@ -43,15 +43,6 @@ export default function Home() {
       </div>
     );
   }
-  const categoryImageSet = [
-    "/image/home/kits.webp",
-    "/image/home/disposables.webp",
-    "/image/home/eliquids.webp",
-    "/image/home/brands.webp",
-    "/image/home/nic.webp",
-    "/image/home/accessories.webp",
-    "/image/home/others.jpg",
-  ];
   return (
     <>
       <header className="w-screen !py-12">

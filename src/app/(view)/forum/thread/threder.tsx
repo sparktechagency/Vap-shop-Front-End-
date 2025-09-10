@@ -59,7 +59,6 @@ export default function Threader({ id }: { id: string }) {
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
-
   const handleItemDeletion = () => {
     // Check if the data exists and there is only one item left on the current page.
     if (data?.data?.data?.length === 1 && page > 1) {
@@ -70,7 +69,6 @@ export default function Threader({ id }: { id: string }) {
       refetch();
     }
   };
-
 
   if (isLoading) {
     return <LoadingScletion />;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from "@/components/ui/badge";
 import { EditIcon, MessagesSquareIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
@@ -29,13 +30,12 @@ interface ForumCardProps {
   editable?: boolean;
   refetch?: () => void;
   onDeleteSuccess?: () => void;
-  length?: any
+  length?: any;
 }
 
 export default function ForumCard({
   length,
   onDeleteSuccess,
-  refetch,
   data,
   to,
   editable,
@@ -46,10 +46,10 @@ export default function ForumCard({
   // Format the creation date for display, with a fallback for missing dates
   const formattedDate = safeData.created_at
     ? new Date(safeData.created_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
@@ -61,7 +61,7 @@ export default function ForumCard({
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at
     ? new Date().getTime() - new Date(safeData.created_at).getTime() <
-    7 * 24 * 60 * 60 * 1000
+      7 * 24 * 60 * 60 * 1000
     : false;
 
   // --- START: URL Construction Logic ---

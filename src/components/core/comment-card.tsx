@@ -6,7 +6,8 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { ArrowBigUpIcon } from "lucide-react";
 import { useLikeCommentMutation } from "@/redux/features/Forum/ForumApi";
-
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 interface User {
   id: number;
   first_name: string;
@@ -66,8 +67,9 @@ export default function CommentCard({ comment }: CommentCardProps) {
       </div>
 
       <div className="!p-4 text-xs md:text-sm text-muted-foreground">
-        {comment.comment} {/* Changed from comment.body to comment.comment */}
+        {parse(DOMPurify.sanitize(comment.comment))}
       </div>
+
       <div className="border-t py-4 px-4">
         <Button
           variant="outline"
