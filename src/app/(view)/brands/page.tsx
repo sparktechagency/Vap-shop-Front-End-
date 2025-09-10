@@ -113,7 +113,7 @@ export default function Page() {
                             value={region.id.toString()}
                             key={`region-${region.id}`}
                           >
-                            {region.name} ({region.code}){region.id}
+                            {region.name} ({region.code})
                           </SelectItem>
                         ))}
                       </SelectGroup>
