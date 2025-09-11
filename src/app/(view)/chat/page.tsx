@@ -1,10 +1,9 @@
 
 "use client";
-
 import ChatArea from "@/components/chat/ChatArea";
 import UserList from "@/components/chat/UserList";
 import { Message, User } from "@/lib/types/chatTypes";
-import { useGetChatlistQuery, useGetAllmesageByidQuery, useSearchuserQuery, useSendMessageMutation, useLazyGetAllmesageByidQuery } from "@/redux/features/chat/ChatApi";
+import { useGetChatlistQuery, useSearchuserQuery, useSendMessageMutation, useLazyGetAllmesageByidQuery } from "@/redux/features/chat/ChatApi";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { getSocket, initiateSocket, isSocketConnected } from "@/redux/service/socket";
@@ -29,7 +28,6 @@ export default function Page() {
     const [hasMore, setHasMore] = useState(true);
     const [isSending, setIsSending] = useState(false);
 
-    // Refs
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -194,7 +192,7 @@ export default function Page() {
                                     </div>
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
                                     <p className="text-gray-500 mb-6">
-                                        We couldn't find any users matching "{searchQuery}". Try a different search term.
+                                        We couldn not find any users matching " {searchQuery}". Try a different search term.
                                     </p>
                                     <div className="flex gap-2 items-center justify-center">
 
@@ -229,12 +227,15 @@ export default function Page() {
                                 </>
                             )}
                         </div>
+
+
+                    
                     </div>
                 ) : selectedUser ? (
                     <ChatArea
                         user={selectedUser}
                         messages={allMessages}
-                        isLoading={messageResults?.isLoading}
+                        isLoading={messageResults?.isLoading} 
                         isLoadingMore={messageResults?.isFetching}
                         isSending={isSending}
                         hasMore={hasMore}

@@ -17,11 +17,10 @@ export default function Page() {
     return <div className="!my-[100px] !px-4 md:!px-[7%]">Loading...</div>;
   }
 
-
-
-  // Now it's safe to sanitize the content because we've confirmed it exists.
-  const sanitizedContent = DOMPurify.sanitize(pageData.data.content);
-
+  if(!pageData?.data?.content) {
+    return <div className="!my-[100px] !px-4 md:!px-[7%]">No content available.</div>;
+  }
+  const sanitizedContent = DOMPurify.sanitize(pageData?.data?.content);
   return (
     // 3. The JSX was nested one level too deep. I've cleaned it up.
     <div className="!my-[100px] !px-4 md:!px-[7%] 
