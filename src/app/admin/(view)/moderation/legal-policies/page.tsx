@@ -16,9 +16,9 @@ const Spinner = () => (
 const policyNavigationItems = [
     { id: 'privacy-policy', title: 'Privacy Policy' },
     { id: 'terms-of-service', title: 'Terms of Service' },
-    { id: 'vape-&-age-restriction-policy', title: 'Vape & Age Restriction Policy' },
+    { id: 'VapeAgeRestrictionPolicy', title: 'Vape & Age Restriction Policy' },
     { id: 'brand', title: 'Liability & Store/Brand' },
-    { id: 'content-&-review-moderation-policy', title: 'Content & Review Moderation Policy' },
+    { id: 'contentReview', title: 'Content & Review Moderation Policy' },
     { id: 'dmca-copyright', title: 'DMCA Copyright' },
     { id: 'community-guidelines', title: 'Community Guidelines' },
     { id: 'acceptance-of-terms', title: 'Acceptance of Terms' },

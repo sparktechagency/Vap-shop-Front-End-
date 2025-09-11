@@ -94,7 +94,7 @@ const Membersubscriptionpackage: NextPage = () => {
 
     const isPaidPlanSelected = selectedPlanId === paidPlan?.id;
 
-    // --- Render Logic ---
+
     return (
         <div className="min-h-screen w-full bg-white text-left text-black font-sans">
             <div className="container mx-auto px-4 py-8 md:py-16">

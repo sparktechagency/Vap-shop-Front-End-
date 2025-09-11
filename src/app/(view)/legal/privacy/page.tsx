@@ -8,7 +8,7 @@ import DOMPurify from 'dompurify';
 export default function Page() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'privacy-policy';
-
+console.log('type:', type);
   // 1. Make sure to get `error` from the hook
   const { data: pageData, isLoading } = useGettermspagesQuery({ type: type });
 
@@ -20,11 +20,7 @@ export default function Page() {
   if(!pageData?.data?.content) {
     return <div className="!my-[100px] !px-4 md:!px-[7%]">No content available.</div>;
   }
-
-
-  // Now it's safe to sanitize the content because we've confirmed it exists.
   const sanitizedContent = DOMPurify.sanitize(pageData?.data?.content);
-
   return (
     // 3. The JSX was nested one level too deep. I've cleaned it up.
     <div className="!my-[100px] !px-4 md:!px-[7%] 

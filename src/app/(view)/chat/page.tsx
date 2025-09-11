@@ -1,6 +1,5 @@
 
 "use client";
-
 import ChatArea from "@/components/chat/ChatArea";
 import UserList from "@/components/chat/UserList";
 import { Message, User } from "@/lib/types/chatTypes";
@@ -228,12 +227,15 @@ export default function Page() {
                                 </>
                             )}
                         </div>
+
+
+                    
                     </div>
                 ) : selectedUser ? (
                     <ChatArea
                         user={selectedUser}
                         messages={allMessages}
-                        isLoading={messageResults?.isLoading}
+                        isLoading={messageResults?.isLoading} 
                         isLoadingMore={messageResults?.isFetching}
                         isSending={isSending}
                         hasMore={hasMore}
