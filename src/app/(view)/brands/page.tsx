@@ -5,8 +5,19 @@ import SliderWithSkeleton from "@/components/SliderWithSkeleton";
 import { BrandType } from "@/lib/types/product";
 import { useGetallBrandsQuery } from "@/redux/features/brand/brandApis";
 
-import React from "react";
+import React, { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 // Skeleton version of BrandProdCard
 const BrandProdCardSkeleton = () => {
@@ -33,7 +44,7 @@ const BrandProdCardSkeleton = () => {
 
 export default function Page() {
   const { data: brandsResponse, isLoading } = useGetallBrandsQuery();
-
+  const [region, setRegion] = useState("");
   // Transform API data to match BrandType
   const transformBrandData = (apiBrand: any): BrandType => ({
     id: apiBrand.id.toString(),
@@ -54,25 +65,64 @@ export default function Page() {
     isFollowing: apiBrand.is_following || false,
     totalFollowers: apiBrand.total_followers || 0,
   });
-
+  const { data: countries, isLoading: countriesLoading } = useCountysQuery();
   return (
     <div className="!my-12">
       <SliderWithSkeleton />
       <div className="!px-4 lg:!px-[7%] !mt-12">
-        <h3 className="text-xl md:text-4xl font-semibold">Brands</h3>
-        <div className="w-full flex justify-between items-center">
-          {isLoading ? (
-            <Skeleton className="h-5 w-[150px]" />
-          ) : (
-            <p className="text-muted-foreground">
-              Showing {brandsResponse?.data?.data?.length || 0} brands
-            </p>
-          )}
-          {/* <Button variant="link" asChild>
+        <div className="w-full flex items-center justify-between">
+          <div className="">
+            <h3 className="text-xl md:text-4xl font-semibold">Brands</h3>
+            <div className="w-full flex justify-between items-center">
+              {isLoading ? (
+                <Skeleton className="h-5 w-[150px]" />
+              ) : (
+                <p className="text-muted-foreground">
+                  Showing {brandsResponse?.data?.data?.length || 0} brands
+                </p>
+              )}
+              {/* <Button variant="link" asChild>
             <Link href="/map">
               <ArrowLeftIcon /> Map View
             </Link>
           </Button> */}
+            </div>
+          </div>
+          <div className="">
+            <Select
+              onValueChange={(val) => {
+                // Treat blank or whitespace as worldwide = ""
+                const cleanVal = val.trim() === "" || val === " " ? "" : val;
+                setRegion(cleanVal);
+              }}
+              value={region === "" ? " " : region}
+            >
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Region" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value=" ">Worldwide</SelectItem>
+                <SelectSeparator />
+                {!countriesLoading &&
+                  countries?.data?.map((country: any, i: number) => (
+                    <React.Fragment key={`country-${country.id}`}>
+                      <SelectGroup key={`group-${country.id}`}>
+                        <SelectLabel>{country.name}</SelectLabel>
+                        {country.regions.map((region: any) => (
+                          <SelectItem
+                            value={region.id.toString()}
+                            key={`region-${region.id}`}
+                          >
+                            {region.name} ({region.code})
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                      {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                    </React.Fragment>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
           {isLoading

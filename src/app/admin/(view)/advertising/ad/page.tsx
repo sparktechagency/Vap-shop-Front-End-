@@ -22,9 +22,9 @@ export default function Page() {
           <Link href="ad/most-rated">Most Rated ☁️</Link>
         </Button> */}
 
-        {/* <Button asChild className="w-full" variant="special">
+        <Button asChild className="w-full" variant="special">
           <Link href="ad/featured">Featured 📰</Link>
-        </Button> */}
+        </Button>
       </div>
     </div>
   );

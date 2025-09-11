@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +10,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useApproveAddMutation, useGetallAddRequestQuery } from "@/redux/features/admin/AdminApis";
+import {
+  useApproveAddMutation,
+  useGetallAddRequestQuery,
+} from "@/redux/features/admin/AdminApis";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { toast } from "sonner";
 
 interface AdProduct {
@@ -64,19 +73,18 @@ export default function AdProductsPage() {
         id,
         status: "approved",
         type: "followers",
-        is_active: '1'
-
+        is_active: "1",
       }).unwrap();
-      console.log('response', response);
+      console.log("response", response);
       if (response?.ok) {
-        toast.success('Ad approved successfully');
+        toast.success("Ad approved successfully");
         refetch();
       } else {
-        toast.error(response?.message || 'Failed to approve ad');
+        toast.error(response?.message || "Failed to approve ad");
       }
     } catch (error) {
-      console.error('Error approving ad:', error);
-      toast.error('Failed to approve ad');
+      console.error("Error approving ad:", error);
+      toast.error("Failed to approve ad");
     }
   };
 
@@ -86,18 +94,18 @@ export default function AdProductsPage() {
         id,
         status: "rejected",
         type: "followers",
-        is_active: '0'
+        is_active: "0",
       }).unwrap();
 
       if (response?.ok) {
-        toast.success('Ad rejected successfully');
+        toast.success("Ad rejected successfully");
         refetch();
       } else {
-        toast.error(response?.message || 'Failed to reject ad');
+        toast.error(response?.message || "Failed to reject ad");
       }
     } catch (error) {
-      console.error('Error rejecting ad:', error);
-      toast.error('Failed to reject ad');
+      console.error("Error rejecting ad:", error);
+      toast.error("Failed to reject ad");
     }
   };
 
@@ -108,11 +116,15 @@ export default function AdProductsPage() {
     }
   };
 
-  const filteredProducts = data?.data?.filter((ad: AdProduct) => {
-    const matchesSearch = ad.requested_by.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === "all" || ad.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  }) || [];
+  const filteredProducts =
+    data?.data?.filter((ad: AdProduct) => {
+      const matchesSearch = ad.requested_by
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        filterStatus === "all" || ad.status === filterStatus;
+      return matchesSearch && matchesStatus;
+    }) || [];
 
   if (isLoading) {
     return (
@@ -136,9 +148,7 @@ export default function AdProductsPage() {
               className="size-16 aspect-square bg-secondary rounded-lg bg-center bg-cover"
               style={{ backgroundImage: `url('/image/home/car1.png')` }}
             ></div>
-            <div className="font-semibold">
-              Loading ad...
-            </div>
+            <div className="font-semibold">Loading ad...</div>
             <div className="text-sm font-semibold">Date: --/--/----</div>
             <Button disabled>Loading...</Button>
           </div>
@@ -146,7 +156,6 @@ export default function AdProductsPage() {
       </div>
     );
   }
-
 
   return (
     <div className="h-full w-full flex flex-col justify-start items-baseline !p-12 gap-6">
@@ -156,7 +165,7 @@ export default function AdProductsPage() {
             placeholder="Search here"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch(e)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
           />
           <Button onClick={handleSearch}>Search</Button>
         </div>
@@ -189,18 +198,17 @@ export default function AdProductsPage() {
                 style={{ backgroundImage: `url('/image/home/car1.png')` }}
               ></div>
               <div className="font-semibold">
-                {ad.requested_by}'s Follower Ad
+                {ad.requested_by}&apos;s Follower Ad
               </div>
               <div className="text-sm font-semibold">
-                {ad.end_date ?
-                  `Expires: ${format(new Date(ad.end_date), 'MM-dd-yyyy')}` :
-                  'No expiry date'}
+                {ad.end_date
+                  ? `Expires: ${format(new Date(ad.end_date), "MM-dd-yyyy")}`
+                  : "No expiry date"}
                 {ad.remaining_days && (
                   <div className="text-xs text-muted-foreground">
                     ({ad.remaining_days} days left)
                   </div>
                 )}
-
               </div>
               <div className="flex flex-col items-center min-w-[100px]">
                 <div className="text-sm font-semibold">
@@ -208,15 +216,18 @@ export default function AdProductsPage() {
                 </div>
                 <Badge
                   variant={
-                    ad.status === 'approved' ? 'default' :
-                      ad.status === 'rejected' ? 'destructive' : 'secondary'
+                    ad.status === "approved"
+                      ? "default"
+                      : ad.status === "rejected"
+                      ? "destructive"
+                      : "secondary"
                   }
                   className="capitalize"
                 >
                   {ad.status}
                 </Badge>
               </div>
-              {ad.status === 'approved' ? (
+              {ad.status === "approved" ? (
                 <Button
                   variant="outline"
                   onClick={() => handleReject(JSON.stringify(ad?.id))}
@@ -243,17 +254,13 @@ export default function AdProductsPage() {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => handlePageChange(page - 1)}
-
                   />
                 </PaginationItem>
                 <span className="mx-4 text-sm">
                   Page {page} of {data?.meta?.last_page || 1}
                 </span>
                 <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(page + 1)}
-
-                  />
+                  <PaginationNext onClick={() => handlePageChange(page + 1)} />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>

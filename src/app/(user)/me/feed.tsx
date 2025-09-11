@@ -23,13 +23,13 @@ export default function Feed() {
     </div>
   );
 
-  const renderHeader = () => (
-    <div className="flex justify-end">
-      <Button asChild>
-        <Link href="/me/create-post">Upload a new post</Link>
-      </Button>
-    </div>
-  );
+  // const renderHeader = () => (
+  //   <div className="flex justify-end">
+  //     <Button asChild>
+  //       <Link href="/me/create-post">Upload a new post</Link>
+  //     </Button>
+  //   </div>
+  // );
 
   const renderError = () => (
     <div className="flex flex-col items-center gap-4">
@@ -58,7 +58,7 @@ export default function Feed() {
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">
-        {renderHeader()}
+        {/* {renderHeader()} */}
         {(isLoading || isFetching) && renderSkeletons()}
         {isError && renderError()}
         {!isLoading && !isError && data?.data?.data.length > 0 && renderPosts()}

@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,6 +18,7 @@ import {
 import { useCreatePostMutation } from "@/redux/features/users/postApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import JoditEditor from "jodit-react";
 
 const postSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -33,7 +33,7 @@ export default function Page() {
   const form = useForm<PostForm>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      title: "",
+      title: "...",
       content: "",
     },
   });
@@ -65,7 +65,7 @@ export default function Page() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6!">
-          <FormField
+          {/* <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
@@ -77,7 +77,7 @@ export default function Page() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <FormField
             control={form.control}
@@ -86,10 +86,10 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Post Content</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Write something..."
+                  <JoditEditor
+                    value={field.value} // ✅ bind RHF value
+                    onChange={(newContent) => field.onChange(newContent)} // ✅ update RHF
                     className="h-[30dvh]"
-                    {...field}
                   />
                 </FormControl>
                 <FormMessage />

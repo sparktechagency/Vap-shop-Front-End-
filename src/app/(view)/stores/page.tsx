@@ -19,11 +19,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 export default function Page() {
   const [page, setPage] = useState(1);
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
-
+  const [region, setRegion] = useState("");
+  const { data: countries, isLoading: countriesLoading } = useCountysQuery();
   console.log("store data ", data);
   if (isLoading) {
     return <LoadingScletion />;
@@ -45,12 +56,45 @@ export default function Page() {
       <SliderWithSkeleton />
       <div className="!px-4 lg:!px-[7%] !mt-12">
         <h3 className="text-xl md:text-4xl font-semibold">Stores</h3>
-        <div className="w-full flex justify-end items-center">
+        <div className="w-full flex justify-end items-center gap-4">
           <Button variant="link" asChild>
             <Link href="/map">
               <ArrowLeftIcon /> Map View
             </Link>
           </Button>
+          <Select
+            onValueChange={(val) => {
+              // Treat blank or whitespace as worldwide = ""
+              const cleanVal = val.trim() === "" || val === " " ? "" : val;
+              setRegion(cleanVal);
+            }}
+            value={region === "" ? " " : region}
+          >
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value=" ">Worldwide</SelectItem>
+              <SelectSeparator />
+              {!countriesLoading &&
+                countries?.data?.map((country: any, i: number) => (
+                  <React.Fragment key={`country-${country.id}`}>
+                    <SelectGroup key={`group-${country.id}`}>
+                      <SelectLabel>{country.name}</SelectLabel>
+                      {country.regions.map((region: any) => (
+                        <SelectItem
+                          value={region.id.toString()}
+                          key={`region-${region.id}`}
+                        >
+                          {region.name} ({region.code}){region.id}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    {countries?.data?.length !== i + 1 && <SelectSeparator />}
+                  </React.Fragment>
+                ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Stores Grid */}
