@@ -8,7 +8,7 @@ import DOMPurify from 'dompurify';
 export default function Page() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'privacy-policy';
-
+console.log('type:', type);
   // 1. Make sure to get `error` from the hook
   const { data: pageData, isLoading } = useGettermspagesQuery({ type: type });
 

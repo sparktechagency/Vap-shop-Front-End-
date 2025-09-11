@@ -33,12 +33,12 @@ export const footer_navs: FooterNav[] = [
     links: [
       { label: "Privacy Policy", target: "/legal/privacy", type: 'privacy-policy' },
       { label: "Terms of Service", target: "/legal/privacy", type: 'terms-of-service' },
-      { label: "Vape & Age Restriction Policy", target: "/legal/privacy", type: 'vape-&-age-restriction-policy' },
+      { label: "Vape & Age Restriction Policy", target: "/legal/privacy", type: 'VapeAgeRestrictionPolicy' },
       // { label: "Refund & Subscription Cancellation Policy", target: "/legal/refund-cancel" },
       { label: "Liability & Store/Brand", target: "/legal/privacy", type: 'brand' },
       {
         label: "Content & Review Moderation Policy",
-        target: "/legal/privacy", type: 'content-&-review-moderation-policy'
+        target: "/legal/privacy", type: 'contentReview'
       },
       { label: "DMCA Copyright", target: "/legal/privacy", type: 'dmca-copyright' },
       { label: "Community Guidelines", target: "/legal/privacy", type: 'community-guidelines' },
