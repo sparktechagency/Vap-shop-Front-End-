@@ -96,6 +96,13 @@ export default function Page() {
           </CardContent>
         </Card>
       </div>
+      <div className="mt-12">
+        <Button className="w-full" asChild>
+          <Link href={"https://pages.ecrypt.com/vape-shop-maps"}>
+            Alternative Payment Method
+          </Link>
+        </Button>
+      </div>
       {String(my.role) !== String(6) &&
         String(my.role) !== String(2) &&
         (!isError ? (

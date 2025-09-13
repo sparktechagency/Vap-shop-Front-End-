@@ -92,7 +92,7 @@ export default function MostHearted() {
                         value={region.id.toString()}
                         key={`region-${region.id}`}
                       >
-                        {region.name} ({region.code}){region.id}
+                        {region.name} ({region.code})
                       </SelectItem>
                     ))}
                   </SelectGroup>

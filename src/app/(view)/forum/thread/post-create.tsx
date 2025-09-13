@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +12,8 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 
 // Dynamically import JoditEditor for client-side only rendering
-import dynamic from 'next/dynamic';
-const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
+import dynamic from "next/dynamic";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 // Zod schema for form validation
 const postSchema = z.object({
@@ -54,7 +51,7 @@ export default function PostCreate({
   const config = useMemo(
     () => ({
       readonly: false,
-      placeholder: 'Write your thoughts here...',
+      placeholder: "Write your thoughts here...",
       height: 300,
       // By removing the 'buttons' and 'removeButtons' properties,
       // Jodit will display its full default toolbar.
@@ -77,7 +74,6 @@ export default function PostCreate({
       toast.success("Thread created successfully!");
       reset();
       closer();
-
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to create thread.");
       console.error("Create thread error:", err);

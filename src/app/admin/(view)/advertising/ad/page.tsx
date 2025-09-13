@@ -17,10 +17,6 @@ export default function Page() {
         <Button asChild className="w-full" variant="special">
           <Link href="ad/most-followers">Most Followers 👥</Link>
         </Button>
-        {/* 
-        <Button asChild className="w-full" variant="special">
-          <Link href="ad/most-rated">Most Rated ☁️</Link>
-        </Button> */}
 
         <Button asChild className="w-full" variant="special">
           <Link href="ad/featured">Featured 📰</Link>
