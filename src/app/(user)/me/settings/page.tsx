@@ -99,6 +99,7 @@ export default function Page() {
       {String(my.role) !== String(6) &&
         String(my.role) !== String(2) &&
         (!isError ? (
+          <div>
           <div className="mt-12">
             <Card>
               <CardContent className="flex justify-between items-center">
@@ -110,6 +111,19 @@ export default function Page() {
                 </Button>
               </CardContent>
             </Card>
+          </div>
+          <div className="mt-12">
+            <Card>
+              <CardContent className="flex justify-between items-center">
+                <CardTitle> additional Option below (Gateway Setup)</CardTitle>
+                <Button asChild>
+                  <Link target="_blank" href="https://pages.ecrypt.com/vape-shop-maps">
+                 Setup <ArrowRight />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
           </div>
         ) : (
           <PaymentAlert />
