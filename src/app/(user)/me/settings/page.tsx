@@ -31,7 +31,7 @@ import Link from "next/link";
 import { useUser } from "@/context/userContext";
 import PaymentAlert from "./payment-alert";
 import { useGetPGKeysQuery } from "@/redux/features/keys/keysApi";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MoveRightIcon } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -96,6 +96,7 @@ export default function Page() {
           </CardContent>
         </Card>
       </div>
+    
       {String(my.role) !== String(6) &&
         String(my.role) !== String(2) &&
         (!isError ? (
@@ -112,22 +113,22 @@ export default function Page() {
               </CardContent>
             </Card>
           </div>
-          <div className="mt-12">
-            <Card>
-              <CardContent className="flex justify-between items-center">
-                <CardTitle> additional Option below (Gateway Setup)</CardTitle>
-                <Button asChild>
-                  <Link target="_blank" href="https://pages.ecrypt.com/vape-shop-maps">
-                 Setup <ArrowRight />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
           </div>
         ) : (
           <PaymentAlert />
         ))}
+
+
+        <div className="mt-12">
+  <Button className="w-full" asChild>
+    <Link href="https://pages.ecrypt.com/vape-shop-maps">
+     
+      Continue with eCrypt Payment
+      <MoveRightIcon/>
+    </Link>
+  </Button>
+</div>
+
       <div className="!my-12 !space-y-6">
         <div className="">
           <h1 className="text-center text-3xl font-semibold">Appearance</h1>

@@ -24,7 +24,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SafeHtml from "./safeHtml";
 import Link from "next/link";
-import { ArrowBigUpIcon, Trash2Icon } from "lucide-react";
+import { ArrowBigUpIcon, EditIcon, Trash2Icon } from "lucide-react";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import {
   Dialog,
@@ -231,7 +231,19 @@ export default function Page() {
       <Card>
         <CardHeader className="border-b">
           <CardTitle className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">{thread.title}</h2>
+            <div className="flex items-center justify-between w-full">
+              <h2 className="text-lg font-bold">{thread.title}</h2>
+              <div className="">
+                {thread.user.role === me.data.role && (
+                  <Button variant={"outline"} asChild>
+                    <Link href={`${window.location.pathname}/edit`}>
+                      <EditIcon />
+                      Edit
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               {isOwner && (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
