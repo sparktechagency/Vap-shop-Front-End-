@@ -23,7 +23,8 @@ import {
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import OpenStatus from "./open-status";
-import Image from "next/image";
+
+
 export default function Page() {
   const { id } = useParams();
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
@@ -31,6 +32,9 @@ export default function Page() {
   });
   const { data: userData } = useGetOwnprofileQuery();
   const Userrole = userData?.data?.role;
+
+
+  
 
   const navigation = useRouter();
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
@@ -110,6 +114,8 @@ export default function Page() {
       </div>
     );
   }
+
+
   return (
     <>
       <div

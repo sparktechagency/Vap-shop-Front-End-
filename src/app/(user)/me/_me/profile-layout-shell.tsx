@@ -26,7 +26,7 @@ export default async function ProfileLayoutShell({
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;
-
+console.log('my:', my);
   function getNavs(role: number) {
     switch (role) {
       case 2:
@@ -135,7 +135,9 @@ export default async function ProfileLayoutShell({
                         ""
                       )}`
                       : String(my.role) === "5"
-                        ? `/stores/store/${my.id}`
+                        ? `/stores/store/${my.id}?${my.full_name?.replace(
+                          /\s+/g,""
+                        )}`
                         : String(my.role) === "3"
                           ? `/brands/brand/${my.id}`
                           : `/profile/${my.id}?user=${my.full_name?.replace(
