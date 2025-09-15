@@ -61,8 +61,6 @@ export const forumApi = api.injectEndpoints({
       invalidatesTags: ["thread", "group"],
     }),
 
-
-
     getDashboardForum: builder.query({
       query: ({ id }) => `/forum-group?&user_id=${id}`,
     }),

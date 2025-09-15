@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 // import { useCreateThreadMutation } from "@/redux/features/Forum/ForumApi";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
@@ -14,6 +14,10 @@ import Cookies from "js-cookie";
 // Dynamically import JoditEditor for client-side only rendering
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  useGetThreadDetailsByIdQuery,
+  // useUpdateThreadMutation,
+} from "@/redux/features/Forum/ForumApi";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 // Zod schema for form validation
@@ -25,7 +29,8 @@ const postSchema = z.object({
 type PostFormData = z.infer<typeof postSchema>;
 
 export default function PostCreate({ id }: { id: string }) {
-  // const [createThread, { isLoading }] = useCreateThreadMutation();
+  const { data, isLoading } = useGetThreadDetailsByIdQuery(id);
+  // const [updateThread] = useUpdateThreadMutation();
   const editor = useRef(null);
 
   const {
@@ -33,6 +38,7 @@ export default function PostCreate({ id }: { id: string }) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -41,7 +47,13 @@ export default function PostCreate({ id }: { id: string }) {
       body: "",
     },
   });
-
+  useEffect(() => {
+    if (!isLoading) {
+      setValue("title", data.data.title);
+      setValue("body", data.data.body);
+      // console.log(data.data);
+    }
+  }, [isLoading]);
   // Configuration for the Jodit Editor, memoized for performance
   const config = useMemo(
     () => ({
@@ -52,6 +64,7 @@ export default function PostCreate({ id }: { id: string }) {
     []
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (data: PostFormData) => {
     const token = Cookies.get("token");
     if (!token) {
@@ -60,9 +73,11 @@ export default function PostCreate({ id }: { id: string }) {
     try {
       // const finalData = {
       //   ...data,
-      //   group_id: JSON.parse(id),
+      //   group_id: id,
+      //   _method: "PUT",
       // };
-      // await createThread(finalData).unwrap();
+      // await updateThread(finalData).unwrap();
+      // console.log(updateThread);
 
       toast.info("Under development");
       reset();
