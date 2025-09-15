@@ -96,7 +96,11 @@ export default function Page() {
           </CardContent>
         </Card>
       </div>
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> dc87953a755c09871518579ae672f549471a5af5
       {String(my.role) !== String(6) &&
         String(my.role) !== String(2) &&
         (!isError ? (
@@ -117,6 +121,31 @@ export default function Page() {
         ) : (
           <PaymentAlert />
         ))}
+<<<<<<< HEAD
+      {String(my.role) !== String(6) && String(my.role) !== String(2) && (
+        <div className="mt-12">
+          <Card className="">
+            <CardContent className="p-0">
+              <div className="flex items-start gap-4">
+                <div className="flex-1 space-y-3 flex w-full justify-between items-center">
+                  <h3 className="font-semibold h-full">
+                    Need Payment Processing?
+                  </h3>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between items-center">
+                    <div className=""></div>
+                    <Button className="w-full" asChild>
+                      <Link href={"https://pages.ecrypt.com/vape-shop-maps"}>
+                        Click Here
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+=======
 
 
         <div className="mt-12">
@@ -129,6 +158,7 @@ export default function Page() {
   </Button>
 </div>
 
+>>>>>>> dc87953a755c09871518579ae672f549471a5af5
       <div className="!my-12 !space-y-6">
         <div className="">
           <h1 className="text-center text-3xl font-semibold">Appearance</h1>

@@ -149,7 +149,7 @@ export default function MemberRegister({
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="lg:grid lg:grid-cols-2 gap-6 space-y-6 lg:space-y-0">
                   <div className="grid gap-2">
                     <Label htmlFor="first_name">First name</Label>
                     <Input
@@ -219,7 +219,7 @@ export default function MemberRegister({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 w-full">
+                  <div className="grid lg:grid-cols-2 gap-4 w-full ">
                     <div className="grid gap-2 w-full">
                       <Label htmlFor="country">Country</Label>
                       <Select
