@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCountysQuery } from "@/redux/features/AuthApi";
+import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import React, { useState, useEffect, useRef } from "react";
 
 const MoreVertIcon = () => (
@@ -188,12 +197,9 @@ const AdCard = ({
           <p className="text-sm text-gray-500">{brand}</p>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4">
           <button className="w-full bg-gray-900 text-white font-bold text-sm py-2 rounded-md hover:bg-gray-700 transition-colors">
             View
-          </button>
-          <button className="w-full bg-white text-red-600 border border-red-600 font-bold text-sm py-2 rounded-md hover:bg-red-50 transition-colors">
-            Delete
           </button>
         </div>
       </div>
@@ -209,6 +215,8 @@ const AdCard = ({
 };
 
 function AdManagementPage() {
+  const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
+  const { data, isLoading } = useGetallCategorysQuery();
   const adData = [
     {
       id: 1,
@@ -280,32 +288,36 @@ function AdManagementPage() {
         <section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="relative">
-              <select className="w-full appearance-none bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-4 pr-8 rounded-lg focus:outline-none focus:bg-white focus:border-gray-500">
-                <option>Select Category</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Cateogory" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!isLoading &&
+                    data.data.map((x: any) => (
+                      <SelectItem key={x.id} value={x.id}>
+                        {x.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="relative">
-              <select className="w-full appearance-none bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-4 pr-8 rounded-lg focus:outline-none focus:bg-white focus:border-gray-500">
-                <option>Select Region</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Region" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!isRegionsLoading &&
+                    countryData?.data?.flatMap((ctr: any) =>
+                      ctr.regions.map((r: any) => (
+                        <SelectItem value={String(r.id)} key={r.id}>
+                          {r.name} ({r.code}), {ctr.name}
+                        </SelectItem>
+                      ))
+                    )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
