@@ -172,7 +172,7 @@ export default function Home() {
                       }}
                     />
                     <div className="w-full text-center font-semibold !pt-4 text-xs sm:text-sm md:text-xl">
-                      {cat.name}
+                      {cat?.name.slice(0, 20) + (cat?.name.length > 20 ? "..." : "")}
                     </div>
                   </div>
                 </Link>
