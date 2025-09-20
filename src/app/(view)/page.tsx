@@ -78,7 +78,6 @@
 //   );
 // }
 
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -126,7 +125,7 @@ export default function Home() {
       </div>
     );
   }
-  
+
   return (
     <>
       <header className="w-screen !py-12">
@@ -143,8 +142,8 @@ export default function Home() {
                 <p className="text-gray-600 mb-4">
                   Please sign in to view trending products and categories.
                 </p>
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="inline-block bg-black hover:bg-black/60 text-white font-medium py-2 px-6 rounded-md transition-colors"
                 >
                   Sign In
@@ -152,27 +151,30 @@ export default function Home() {
               </div>
             </div>
           )}
-          
+
           <h1 className="font-bold text-2xl md:text-4xl text-center">
             Trending
           </h1>
           <div className="flex justify-center">
-            <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-7 gap-6 justify-center place-items-center">
+            <div className="!p-12 !px-[7%] grid grid-cols-3 md:grid-cols-4 2xl:grid-cols-7 gap-6 justify-center">
               {trendingCategories.map((cat: any, i: number) => (
-                <Link 
-                  href={token ? `/trending?title=${cat.name}` : "#"} 
+                <Link
+                  href={token ? `/trending?title=${cat.name}` : "#"}
                   key={i}
                   onClick={!token ? (e) => e.preventDefault() : undefined}
                 >
-                  <div className="w-full flex flex-col justify-center items-center hover:scale-105 transition-transform cursor-pointer">
+                  <div className="flex flex-col items-center cursor-pointer hover:scale-105 transition-transform h-full">
+                    {/* Image wrapper with fixed height */}
                     <div
-                      className="size-20 lg:size-[150px] xl:size-[220px] rounded-3xl border bg-cover bg-center bg-no-repeat overflow-hidden"
+                      className="size-20 lg:size-[150px] xl:size-[220px] rounded-3xl border bg-cover bg-center bg-no-repeat overflow-hidden shrink-0"
                       style={{
                         backgroundImage: `url(${cat.image})`,
                       }}
                     />
-                    <div className="w-full text-center font-semibold !pt-4 text-xs sm:text-sm md:text-xl">
-                      {cat?.name.slice(0, 20) + (cat?.name.length > 20 ? "..." : "")}
+                    {/* Text area with fixed min height so it won’t push siblings */}
+                    <div className="w-full text-center font-semibold pt-4 text-xs sm:text-sm md:text-xl line-clamp-2 min-h-[3rem] flex items-start justify-center">
+                      {cat?.name.slice(0, 20) +
+                        (cat?.name.length > 20 ? "..." : "")}
                     </div>
                   </div>
                 </Link>
