@@ -7,9 +7,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BASE_API_ENDPOINT } from "@/lib/config/data";
+import { useGetAdPricingQuery } from "@/redux/features/ad/adApi";
 import { useCountysQuery } from "@/redux/features/AuthApi";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const MoreVertIcon = () => (
   <svg
@@ -66,17 +87,63 @@ const EditPriceModal = ({
   isOpen,
   onClose,
   slotNumber,
+  ad_slot_id,
+  region_id,
+  category_id,
+  desc,
 }: {
   isOpen: boolean;
   onClose: () => void;
   slotNumber: number;
+  ad_slot_id: string | number;
+  region_id: string | number;
+  category_id: string | number;
+  desc: string;
 }) => {
+  const token = Cookies.get("token");
+  const [prices, setPrices] = useState<string[]>(["", "", "", ""]);
   if (!isOpen) return null;
+  const weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4"];
 
-  const weekLabels = ["Week 1:", "Week 2:", "Week 3:", "Week 4:"];
+  const handlePriceChange = (index: number, value: string) => {
+    const updated = [...prices];
+    updated[index] = value;
+    setPrices(updated);
+  };
+
+  const savePricing = async () => {
+    const payload = new FormData();
+    console.log({ ad_slot_id, region_id, category_id, desc });
+
+    payload.append("ad_slot_id", String(ad_slot_id));
+    payload.append("category_id", String(category_id));
+    payload.append("region_id", String(region_id));
+    payload.append("description", desc);
+
+    prices.forEach((val, i) => {
+      payload.append(`weekly_prices[week_${i + 1}]`, val || "0");
+    });
+
+    const call = await fetch(`${BASE_API_ENDPOINT}admin/ad-pricings`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: payload,
+    });
+    if (!call.ok) {
+      const res = await call.json();
+      toast.error(res.message ?? "Something went wrong");
+      return;
+    }
+    const res = await call.json();
+    toast.success(res.message ?? "");
+    console.log("API Response:", res);
+    onClose();
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/35  flex justify-center items-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/35 flex justify-center items-center z-50 p-4">
       {/* Modal Panel */}
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 md:p-8 transform transition-all">
         <header className="flex justify-between items-center mb-6">
@@ -92,15 +159,23 @@ const EditPriceModal = ({
         </header>
 
         {/* Form Content */}
-        <form className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            savePricing();
+          }}
+        >
           {weekLabels.map((label, index) => (
             <div key={index}>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
-                {label}
+                {label}:
               </label>
               <input
-                type="text"
-                placeholder="Name your price"
+                type="number"
+                placeholder="Enter price"
+                value={prices[index]}
+                onChange={(e) => handlePriceChange(index, e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -110,10 +185,6 @@ const EditPriceModal = ({
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-                onClose();
-              }} // Prevents page reload and closes modal
               className="bg-gray-900 text-white font-bold py-2 px-8 rounded-lg hover:bg-gray-700 transition-colors"
             >
               Save
@@ -127,19 +198,28 @@ const EditPriceModal = ({
 
 const AdCard = ({
   slotNumber,
-  title,
-  brand,
   imageUrl,
+  ad_slot_id,
+  region_id,
+  category_id,
+  desc,
 }: {
   slotNumber: number;
-  title: string;
-  brand: string;
   imageUrl: string;
+  ad_slot_id: string;
+  region_id: string;
+  category_id: string;
+  desc: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
-
+  const { data: prices } = useGetAdPricingQuery(
+    { adId: ad_slot_id, catId: category_id, regionId: region_id },
+    {
+      skip: !category_id || !region_id,
+    }
+  );
   // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -185,27 +265,66 @@ const AdCard = ({
         </div>
 
         <div className="bg-white rounded-md overflow-hidden h-48 mb-4">
-          <img
+          <Image
             src={imageUrl}
-            alt={title}
             className="w-full h-full object-cover"
+            height={500}
+            width={500}
+            alt="img"
           />
         </div>
 
-        <div className="flex-grow">
-          <h3 className="font-bold text-gray-800">{title}</h3>
-          <p className="text-sm text-gray-500">{brand}</p>
-        </div>
-
         <div className="mt-4">
-          <button className="w-full bg-gray-900 text-white font-bold text-sm py-2 rounded-md hover:bg-gray-700 transition-colors">
-            View
-          </button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="w-full">View</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ad Pricing Details</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                {prices?.data?.map((item: any) => (
+                  <Card key={item.id} className="">
+                    <CardHeader>
+                      <CardTitle className="text-amber-400 font-semibold text-lg mb-2">
+                        {item.ad_slot?.name}
+                      </CardTitle>
+                      <CardDescription>{item.description}</CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {Object.entries(item.details).map(([week, price]) => (
+                        <Card
+                          key={week}
+                          className="flex flex-col justify-center items-center"
+                        >
+                          <p className="text-zinc-400 text-sm">
+                            {week.replace("_", " ")}
+                          </p>
+                          <p className="">${String(price)}</p>
+                        </Card>
+                      ))}
+                    </CardContent>
+
+                    <CardFooter className="text-zinc-500 text-xs mt-2">
+                      Last Updated: {new Date(item.updated_at).toLocaleString()}
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
       {/* Render the modal */}
       <EditPriceModal
+        ad_slot_id={ad_slot_id}
+        category_id={category_id}
+        region_id={region_id}
+        desc={desc}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         slotNumber={slotNumber}
@@ -217,47 +336,39 @@ const AdCard = ({
 function AdManagementPage() {
   const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
   const { data, isLoading } = useGetallCategorysQuery();
+  const [selectedCat, setSelectedCat] = useState<string>("");
+  const [selectedRegi, setSelectedRegi] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+
   const adData = [
     {
       id: 1,
       slotNumber: 1,
-      title: "Vodoo MOD Ultron X",
-      brand: "Brand: Vodoo",
       imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
     },
     {
       id: 2,
       slotNumber: 2,
-      title: "AeroGlide Drone",
-      brand: "Brand: Aero",
       imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+2",
     },
     {
       id: 3,
       slotNumber: 3,
-      title: "Quantum Smartwatch",
-      brand: "Brand: Quantum",
       imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
     },
     {
       id: 4,
       slotNumber: 4,
-      title: "EcoPure Water Filter",
-      brand: "Brand: EcoPure",
       imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+4",
     },
     {
       id: 5,
       slotNumber: 5,
-      title: "Nova Laptop Pro",
-      brand: "Brand: Nova",
       imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
     },
     {
       id: 6,
       slotNumber: 6,
-      title: "SoundWave Headphones",
-      brand: "Brand: SoundWave",
       imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+6",
     },
   ];
@@ -272,23 +383,37 @@ function AdManagementPage() {
           Review, approve, and manage ad placements across the platform.
         </p>
       </header>
-
       <main className="max-w-7xl mx-auto space-y-8">
         <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Most followers Ad Manager
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {adData.map((ad) => (
-              <AdCard key={ad.id} {...ad} />
-            ))}
-          </div>
+          {selectedCat && selectedRegi ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {adData?.map((ad) => (
+                <AdCard
+                  desc={desc}
+                  ad_slot_id={String(ad.id)}
+                  category_id={selectedCat}
+                  region_id={selectedRegi}
+                  key={ad.id}
+                  {...ad}
+                />
+              ))}
+            </div>
+          ) : (
+            <div>Select Category and Region first</div>
+          )}
         </section>
 
         <section>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="relative">
-              <Select>
+              <Select
+                onValueChange={(e) => {
+                  setSelectedCat(e);
+                }}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Cateogory" />
                 </SelectTrigger>
@@ -303,7 +428,11 @@ function AdManagementPage() {
               </Select>
             </div>
             <div className="relative">
-              <Select>
+              <Select
+                onValueChange={(e) => {
+                  setSelectedRegi(e);
+                }}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Region" />
                 </SelectTrigger>
@@ -327,12 +456,16 @@ function AdManagementPage() {
             <textarea
               className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Type here..."
+              value={desc}
+              onChange={(e) => {
+                setDesc(e.target.value);
+              }}
             ></textarea>
-            <div className="flex justify-end mt-4">
+            {/* <div className="flex justify-end mt-4">
               <button className="bg-gray-900 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition-colors">
                 Save Changes
               </button>
-            </div>
+            </div> */}
           </div>
         </section>
       </main>
