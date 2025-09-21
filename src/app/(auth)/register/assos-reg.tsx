@@ -170,7 +170,7 @@ export default function AssosRegister({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 w-full">
+                  <div className="grid lg:grid-cols-2 gap-4 w-full">
                     <div className="grid gap-2 w-full">
                       <Label htmlFor="country">Country</Label>
                       <Select

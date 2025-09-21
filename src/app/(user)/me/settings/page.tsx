@@ -116,14 +116,16 @@ export default function Page() {
         ) : (
           <PaymentAlert />
         ))}
-      {String(my.role) !== String(6) && String(my.role) !== String(2) && (
+      {String(my.role) !== String(6) && (
         <div className="mt-12">
           <Card className="">
             <CardContent className="p-0">
               <div className="flex items-start gap-4">
                 <div className="flex-1 space-y-3 flex w-full justify-between items-center">
                   <h3 className="font-semibold h-full">
-                    Need Payment Processing?
+                    {String(my.role) !== String(2)
+                      ? "Need Payment Processing to Accept Donations?"
+                      : "Need Payment Processing?"}
                   </h3>
                   <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between items-center">
                     <div className=""></div>
