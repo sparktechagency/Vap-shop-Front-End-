@@ -16,10 +16,10 @@ interface User {
   avatar?: string;
   role?: number;
 }
-
+//updated
 interface Comment {
   id: number;
-  comment: string; // Changed from 'body' to match your data
+  comment: string; 
   created_at: string;
   updated_at: string;
   user: User;
