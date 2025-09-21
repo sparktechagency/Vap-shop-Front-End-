@@ -38,13 +38,40 @@ export const storeApi = api.injectEndpoints({
         body,
       }),
     }),
-    
-    getllstoreinMap: builder.query<
+
+    getAllStoresInMap: builder.query<
       any,
-      { sw_lat: any; sw_lng: any; ne_lat: any; ne_lng: any }
+      {
+        sw_lat?: number;
+        sw_lng?: number;
+        ne_lat?: number;
+        ne_lng?: number;
+        latitude?: number;
+        longitude?: number;
+        radius?: number;
+      }
     >({
-      query: ({ sw_lat, sw_lng, ne_lat, ne_lng }) =>
-        `/stores-by-location?sw_lat=${sw_lat}&sw_lng=${sw_lng}&ne_lat=${ne_lat}&ne_lng=${ne_lng}`,
+      query: ({
+        sw_lat,
+        sw_lng,
+        ne_lat,
+        ne_lng,
+        latitude,
+        longitude,
+        radius,
+      }) => {
+        const params = new URLSearchParams();
+
+        if (sw_lat) params.append("sw_lat", sw_lat.toString());
+        if (sw_lng) params.append("sw_lng", sw_lng.toString());
+        if (ne_lat) params.append("ne_lat", ne_lat.toString());
+        if (ne_lng) params.append("ne_lng", ne_lng.toString());
+        if (latitude) params.append("latitude", latitude.toString());
+        if (longitude) params.append("longitude", longitude.toString());
+        if (radius) params.append("radius", radius.toString());
+
+        return `/stores-by-location?${params.toString()}`;
+      },
     }),
   }),
 });
@@ -56,5 +83,5 @@ export const {
   useStoreGroupListQuery,
   useFevoritestoreMutation,
   useCheckoutMutation,
-  useGetllstoreinMapQuery,
+  useGetAllStoresInMapQuery,
 } = storeApi;

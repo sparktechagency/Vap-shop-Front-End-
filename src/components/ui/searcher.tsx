@@ -15,6 +15,9 @@ import {
   useSearchQuery,
 } from "@/redux/features/others/otherApi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useGoogleLocation } from "@/hooks/useCurrentLocation";
+
 
 const categories = [
   "store",
@@ -25,19 +28,7 @@ const categories = [
   "accounts",
 ];
 
-// const getImageSrc = (category: string) => {
-//   switch (category) {
-//     case "store":
-//       return "/image/icon/store.png";
-//     case "brand":
-//       return "/image/icon/brand.jpg";
-//     case "product":
-//       return "/image/shop/item.jpg";
-//     case "account":
-//     default:
-//       return "/image/icon/user.jpeg";
-//   }
-// };
+
 
 export default function Searcher({
   className,
@@ -56,13 +47,14 @@ export default function Searcher({
     type: selectedSearch,
     region: selectedRegion,
   });
-
+const router = useRouter();
   useEffect(() => {
     if (locationInput === "") {
       setSelectedRegion("");
     }
   }, [locationInput]);
-
+ const { location, error } = useGoogleLocation();
+ console.log('location',location);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -123,6 +115,34 @@ export default function Searcher({
       `/profile/${x.id}?user=${x.full_name.trim().replace(/\s+/g, " ")}` || "#"
     );
   };
+
+
+  useEffect(() => {
+    if(!location){
+     if (!location) return; 
+    }
+  const lowerSearch = searchInput.toLowerCase().trim();
+
+  if (
+    lowerSearch.includes("vapshop near me") ||
+    lowerSearch.includes("vape shop near me") ||
+    lowerSearch.includes("vap near me") ||
+    lowerSearch.includes("shop near me") ||
+    lowerSearch.includes("shop near by me") ||
+    lowerSearch.includes("shop near me") ||
+    lowerSearch.includes("store near me") ||
+    lowerSearch.includes("near me") ||
+    lowerSearch.includes("vapshop near store near me")
+  ) {
+    router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=5000`); 
+  }
+}, [searchInput, router, location]); 
+
+
+if(error){
+  console.log('error',error);
+}
+
 
   return (
     <div className={className} {...props} ref={searchContainerRef}>

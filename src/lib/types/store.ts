@@ -34,6 +34,7 @@ export interface Store {
   is_favourite: boolean;
   is_banned: boolean;
   address: Address;
+  distance?: string;
 }
 
 export interface StoreApiResponse {
