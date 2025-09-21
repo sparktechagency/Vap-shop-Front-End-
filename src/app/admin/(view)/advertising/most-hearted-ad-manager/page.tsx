@@ -31,6 +31,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const MoreVertIcon = () => (
   <svg
@@ -220,7 +231,6 @@ const AdCard = ({
       skip: !category_id || !region_id,
     }
   );
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -274,7 +284,7 @@ const AdCard = ({
           />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <Dialog>
             <DialogTrigger asChild>
               <Button className="w-full">View</Button>
@@ -316,6 +326,29 @@ const AdCard = ({
               </div>
             </DialogContent>
           </Dialog>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant={"destructive"}>Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action can not be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    toast.info("This feature is under development");
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -386,7 +419,7 @@ function AdManagementPage() {
       <main className="max-w-7xl mx-auto space-y-8">
         <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Most Hearted Ad manager
+            Most Hearted Ad Manager
           </h2>
           {selectedCat && selectedRegi ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
