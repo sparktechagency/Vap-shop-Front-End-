@@ -16,7 +16,6 @@ interface User {
   avatar?: string;
   role?: number;
 }
-//updated
 interface Comment {
   id: number;
   comment: string; 

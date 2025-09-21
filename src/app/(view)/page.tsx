@@ -24,6 +24,7 @@ export default function Home() {
     "E-Liquids",
     "Coils & Pods",
   ];
+  //updated
 
   if (isCategoriesLoading) {
     return (
