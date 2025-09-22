@@ -47,14 +47,14 @@ export default function Searcher({
     type: selectedSearch,
     region: selectedRegion,
   });
-const router = useRouter();
+  const router = useRouter();
   useEffect(() => {
     if (locationInput === "") {
       setSelectedRegion("");
     }
   }, [locationInput]);
- const { location, error } = useGoogleLocation();
- console.log('location',location);
+  const { location, error } = useGoogleLocation();
+  console.log('location', location);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -118,30 +118,36 @@ const router = useRouter();
 
 
   useEffect(() => {
-    if(!location){
-     if (!location) return; 
+    if (!location) {
+      if (!location) return;
     }
-  const lowerSearch = searchInput.toLowerCase().trim();
+    const lowerSearch = searchInput.toLowerCase().trim();
 
-  if (
-    lowerSearch.includes("vapshop near me") ||
-    lowerSearch.includes("vape shop near me") ||
-    lowerSearch.includes("vap near me") ||
-    lowerSearch.includes("shop near me") ||
-    lowerSearch.includes("shop near by me") ||
-    lowerSearch.includes("shop near me") ||
-    lowerSearch.includes("store near me") ||
-    lowerSearch.includes("near me") ||
-    lowerSearch.includes("vapshop near store near me")
-  ) {
-    router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=5000`); 
+    if (
+      lowerSearch.includes("vapshop near me") ||
+      lowerSearch.includes("Vape Shop Near Me") ||
+      lowerSearch.includes("Smoke Shop Near Me") ||
+      lowerSearch.includes("Vape Store Nearby") ||
+      lowerSearch.includes("Head Shop Near Me") ||
+      lowerSearch.includes("CBD Shop Near Me") ||
+      lowerSearch.includes("Head Shop Near Me") ||
+      lowerSearch.includes("Vaping Supplies Near Me") ||
+      lowerSearch.includes("vap near me") ||
+      lowerSearch.includes("shop near me") ||
+      lowerSearch.includes("shop near by me") ||
+      lowerSearch.includes("shop near me") ||
+      lowerSearch.includes("store near me") ||
+      lowerSearch.includes("near me") ||
+      lowerSearch.includes("vapshop near store near me")
+    ) {
+      router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=5000`);
+    }
+  }, [searchInput, router, location]);
+
+
+  if (error) {
+    console.log('error', error);
   }
-}, [searchInput, router, location]); 
-
-
-if(error){
-  console.log('error',error);
-}
 
 
   return (
