@@ -62,7 +62,15 @@ const AuthApi = api.injectEndpoints({
         url: `/get-all-countries`,
         method: "GET",
       }),
-      providesTags:["tranding"]
+      providesTags: ["tranding"]
+    }),
+
+    getAllAdminRegions: builder.query<any, void>({
+      query: () => ({
+        url: `/admin/region`,
+        method: "GET",
+      }),
+      providesTags: ["tranding"]
     }),
 
     //getLogin user
@@ -110,4 +118,5 @@ export const {
   useGetFavouriteQuery,
   useUpdatePassMutation,
   useGtStoreDetailsQuery,
+  useGetAllAdminRegionsQuery,
 } = AuthApi;
