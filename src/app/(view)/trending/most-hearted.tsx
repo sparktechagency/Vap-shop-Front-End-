@@ -30,7 +30,7 @@ export default function MostHearted() {
     error,
   }: any = useMosthartedProductQuery({ category, region });
 
-  console.log('mosthartedproducts', mosthartedproducts);
+  console.log("mosthartedproducts", mosthartedproducts);
 
   const {
     data: ProductsAds,

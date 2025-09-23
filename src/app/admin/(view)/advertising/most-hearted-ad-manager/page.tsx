@@ -11,7 +11,6 @@ import { BASE_API_ENDPOINT } from "@/lib/config/data";
 import { useGetAdPricingQuery } from "@/redux/features/ad/adApi";
 import { useCountysQuery } from "@/redux/features/AuthApi";
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
-import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -42,6 +41,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
 
 const MoreVertIcon = () => (
   <svg
@@ -130,6 +130,7 @@ const EditPriceModal = ({
     payload.append("category_id", String(category_id));
     payload.append("region_id", String(region_id));
     payload.append("description", desc);
+    payload.append("type", "product");
 
     prices.forEach((val, i) => {
       payload.append(`weekly_prices[week_${i + 1}]`, val || "0");
@@ -275,11 +276,11 @@ const AdCard = ({
         </div>
 
         <div className="bg-white rounded-md overflow-hidden h-48 mb-4">
-          <Image
+          <img
             src={imageUrl}
             className="w-full h-full object-cover"
-            height={500}
-            width={500}
+            // height={500}
+            // width={500}
             alt="img"
           />
         </div>
@@ -372,37 +373,48 @@ function AdManagementPage() {
   const [selectedCat, setSelectedCat] = useState<string>("");
   const [selectedRegi, setSelectedRegi] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+  const { data: mosthartedproducts, isLoading: heartedLoading }: any =
+    useMosthartedProductQuery({
+      category: selectedCat,
+      region: selectedRegi,
+    });
+
+  useEffect(() => {
+    if (!heartedLoading) {
+      console.log(mosthartedproducts);
+    }
+  }, [heartedLoading]);
 
   const adData = [
     {
       id: 1,
       slotNumber: 1,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
+      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
     },
     {
       id: 2,
       slotNumber: 2,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+2",
+      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+2",
     },
     {
       id: 3,
       slotNumber: 3,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
+      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
     },
     {
       id: 4,
       slotNumber: 4,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+4",
+      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+4",
     },
     {
       id: 5,
       slotNumber: 5,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
+      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
     },
     {
       id: 6,
       slotNumber: 6,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+6",
+      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+6",
     },
   ];
 
@@ -429,6 +441,7 @@ function AdManagementPage() {
                   ad_slot_id={String(ad.id)}
                   category_id={selectedCat}
                   region_id={selectedRegi}
+                  imageUrl={ad.imageUr}
                   key={ad.id}
                   {...ad}
                 />
