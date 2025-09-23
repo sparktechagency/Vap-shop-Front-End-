@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,7 @@ import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import { notFound, useSearchParams } from "next/navigation";
 import { useTrendAdProductMutation } from "@/redux/features/manage/product";
 import { toast } from "sonner";
+import { useGetAdPricingQuery } from "@/redux/features/ad/adApi";
 
 const FormSchema = z.object({
   preferred_duration: z.enum(["1_week", "2_weeks", "3_weeks", "4_weeks"]),
@@ -43,6 +44,7 @@ export default function Page() {
   const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
   const { data: cats, isLoading: isCatsLoading } = useGetallCategorysQuery();
   const [prodAdRequest] = useTrendAdProductMutation();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -53,7 +55,35 @@ export default function Page() {
     },
     mode: "onChange",
   });
-  // const {} =
+  const category_id = form.watch("category_id");
+  const region_id = form.watch("region_id");
+  const pdur = form.watch("preferred_duration");
+  const { data: prices, isLoading } = useGetAdPricingQuery(
+    { adId: String(selectedSlot), catId: category_id, regionId: region_id },
+    {
+      skip: !category_id || !region_id,
+    }
+  );
+  useEffect(() => {
+    if (!isLoading) {
+      if (prices) {
+        console.log(prices.data[0].details);
+        console.log("____");
+
+        if (pdur === "1_week") {
+          if (prices.data[0].details.week_1) {
+            form.setValue("amount", prices.data[0].details.week_1 ?? 0);
+          }
+        } else if (pdur === "2_weeks") {
+          form.setValue("amount", prices.data[0].details.week_2 ?? 0);
+        } else if (pdur === "3_weeks") {
+          form.setValue("amount", prices.data[0].details.week_3 ?? 0);
+        } else if (pdur === "4_weeks") {
+          form.setValue("amount", prices.data[0].details.week_4 ?? 0);
+        }
+      }
+    }
+  }, [isLoading, pdur, selectedSlot]);
   if (!PRODUCT_ID) {
     return notFound();
   }
@@ -132,7 +162,12 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 1000" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="e.g., 1000"
+                      readOnly
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -153,9 +188,8 @@ export default function Page() {
                     <SelectContent>
                       <SelectItem value="1_week">1 week</SelectItem>
                       <SelectItem value="2_weeks">2 weeks</SelectItem>
-                      <SelectItem value="1_month">1 month</SelectItem>
-                      <SelectItem value="3_months">3 months</SelectItem>
-                      <SelectItem value="6_months">6 months</SelectItem>
+                      <SelectItem value="3_weeks">3 weeks</SelectItem>
+                      <SelectItem value="4_weeks">4 weeks</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

@@ -25,7 +25,12 @@ export default function Page() {
   const [trendBrandApi] = useTrendAdBrandMutation();
   // queries
   const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
-
+  // const { data: prices } = useGetAdPricingQuery(
+  //   { adId: ad_slot_id, catId: category_id, regionId: region_id },
+  //   {
+  //     skip: !category || !region,
+  //   }
+  // );
   const handleSubmit = async () => {
     const payload = {
       amount: Number(amount),
@@ -99,9 +104,8 @@ export default function Page() {
           <SelectContent>
             <SelectItem value="1_week">1 week</SelectItem>
             <SelectItem value="2_weeks">2 weeks</SelectItem>
-            <SelectItem value="1_month">1 month</SelectItem>
-            <SelectItem value="3_months">3 months</SelectItem>
-            <SelectItem value="6_months">6 months</SelectItem>
+            <SelectItem value="2_weeks">3 weeks</SelectItem>
+            <SelectItem value="2_weeks">4 weeks</SelectItem>
           </SelectContent>
         </Select>
       </div>

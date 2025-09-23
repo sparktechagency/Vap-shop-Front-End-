@@ -26,7 +26,7 @@ export const  adApi = api.injectEndpoints({
     }),
 getAdPricing: builder.query<any, {adId:string, catId: string; regionId: string }>({
   query: ({adId, catId, regionId }) => ({
-    url: `/admin/ad-pricings?ad_slot_id=${adId}&category_id=${catId}&region_id=${regionId}`,
+    url: `/admin/ad-pricings?ad_slot_id=${adId}&category_id=${catId}&region_id=${regionId}&type=product`,
   }),
 }),
 
