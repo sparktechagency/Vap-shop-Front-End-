@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCountysQuery } from "@/redux/features/AuthApi";
+import { useGetAllAdminRegionsQuery } from "@/redux/features/AuthApi";
 
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
@@ -37,7 +37,7 @@ const regionSchema = z.object({
 type RegionFormData = z.infer<typeof regionSchema>;
 
 export default function Page() {
-  const { data: countries, isLoading: cLoading, refetch } = useCountysQuery();
+  const { data: countries, isLoading: cLoading, refetch } = useGetAllAdminRegionsQuery();
   const [createRegion] = useCreateRegionMutation();
 
   const form = useForm<RegionFormData>({
