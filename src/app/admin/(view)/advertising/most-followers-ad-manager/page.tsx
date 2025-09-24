@@ -339,7 +339,6 @@ function AdManagementPage() {
   const [selectedCat, setSelectedCat] = useState<string>("");
   const [selectedRegi, setSelectedRegi] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-
   const adData = [
     {
       id: 1,
