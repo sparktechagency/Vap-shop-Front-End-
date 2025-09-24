@@ -352,7 +352,7 @@ export default function StoreRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-                      <Link href="tnc" className="underline">
+                      <Link href="/legal/privacy?type=terms-of-service" className="underline">
                         terms and conditions
                       </Link>
                     </Label>
