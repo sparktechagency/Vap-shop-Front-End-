@@ -62,22 +62,24 @@ const Textarea = ({ label, value, onChange }: { label: string; value: string; on
 const AdminSubscriptionEditor: NextPage = () => {
   const [data, setData] = useState<any>(defaultState);
   const { data: apiResponse, isLoading, refetch } = useGetAllSubscriptionPlansQuery();
-  const [updateAdonsAndPlan, { isLoading: isUpdating }] = useUpdateAdonsAndPlanMutation();
+  const [updateAdonsAndPlan] = useUpdateAdonsAndPlanMutation();
 
+
+  console.log('API Response:', apiResponse);
   useEffect(() => {
     if (apiResponse && apiResponse.data) {
+      // Initialize 'member' with its required structure from the start.
       const transformedData: any = {
         globalAddOns: [],
         store: null,
         brand: null,
         wholesaler: null,
+        // --- FIX: Initialize member as an object ---
         member: {
-          typeName: 'Member Subscriptions',
-          plans: [
-            { id: 'member_free', title: 'Free Membership', price: '0', description: 'Perfect for new users who want to explore the full platform at no cost.', features: [{ id: 1, text: 'Join discussions, write reviews, and share product tips' }, { id: 2, text: 'Follow stores, brands, and advocacy groups for updates' }, { id: 3, text: 'Discover shops and products worldwide' }], type: 'member', badge: null }
-          ],
-          availableAddOnIds: []
-        }
+          typeName: "Member Subscriptions",
+          plans: [],
+          availableAddOnIds: [6] // Set a default if applicable
+        },
       };
 
       const addOnTypes = ['advocacy', 'hemp', 'location'];
@@ -102,30 +104,31 @@ const AdminSubscriptionEditor: NextPage = () => {
               title: item.name,
               price: parseFloat(item.price).toFixed(0),
               description: item.description,
-              features: (item.features || []).map((text: string, index: number) => ({ id: Date.now() + index, text })),
+              // --- FIX for Hydration Error: Use a more stable key than Date.now() ---
+              features: (item.features || []).map((text: string, index: number) => ({ id: `${item.id}-${index}`, text })),
               type: item.type,
               badge: item.badge,
             },
             availableAddOnIds: [4, 6]
           };
         } else if (planType === 'member') {
+          // Now this line is safe because transformedData.member is an object.
           transformedData.member.plans.push({
             id: item.id,
             title: item.name,
             price: parseFloat(item.price).toFixed(0),
             description: item.description,
-            features: (item.features || []).map((text: string, index: number) => ({ id: Date.now() + index, text })),
+            // --- FIX for Hydration Error: Use a more stable key than Date.now() ---
+            features: (item.features || []).map((text: string, index: number) => ({ id: `${item.id}-${index}`, text })),
             type: item.type,
             badge: item.badge,
           });
-          transformedData.member.availableAddOnIds = [6];
         }
       });
 
       setData(transformedData);
     }
   }, [apiResponse]);
-
 
   // --- State Handlers ---
   const handlePlanChange = (planType: 'store' | 'brand' | 'wholesaler', field: string, value: string) => {
@@ -190,6 +193,7 @@ const AdminSubscriptionEditor: NextPage = () => {
 
   // --- API Payload Transformation and Save Logic ---
   const handleSave = async (item: Plan | AddOn, itemType: 'plan' | 'addOn') => {
+    console.log('item to save:', item);
     let formData;
 
     let currentItem: Plan | AddOn | undefined = item;
@@ -212,6 +216,7 @@ const AdminSubscriptionEditor: NextPage = () => {
 
     if (itemType === 'plan') {
       const plan = currentItem as Plan;
+      console.log('Plan features before saving:', plan);
       // --- FIX APPLIED HERE ---
       // Changed the key from 'features[]' to 'features' to match common JSON API conventions.
       formData = {
@@ -235,7 +240,7 @@ const AdminSubscriptionEditor: NextPage = () => {
       };
     }
 
-    console.log(`--- Saving Data for ID: ${currentItem.id} ---`);
+    console.log(`--- Saving Data for ID: ${currentItem} ---`);
     console.log('API formData:', formData);
     try {
       const response = await updateAdonsAndPlan({ planId: currentItem.id, formData }).unwrap();
@@ -257,6 +262,7 @@ const AdminSubscriptionEditor: NextPage = () => {
     const planData = data[planType];
     if (!planData) return null;
 
+    console.log(`Rendering editor for ${planType}:`, planData);
     return (
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">{planData.typeName}</h2>

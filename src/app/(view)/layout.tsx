@@ -26,6 +26,9 @@ export default function RootLayout({
   const [isLoading, setIsLoading] = useState(false);
   const [requestedPath, setRequestedPath] = useState("");
 
+  const isUnprotectedPage = pathname === "/" || (pathname === "/legal/privacy");
+
+
   useEffect(() => {
     if (pathname !== "/") {
       setRequestedPath(pathname);
@@ -36,7 +39,7 @@ export default function RootLayout({
       const timer = setTimeout(() => {
         setShowModal(true);
       }, 300);
-      
+
       return () => clearTimeout(timer);
     }
   }, [pathname]);
@@ -57,7 +60,7 @@ export default function RootLayout({
       <Navbar />
       <main className="min-h-screen">
         {/* Show children only if authenticated or on homepage */}
-        {(pathname === "/" || Cookies.get("token")) ? children : (
+        {(isUnprotectedPage || Cookies.get("token")) ? children : (
           <div className="container mx-auto px-4 py-12">
             <div className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl font-bold text-gray-900 mb-6">
@@ -107,16 +110,16 @@ export default function RootLayout({
               Authentication Required
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600">
-              To access {requestedPath || "this page"}, please log in to your account. 
+              To access {requestedPath || "this page"}, please log in to your account.
               Do not have an account yet? You can register for free.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="mt-2 flex flex-col gap-3">
             <Button
               onClick={handleLogin}
               disabled={isLoading}
-            variant={"special"}
+              variant={"special"}
             >
               {isLoading ? (
                 <>
@@ -141,7 +144,7 @@ export default function RootLayout({
                 "Continue to Login"
               )}
             </Button>
-            
+
             <Button
               onClick={handleClose}
               variant="outline"
@@ -150,7 +153,7 @@ export default function RootLayout({
               Continue Browsing Homepage
             </Button>
           </div>
-          
+
           <div className="mt-4 text-center text-xs text-gray-500">
             By continuing, you agree to our Terms of Service and Privacy Policy.
           </div>
