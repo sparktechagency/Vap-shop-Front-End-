@@ -41,7 +41,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useMosthartedProductQuery } from "@/redux/features/Trending/TrendingApi";
+import { useGetproductsAdsQuery } from "@/redux/features/Trending/TrendingApi";
 
 const MoreVertIcon = () => (
   <svg
@@ -373,48 +373,73 @@ function AdManagementPage() {
   const [selectedCat, setSelectedCat] = useState<string>("");
   const [selectedRegi, setSelectedRegi] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  const { data: mosthartedproducts, isLoading: heartedLoading }: any =
-    useMosthartedProductQuery({
-      category: selectedCat,
-      region: selectedRegi,
-    });
 
-  useEffect(() => {
-    if (!heartedLoading) {
-      console.log(mosthartedproducts);
-    }
-  }, [heartedLoading]);
+  const { data: ProductsAds }: any = useGetproductsAdsQuery({
+    region: selectedRegi,
+  });
+
+  // useEffect(() => {
+  //   if (!trendLoading) {
+  //     console.log(ProductsAds);
+  //   }
+  // }, [trendLoading]);
 
   const adData = [
     {
       id: 1,
       slotNumber: 1,
-      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
+      imageUr:
+        ProductsAds?.data[0]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
     },
     {
       id: 2,
       slotNumber: 2,
-      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+2",
+      imageUr:
+        ProductsAds?.data[1]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+2",
     },
     {
       id: 3,
       slotNumber: 3,
-      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
+      imageUr:
+        ProductsAds?.data[2]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
     },
     {
       id: 4,
       slotNumber: 4,
-      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+4",
+      imageUr:
+        ProductsAds?.data[3]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+4",
     },
     {
       id: 5,
       slotNumber: 5,
-      imageUr: "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
+      imageUr:
+        ProductsAds?.data[4]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
     },
     {
       id: 6,
       slotNumber: 6,
-      imageUr: "https://placehold.co/400x300/d1d1d1/555?text=Ad+6",
+      imageUr:
+        ProductsAds?.data[5]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+6",
+    },
+    {
+      id: 7,
+      slotNumber: 7,
+      imageUr:
+        ProductsAds?.data[6]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+7",
+    },
+    {
+      id: 8,
+      slotNumber: 8,
+      imageUr:
+        ProductsAds?.data[7]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+8",
     },
   ];
 

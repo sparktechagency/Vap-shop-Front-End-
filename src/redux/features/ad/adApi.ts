@@ -29,10 +29,20 @@ getAdPricing: builder.query<any, {adId:string, catId: string; regionId: string }
     url: `/admin/ad-pricings?ad_slot_id=${adId}&category_id=${catId}&region_id=${regionId}&type=product`,
   }),
 }),
+getAdFollowersPricing: builder.query<any, {adId:string, regionId: string }>({
+  query: ({adId, regionId }) => ({
+    url: `/admin/ad-pricings?ad_slot_id=${adId}&region_id=${regionId}&type=follower`,
+  }),
+}),
+getAdFeaturedPricing: builder.query<any, {adId:string, regionId: string }>({
+  query: ({adId, regionId }) => ({
+    url: `/admin/ad-pricings?ad_slot_id=${adId}&region_id=${regionId}&type=featured`,
+  }),
+}),
 
   })
 })
 
-export const {usePostAdMutation,useFollowerAdMutation,useGetAdPricingQuery,useAdPriceSetMutation} = adApi;
+export const {usePostAdMutation,useFollowerAdMutation,useGetAdPricingQuery,useAdPriceSetMutation,useGetAdFeaturedPricingQuery,useGetAdFollowersPricingQuery} = adApi;
 
 

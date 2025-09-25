@@ -8,10 +8,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BASE_API_ENDPOINT } from "@/lib/config/data";
-import { useGetAdPricingQuery } from "@/redux/features/ad/adApi";
+import { useGetAdFollowersPricingQuery } from "@/redux/features/ad/adApi";
 import { useCountysQuery } from "@/redux/features/AuthApi";
-import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
-import Image from "next/image";
+
 import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -31,6 +30,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useGetproductsAdsQuery } from "@/redux/features/Trending/TrendingApi";
 
 const MoreVertIcon = () => (
   <svg
@@ -89,7 +100,6 @@ const EditPriceModal = ({
   slotNumber,
   ad_slot_id,
   region_id,
-  category_id,
   desc,
 }: {
   isOpen: boolean;
@@ -97,7 +107,6 @@ const EditPriceModal = ({
   slotNumber: number;
   ad_slot_id: string | number;
   region_id: string | number;
-  category_id: string | number;
   desc: string;
 }) => {
   const token = Cookies.get("token");
@@ -113,12 +122,12 @@ const EditPriceModal = ({
 
   const savePricing = async () => {
     const payload = new FormData();
-    console.log({ ad_slot_id, region_id, category_id, desc });
+    console.log({ ad_slot_id, region_id, desc });
 
     payload.append("ad_slot_id", String(ad_slot_id));
-    payload.append("category_id", String(category_id));
     payload.append("region_id", String(region_id));
     payload.append("description", desc);
+    payload.append("type", "follower");
 
     prices.forEach((val, i) => {
       payload.append(`weekly_prices[week_${i + 1}]`, val || "0");
@@ -201,26 +210,23 @@ const AdCard = ({
   imageUrl,
   ad_slot_id,
   region_id,
-  category_id,
   desc,
 }: {
   slotNumber: number;
   imageUrl: string;
   ad_slot_id: string;
   region_id: string;
-  category_id: string;
   desc: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const { data: prices } = useGetAdPricingQuery(
-    { adId: ad_slot_id, catId: category_id, regionId: region_id },
+  const { data: prices } = useGetAdFollowersPricingQuery(
+    { adId: ad_slot_id, regionId: region_id },
     {
-      skip: !category_id || !region_id,
+      skip: !region_id,
     }
   );
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -265,16 +271,16 @@ const AdCard = ({
         </div>
 
         <div className="bg-white rounded-md overflow-hidden h-48 mb-4">
-          <Image
+          <img
             src={imageUrl}
             className="w-full h-full object-cover"
-            height={500}
-            width={500}
+            // height={500}
+            // width={500}
             alt="img"
           />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <Dialog>
             <DialogTrigger asChild>
               <Button className="w-full">View</Button>
@@ -316,13 +322,35 @@ const AdCard = ({
               </div>
             </DialogContent>
           </Dialog>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant={"destructive"}>Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action can not be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    toast.info("This feature is under development");
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
       {/* Render the modal */}
       <EditPriceModal
         ad_slot_id={ad_slot_id}
-        category_id={category_id}
         region_id={region_id}
         desc={desc}
         isOpen={isModalOpen}
@@ -335,40 +363,75 @@ const AdCard = ({
 
 function AdManagementPage() {
   const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
-  const { data, isLoading } = useGetallCategorysQuery();
-  const [selectedCat, setSelectedCat] = useState<string>("");
   const [selectedRegi, setSelectedRegi] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+
+  const { data: ProductsAds }: any = useGetproductsAdsQuery({
+    region: selectedRegi,
+  });
+
+  // useEffect(() => {
+  //   if (!trendLoading) {
+  //     console.log(ProductsAds);
+  //   }
+  // }, [trendLoading]);
+
   const adData = [
     {
       id: 1,
       slotNumber: 1,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
+      imageUr:
+        ProductsAds?.data[0]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
     },
     {
       id: 2,
       slotNumber: 2,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+2",
+      imageUr:
+        ProductsAds?.data[1]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+2",
     },
     {
       id: 3,
       slotNumber: 3,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
+      imageUr:
+        ProductsAds?.data[2]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
     },
     {
       id: 4,
       slotNumber: 4,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+4",
+      imageUr:
+        ProductsAds?.data[3]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+4",
     },
     {
       id: 5,
       slotNumber: 5,
-      imageUrl: "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
+      imageUr:
+        ProductsAds?.data[4]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
     },
     {
       id: 6,
       slotNumber: 6,
-      imageUrl: "https://placehold.co/400x300/d1d1d1/555?text=Ad+6",
+      imageUr:
+        ProductsAds?.data[5]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+6",
+    },
+    {
+      id: 7,
+      slotNumber: 7,
+      imageUr:
+        ProductsAds?.data[6]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+7",
+    },
+    {
+      id: 8,
+      slotNumber: 8,
+      imageUr:
+        ProductsAds?.data[7]?.product_image ??
+        "https://placehold.co/400x300/e8e8e8/555?text=Ad+8",
     },
   ];
 
@@ -387,14 +450,14 @@ function AdManagementPage() {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Most followers Ad Manager
           </h2>
-          {selectedCat && selectedRegi ? (
+          {selectedRegi ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {adData?.map((ad) => (
                 <AdCard
                   desc={desc}
                   ad_slot_id={String(ad.id)}
-                  category_id={selectedCat}
                   region_id={selectedRegi}
+                  imageUrl={ad.imageUr}
                   key={ad.id}
                   {...ad}
                 />
@@ -406,26 +469,7 @@ function AdManagementPage() {
         </section>
 
         <section>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="relative">
-              <Select
-                onValueChange={(e) => {
-                  setSelectedCat(e);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Cateogory" />
-                </SelectTrigger>
-                <SelectContent>
-                  {!isLoading &&
-                    data.data.map((x: any) => (
-                      <SelectItem key={x.id} value={x.id}>
-                        {x.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="grid grid-cols-1 gap-6 mb-6">
             <div className="relative">
               <Select
                 onValueChange={(e) => {
