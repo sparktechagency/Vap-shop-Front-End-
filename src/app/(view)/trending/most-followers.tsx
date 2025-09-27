@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import React, { useState, useEffect } from "react";

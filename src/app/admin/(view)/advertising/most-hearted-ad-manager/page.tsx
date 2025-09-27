@@ -214,6 +214,7 @@ const AdCard = ({
   ad_slot_id,
   region_id,
   category_id,
+  named,
   desc,
 }: {
   slotNumber: number;
@@ -222,6 +223,7 @@ const AdCard = ({
   region_id: string;
   category_id: string;
   desc: string;
+  named?: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -284,7 +286,7 @@ const AdCard = ({
             alt="img"
           />
         </div>
-
+        <div className="">{named}</div>
         <div className="mt-4 grid grid-cols-2 gap-2">
           <Dialog>
             <DialogTrigger asChild>
@@ -388,6 +390,7 @@ function AdManagementPage() {
     {
       id: 1,
       slotNumber: 1,
+      name: ProductsAds?.data[0]?.product_name,
       imageUr:
         ProductsAds?.data[0]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
@@ -395,6 +398,7 @@ function AdManagementPage() {
     {
       id: 2,
       slotNumber: 2,
+      name: ProductsAds?.data[1]?.product_name,
       imageUr:
         ProductsAds?.data[1]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+2",
@@ -402,6 +406,7 @@ function AdManagementPage() {
     {
       id: 3,
       slotNumber: 3,
+      name: ProductsAds?.data[2]?.product_name,
       imageUr:
         ProductsAds?.data[2]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
@@ -409,6 +414,7 @@ function AdManagementPage() {
     {
       id: 4,
       slotNumber: 4,
+      name: ProductsAds?.data[3]?.product_name,
       imageUr:
         ProductsAds?.data[3]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+4",
@@ -416,6 +422,7 @@ function AdManagementPage() {
     {
       id: 5,
       slotNumber: 5,
+      name: ProductsAds?.data[4]?.product_name,
       imageUr:
         ProductsAds?.data[4]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
@@ -423,23 +430,10 @@ function AdManagementPage() {
     {
       id: 6,
       slotNumber: 6,
+      name: ProductsAds?.data[5]?.product_name,
       imageUr:
         ProductsAds?.data[5]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+6",
-    },
-    {
-      id: 7,
-      slotNumber: 7,
-      imageUr:
-        ProductsAds?.data[6]?.product_image ??
-        "https://placehold.co/400x300/e8e8e8/555?text=Ad+7",
-    },
-    {
-      id: 8,
-      slotNumber: 8,
-      imageUr:
-        ProductsAds?.data[7]?.product_image ??
-        "https://placehold.co/400x300/e8e8e8/555?text=Ad+8",
     },
   ];
 
@@ -463,6 +457,7 @@ function AdManagementPage() {
               {adData?.map((ad) => (
                 <AdCard
                   desc={desc}
+                  named={ad.name}
                   ad_slot_id={String(ad.id)}
                   category_id={selectedCat}
                   region_id={selectedRegi}
