@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import MembershipInfo from "./membershipinfo";
+import TermsModal from "@/components/PrivacyMOdal";
 
 interface StoreRegisterFormData {
   store_name: string;
@@ -82,6 +83,9 @@ export default function StoreRegister({
     setRegions(selectedCountry?.regions || []);
     setValue("region_id", ""); // Reset region when country changes
   };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 
   const onSubmit = async (data: StoreRegisterFormData) => {
     if (!data.terms) {
@@ -352,9 +356,11 @@ export default function StoreRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-                      <Link href="/legal/privacy?type=terms-of-service" className="underline">
+
+                      <button onClick={() => setIsModalOpen(true)}>
                         terms and conditions
-                      </Link>
+                      </button>
+
                     </Label>
                   </div>
                   {errors.terms && (
@@ -380,6 +386,7 @@ export default function StoreRegister({
           </Card>
         </div>
       </div>
+      <TermsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

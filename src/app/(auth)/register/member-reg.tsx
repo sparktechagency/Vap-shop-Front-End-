@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import MembershipInfo from "./membershipinfo";
+import TermsModal from "@/components/PrivacyMOdal";
 
 interface RegisterFormData {
   first_name: string;
@@ -52,6 +53,7 @@ export default function MemberRegister({
   const [register, { isLoading }] = useRegisterMutation();
   const { data: countriesResponse, isLoading: isLoadingCountries } =
     useCountysQuery();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedCountryId, setSelectedCountryId] = useState<string>("");
   const [regions, setRegions] = useState<
@@ -387,9 +389,11 @@ export default function MemberRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-                      <Link href="/legal/privacy?type=terms-of-service" className="underline">
+
+                      <button onClick={() => setIsModalOpen(true)}>
                         terms and conditions
-                      </Link>
+                      </button>
+
                     </Label>
                   </div>
                   {errors.terms && (
@@ -418,6 +422,11 @@ export default function MemberRegister({
           </Card>
         </div>
       </div>
+      <TermsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        type="privacy-policy" // optional: you can pass different types
+      />
     </div>
   );
 }
