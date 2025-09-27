@@ -120,8 +120,8 @@ export default function Navbar() {
             className="flex flex-row justify-start items-center gap-2 text-sm lg:text-lg font-bold"
           >
             <div
-              className="size-8 md:size-12 bg-cover bg-no-repeat"
-              style={{ backgroundImage: "url('/image/VSM_VAPE.svg')" }}
+              className="size-8 md:size-12 bg-[url('/image/VSM_VAPE.svg')] bg-cover bg-no-repeat"
+
             ></div>
             <span className="text-xs md:text-base ">Vape Shop Maps</span>
           </Link>

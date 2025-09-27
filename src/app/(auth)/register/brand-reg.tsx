@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import MembershipInfo from "./membershipinfo";
+import TermsModal from "@/components/PrivacyMOdal";
 
 interface BrandRegisterFormData {
   brand_name: string;
@@ -76,6 +77,8 @@ export default function BrandRegister({
     setRegions(selectedCountry?.regions || []);
     setValue("region_id", ""); // Reset region when country changes
   };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const onSubmit = async (data: BrandRegisterFormData) => {
     if (!data.terms) {
       toast.error("Please accept the terms and conditions");
@@ -336,9 +339,11 @@ export default function BrandRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-                      <Link href="/legal/privacy?type=terms-of-service" className="underline">
+
+                      <button onClick={() => setIsModalOpen(true)}>
                         terms and conditions
-                      </Link>
+                      </button>
+
                     </Label>
                   </div>
                   {errors.terms && (
@@ -364,6 +369,7 @@ export default function BrandRegister({
           </Card>
         </div>
       </div>
+      <TermsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

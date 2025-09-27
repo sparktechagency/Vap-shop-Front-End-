@@ -1,12 +1,12 @@
 
 
 "use client";
-import SliderWithSkeleton, {
-  SliderSkeleton,
-} from "@/components/SliderWithSkeleton";
+
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import SliderWithSkeleton from "@/components/SliderWithSkeleton";
+import { SliderSkeleton } from "@/components/SliderSkeletion";
 
 export default function Home() {
   const token = Cookies.get("token");
@@ -17,13 +17,13 @@ export default function Home() {
   const trendingCategories = categorys?.data?.map(
     (category: any) => category
   ) || [
-    "Pod Systems",
-    "Mod Kits",
-    "Disposable Vapes",
-    "Nicotine Pouches",
-    "E-Liquids",
-    "Coils & Pods",
-  ];
+      "Pod Systems",
+      "Mod Kits",
+      "Disposable Vapes",
+      "Nicotine Pouches",
+      "E-Liquids",
+      "Coils & Pods",
+    ];
   //updated
 
   if (isCategoriesLoading) {
