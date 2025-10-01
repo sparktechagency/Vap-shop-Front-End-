@@ -17,14 +17,14 @@ import { useLoginMutation } from "../../../redux/features/AuthApi";
 import { FormEvent } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [login, { isLoading }] = useLoginMutation();
+  const [, setCookie] = useCookies(["token"]);
   const router = useRouter();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,11 +34,10 @@ export function LoginForm({
 
     try {
       const response = await login({ email, password }).unwrap();
-      console.log('login response', response);
+      console.log("login response", response);
       if (response.ok) {
-
         toast.success(response.message || "Login successful");
-        Cookies.set("token", response.data.access_token);
+        setCookie("token", response.data.access_token);
         if (response?.data?.user?.role === 1) {
           router.push("/admin/dashboard");
         } else {
