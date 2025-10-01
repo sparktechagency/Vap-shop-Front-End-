@@ -21,8 +21,9 @@ import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import Cookies from "js-cookie";
+
 import { NavActions } from "./core-values/navlinks";
+import { useCookies } from "react-cookie";
 
 export const LinkList = [
   {
@@ -61,26 +62,25 @@ export const LinkList = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [token, setToken] = useState<string | undefined>(undefined);
   const [user, setUser] = useState<UserData | null>(null);
   const role = Number(user?.role);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
-
+  const [{ token }] = useCookies(["token"]);
   const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
     skip: !token,
   });
 
-  useEffect(() => {
-    const checkToken = () => {
-      const newToken = Cookies.get("token");
-      if (newToken !== token) {
-        setToken(newToken);
-      }
-    };
-    checkToken();
-    const interval = setInterval(checkToken, 1000);
-    return () => clearInterval(interval);
-  }, [token, pathname, user, data, refetch]);
+  // useEffect(() => {
+  //   const checkToken = () => {
+  //     const newToken = Cookies.get("token");
+  //     if (newToken !== token) {
+  //       setToken(newToken);
+  //     }
+  //   };
+  //   checkToken();
+  //   const interval = setInterval(checkToken, 1000);
+  //   return () => clearInterval(interval);
+  // }, [token, pathname, user, data, refetch]);
 
   useEffect(() => {
     if (token && data?.data) {
@@ -119,10 +119,7 @@ export default function Navbar() {
             href="/"
             className="flex flex-row justify-start items-center gap-2 text-sm lg:text-lg font-bold"
           >
-            <div
-              className="size-8 md:size-12 bg-[url('/image/VSM_VAPE.svg')] bg-cover bg-no-repeat"
-
-            ></div>
+            <div className="size-8 md:size-12 bg-[url('/image/VSM_VAPE.svg')] bg-cover bg-no-repeat"></div>
             <span className="text-xs md:text-base ">Vape Shop Maps</span>
           </Link>
         </div>

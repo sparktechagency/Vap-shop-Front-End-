@@ -59,7 +59,7 @@ const baseLinks = {
   inbox: {
     icon: <Lucide.MessageSquareDot className="size-5" />,
     label: "Inbox",
-    to: "/me/inbox",
+    to: "/chat",
   },
   logout: {
     icon: <Lucide.LogOut className="size-5" />,

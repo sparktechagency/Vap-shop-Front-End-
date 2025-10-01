@@ -8,18 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LogOut, ArrowLeft } from "lucide-react";
+import { useCookies } from "react-cookie";
 
 export default function LogoutPage() {
   const router = useRouter();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
+  const [isLoggingOut] = useState(false);
+  const [, , removeCookie] = useCookies(["token"]);
   const handleLogout = async () => {
-
-    Cookies.remove("token");
+    removeCookie("token");
     router.push("/login");
   };
 
