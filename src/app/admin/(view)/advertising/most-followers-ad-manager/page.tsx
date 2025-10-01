@@ -41,7 +41,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useGetproductsAdsQuery } from "@/redux/features/Trending/TrendingApi";
+import { useGetSponsoredBrandsQuery } from "@/redux/features/Trending/TrendingApi";
 
 const MoreVertIcon = () => (
   <svg
@@ -207,6 +207,7 @@ const EditPriceModal = ({
 
 const AdCard = ({
   slotNumber,
+  named,
   imageUrl,
   ad_slot_id,
   region_id,
@@ -214,6 +215,7 @@ const AdCard = ({
 }: {
   slotNumber: number;
   imageUrl: string;
+  named?: string;
   ad_slot_id: string;
   region_id: string;
   desc: string;
@@ -279,7 +281,7 @@ const AdCard = ({
             alt="img"
           />
         </div>
-
+        <div className="">{named}</div>
         <div className="mt-4 grid grid-cols-2 gap-2">
           <Dialog>
             <DialogTrigger asChild>
@@ -365,73 +367,65 @@ function AdManagementPage() {
   const { data: countryData, isLoading: isRegionsLoading } = useCountysQuery();
   const [selectedRegi, setSelectedRegi] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
+  const { data, isLoading } = useGetSponsoredBrandsQuery(
+    {
+      region: selectedRegi,
+    },
+    { skip: !selectedRegi }
+  );
 
-  const { data: ProductsAds }: any = useGetproductsAdsQuery({
-    region: selectedRegi,
-  });
-
-  // useEffect(() => {
-  //   if (!trendLoading) {
-  //     console.log(ProductsAds);
-  //   }
-  // }, [trendLoading]);
+  if (!isLoading) {
+    console.log(data);
+  }
 
   const adData = [
     {
       id: 1,
       slotNumber: 1,
+      name: data?.data[0]?.product_name,
       imageUr:
-        ProductsAds?.data[0]?.product_image ??
+        data?.data[0]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+1",
     },
     {
       id: 2,
       slotNumber: 2,
+      name: data?.data[1]?.product_name,
       imageUr:
-        ProductsAds?.data[1]?.product_image ??
+        data?.data[1]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+2",
     },
     {
       id: 3,
       slotNumber: 3,
+      name: data?.data[2]?.product_name,
       imageUr:
-        ProductsAds?.data[2]?.product_image ??
+        data?.data[2]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+3",
     },
     {
       id: 4,
       slotNumber: 4,
+      name: data?.data[3]?.product_name,
       imageUr:
-        ProductsAds?.data[3]?.product_image ??
+        data?.data[3]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+4",
     },
     {
       id: 5,
       slotNumber: 5,
+      name: data?.data[4]?.product_name,
       imageUr:
-        ProductsAds?.data[4]?.product_image ??
+        data?.data[4]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+5",
     },
     {
       id: 6,
       slotNumber: 6,
+      name: data?.data[5]?.product_name,
       imageUr:
-        ProductsAds?.data[5]?.product_image ??
+        data?.data[5]?.product_image ??
         "https://placehold.co/400x300/e8e8e8/555?text=Ad+6",
-    },
-    {
-      id: 7,
-      slotNumber: 7,
-      imageUr:
-        ProductsAds?.data[6]?.product_image ??
-        "https://placehold.co/400x300/e8e8e8/555?text=Ad+7",
-    },
-    {
-      id: 8,
-      slotNumber: 8,
-      imageUr:
-        ProductsAds?.data[7]?.product_image ??
-        "https://placehold.co/400x300/e8e8e8/555?text=Ad+8",
     },
   ];
 
@@ -455,6 +449,7 @@ function AdManagementPage() {
               {adData?.map((ad) => (
                 <AdCard
                   desc={desc}
+                  named={ad.name}
                   ad_slot_id={String(ad.id)}
                   region_id={selectedRegi}
                   imageUrl={ad.imageUr}
