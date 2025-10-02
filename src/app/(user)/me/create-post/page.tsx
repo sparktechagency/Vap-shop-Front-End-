@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,8 +18,8 @@ import {
 import { useCreatePostMutation } from "@/redux/features/users/postApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import JoditEditor from "jodit-react";
-
+import dynamic from "next/dynamic";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 const postSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   content: z.string().min(1, { message: "Content is required" }),
@@ -28,6 +28,8 @@ const postSchema = z.object({
 type PostForm = z.infer<typeof postSchema>;
 
 export default function Page() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const navig = useRouter();
   const [postData] = useCreatePostMutation();
   const form = useForm<PostForm>({
@@ -39,7 +41,8 @@ export default function Page() {
   });
 
   const onSubmit = async (values: PostForm) => {
-    console.log(values);
+    //TODO: add image api
+    console.log(selectedFile);
 
     try {
       const response: { ok?: string } = await postData({
@@ -56,6 +59,17 @@ export default function Page() {
         error?.data?.message || "Post creation failed. Please try again."
       );
       console.error("Post creation failed:", error);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setSelectedFile(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -78,6 +92,26 @@ export default function Page() {
               </FormItem>
             )}
           /> */}
+
+          <label className="w-full h-64 border-2 border-dashed rounded-lg flex items-center justify-center overflow-hidden cursor-pointer relative">
+            {preview ? (
+              <img
+                src={preview}
+                alt="Preview"
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <p className="text-gray-400">
+                Drag & drop an image or click to select
+              </p>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </label>
 
           <FormField
             control={form.control}

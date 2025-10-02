@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ArrowBigUp, MessageCircle, Share2 } from "lucide-react";
+import {
+  ArrowBigUp,
+  Edit3Icon,
+  MessageCircle,
+  Share2,
+  Trash2Icon,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +33,17 @@ import Namer from "./internal/namer";
 import { usePostLikeMutation } from "@/redux/features/others/otherApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -230,6 +247,31 @@ export default function PostCard({
           </Dialog>
         </div>
         <div>
+          <Button variant="ghost">
+            <Edit3Icon />
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost">
+                <Trash2Icon className="text-destructive" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You are going to delete this post. this action can not be
+                  undone
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction className="bg-destructive">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button variant="ghost">
             <Share2 />
           </Button>

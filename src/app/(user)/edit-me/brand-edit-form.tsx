@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   brand_name: z.string().min(2),
@@ -149,6 +150,11 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+
+          <div className="col-span-2 space-y-2">
+            <Label>City</Label>
+            <Input placeholder="Enter your city" />
+          </div>
 
           <FormField
             control={control}

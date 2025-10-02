@@ -184,6 +184,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
               )}
             />
           ))} */}
+
         <FormField
           control={control}
           name="address"
@@ -197,6 +198,10 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             </FormItem>
           )}
         />
+        <div className="col-span-2 space-y-2">
+          <Label>City</Label>
+          <Input placeholder="Enter your city" />
+        </div>
 
         <FormField
           control={control}

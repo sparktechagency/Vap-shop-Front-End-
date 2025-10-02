@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -28,6 +27,7 @@ import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import { useCountysQuery } from "@/redux/features/AuthApi"; // ADDED
+import { Label } from "@/components/ui/label";
 
 // UPDATED: Schema with country_id and corrected zip_code
 const formSchema = z.object({
@@ -179,6 +179,11 @@ export default function UserEditForm({ my }: { my: UserData }) {
             )}
           />
 
+          <div className="col-span-2 space-y-2">
+            <Label>City</Label>
+            <Input placeholder="Enter your city" />
+          </div>
+
           {/* === START: UPDATED LAYOUT FOR COUNTRY/REGION/ZIP === */}
 
           <FormField
@@ -188,7 +193,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
               <FormItem className="col-span-2 ">
                 <FormLabel>Country</FormLabel>
                 <Select
-
                   onValueChange={(value) => {
                     field.onChange(value);
                     const selectedCountry = countriesResponse?.data?.find(
@@ -221,7 +225,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
             )}
           />
 
-
           <FormField
             control={control}
             name="region_id"
@@ -240,10 +243,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
                   </FormControl>
                   <SelectContent>
                     {regions.map((region) => (
-                      <SelectItem
-                        key={region.id}
-                        value={region.id.toString()}
-                      >
+                      <SelectItem key={region.id} value={region.id.toString()}>
                         {region.name}
                       </SelectItem>
                     ))}
