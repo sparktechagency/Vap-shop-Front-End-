@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -34,6 +30,7 @@ import { Loader2Icon } from "lucide-react";
 import FavControl from "./fav-control";
 // --- ADDED: Import for country data ---
 import { useCountysQuery } from "@/redux/features/AuthApi";
+import { Label } from "@/components/ui/label";
 
 // --- UPDATED: Schema with country, last_name, and corrected zip field ---
 const formSchema = z.object({
@@ -43,7 +40,7 @@ const formSchema = z.object({
   phone: z.string().min(2).max(50),
   address: z.string().min(2),
   zip_code: z.string().min(2), // Corrected name
-  country_id: z.string(),      // ADDED
+  country_id: z.string(), // ADDED
   region_id: z.string(),
 });
 
@@ -200,6 +197,10 @@ export default function UserEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+          <div className="col-span-2 space-y-2">
+            <Label>City</Label>
+            <Input placeholder="Enter your city" />
+          </div>
 
           {/* === START: UPDATED LAYOUT FOR ADDRESS FIELDS === */}
           <div className="col-span-2 grid grid-cols-2 gap-6">
@@ -308,4 +309,3 @@ export default function UserEditForm({ my }: { my: UserData }) {
     </>
   );
 }
-

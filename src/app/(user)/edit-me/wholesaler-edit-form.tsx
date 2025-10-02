@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useCountysQuery } from "@/redux/features/AuthApi";
+import { Label } from "@/components/ui/label";
 
 // --- UPDATED: Schema with country_id ---
 const formSchema = z.object({
@@ -109,12 +110,11 @@ export default function BrandEditForm({ my }: { my: UserData }) {
     }
   }, [my, countriesResponse, form]);
 
-
   const { control, handleSubmit, watch } = form;
   const countryId = watch("country_id");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('values', values);
+    console.log("values", values);
 
     try {
       const res = await updateUser({
@@ -199,7 +199,10 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
-
+          <div className="col-span-2 space-y-2">
+            <Label>City</Label>
+            <Input placeholder="Enter your city" />
+          </div>
           {/* === START: UPDATED LAYOUT FOR ADDRESS FIELDS === */}
           <div className="col-span-2 grid grid-cols-2 gap-6">
             <FormField
@@ -245,7 +248,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               control={control}
               name="region_id"
               render={({ field }) => (
-                <FormItem >
+                <FormItem>
                   <FormLabel>Region</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -324,7 +327,11 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               <FormItem>
                 <FormLabel>Open from</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter opening time" type="time" {...field} />
+                  <Input
+                    placeholder="Enter opening time"
+                    type="time"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -337,7 +344,11 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               <FormItem>
                 <FormLabel>Closed at</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter closing time" type="time" {...field} />
+                  <Input
+                    placeholder="Enter closing time"
+                    type="time"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
