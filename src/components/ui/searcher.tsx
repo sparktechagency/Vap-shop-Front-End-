@@ -140,7 +140,7 @@ export default function Searcher({
       lowerSearch.includes("near me") ||
       lowerSearch.includes("vapshop near store near me")
     ) {
-      router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=50000`);
+      router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=16093`);
     }
   }, [searchInput, router, location]);
 

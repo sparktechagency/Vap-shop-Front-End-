@@ -42,11 +42,11 @@ const MapPage: React.FC = () => {
   const [allStores, setAllStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
-    lat: 23.8103, 
-    lng: 90.4125 
+    lat: 23.8103,
+    lng: 90.4125
   });
 
-const lat = searchParams.get("lat");
+  const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
   const radius = searchParams.get("radius");
 
@@ -64,7 +64,7 @@ const lat = searchParams.get("lat");
   }, [mapBounds]);
 
 
-  let map_params ;
+  let map_params;
 
   if (lat && lng && radius) {
     map_params = {
@@ -72,12 +72,12 @@ const lat = searchParams.get("lat");
       longitude: parseFloat(lng),
       radius: parseInt(radius),
     };
-  }else{
+  } else {
     map_params = {
-     ne_lat :debouncedBounds?.ne.lat,
-     ne_lng :debouncedBounds?.ne.lng,
-     sw_lat :debouncedBounds?.sw.lat,
-     sw_lng :debouncedBounds?.sw.lng
+      ne_lat: debouncedBounds?.ne.lat,
+      ne_lng: debouncedBounds?.ne.lng,
+      sw_lat: debouncedBounds?.sw.lat,
+      sw_lng: debouncedBounds?.sw.lng
     };
   }
 
@@ -85,7 +85,7 @@ const lat = searchParams.get("lat");
   const { data: storesData, isLoading, isFetching } = useGetAllStoresInMapQuery(map_params, {
     skip: !debouncedBounds, // Skip query if bounds are not set
   });
-console.log("storesData", storesData);
+  console.log("storesData", storesData);
   // Update the list of stores when API data is received
   useEffect(() => {
     if (storesData?.data) {
@@ -186,7 +186,7 @@ console.log("storesData", storesData);
 
       <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-5 space-y-6 md:space-y-0">
         <div className="relative h-[80dvh] w-full border bg-secondary rounded-md overflow-hidden flex flex-col z-30">
-          
+
           <div className="h-[48px] w-full bg-primary flex justify-between items-center px-4">
             <div className="flex items-center gap-2 text-xs text-background font-semibold">
               {isFetching ? 'Searching...' : `Showing ${allStores.length} results`}
@@ -258,7 +258,6 @@ console.log("storesData", storesData);
                 <Button onClick={() => router.push(`/stores/store/${selectedStore.id}`)} size="sm" className="rounded-full">
                   View Store
                 </Button>
-                {/* This button will open Google Maps for directions */}
                 <Button
                   onClick={() => handleGetDirections(selectedStore)}
                   size="sm"
