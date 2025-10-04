@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import {
   useCommentPostMutation,
+  useDeletePostMutation,
   useGetCommentQuery,
 } from "@/redux/features/users/postApi";
 import Namer from "./internal/namer";
@@ -44,6 +45,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import Image from "next/image";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -63,6 +65,7 @@ export default function PostCard({
   const [liking, setLiking] = useState(false);
   const { resolvedTheme } = useTheme();
   const [comment] = useCommentPostMutation();
+  const [deletePost] = useDeletePostMutation();
   const { data: comments, refetch } = useGetCommentQuery({ id: data.id });
   const [likePost] = usePostLikeMutation();
   const [totalLike, setTotalLike] = useState(0);
@@ -131,6 +134,17 @@ export default function PostCard({
         {data?.title}
       </div> */}
       {/* Content */}
+      {data.article_image && (
+        <div className="py-6">
+          <Image
+            src={data.article_image}
+            height={600}
+            width={800}
+            alt="post_image"
+            className="max-h-[400px] mx-auto object-contain"
+          />
+        </div>
+      )}
       <div
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}
@@ -247,8 +261,10 @@ export default function PostCard({
           </Dialog>
         </div>
         <div>
-          <Button variant="ghost">
-            <Edit3Icon />
+          <Button variant="ghost" asChild>
+            <Link href={`/me/edit-post?id=${data.id}`}>
+              <Edit3Icon />
+            </Link>
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -266,7 +282,17 @@ export default function PostCard({
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-destructive">
+                <AlertDialogAction
+                  className="bg-destructive"
+                  onClick={async () => {
+                    const res = await deletePost({ id: data.id }).unwrap();
+                    if (!res.ok) {
+                      toast.error(res.message ?? "Failed to delete post");
+                      return;
+                    }
+                    toast.success(res.message ?? "Successfully deleted post");
+                  }}
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
