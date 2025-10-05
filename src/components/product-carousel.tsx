@@ -9,6 +9,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import Link from "next/link";
 
 export default function ProductCarousel({
   slides,
@@ -17,11 +18,12 @@ export default function ProductCarousel({
     id: number;
     image: string;
     alt: string;
+    url?: string | null;
   }[];
 }) {
   const [api, setApi] = useState<any>();
   const [current, setCurrent] = useState(0);
-
+  console.log('slides', slides);
   const plugin = Autoplay({ delay: 4000, stopOnInteraction: false });
 
   useEffect(() => {
@@ -55,18 +57,25 @@ export default function ProductCarousel({
           {slides?.map((slide, i) => (
             <CarouselItem key={i} className="basis-1/2 !ml-4">
               <Card className="!p-0 overflow-hidden">
-                <CardContent
-                  className="flex aspect-video items-center justify-center !p-0 overflow-hidden bg-center bg-no-repeat bg-cover"
-                  style={{ backgroundImage: `url('${slide.image}')` }}
-                >
-                  {/* <Image
-                    src={slide.image}
-                    alt={slide.alt}
-                    width={800}
-                    height={500}
-                    className="object-cover w-full h-full rounded-lg object-center"
-                  /> */}
-                </CardContent>
+                {slide.url ? (
+                  <Link
+                    href={slide.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <CardContent
+                      className="flex aspect-video items-center justify-center !p-0 overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer"
+                      style={{ backgroundImage: `url('${slide.image}')` }}
+                    />
+                  </Link>
+                ) : (
+                  // If no URL, render the CardContent directly
+                  <CardContent
+                    className="flex aspect-video items-center justify-center !p-0 overflow-hidden bg-center bg-no-repeat bg-cover"
+                    style={{ backgroundImage: `url('${slide.image}')` }}
+                  />
+                )}
               </Card>
             </CarouselItem>
           ))}
@@ -77,9 +86,8 @@ export default function ProductCarousel({
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-2 rounded-full transition-all ${
-              current === index ? "bg-purple-600 w-4" : "bg-gray-300"
-            }`}
+            className={`h-2 w-2 rounded-full transition-all ${current === index ? "bg-purple-600 w-4" : "bg-gray-300"
+              }`}
             onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
           />

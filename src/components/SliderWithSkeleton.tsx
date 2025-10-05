@@ -1,11 +1,11 @@
 "use client";
 
 import { useGetHomeBannerQuery } from "@/redux/features/Home/HomePageApi";
-import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 import { SliderSkeleton } from "./SliderSkeletion";
+import ProductCarousel from "./product-carousel";
 
-const ProductCarousel = dynamic(() => import("@/components/product-carousel"), { ssr: false });
+
 
 interface SliderItem {
   id: number;
@@ -16,6 +16,7 @@ interface SliderItem {
 interface RawSlider {
   id: number;
   image: string;
+  link: string;
 }
 
 
@@ -32,6 +33,7 @@ export default function SliderWithSkeleton() {
       id: slider.id,
       image: slider.image,
       alt: `Slider Image ${slider.id}`,
+      url: slider?.link,
     }))
   ), [sliderData]);
 
