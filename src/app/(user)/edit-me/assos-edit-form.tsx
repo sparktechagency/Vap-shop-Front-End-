@@ -34,6 +34,7 @@ const formSchema = z.object({
   first_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
+  city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2), // RENAMED from zipcode
   country_id: z.string(), // ADDED
@@ -59,6 +60,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
       first_name: "",
       email: "",
       phone: "",
+      city: "",
       address: "",
       zip_code: "",
       country_id: "",
@@ -78,6 +80,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
       form.setValue("first_name", my?.first_name);
       form.setValue("email", my?.email ?? "");
       form.setValue("phone", my?.phone ?? "");
+      form.setValue("city", my?.address?.city ?? "");
       form.setValue("address", my?.address?.address ?? "");
       form.setValue("zip_code", my?.address?.zip_code ?? ""); // Corrected field name
       form.setValue("region_id", String(my?.address?.region_id ?? ""));
@@ -167,6 +170,19 @@ export default function UserEditForm({ my }: { my: UserData }) {
           />
           <FormField
             control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
             name="address"
             render={({ field }) => (
               <FormItem className="col-span-2">
@@ -178,11 +194,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
-
-          <div className="col-span-2 space-y-2">
-            <Label>City</Label>
-            <Input placeholder="Enter your city" />
-          </div>
 
           {/* === START: UPDATED LAYOUT FOR COUNTRY/REGION/ZIP === */}
 

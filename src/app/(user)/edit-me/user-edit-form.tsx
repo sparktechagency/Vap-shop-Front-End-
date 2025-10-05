@@ -38,6 +38,7 @@ const formSchema = z.object({
   last_name: z.string().min(2), // ADDED
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
+  city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2), // Corrected name
   country_id: z.string(), // ADDED
@@ -64,11 +65,11 @@ export default function UserEditForm({ my }: { my: UserData }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // --- UPDATED: Default values ---
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
+      city: "", // make sure this is not undefined
       phone: "",
       address: "",
       zip_code: "",
@@ -84,7 +85,9 @@ export default function UserEditForm({ my }: { my: UserData }) {
       form.setValue("last_name", my?.last_name ?? "");
       form.setValue("email", my?.email ?? "");
       form.setValue("phone", my?.phone ?? "");
+      form.setValue("city", my?.address?.city ?? "");
       form.setValue("address", my?.address?.address ?? "");
+
       form.setValue("zip_code", my?.address?.zip_code ?? ""); // Corrected name
       form.setValue("region_id", String(my?.address?.region_id ?? ""));
 
@@ -186,6 +189,19 @@ export default function UserEditForm({ my }: { my: UserData }) {
           />
           <FormField
             control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your city" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
             name="address"
             render={({ field }) => (
               <FormItem className="col-span-2">
@@ -197,10 +213,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
-          <div className="col-span-2 space-y-2">
-            <Label>City</Label>
-            <Input placeholder="Enter your city" />
-          </div>
 
           {/* === START: UPDATED LAYOUT FOR ADDRESS FIELDS === */}
           <div className="col-span-2 grid grid-cols-2 gap-6">

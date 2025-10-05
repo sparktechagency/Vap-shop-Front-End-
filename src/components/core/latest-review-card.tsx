@@ -53,7 +53,7 @@ export default function LatestReviewCard({
             alt="icon"
             className="size-24 object-cover object-center rounded-lg"
           />
-          <div className="">
+          <div className="ml-4">
             <h4 className="font-semibold text-xl">
               {data.product.product_name ?? ""}
             </h4>

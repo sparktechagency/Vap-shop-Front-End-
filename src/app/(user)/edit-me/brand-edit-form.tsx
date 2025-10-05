@@ -43,6 +43,7 @@ const formSchema = z.object({
   brand_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
+  city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2),
   region_id: z.string(),
@@ -56,6 +57,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       brand_name: my?.first_name || "",
       email: my?.email || "",
       phone: my?.phone || "",
+      city: my?.address?.city || "",
       address: my?.address?.address || "",
       zip_code: my?.address?.zip_code || "",
       region_id: String(my?.address?.region_id || ""),
@@ -136,7 +138,19 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
-
+          <FormField
+            control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={control}
             name="address"
