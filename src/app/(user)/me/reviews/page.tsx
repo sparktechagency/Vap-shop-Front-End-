@@ -6,18 +6,21 @@ import React from "react";
 import Link from "next/link";
 // import ReviewCard from "@/components/core/review-card";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@/context/userContext";
 import { useGetMyReviewsQuery } from "@/redux/features/users/userApi";
 import { Loader2Icon } from "lucide-react";
 import LatestReviewCard from "@/components/core/latest-review-card";
+import { useUser } from "@/context/userContext";
 
 export default function LatestRevs() {
   const { id } = useUser();
-  const { data, isLoading, isError, refetch } = useGetMyReviewsQuery({ id });
-  const my = useUser();
+  const { data, isLoading, isError, refetch } = useGetMyReviewsQuery({
+    id,
+  });
   const reviews = data?.data;
-  console.log("reviews", data);
-  
+  if (data) {
+    console.log(data);
+  }
+
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">
@@ -43,12 +46,7 @@ export default function LatestRevs() {
     <div className="!p-6">
       <div className="!my-12 !space-y-6">
         {reviews.map((review) => (
-          <LatestReviewCard
-            key={review?.id}
-            data={review}
-            userId={review?.user_id}
-            product_user={review?.product_user}
-          />
+          <LatestReviewCard key={review?.id} data={review} userId={id} />
         ))}
       </div>
     </div>
