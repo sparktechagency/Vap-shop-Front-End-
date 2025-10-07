@@ -106,7 +106,7 @@ export default function BrandRegister({
       // console.log("Registration response:", response);
       if (response?.ok) {
         toast.success(response?.message || "Registration successful!");
-        router.push("/verify-otp?isregistared=true");
+        router.push(`/verify-otp?isregistared=true&email=${data.email}`);
       } else {
         toast.error(response?.message || "Registration failed!");
       }
