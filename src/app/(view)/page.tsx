@@ -93,10 +93,10 @@ export default function Home() {
                       }}
                     />
                     {/* Text area with fixed min height so it won’t push siblings */}
-                    <div className="w-full text-center font-semibold pt-4 text-xs sm:text-sm md:text-xl line-clamp-2 min-h-[3rem] flex items-start justify-center">
+                    {/* <div className="w-full text-center font-semibold pt-4 text-xs sm:text-sm md:text-xl line-clamp-2 min-h-[3rem] flex items-start justify-center">
                       {cat?.name?.slice(0, 20) +
                         (cat?.name.length > 20 ? "..." : "")}
-                    </div>
+                    </div> */}
                   </div>
                 </Link>
               ))}
