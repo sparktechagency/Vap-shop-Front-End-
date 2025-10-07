@@ -83,7 +83,7 @@ export default function ProductCarousel({
       </Carousel>
 
       <div className="flex justify-center !mt-4 gap-2">
-        {slides.map((_, index) => (
+        {slides?.map((_, index) => (
           <button
             key={index}
             className={`h-2 w-2 rounded-full transition-all ${current === index ? "bg-purple-600 w-4" : "bg-gray-300"
