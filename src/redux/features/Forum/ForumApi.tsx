@@ -63,6 +63,7 @@ export const forumApi = api.injectEndpoints({
 
     getDashboardForum: builder.query({
       query: ({ id }) => `/forum-group?&user_id=${id}`,
+      providesTags: ["group"],
     }),
 
     createcomment: builder.mutation({

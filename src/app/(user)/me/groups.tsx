@@ -16,11 +16,13 @@ import React from "react";
 export default function Groups() {
   const my = useUser();
 
-  const { data, isLoading, refetch } = useGetDashboardForumQuery({ id: my.id });
+  const { data, isLoading, refetch, isError, error }: any =
+    useGetDashboardForumQuery({ id: my.id });
 
   if (!isLoading) {
     console.log(data);
   }
+
   return (
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">
@@ -41,9 +43,9 @@ export default function Groups() {
             </SelectContent>
           </Select>
         </CardHeader>
-        {!data ? (
+        {isError ? (
           <p className="mt-6! flex justify-center items-center text-muted-foreground text-sm">
-            No Forum Found
+            {error.data.message}
           </p>
         ) : (
           data?.data?.data.map((x: any) => (

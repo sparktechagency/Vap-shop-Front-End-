@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
@@ -17,13 +15,13 @@ export default function Home() {
   const trendingCategories = categorys?.data?.map(
     (category: any) => category
   ) || [
-      "Pod Systems",
-      "Mod Kits",
-      "Disposable Vapes",
-      "Nicotine Pouches",
-      "E-Liquids",
-      "Coils & Pods",
-    ];
+    "Pod Systems",
+    "Mod Kits",
+    "Disposable Vapes",
+    "Nicotine Pouches",
+    "E-Liquids",
+    "Coils & Pods",
+  ];
   //updated
 
   if (isCategoriesLoading) {

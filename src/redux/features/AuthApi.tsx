@@ -62,7 +62,7 @@ const AuthApi = api.injectEndpoints({
         url: `/get-all-countries`,
         method: "GET",
       }),
-      providesTags: ["tranding"]
+      providesTags: ["tranding"],
     }),
 
     getAllAdminRegions: builder.query<any, void>({
@@ -70,7 +70,7 @@ const AuthApi = api.injectEndpoints({
         url: `/admin/region`,
         method: "GET",
       }),
-      providesTags: ["tranding"]
+      providesTags: ["tranding"],
     }),
 
     //getLogin user
