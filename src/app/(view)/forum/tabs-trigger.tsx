@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   TabsList,
@@ -11,7 +11,7 @@ import {
 import VapeTalk from "./vape-talk";
 import { useGetForumQuery } from "@/redux/features/Forum/ForumApi";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, Loader2Icon, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LoadingScletion from "@/components/LoadingScletion";
 
@@ -56,7 +56,10 @@ export interface ForumApiResponse {
 }
 export default function TabsTriggererForum() {
   const [activeTab, setActiveTab] = useState("default");
-
+  const [mut, setMut] = useState<boolean>(false);
+  useEffect(() => {
+    setMut(true);
+  }, []);
   const queryParams = () => {
     switch (activeTab) {
       case "trending":
@@ -78,7 +81,13 @@ export default function TabsTriggererForum() {
   const isApiResponse = (res: any): res is ForumApiResponse => {
     return res?.data?.data !== undefined && Array.isArray(res.data.data);
   };
-
+  if (!mut) {
+    return (
+      <div className={`flex justify-center items-center h-24 mx-auto`}>
+        <Loader2Icon className={`animate-spin`} />
+      </div>
+    );
+  }
   if (isError || !data || !isApiResponse(data)) {
     return (
       <div className="container !py-10">

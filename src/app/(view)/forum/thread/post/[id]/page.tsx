@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CommentCard from "@/components/core/comment-card";
 import GoBack from "@/components/core/internal/go-back";
 import LoadingScletion from "@/components/LoadingScletion";
@@ -156,7 +156,6 @@ export default function Page() {
       toast.error("An error occurred while liking the thread.");
     }
   };
-
   // --- Render States ---
   if (isLoading) {
     return <LoadingScletion />;
@@ -179,7 +178,8 @@ export default function Page() {
   const thread = data.data as ThreadDetails;
 
   // FIX: Safely check if the current user's data exists and matches the thread author.
-  const isOwner = !meLoading && me?.data?.user?.role === thread.user.role;
+  const isOwner = !meLoading && me?.data?.role === thread.user.role;
+  const isAdmin = !meLoading && me?.data?.role === 1;
 
   return (
     <main className="!my-12 !px-4 lg:!px-[7%] !space-y-12">
@@ -245,14 +245,14 @@ export default function Page() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {isOwner && (
+              {(isOwner || isAdmin) && (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="secondary">Edit thread</Button>
                   </DialogTrigger>
                   <DialogContent className="min-w-[80dvw]">
                     <DialogHeader className="border-b pb-4!">
-                      <DialogTitle className="text-sm! font-semibold ">
+                      <DialogTitle className="text-sm! font-semibold">
                         Update this thread
                       </DialogTitle>
                     </DialogHeader>
@@ -265,7 +265,8 @@ export default function Page() {
                   </DialogContent>
                 </Dialog>
               )}
-              {isOwner && (
+
+              {(isOwner || isAdmin) && (
                 <Button size="icon" variant="outline" onClick={handleDelete}>
                   <Trash2Icon className="text-destructive" />
                 </Button>

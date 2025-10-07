@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Regions from "./regions";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -37,7 +38,11 @@ const regionSchema = z.object({
 type RegionFormData = z.infer<typeof regionSchema>;
 
 export default function Page() {
-  const { data: countries, isLoading: cLoading, refetch } = useGetAllAdminRegionsQuery();
+  const {
+    data: countries,
+    isLoading: cLoading,
+    refetch,
+  } = useGetAllAdminRegionsQuery();
   const [createRegion] = useCreateRegionMutation();
 
   const form = useForm<RegionFormData>({
@@ -70,7 +75,26 @@ export default function Page() {
         Manage Regions
       </h3>
 
-      <div className="flex justify-end items-center">
+      <div className="flex justify-end items-center gap-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Add Country</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add new Country</DialogTitle>
+            </DialogHeader>
+            <div className="">
+              <Input placeholder="Country name" />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant={"outline"}>Cancel</Button>
+              </DialogClose>
+              <Button>Create Country</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <Dialog>
           <DialogTrigger asChild>
             <Button>Add New Region</Button>
