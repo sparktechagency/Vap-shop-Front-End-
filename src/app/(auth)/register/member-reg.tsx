@@ -78,7 +78,7 @@ export default function MemberRegister({
       (c: { id: { toString: () => string } }) => c.id.toString() === countryId
     );
     setRegions(selectedCountry?.regions || []);
-    setValue("region_id", ""); // Reset region when country changes
+    setValue("region_id", "");
   };
   const onSubmit = async (data: RegisterFormData) => {
     if (!data.terms) {
@@ -109,7 +109,7 @@ export default function MemberRegister({
 
       if (response?.ok) {
         toast.success(response?.message || "Registration successful!");
-        router.push("/verify-otp?isregistared=true");
+        router.push(`/verify-otp?isregistared=true&email=${data.email}`);
         reset({
           first_name: "",
           last_name: "",

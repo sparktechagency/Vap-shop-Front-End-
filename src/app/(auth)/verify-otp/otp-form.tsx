@@ -35,7 +35,7 @@ export function OTPForm({
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
   const [resendotp, { isLoading: isResendLoading }] = useResendotpMutation();
   const router = useRouter();
-  console.log('email', email);
+  console.log('email--------', email);
   console.log(isFromRegistration);
 
   const {
