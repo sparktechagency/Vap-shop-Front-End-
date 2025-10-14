@@ -18,7 +18,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useGoogleLocation } from "@/hooks/useCurrentLocation";
 
-
 const categories = [
   "store",
   "brand",
@@ -27,8 +26,6 @@ const categories = [
   "association",
   "accounts",
 ];
-
-
 
 export default function Searcher({
   className,
@@ -54,7 +51,7 @@ export default function Searcher({
     }
   }, [locationInput]);
   const { location, error } = useGoogleLocation();
-  console.log('location', location);
+  console.log("location", location);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -116,7 +113,6 @@ export default function Searcher({
     );
   };
 
-
   useEffect(() => {
     if (!location) {
       if (!location) return;
@@ -144,11 +140,9 @@ export default function Searcher({
     }
   }, [searchInput, router, location]);
 
-
   if (error) {
-    console.log('error', error);
+    console.log("error", error);
   }
-
 
   return (
     <div className={className} {...props} ref={searchContainerRef}>
@@ -170,7 +164,6 @@ export default function Searcher({
           <MapPinIcon className="size-4 md:size-5" />
           <Input
             className="border-none outline-none !ring-0 !bg-background text-xs text-foreground! md:text-base !pl-1 sm:!pl-2"
-
             value={locationInput}
             onFocus={() => {
               setSearchFocus(true);
@@ -186,7 +179,7 @@ export default function Searcher({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute top-[calc(148px/3)] left-0 w-full bg-background border shadow-lg h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-4 z-10  p-4!"
+              className="absolute top-[calc(148px/3)] left-0 w-full bg-background border shadow-lg h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-1 lg:grid-cols-4 z-50  p-4!"
             >
               <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden row-span-2 lg:row-span-1">
                 {searching?.data?.data ? (
@@ -216,12 +209,12 @@ export default function Searcher({
                                 x.role === 3
                                   ? "brand"
                                   : x.role === 4
-                                    ? "wholesaler"
-                                    : x.role === 5
-                                      ? "store"
-                                      : x.role === 2
-                                        ? "association"
-                                        : "member"
+                                  ? "wholesaler"
+                                  : x.role === 5
+                                  ? "store"
+                                  : x.role === 2
+                                  ? "association"
+                                  : "member"
                               }
                               // isVerified
                               size="sm"

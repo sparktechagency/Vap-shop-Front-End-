@@ -1,20 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import ArticleCard from "@/components/core/article-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useGetMostratedArticalQuery } from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
@@ -25,16 +14,24 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useGetMostratedArticalQuery } from "@/redux/features/Trending/TrendingApi";
 import {
   useCountysQuery,
   useGetOwnprofileQuery,
 } from "@/redux/features/AuthApi";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { ChevronDownIcon, ChevronLeft, Globe } from "lucide-react";
 
 export default function Featured() {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [region, setRegion] = React.useState<string>("");
+  const [region, setRegion] = React.useState("");
+  const [selectedCountry, setSelectedCountry] = React.useState<any>(null);
+  const [open, setOpen] = React.useState(false);
 
-  // Destructure error info from query
   const { data, isLoading, isError, error }: any = useGetMostratedArticalQuery({
     page: currentPage.toString(),
     per_page: "16",
@@ -65,6 +62,12 @@ export default function Featured() {
     }
   };
 
+  const handleSelectRegion = (val: string) => {
+    setRegion(val);
+    setCurrentPage(1);
+    setOpen(false);
+  };
+
   if (isLoading) return <LoadingSkeleton />;
 
   return (
@@ -84,38 +87,83 @@ export default function Featured() {
         </div>
 
         {!cLoading && (
-          <Select
-            onValueChange={(val) => {
-              setRegion(val.trim());
-              setCurrentPage(1);
-            }}
-            value={region || " "}
-          >
-            <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue placeholder="Region" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value=" ">Worldwide</SelectItem>
-              <SelectSeparator />
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full md:w-[180px] justify-between transition"
+              >
+                {region === ""
+                  ? "Worldwide"
+                  : (() => {
+                      const country = countries?.data?.find((c: any) =>
+                        c.regions.some((r: any) => r.id.toString() === region)
+                      );
+                      const regionData = country?.regions?.find(
+                        (r: any) => r.id.toString() === region
+                      );
+                      return regionData
+                        ? `${regionData.name} (${regionData.code})`
+                        : "Select Region";
+                    })()}
+                <ChevronDownIcon
+                  className={`ml-2 h-4 w-4 transition-transform duration-200 ${
+                    open ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </Button>
+            </PopoverTrigger>
 
-              {countries?.data?.map((x: any, i: number) => (
-                <React.Fragment key={`country-${x.id}`}>
-                  <SelectGroup key={`group-${x.id}`}>
-                    <SelectLabel>{x.name}</SelectLabel>
-                    {x.regions.map((y: any) => (
-                      <SelectItem
-                        value={y.id.toString()}
-                        key={`region-${y.id}`}
-                      >
-                        {y.name} ({y.code})
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
-                </React.Fragment>
-              ))}
-            </SelectContent>
-          </Select>
+            <PopoverContent className="w-[340px]! p-2" align="end">
+              {selectedCountry ? (
+                <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedCountry(null)}
+                    className="text-muted-foreground flex items-center gap-1 mb-1"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Back
+                  </Button>
+                  {selectedCountry.regions.map((r: any) => (
+                    <Button
+                      key={r.id}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleSelectRegion(r.id.toString())}
+                    >
+                      {r.name} ({r.code})
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleSelectRegion("")}
+                    className="flex items-center gap-2 justify-start"
+                  >
+                    <Globe className="w-4 h-4" /> Worldwide
+                  </Button>
+
+                  {countries?.data?.map((c: any) => (
+                    <Button
+                      key={c.id}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => setSelectedCountry(c)}
+                    >
+                      {c.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 
