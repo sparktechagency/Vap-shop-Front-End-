@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,19 @@ import Image from "next/image";
 import { Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { useDelteAricalMutation, useGetallArticlesQuery } from "@/redux/features/admin/AdminApis";
+import {
+  useDelteAricalMutation,
+  useGetallArticlesQuery,
+} from "@/redux/features/admin/AdminApis";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Article {
   id: number;
@@ -38,14 +48,14 @@ interface Article {
   like_count: number;
 }
 
-
-
 export default function ArticlesPage() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchAttempted, setSearchAttempted] = useState(false);
   const per_page = 6;
-  const [currentlyDeleting, setCurrentlyDeleting] = useState<number | null>(null);
+  const [currentlyDeleting, setCurrentlyDeleting] = useState<number | null>(
+    null
+  );
 
   const { data, isLoading, isError, error, refetch } = useGetallArticlesQuery({
     page,
@@ -66,14 +76,14 @@ export default function ArticlesPage() {
     try {
       const response = await deleteArticle({ id }).unwrap();
       if (response?.ok) {
-        toast.success('Article deleted successfully');
+        toast.success("Article deleted successfully");
         refetch();
       } else {
-        toast.error(response?.message || 'Failed to delete article');
+        toast.error(response?.message || "Failed to delete article");
       }
     } catch (error) {
-      console.error('Error deleting article:', error);
-      toast.error('Failed to delete article');
+      console.error("Error deleting article:", error);
+      toast.error("Failed to delete article");
     } finally {
       setCurrentlyDeleting(null);
     }
@@ -89,24 +99,18 @@ export default function ArticlesPage() {
     if (!data?.data?.links || data?.data?.data?.length === 0) return null;
 
     return data.data.links.map((link: any, index: number) => {
-      if (link.label === '&laquo; Previous') {
+      if (link.label === "&laquo; Previous") {
         return (
           <PaginationItem key={index}>
-            <PaginationPrevious
-              onClick={() => handlePageChange(page - 1)}
-
-            />
+            <PaginationPrevious onClick={() => handlePageChange(page - 1)} />
           </PaginationItem>
         );
       }
 
-      if (link.label === 'Next &raquo;') {
+      if (link.label === "Next &raquo;") {
         return (
           <PaginationItem key={index}>
-            <PaginationNext
-              onClick={() => handlePageChange(page + 1)}
-
-            />
+            <PaginationNext onClick={() => handlePageChange(page + 1)} />
           </PaginationItem>
         );
       }
@@ -160,23 +164,21 @@ export default function ArticlesPage() {
     );
   }
 
-
-
   return (
     <div className="h-full w-full !p-6">
-      <div className="grid grid-cols-2 w-full">
+      <div className="grid lg:grid-cols-2 w-full space-y-6">
         <div className="flex gap-4">
           <Input
             placeholder="Search here"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch(e)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
           />
           <Button onClick={handleSearch}>Search</Button>
         </div>
         <div className="flex flex-row justify-end items-center">
           <Select>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full lg:w-[180px]">
               <SelectValue placeholder="Search by" />
             </SelectTrigger>
             <SelectContent>
@@ -190,7 +192,9 @@ export default function ArticlesPage() {
       {data?.data?.data?.length === 0 ? (
         <div className="flex flex-col justify-center items-center h-full py-12">
           <p className="text-2xl font-bold">
-            {searchAttempted ? "No articles found matching your search" : "No articles available"}
+            {searchAttempted
+              ? "No articles found matching your search"
+              : "No articles available"}
           </p>
           {searchAttempted && (
             <Button
@@ -208,7 +212,7 @@ export default function ArticlesPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-3 !py-12 gap-6">
+          <div className="grid lg:grid-cols-3 !py-12 gap-6">
             {data?.data?.data?.map((article: Article) => (
               <Card className="!pt-0 overflow-hidden" key={article.id}>
                 <Image
@@ -236,7 +240,9 @@ export default function ArticlesPage() {
                     disabled={currentlyDeleting === article.id}
                   >
                     <Trash2Icon className="!mr-2" />
-                    {currentlyDeleting === article.id ? 'Deleting...' : 'Delete'}
+                    {currentlyDeleting === article.id
+                      ? "Deleting..."
+                      : "Delete"}
                   </button>
                 </CardContent>
               </Card>
@@ -247,9 +253,7 @@ export default function ArticlesPage() {
           {data?.data?.data?.length > 0 && (
             <div className="w-full flex justify-center mt-4">
               <Pagination>
-                <PaginationContent>
-                  {renderPaginationItems()}
-                </PaginationContent>
+                <PaginationContent>{renderPaginationItems()}</PaginationContent>
               </Pagination>
             </div>
           )}

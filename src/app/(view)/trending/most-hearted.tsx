@@ -6,11 +6,16 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { ChevronDownIcon, ChevronLeft, Globe } from "lucide-react";
 import {
   useGetproductsAdsQuery,
   useMosthartedProductQuery,
@@ -20,9 +25,11 @@ import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 
 export default function MostHearted() {
   const [category, setCategory] = useState<any>("");
-  const [region, setRegion] = useState(""); // empty string means worldwide
+  const [region, setRegion] = useState(""); // empty = worldwide
+  const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [open, setOpen] = useState(false);
 
-  // Query with filters
+  // Queries
   const {
     data: mosthartedproducts,
     refetch: refetchMostHearted,
@@ -30,27 +37,29 @@ export default function MostHearted() {
     error,
   }: any = useMosthartedProductQuery({ category, region });
 
-  console.log("mosthartedproducts", mosthartedproducts);
-
   const {
     data: ProductsAds,
     refetch: refetchAds,
     isError: isAdError,
     error: adError,
-  }: any = useGetproductsAdsQuery({
-    region,
-  });
+  }: any = useGetproductsAdsQuery({ region });
+
   const { data: cats, isLoading: catLoading } = useGetallCategorysQuery();
   const { data: countries, isLoading: countriesLoading } = useCountysQuery();
 
-  // Refetch when filters change
   useEffect(() => {
     refetchMostHearted();
   }, [category, region, refetchMostHearted]);
 
+  const handleSelectRegion = (val: string) => {
+    setRegion(val);
+    setOpen(false);
+  };
+
   return (
     <>
       <div className="w-full flex justify-end items-center gap-6 !my-12">
+        {/* Category Select */}
         <Select
           onValueChange={(val) => setCategory(Number(val))}
           value={category.toString()}
@@ -68,41 +77,88 @@ export default function MostHearted() {
           </SelectContent>
         </Select>
 
-        <Select
-          onValueChange={(val) => {
-            // Treat blank or whitespace as worldwide = ""
-            const cleanVal = val.trim() === "" || val === " " ? "" : val;
-            setRegion(cleanVal);
-          }}
-          value={region === "" ? " " : region}
-        >
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value=" ">Worldwide</SelectItem>
-            <SelectSeparator />
-            {!countriesLoading &&
-              countries?.data?.map((country: any, i: number) => (
-                <React.Fragment key={`country-${country.id}`}>
-                  <SelectGroup key={`group-${country.id}`}>
-                    <SelectLabel>{country.name}</SelectLabel>
-                    {country.regions.map((region: any) => (
-                      <SelectItem
-                        value={region.id.toString()}
-                        key={`region-${region.id}`}
-                      >
-                        {region.name} ({region.code})
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
-                </React.Fragment>
-              ))}
-          </SelectContent>
-        </Select>
+        {/* Country → Region Popover */}
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full md:w-[180px] justify-between transition"
+            >
+              {region === ""
+                ? "Worldwide"
+                : (() => {
+                    const country = countries?.data?.find((c: any) =>
+                      c.regions.some((r: any) => r.id.toString() === region)
+                    );
+                    const regionData = country?.regions?.find(
+                      (r: any) => r.id.toString() === region
+                    );
+                    return regionData
+                      ? `${regionData.name} (${regionData.code})`
+                      : "Select Region";
+                  })()}
+              <ChevronDownIcon
+                className={`ml-2 h-4 w-4 transition-transform duration-200 ${
+                  open ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </Button>
+          </PopoverTrigger>
+
+          <PopoverContent className="w-[340px]! p-2" align="end">
+            {selectedCountry ? (
+              <div className="space-y-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedCountry(null)}
+                  className="text-muted-foreground flex items-center gap-1 mb-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                {selectedCountry.regions.map((r: any) => (
+                  <Button
+                    key={r.id}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleSelectRegion(r.id.toString())}
+                  >
+                    {r.name} ({r.code})
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSelectRegion("")}
+                  className="flex items-center gap-2 justify-start"
+                >
+                  <Globe className="w-4 h-4" /> Worldwide
+                </Button>
+
+                {!countriesLoading &&
+                  countries?.data?.map((c: any) => (
+                    <Button
+                      key={c.id}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => setSelectedCountry(c)}
+                    >
+                      {c.name}
+                    </Button>
+                  ))}
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
       </div>
 
+      {/* Product Ads */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 !my-6">
         {isAdError ? (
           <div className="py-4 col-span-4 flex justify-center items-center">
@@ -131,11 +187,12 @@ export default function MostHearted() {
         )}
       </div>
 
+      {/* Trending Products */}
       <h2 className="font-semibold text-2xl !mt-12 text-center">
         Top 50 Trending Products
       </h2>
       {isError ? (
-        <div className="py-4  flex justify-center items-center">
+        <div className="py-4 flex justify-center items-center">
           {error?.data?.message}
         </div>
       ) : (
