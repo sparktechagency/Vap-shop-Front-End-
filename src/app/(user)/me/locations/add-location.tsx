@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,12 +22,15 @@ import Link from "next/link";
 
 import { useSearchQuery } from "@/redux/features/others/otherApi";
 import Namer from "@/components/core/internal/namer";
+import { toast } from "sonner";
 
 export default function AddLocation() {
   const [searchInput, setSearchInput] = useState("");
   const [searchFocus, setSearchFocus] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
-
+  const [selectedStore, setSelectedStore] = useState<
+    string | number | undefined
+  >();
   // only searching for stores
   const { data: searching } = useSearchQuery({
     search: searchInput,
@@ -78,38 +82,57 @@ export default function AddLocation() {
           <div className="max-h-[50vh] overflow-auto mt-4 space-y-2">
             {searching?.data?.data?.length ? (
               searching.data.data.map((x: any, i: number) => (
-                <Link href={getHref(x)} key={i}>
-                  <div className="flex gap-2 p-2 hover:bg-secondary rounded">
-                    <Card className="aspect-square w-[80px] flex-shrink-0 p-0!">
-                      <Image
-                        src={x.avatar}
-                        width={80}
-                        height={80}
-                        className="object-cover rounded"
-                        alt="store avatar"
-                      />
-                    </Card>
+                // <Link href={getHref(x)} key={i}>
+                <div
+                  className="flex gap-2 p-2 hover:bg-secondary rounded"
+                  key={i}
+                  onClick={() => {
+                    setSelectedStore(x.id);
+                  }}
+                >
+                  <Card className="aspect-square w-[80px] flex-shrink-0 p-0!">
+                    {/* {x?.avatar} */}
+                    <Image
+                      src={x?.avatar}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded"
+                      alt="store_avatar"
+                    />
+                  </Card>
 
-                    <div className="flex-1 flex flex-col justify-between">
-                      <Namer name={x.first_name} type="store" size="sm" />
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <StarIcon className="w-4 h-4 fill-[#ee8500]" />
-                        {x.avg_rating}
-                      </div>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {x?.address?.address}
-                      </p>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <Namer name={x.first_name} type="store" size="sm" />
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <StarIcon className="w-4 h-4 fill-[#ee8500]" />
+                      {x.avg_rating}
                     </div>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {x?.address?.address}
+                    </p>
                   </div>
-                </Link>
+                </div>
+                // </Link>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground italic">
+              <p className="text-sm text-center text-muted-foreground italic">
                 Search for a store...
               </p>
             )}
           </div>
         )}
+        <DialogFooter>
+          {selectedStore && (
+            <Button
+              className="w-full"
+              onClick={() => {
+                toast.info("This feature is under development");
+              }}
+            >
+              Add Connected Location
+            </Button>
+          )}
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
