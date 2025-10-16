@@ -166,7 +166,7 @@ export default function ArticlesPage() {
 
   return (
     <div className="h-full w-full !p-6">
-      <div className="grid lg:grid-cols-2 w-full space-y-6">
+      <div className="w-full space-y-6 item">
         <div className="flex gap-4">
           <Input
             placeholder="Search here"
