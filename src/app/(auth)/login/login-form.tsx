@@ -44,10 +44,8 @@ export function LoginForm({
           router.push("/");
         }
       }
-      // Handle successful login (e.g., redirect)
     } catch (error: any) {
       toast.error(error?.data?.message || "Login failed. Please try again.");
-      // Handle error (e.g., show error message)
       console.error("Login failed:", error);
     }
   };
