@@ -54,6 +54,8 @@
     "dompurify": "^3.2.6",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "emoji-picker-element": "^1.27.0",
+    "emoji-picker-react": "^4.14.1",
     "html-react-parser": "^5.2.6",
     "infinite-react-carousel": "^1.2.11",
     "input-otp": "^1.4.2",
