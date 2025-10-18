@@ -15,7 +15,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function TabsTriggerer() {
   const searchParams = useSearchParams();
-  const title = searchParams.get("title")
+  const title = searchParams.get("title");
 
   return (
     <div className="container !py-10">
@@ -42,7 +42,6 @@ export default function TabsTriggerer() {
         <TabsContent value="featured">
           <Featured />
         </TabsContent>
-
       </Tabs>
     </div>
   );

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Regions from "./regions";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -20,13 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetAllAdminRegionsQuery } from "@/redux/features/AuthApi";
+import {
+  useCreateCountyMutation,
+  useGetAllAdminRegionsQuery,
+} from "@/redux/features/AuthApi";
 
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useCreateRegionMutation } from "@/redux/features/others/otherApi";
+import { useState } from "react";
+import Link from "next/link";
 
 const regionSchema = z.object({
   country_id: z.string().min(1, "Please select a country"),
@@ -37,7 +43,11 @@ const regionSchema = z.object({
 type RegionFormData = z.infer<typeof regionSchema>;
 
 export default function Page() {
-  const { data: countries, isLoading: cLoading, refetch } = useGetAllAdminRegionsQuery();
+  const {
+    data: countries,
+    isLoading: cLoading,
+    refetch,
+  } = useGetAllAdminRegionsQuery();
   const [createRegion] = useCreateRegionMutation();
 
   const form = useForm<RegionFormData>({
@@ -70,7 +80,10 @@ export default function Page() {
         Manage Regions
       </h3>
 
-      <div className="flex justify-end items-center">
+      <div className="flex justify-end items-center gap-2">
+        <Button asChild>
+          <Link href={"region/country"}>Manage Countries</Link>
+        </Button>
         <Dialog>
           <DialogTrigger asChild>
             <Button>Add New Region</Button>

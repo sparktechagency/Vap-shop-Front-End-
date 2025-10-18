@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -28,12 +27,14 @@ import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import { useCountysQuery } from "@/redux/features/AuthApi"; // ADDED
+import { Label } from "@/components/ui/label";
 
 // UPDATED: Schema with country_id and corrected zip_code
 const formSchema = z.object({
   first_name: z.string().min(2),
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
+  city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2), // RENAMED from zipcode
   country_id: z.string(), // ADDED
@@ -59,6 +60,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
       first_name: "",
       email: "",
       phone: "",
+      city: "",
       address: "",
       zip_code: "",
       country_id: "",
@@ -78,6 +80,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
       form.setValue("first_name", my?.first_name);
       form.setValue("email", my?.email ?? "");
       form.setValue("phone", my?.phone ?? "");
+      form.setValue("city", my?.address?.city ?? "");
       form.setValue("address", my?.address?.address ?? "");
       form.setValue("zip_code", my?.address?.zip_code ?? ""); // Corrected field name
       form.setValue("region_id", String(my?.address?.region_id ?? ""));
@@ -167,6 +170,19 @@ export default function UserEditForm({ my }: { my: UserData }) {
           />
           <FormField
             control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
             name="address"
             render={({ field }) => (
               <FormItem className="col-span-2">
@@ -188,7 +204,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
               <FormItem className="col-span-2 ">
                 <FormLabel>Country</FormLabel>
                 <Select
-
                   onValueChange={(value) => {
                     field.onChange(value);
                     const selectedCountry = countriesResponse?.data?.find(
@@ -221,7 +236,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
             )}
           />
 
-
           <FormField
             control={control}
             name="region_id"
@@ -240,10 +254,7 @@ export default function UserEditForm({ my }: { my: UserData }) {
                   </FormControl>
                   <SelectContent>
                     {regions.map((region) => (
-                      <SelectItem
-                        key={region.id}
-                        value={region.id.toString()}
-                      >
+                      <SelectItem key={region.id} value={region.id.toString()}>
                         {region.name}
                       </SelectItem>
                     ))}

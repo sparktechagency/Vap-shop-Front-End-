@@ -3,7 +3,7 @@ import { api } from "@/redux/baseApi";
 
 const MeApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createPost: builder.mutation<any, { title: string; content: string }>({
+    createPost: builder.mutation<any, any>({
       query: (data) => ({
         url: "/post",
         method: "POST",
@@ -20,9 +20,33 @@ const MeApi = api.injectEndpoints({
 
       providesTags: ["post"],
     }),
+    updatePost: builder.mutation<any, {id:string,data:any}>({
+      query: ({id,data}) => ({
+        url: `/post/${id}`,
+        method: "POST",
+        body:data
+      }),
+     invalidatesTags:["post"]
+    }),
+    deletePost: builder.mutation<any, {id:string}>({
+      query: ({id}) => ({
+        url: `/post/${id}`,
+        method: "DELETE",
+
+      }),
+
+     invalidatesTags:["post"]
+    }),
     getPostsById: builder.query<any, {id:any}>({
       query: ({id}) => ({
         url: `/get-posts-by-user-id/${id}?per_page=10`,
+        method: "GET",
+      }),
+      providesTags: ["post"],
+    }),
+    getPostById: builder.query<any, {id:any}>({
+      query: ({id}) => ({
+        url: `/post/${id}`,
         method: "GET",
       }),
       providesTags: ["post"],
@@ -70,10 +94,13 @@ const MeApi = api.injectEndpoints({
 export const {
   useCreatePostMutation,
   useGetPostsQuery,
+  useDeletePostMutation,
+  useUpdatePostMutation,
   useCommentPostMutation,
   useGetCommentQuery,
   useGetPostLikeQuery,
   useGetFeedQuery,
   useGetUserFeedQuery,
-  useGetPostsByIdQuery
+  useGetPostsByIdQuery,
+  useGetPostByIdQuery
 } = MeApi;

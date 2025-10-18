@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -34,6 +30,7 @@ import { Loader2Icon } from "lucide-react";
 import FavControl from "./fav-control";
 // --- ADDED: Import for country data ---
 import { useCountysQuery } from "@/redux/features/AuthApi";
+import { Label } from "@/components/ui/label";
 
 // --- UPDATED: Schema with country, last_name, and corrected zip field ---
 const formSchema = z.object({
@@ -41,9 +38,10 @@ const formSchema = z.object({
   last_name: z.string().min(2), // ADDED
   email: z.string().min(2).max(50),
   phone: z.string().min(2).max(50),
+  city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2), // Corrected name
-  country_id: z.string(),      // ADDED
+  country_id: z.string(), // ADDED
   region_id: z.string(),
 });
 
@@ -67,11 +65,11 @@ export default function UserEditForm({ my }: { my: UserData }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // --- UPDATED: Default values ---
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
+      city: "", // make sure this is not undefined
       phone: "",
       address: "",
       zip_code: "",
@@ -87,7 +85,9 @@ export default function UserEditForm({ my }: { my: UserData }) {
       form.setValue("last_name", my?.last_name ?? "");
       form.setValue("email", my?.email ?? "");
       form.setValue("phone", my?.phone ?? "");
+      form.setValue("city", my?.address?.city ?? "");
       form.setValue("address", my?.address?.address ?? "");
+
       form.setValue("zip_code", my?.address?.zip_code ?? ""); // Corrected name
       form.setValue("region_id", String(my?.address?.region_id ?? ""));
 
@@ -182,6 +182,19 @@ export default function UserEditForm({ my }: { my: UserData }) {
                     type="tel"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your city" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -308,4 +321,3 @@ export default function UserEditForm({ my }: { my: UserData }) {
     </>
   );
 }
-

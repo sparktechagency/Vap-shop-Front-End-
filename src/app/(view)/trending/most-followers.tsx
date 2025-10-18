@@ -8,19 +8,18 @@ import {
 } from "@/redux/features/Trending/TrendingApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCountysQuery } from "@/redux/features/AuthApi";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { ChevronDownIcon, ChevronLeft, Globe } from "lucide-react";
 
 export default function MostFollowers() {
-  const [region, setRegion] = useState("");
+  const [region, setRegion] = useState(""); // empty = worldwide
+  const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [open, setOpen] = useState(false);
 
   const {
     data,
@@ -40,11 +39,15 @@ export default function MostFollowers() {
 
   const { data: countries, isLoading: cLoading } = useCountysQuery();
 
-  // Refetch when region changes
   useEffect(() => {
     refetchMostFollowers();
     refetchSponsored();
   }, [region, refetchMostFollowers, refetchSponsored]);
+
+  const handleSelectRegion = (val: string) => {
+    setRegion(val);
+    setOpen(false);
+  };
 
   if (isLoading || sponsoredLoading) {
     return (
@@ -58,39 +61,86 @@ export default function MostFollowers() {
 
   return (
     <>
-      <div className="flex justify-end mt-6">
+      {/* Region Popover */}
+      <div className="w-full flex justify-end items-center gap-6 !my-6">
         {!cLoading && (
-          <Select
-            value={region === "" ? " " : region}
-            onValueChange={(val) => {
-              const cleanVal = val.trim() === "" || val === " " ? "" : val;
-              setRegion(cleanVal);
-            }}
-          >
-            <SelectTrigger className="w-full md:w-[180px]">
-              <SelectValue placeholder="Region" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value=" ">Worldwide</SelectItem>
-              <SelectSeparator />
-              {countries?.data?.map((x: any, i: number) => (
-                <React.Fragment key={`country-${x.id}`}>
-                  <SelectGroup>
-                    <SelectLabel>{x.name}</SelectLabel>
-                    {x.regions.map((y: any) => (
-                      <SelectItem
-                        value={y.id.toString()}
-                        key={`region-${y.id}`}
-                      >
-                        {y.name} ({y.code})
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                  {countries?.data?.length !== i + 1 && <SelectSeparator />}
-                </React.Fragment>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full md:w-[180px] justify-between transition"
+              >
+                {region === ""
+                  ? "Worldwide"
+                  : (() => {
+                      const country = countries?.data?.find((c: any) =>
+                        c.regions.some((r: any) => r.id.toString() === region)
+                      );
+                      const regionData = country?.regions?.find(
+                        (r: any) => r.id.toString() === region
+                      );
+                      return regionData
+                        ? `${regionData.name} (${regionData.code})`
+                        : "Select Region";
+                    })()}
+                <ChevronDownIcon
+                  className={`ml-2 h-4 w-4 transition-transform duration-200 ${
+                    open ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="w-[340px]! p-2" align="end">
+              {selectedCountry ? (
+                <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedCountry(null)}
+                    className="text-muted-foreground flex items-center gap-1 mb-1"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Back
+                  </Button>
+                  {selectedCountry.regions.map((r: any) => (
+                    <Button
+                      key={r.id}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleSelectRegion(r.id.toString())}
+                    >
+                      {r.name} ({r.code})
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleSelectRegion("")}
+                    className="flex items-center gap-2 justify-start"
+                  >
+                    <Globe className="w-4 h-4" /> Worldwide
+                  </Button>
+
+                  {countries?.data?.map((c: any) => (
+                    <Button
+                      key={c.id}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => setSelectedCountry(c)}
+                    >
+                      {c.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 

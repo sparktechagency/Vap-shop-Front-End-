@@ -7,7 +7,10 @@ import { Button } from "../ui/button";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { useDeleteThreadMutation } from "@/redux/features/Forum/ForumApi";
+import {
+  useDeleteGroupMutation,
+  useDeleteThreadMutation,
+} from "@/redux/features/Forum/ForumApi";
 // Interface for the forum group data structure
 interface ForumGroupType {
   id?: number;
@@ -53,7 +56,7 @@ export default function ForumCard({
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
-  const [deleteThread, { isLoading }] = useDeleteThreadMutation();
+  const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
   console.log("user", user?.data?.role);
@@ -91,7 +94,7 @@ export default function ForumCard({
     if (!confirmed) return;
 
     try {
-      const response = await deleteThread({ id }).unwrap();
+      const response = await deleteGroup({ id }).unwrap();
       if (!response.ok) throw new Error(response.message);
       if (response.ok) {
         toast.success(response.message || "thread deleted successfully");

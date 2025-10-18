@@ -62,7 +62,32 @@ const AuthApi = api.injectEndpoints({
         url: `/get-all-countries`,
         method: "GET",
       }),
-      providesTags: ["tranding"]
+      providesTags: ["tranding"],
+    }),
+
+    createCounty: builder.mutation<any, { name: string }>({
+      query: ({ name }) => ({
+        url: `/admin/country`,
+        method: "POST",
+        body: { name },
+      }),
+      invalidatesTags: ["tranding"],
+    }),
+    updateCounty: builder.mutation<any, { id: string; name: string }>({
+      query: ({ id, name }) => ({
+        url: `/admin/country/${id}`,
+        method: "POST",
+        body: { name, _method: "PUT" },
+      }),
+      invalidatesTags: ["tranding"],
+    }),
+
+    deleteCountry: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `/admin/country/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["tranding"],
     }),
 
     getAllAdminRegions: builder.query<any, void>({
@@ -70,7 +95,7 @@ const AuthApi = api.injectEndpoints({
         url: `/admin/region`,
         method: "GET",
       }),
-      providesTags: ["tranding"]
+      providesTags: ["tranding"],
     }),
 
     //getLogin user
@@ -119,4 +144,7 @@ export const {
   useUpdatePassMutation,
   useGtStoreDetailsQuery,
   useGetAllAdminRegionsQuery,
+  useCreateCountyMutation,
+  useDeleteCountryMutation,
+  useUpdateCountyMutation,
 } = AuthApi;

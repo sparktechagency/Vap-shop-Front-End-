@@ -18,11 +18,10 @@ import CartDrawer from "../cart-drawer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useEffect, useState } from "react";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
-import { UserData } from "@/lib/types/apiTypes";
 import { ChevronDown, LayoutGridIcon, NotebookIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import Cookies from "js-cookie";
 import { NavActions } from "./core-values/navlinks";
+import { useCookies } from "react-cookie";
 
 export const LinkList = [
   {
@@ -42,7 +41,7 @@ export const LinkList = [
       main: [{ label: "All brands", to: "/brands" }],
       sub: {
         title: "My Favourite Brands",
-        items: [],
+        items: [] as { label: string; to: string }[],
       },
     },
   },
@@ -53,46 +52,41 @@ export const LinkList = [
       main: [{ label: "All stores", to: "/stores" }],
       sub: {
         title: "My Favourite Stores",
-        items: [],
+        items: [] as { label: string; to: string }[],
       },
     },
   },
 ];
 
 export default function Navbar() {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const [token, setToken] = useState<string | undefined>(undefined);
-  const [user, setUser] = useState<UserData | null>(null);
-  const role = Number(user?.role);
-  const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
+  const [{ token }] = useCookies(["token"]);
 
+  // directly rely on RTK Query
   const { data, isLoading, refetch } = useGetOwnprofileQuery(undefined, {
     skip: !token,
   });
 
-  useEffect(() => {
-    const checkToken = () => {
-      const newToken = Cookies.get("token");
-      if (newToken !== token) {
-        setToken(newToken);
-      }
-    };
-    checkToken();
-    const interval = setInterval(checkToken, 1000);
-    return () => clearInterval(interval);
-  }, [token, pathname, user, data, refetch]);
+  const user = data?.data ?? null;
+  const role = Number(user?.role);
+
+  const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
 
   useEffect(() => {
-    if (token && data?.data) {
-      setUser(data.data);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (token && user) {
       const updated = [...LinkList];
-      updated[3].dropdown!.sub.items = data.data.favourite_store_list.map(
+      updated[3].dropdown!.sub.items = user.favourite_store_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
           to: `/stores/store/${x.id}`,
         })
       );
-      updated[2].dropdown!.sub.items = data.data.favourite_brand_list.map(
+      updated[2].dropdown!.sub.items = user.favourite_brand_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
           to: `/brands/brand/${x.id}`,
@@ -100,41 +94,45 @@ export default function Navbar() {
       );
       setLinkListDynamic(updated);
     } else {
-      setUser(null);
       setLinkListDynamic(LinkList);
     }
-  }, [token, data]);
+  }, [token, user]);
 
+  // refetch on route change if logged in
   useEffect(() => {
     if (token) {
       refetch();
     }
-  }, [pathname, token, refetch, user, data]);
+  }, [pathname, token, refetch]);
+
+  if (!mounted) return null;
 
   return (
     <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
       <div className="h-1/2 flex flex-row justify-between items-center gap-4">
-        <div className="">
+        <div>
           <Link
             href="/"
             className="flex flex-row justify-start items-center gap-2 text-sm lg:text-lg font-bold"
           >
-            <div
-              className="size-8 md:size-12 bg-[url('/image/VSM_VAPE.svg')] bg-cover bg-no-repeat"
-
-            ></div>
-            <span className="text-xs md:text-base ">Vape Shop Maps</span>
+            <div className="size-8 md:size-12 bg-[url('/image/VSM_VAPE.svg')] bg-cover bg-no-repeat"></div>
+            <span className="text-xs md:text-base">Vape Shop Maps</span>
           </Link>
         </div>
+
         <Searcher className="flex-1 hidden lg:block" />
+
         <div className="flex flex-row justify-end items-center gap-2">
           <CartDrawer />
           <NavActions />
-          {/* ✅ CORRECTED USER ACTIONS SECTION */}
+
+          {/* ✅ User Actions */}
           {!isLoading && (
-            <div className="hidden lg:flex flex-row justify-end items-center gap-2">
+            <div
+              className="hidden lg:flex flex-row justify-end items-center gap-2"
+              suppressHydrationWarning
+            >
               {user && token && (
-                // SHOW USER PROFILE WHEN LOGGED IN
                 <Button variant="outline" asChild>
                   <Link
                     href={
@@ -155,12 +153,15 @@ export default function Navbar() {
               )}
             </div>
           )}
+
           <div className="lg:hidden">
             <MobileMenu user={user ?? undefined} />
           </div>
         </div>
       </div>
+
       <Searcher className="flex-1 block lg:hidden" />
+
       <div className="lg:h-1/2 grid sm:flex grid-cols-2 flex-row justify-start items-center !py-1 sm:!py-4">
         {linkListDynamic.map((link, index) =>
           link.dropdown ? (
@@ -185,13 +186,11 @@ export default function Navbar() {
                       {link.dropdown.sub.title}
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
-                      {link.dropdown.sub.items.map(
-                        (subItem: { to: string; label: string }, subIdx) => (
-                          <DropdownMenuItem key={`sub-${subIdx}`} asChild>
-                            <Link href={subItem.to}>{subItem.label}</Link>
-                          </DropdownMenuItem>
-                        )
-                      )}
+                      {link.dropdown.sub.items.map((subItem, subIdx) => (
+                        <DropdownMenuItem key={`sub-${subIdx}`} asChild>
+                          <Link href={subItem.to}>{subItem.label}</Link>
+                        </DropdownMenuItem>
+                      ))}
                     </DropdownMenuSubContent>
                   </DropdownMenuSub>
                 )}

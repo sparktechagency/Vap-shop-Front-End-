@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   Table,
@@ -233,32 +233,3 @@ export default function BuissnessOrder() {
     </div>
   );
 }
-
-// </TableBody>
-// <TableRow>
-//   <TableCell className="font-medium">325345</TableCell>
-//   <TableCell>31-06-2025</TableCell>
-//   <TableCell>Vodoo Vape Shop</TableCell>
-//   <TableCell>
-//     <Badge variant="special">Pending</Badge>
-//   </TableCell>
-//   <TableCell className="text-right">$250.00</TableCell>
-// </TableRow>
-// <TableRow>
-//   <TableCell className="font-medium">325345</TableCell>
-//   <TableCell>31-06-2025</TableCell>
-//   <TableCell>Vodoo Vape Shop</TableCell>
-//   <TableCell>
-//     <Badge variant="success">Delivered</Badge>
-//   </TableCell>
-//   <TableCell className="text-right">$250.00</TableCell>
-// </TableRow>
-// <TableRow>
-//   <TableCell className="font-medium">325345</TableCell>
-//   <TableCell>31-06-2025</TableCell>
-//   <TableCell>Vodoo Vape Shop</TableCell>
-//   <TableCell>
-//     <Badge variant="destructive">Denied</Badge>
-//   </TableCell>
-//   <TableCell className="text-right">$250.00</TableCell>
-// </TableRow>
