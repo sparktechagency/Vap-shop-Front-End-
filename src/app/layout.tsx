@@ -20,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+
       <body className="antialiased overflow-x-hidden">
         <ThemeProvider
           attribute="class"
