@@ -25,11 +25,10 @@ import { useGetallCategorysQuery } from "@/redux/features/Home/HomePageApi";
 
 export default function MostHearted() {
   const [category, setCategory] = useState<any>("");
-  const [region, setRegion] = useState(""); // empty = worldwide
+  const [region, setRegion] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
   const [open, setOpen] = useState(false);
 
-  // Queries
   const {
     data: mosthartedproducts,
     refetch: refetchMostHearted,
@@ -87,20 +86,19 @@ export default function MostHearted() {
               {region === ""
                 ? "Worldwide"
                 : (() => {
-                    const country = countries?.data?.find((c: any) =>
-                      c.regions.some((r: any) => r.id.toString() === region)
-                    );
-                    const regionData = country?.regions?.find(
-                      (r: any) => r.id.toString() === region
-                    );
-                    return regionData
-                      ? `${regionData.name} (${regionData.code})`
-                      : "Select Region";
-                  })()}
+                  const country = countries?.data?.find((c: any) =>
+                    c.regions.some((r: any) => r.id.toString() === region)
+                  );
+                  const regionData = country?.regions?.find(
+                    (r: any) => r.id.toString() === region
+                  );
+                  return regionData
+                    ? `${regionData.name} (${regionData.code})`
+                    : "Select Region";
+                })()}
               <ChevronDownIcon
-                className={`ml-2 h-4 w-4 transition-transform duration-200 ${
-                  open ? "rotate-180" : "rotate-0"
-                }`}
+                className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"
+                  }`}
               />
             </Button>
           </PopoverTrigger>
