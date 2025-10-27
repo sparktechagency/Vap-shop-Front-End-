@@ -29,11 +29,11 @@ export const LinkList = [
     icon: <LayoutGridIcon />,
     target: "/trending",
   },
-  {
-    title: "Forum",
-    icon: <NotebookIcon />,
-    target: "/forum",
-  },
+  // {
+  //   title: "Forum",
+  //   icon: <NotebookIcon />,
+  //   target: "/forum",
+  // },
   {
     title: "Brands",
     icon: <ChevronDown />,
@@ -80,13 +80,13 @@ export default function Navbar() {
   useEffect(() => {
     if (token && user) {
       const updated = [...LinkList];
-      updated[3].dropdown!.sub.items = user.favourite_store_list.map(
+      updated[2].dropdown!.sub.items = user.favourite_store_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
           to: `/stores/store/${x.id}`,
         })
       );
-      updated[2].dropdown!.sub.items = user.favourite_brand_list.map(
+      updated[1].dropdown!.sub.items = user.favourite_brand_list.map(
         (x: { full_name: string; id: string }) => ({
           label: x.full_name,
           to: `/brands/brand/${x.id}`,
@@ -108,7 +108,7 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[7%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
+    <nav className="lg:h-[148px] w-full top-0 left-0 !px-4 lg:!px-[6%] !py-2 border-b shadow-sm flex flex-col justify-between items-stretch !space-y-6">
       <div className="h-1/2 flex flex-row justify-between items-center gap-4">
         <div>
           <Link

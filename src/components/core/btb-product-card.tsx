@@ -2,9 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowUp01Icon, PackagePlus } from "lucide-react";
+import { ArrowUp01Icon, PackagePlus, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import {
   Popover,
@@ -48,7 +54,7 @@ export default function BtbProductCard({
   console.log(data);
 
   return (
-    <Card className="!p-0 !gap-0 shadow-sm overflow-hidden group relative">
+    <Card className="!p-0 pb-6! !gap-0 shadow-sm overflow-hidden group relative">
       <div
         className="w-full aspect-square bg-center bg-no-repeat bg-cover rounded-t-lg relative transition-transform duration-300"
         style={{ backgroundImage: `url('${data.product_image}')` }}
@@ -115,6 +121,14 @@ export default function BtbProductCard({
           </CardContent>
         </div>
       </Link>
+      <CardFooter className="flex items-center gap-4">
+        <Button className="flex-1" variant={"outline"}>
+          Update B2B
+        </Button>
+        <Button className="" size={"icon"} variant={"destructive"}>
+          <Trash2Icon />
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

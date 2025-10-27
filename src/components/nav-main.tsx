@@ -68,13 +68,15 @@ export function NavMain({
             </SidebarMenuItem>
           </Collapsible>
         ))}
-        <SidebarMenuItem>
-          <SidebarMenuButton >
+        {/* <SidebarMenuItem>
+          <SidebarMenuButton>
             <FormInputIcon />
-            <Link className="text-base" href="/admin/forum">Create a group</Link>
+            <Link className="text-base" href="/admin/forum">
+              Create a group
+            </Link>
             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
           </SidebarMenuButton>
-        </SidebarMenuItem>
+        </SidebarMenuItem> */}
       </SidebarMenu>
     </SidebarGroup>
   );
