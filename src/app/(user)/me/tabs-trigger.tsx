@@ -17,6 +17,7 @@ import Announcement from "./announcement";
 import Post from "./post";
 import Feed from "./feed";
 import { useUser } from "@/context/userContext";
+import Gallery from "./gallery";
 
 const tabComponents: Record<string, React.ReactNode> = {
   "top-stores": <TopStores />,
@@ -24,7 +25,8 @@ const tabComponents: Record<string, React.ReactNode> = {
   reviews: <LatestRevs />,
   post: <Post />,
   feed: <Feed />,
-  "create-group": <Groups />,
+  // "create-group": <Groups />,
+  gallery: <Gallery />,
   announcement: <Announcement />,
   catalog: <Catalog />,
   about: <About />,
@@ -55,7 +57,8 @@ export default function TabsTriggerer() {
     { value: "feed", label: "Feed", visible: true },
     { value: "reviews", label: "Latest Reviews", visible: isMember },
 
-    { value: "create-group", label: "Groups", visible: true },
+    { value: "gallery", label: "Gallery", visible: true },
+    // { value: "create-group", label: "Groups", visible: true },
     {
       value: "about",
       label: "About",

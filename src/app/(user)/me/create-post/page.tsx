@@ -17,6 +17,8 @@ import { useCreatePostMutation } from "@/redux/features/users/postApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -138,7 +140,9 @@ export default function Page() {
               </FormItem>
             )}
           />
-
+          <div className="flex items-center gap-2">
+            <Switch /> <Label>Add to Gallery</Label>
+          </div>
           <Button type="submit">Post</Button>
         </form>
       </Form>
