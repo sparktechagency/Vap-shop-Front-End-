@@ -23,7 +23,6 @@ export default function TabsTriggerer() {
 
   const { data: user, isLoading } = useGetProfileQuery({ id });
 
-
   if (!isLoading) {
     console.log(user);
   }
@@ -46,7 +45,7 @@ export default function TabsTriggerer() {
           {!isLoading && user?.data.role !== 2 && (
             <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
           )}
-          <TabsTrigger value="create-group">Group</TabsTrigger>
+          {/* <TabsTrigger value="create-group">Group</TabsTrigger> */}
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         {!isLoading ? (
@@ -72,9 +71,9 @@ export default function TabsTriggerer() {
             <TabsContent value="inbox">
               <Inbox />
             </TabsContent>
-            <TabsContent value="create-group">
+            {/* <TabsContent value="create-group">
               <Groups user={user.data} />
-            </TabsContent>
+            </TabsContent> */}
             <TabsContent value="about">
               <About id={user.data.id} />
             </TabsContent>

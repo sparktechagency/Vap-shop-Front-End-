@@ -9,7 +9,7 @@ interface FooterNav {
 interface FooterLink {
   label: string;
   target: string;
-  type?: string
+  type?: string;
   // icon?: { light: JSX.Element; dark: JSX.Element };
 }
 
@@ -22,7 +22,7 @@ export const footer_navs: FooterNav[] = [
       { label: "Trending", target: "/trending" },
       { label: "Find Stores", target: "/stores" },
       { label: "Find Brands", target: "/brands" },
-      { label: "Forums", target: "/trending" },
+      // { label: "Forums", target: "/trending" },
       { label: "Featured", target: "/trending" },
     ],
   },
@@ -31,18 +31,47 @@ export const footer_navs: FooterNav[] = [
   {
     title: "Legal & Policies",
     links: [
-      { label: "Privacy Policy", target: "/legal/privacy", type: 'privacy-policy' },
-      { label: "Terms of Service", target: "/legal/privacy", type: 'terms-of-service' },
-      { label: "Vape & Age Restriction Policy", target: "/legal/privacy", type: 'VapeAgeRestrictionPolicy' },
+      {
+        label: "Privacy Policy",
+        target: "/legal/privacy",
+        type: "privacy-policy",
+      },
+      {
+        label: "Terms of Service",
+        target: "/legal/privacy",
+        type: "terms-of-service",
+      },
+      {
+        label: "Vape & Age Restriction Policy",
+        target: "/legal/privacy",
+        type: "VapeAgeRestrictionPolicy",
+      },
       // { label: "Refund & Subscription Cancellation Policy", target: "/legal/refund-cancel" },
-      { label: "Liability & Store/Brand", target: "/legal/privacy", type: 'brand' },
+      {
+        label: "Liability & Store/Brand",
+        target: "/legal/privacy",
+        type: "brand",
+      },
       {
         label: "Content & Review Moderation Policy",
-        target: "/legal/privacy", type: 'contentReview'
+        target: "/legal/privacy",
+        type: "contentReview",
       },
-      { label: "DMCA Copyright", target: "/legal/privacy", type: 'dmca-copyright' },
-      { label: "Community Guidelines", target: "/legal/privacy", type: 'community-guidelines' },
-      { label: "Acceptance of Terms", target: "/legal/privacy", type: 'acceptance-of-terms' },
+      {
+        label: "DMCA Copyright",
+        target: "/legal/privacy",
+        type: "dmca-copyright",
+      },
+      {
+        label: "Community Guidelines",
+        target: "/legal/privacy",
+        type: "community-guidelines",
+      },
+      {
+        label: "Acceptance of Terms",
+        target: "/legal/privacy",
+        type: "acceptance-of-terms",
+      },
     ],
   },
 ];
