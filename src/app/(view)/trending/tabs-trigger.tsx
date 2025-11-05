@@ -22,7 +22,7 @@ export default function TabsTriggerer() {
       <Tabs defaultValue="hearted">
         <TabsList className="border-b !justify-center gap-2 md:gap-3 lg:gap-6">
           <TabsTrigger value="hearted">Most Hearted Products ❤️</TabsTrigger>
-          <TabsTrigger value="followers">Most Followers 👥</TabsTrigger>
+          <TabsTrigger value="followers">Discover 📸</TabsTrigger>
           <TabsTrigger value="rated">Most Rated ⬆️</TabsTrigger>
           <TabsTrigger value="featured">Featured 🔍</TabsTrigger>
         </TabsList>
