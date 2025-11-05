@@ -31,12 +31,12 @@ export default function TabsTriggerer() {
     <div className="!py-10 lg:!p-10">
       <Tabs defaultValue="top-stores">
         <TabsList className="border-b !justify-start gap-2 md:gap-3 lg:gap-6">
-          {!isLoading && user?.data?.role !== 2 && user?.data?.role !== 4 && (
+          {/* {!isLoading && user?.data?.role !== 2 && user?.data?.role !== 4 && (
             <>
               <TabsTrigger value="top-stores">Top 6 Stores</TabsTrigger>
               <TabsTrigger value="top-brands">Top 6 Brands</TabsTrigger>
             </>
-          )}
+          )} */}
           {user?.data?.role === 4 && (
             <TabsTrigger value="wholesale">Wholesale</TabsTrigger>
           )}
@@ -50,12 +50,12 @@ export default function TabsTriggerer() {
         </TabsList>
         {!isLoading ? (
           <>
-            <TabsContent value="top-stores">
+            {/* <TabsContent value="top-stores">
               <TopStores user={user.data} />
             </TabsContent>
             <TabsContent value="top-brands">
               <TopBrands user={user.data} />
-            </TabsContent>
+            </TabsContent> */}
             <TabsContent value="wholesale">
               {user.data.id && <Catalog id={user.data.id} role={4} />}
             </TabsContent>

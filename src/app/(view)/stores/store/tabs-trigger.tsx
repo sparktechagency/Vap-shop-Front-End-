@@ -26,7 +26,7 @@ export default function TabsTriggerer({ id }: any) {
           <TabsTrigger value="post">Post</TabsTrigger>
           <TabsTrigger value="feed">Feed</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="groups">Groups</TabsTrigger>
+          {/* <TabsTrigger value="groups">Groups</TabsTrigger> */}
           {/* <TabsTrigger value="inbox">Inbox</TabsTrigger> */}
         </TabsList>
 

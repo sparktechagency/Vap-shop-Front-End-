@@ -27,6 +27,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { HeartIcon } from "lucide-react";
 
 export default function Gallery() {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -51,7 +52,7 @@ export default function Gallery() {
             <Dialog key={i}>
               <DialogTrigger asChild>
                 <Card
-                  className="w-full relative aspect-[2/3] bg-cover rounded-none!"
+                  className="w-full relative aspect-[4/5] bg-cover rounded-none!"
                   style={{
                     backgroundImage: `url('https://picsum.photos/200')`,
                   }}
@@ -61,7 +62,7 @@ export default function Gallery() {
                       <IoCopySharp className="size-5" />
                     </div>
                   </div>
-                  <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 rounded-lg opacity-0 hover:opacity-100 transition-opacity cursor-pointer"></div>
+                  <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"></div>
                 </Card>
               </DialogTrigger>
               <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
@@ -69,7 +70,7 @@ export default function Gallery() {
                   <DialogTitle></DialogTitle>
                 </DialogHeader>
                 <div className="w-full flex justify-center items-center">
-                  <Carousel className="w-[70dvh]" setApi={setApi}>
+                  <Carousel className="w-[60dvh]" setApi={setApi}>
                     <CarouselContent>
                       {Array.from({ length: 5 }).map((_, index) => (
                         <CarouselItem key={index}>
@@ -89,21 +90,37 @@ export default function Gallery() {
                     <CarouselNext />
                   </Carousel>
                 </div>
-                <DialogFooter className="mt-0 pt-0">
-                  <div className="flex gap-2 mt-2 w-full justify-center items-center">
-                    {Array.from({ length: count }).map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => api?.scrollTo(index)}
-                        className={`h-2 w-2 rounded-full transition-all ${
-                          current === index + 1
-                            ? "bg-foreground w-4"
-                            : "bg-muted-foreground"
-                        }`}
-                      />
-                    ))}
+                <div className="flex gap-2 mt-2 w-full justify-center items-center">
+                  {Array.from({ length: count }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => api?.scrollTo(index)}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        current === index + 1
+                          ? "bg-foreground w-4"
+                          : "bg-muted-foreground"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <DialogFooter className="mt-0 pt-0 flex justify-start! item-center">
+                  <div className="w-full flex justify-start! item-center">
+                    <Button variant={"special"}>
+                      <HeartIcon /> 0
+                    </Button>
                   </div>
                 </DialogFooter>
+                <div className="border-t">
+                  <h4 className="text-muted-foreground text-sm font-semibold mt-4">
+                    Post title goes here
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Perspiciatis sunt perferendis, aspernatur eum hic omnis
+                    rerum ea magni dolor laborum a facilis odio quas ratione
+                    provident, exercitationem minus eos? Dolorem!
+                  </p>
+                </div>
               </DialogContent>
             </Dialog>
           ))}

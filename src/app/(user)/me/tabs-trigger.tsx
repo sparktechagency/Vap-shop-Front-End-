@@ -20,8 +20,8 @@ import { useUser } from "@/context/userContext";
 import Gallery from "./gallery";
 
 const tabComponents: Record<string, React.ReactNode> = {
-  "top-stores": <TopStores />,
-  "top-brands": <TopBrands />,
+  // "top-stores": <TopStores />,
+  // "top-brands": <TopBrands />,
   reviews: <LatestRevs />,
   post: <Post />,
   feed: <Feed />,
@@ -39,8 +39,8 @@ export default function TabsTriggerer() {
   const isAdmin = String(role) === "1";
 
   const allTabs = [
-    { value: "top-stores", label: "Top 6 Stores", visible: isMember },
-    { value: "top-brands", label: "Top 6 Brands", visible: isMember },
+    // { value: "top-stores", label: "Top 6 Stores", visible: isMember },
+    // { value: "top-brands", label: "Top 6 Brands", visible: isMember },
     {
       value: "catalog",
       label:
