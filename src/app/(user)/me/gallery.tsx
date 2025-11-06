@@ -90,6 +90,7 @@ export default function Gallery() {
                     <CarouselNext />
                   </Carousel>
                 </div>
+                {/*  */}
                 <div className="flex gap-2 mt-2 w-full justify-center items-center">
                   {Array.from({ length: count }).map((_, index) => (
                     <button
