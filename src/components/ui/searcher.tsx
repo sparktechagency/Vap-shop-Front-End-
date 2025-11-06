@@ -51,7 +51,7 @@ export default function Searcher({
     }
   }, [locationInput]);
   const { location, error } = useGoogleLocation();
-  console.log("location", location);
+  console.log("location-----------------------------------", location);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
