@@ -134,8 +134,30 @@ export default function PostCard({
         {data?.title}
       </div> */}
       {/* Content */}
+      {/* {data?.post_images.map((x: string, i: number) => (
+        <Image
+          key={i}
+          src={
+            x ? `http://10.10.10.55:90/${x}` : "https://placehold.co/600x400"
+          }
+          height={600}
+          width={800}
+          alt="post_image"
+          className="max-h-[400px] mx-auto object-contain"
+        />
+      ))} */}
       {data.article_image && (
         <div className="py-6">
+          {/* {data?.post_images?.map((x: string) => (
+            <Image
+              src={x}
+              height={600}
+              width={800}
+              alt="post_image"
+              className="max-h-[400px] mx-auto object-contain"
+            />
+          ))} */}
+
           <Image
             src={data.article_image}
             height={600}

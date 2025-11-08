@@ -1,4 +1,3 @@
-
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +10,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // Dynamically import JoditEditor to prevent SSR issues, as it relies on the 'window' object.
-import dynamic from 'next/dynamic';
-const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
-
+import dynamic from "next/dynamic";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 // Consider a more descriptive name like "CreateArticleForm"
 export default function Featured() {
@@ -43,15 +41,17 @@ export default function Featured() {
   const config = useMemo(
     () => ({
       readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-      placeholder: 'Start typing your article here...',
-      height: '50dvh'
+      placeholder: "Start typing your article here...",
+      height: "50dvh",
     }),
     []
   );
 
   const handleSubmit = async () => {
     if (!title || !content || !image) {
-      toast.error("Please fill in the title, description, and select an image.");
+      toast.error(
+        "Please fill in the title, description, and select an image."
+      );
       return;
     }
 
@@ -59,7 +59,7 @@ export default function Featured() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("article_image", image);
+    formData.append("image", image);
 
     try {
       const response = await createApost(formData).unwrap();
@@ -67,7 +67,8 @@ export default function Featured() {
       router.push("/trending/my-articles");
     } catch (error) {
       console.error("Failed to create article:", error);
-      const errorMessage = (error as any)?.data?.message || "An unexpected error occurred.";
+      const errorMessage =
+        (error as any)?.data?.message || "An unexpected error occurred.";
       toast.error(errorMessage);
     }
   };
@@ -145,8 +146,8 @@ export default function Featured() {
             ref={editor}
             value={content}
             config={config}
-            onBlur={newContent => setContent(newContent)}
-            onChange={newContent => { }}
+            onBlur={(newContent) => setContent(newContent)}
+            onChange={(newContent) => {}}
           />
 
           <Button onClick={handleSubmit} disabled={isLoading}>
