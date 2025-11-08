@@ -59,8 +59,8 @@ export default function Featured() {
   const config = useMemo(
     () => ({
       readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-      placeholder: 'Start typing your article here...',
-      height: '50dvh'
+      placeholder: "Start typing your article here...",
+      height: "50dvh",
     }),
     []
   );
@@ -70,16 +70,15 @@ export default function Featured() {
     formData.append("content", content);
     // Only append the image if a new one has been selected
     if (image) {
-      formData.append("article_image", image);
+      formData.append("image", image);
     }
     // Many backends require a _method field to handle PUT requests with FormData
     formData.append("_method", "PUT");
 
-
     try {
       // Call the update mutation with the article ID and form data
       const response = await updateArtical({ id, formData }).unwrap();
-      console.log('response', response);
+      console.log("response", response);
 
       if (response.ok) {
         toast.success(response.message || "Article updated successfully");
@@ -168,10 +167,9 @@ export default function Featured() {
             ref={editor}
             value={content}
             config={config}
-            onBlur={newContent => setContent(newContent)}
-            onChange={newContent => { }}
+            onBlur={(newContent) => setContent(newContent)}
+            onChange={(newContent) => {}}
           />
-
 
           <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? "Updating..." : "Update Article"}

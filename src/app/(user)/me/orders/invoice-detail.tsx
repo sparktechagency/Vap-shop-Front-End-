@@ -156,10 +156,6 @@ export default function InvoiceDetail({
                   <span className="font-bold">Date of birth:</span>
                   <span>{user?.dob ?? ""}</span>
                 </div>
-                {/* <div className="grid grid-cols-2 gap-6 text-sm border-b pb-2">
-                  <span className="font-bold">Address:</span>
-                  <span>{JSON.stringify(user.address)}</span>
-                </div> */}
               </CardContent>
             </Card>
 
