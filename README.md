@@ -1,45 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VapeShopMaps - B2B Social & E-commerce Platform
 
-## Getting Started
+VapeShopMaps is a **multi-faceted B2B platform** designed to connect **users, stores, brands, and wholesalers** in the vape industry.  
+The platform combines **social networking**, **e-commerce**, and **SEO-driven discovery** to create a dynamic ecosystem that promotes engagement and business growth.
 
-First, run the development server:
+---
 
-```bash
+## 🚀 Features
+
+- **Multi-role Architecture:** Supports four distinct user roles — Users, Stores, Brands, and Wholesalers.  
+- **Real-time Social Features:** Chat, posts, and interactions to boost engagement.  
+- **E-commerce Functionality:** Streamlined product listings, store pages, and order management.  
+- **SEO Optimization:** Achieved top search rankings and helped onboard 300+ customers through technical SEO.  
+- **Modern UI/UX:** Clean, responsive design built with Tailwind CSS and Shadcn/UI.  
+- **Scalable Architecture:** Built with Next.js and Redux for state management.  
+
+---
+
+## 🧠 Tech Stack
+
+- **Frontend:** Next.js (App Router), TypeScript, Redux Toolkit  
+- **UI Components:** Tailwind CSS, Shadcn/UI  
+- **Backend Integration:** RESTful API  
+- **Other Tools:** ESLint, Prettier, GitHub Actions for CI/CD  
+
+---
+
+## ⚙️ Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/sparktechagency/Vap-shop-Front-End-.git
+   cd Vap-shop-Front-End-
+# Install dependencies
+npm install
+
+# Start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 
-<!-- Security scan triggered at 2025-09-02 04:23:32 -->
+Then open your browser and go to:
+👉 http://localhost:3000
 
-<!-- Security scan triggered at 2025-09-02 16:20:23 -->
+🌍 Live Website
 
-<!-- Security scan triggered at 2025-09-09 05:54:49 -->
+🔗 https://www.vapeshopmaps.com/
 
-<!-- Security scan triggered at 2025-09-28 16:05:53 -->
+📈 Achievements
+
+Increased user engagement by 50% with real-time social features
+
+Onboarded 300+ customers via technical SEO optimization
+
+Built a scalable, component-driven architecture ensuring maintainability
+
+PortFolio : http://mehedi.wuaze.com/
