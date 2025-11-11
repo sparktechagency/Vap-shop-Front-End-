@@ -135,6 +135,8 @@ export default function PostCard({
       </div> */}
       {/* Content */}
 
+      {/* //updated code for push  */}
+
       {data?.post_images.slice(0, 1).map((x: any, i: number) => (
         <Image
           key={i}
