@@ -34,7 +34,7 @@ import { useUser } from "@/context/userContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import Image from "next/image";
-
+import DOMPurify from "dompurify";
 export default function Gallery() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -86,7 +86,7 @@ export default function Gallery() {
             <Card
               className="w-full relative aspect-[4/5] bg-cover rounded-none"
               style={{
-                backgroundImage: `url('${post?.post_images[0]}')`,
+                backgroundImage: `url('${post?.post_images[0].image_path}')`,
               }}
             >
               {post?.post_images?.length > 1 && (
@@ -111,14 +111,14 @@ export default function Gallery() {
                   {post.post_images.map((img: any, i: number) => (
                     <CarouselItem key={i}>
                       <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-0">
+                        <Card className="aspect-square!">
+                          <CardContent className="flex aspect-square! items-center justify-center p-0">
                             <Image
                               src={img?.image_path}
                               height={600}
                               width={400}
                               alt={`Post image ${i + 1}`}
-                              className="w-full h-full object-cover rounded-md"
+                              className="w-full h-full object-cover aspect-square rounded-md"
                             />
                           </CardContent>
                         </Card>
@@ -152,12 +152,14 @@ export default function Gallery() {
             </DialogFooter>
 
             <div className="border-t mt-4 pt-4">
-              <h4 className="text-muted-foreground text-sm font-semibold">
-                {post.title || "Untitled Post"}
-              </h4>
-              <p className="text-xs text-muted-foreground">
-                {post.content || "No description available."}
-              </p>
+              <p
+                className="text-xs text-muted-foreground line-clamp-1"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    post.content || "No description available."
+                  ),
+                }}
+              />
             </div>
           </DialogContent>
         </Dialog>

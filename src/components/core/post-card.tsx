@@ -134,13 +134,10 @@ export default function PostCard({
         {data?.title}
       </div> */}
       {/* Content */}
-
-      {/* //updated code for push  */}
-
       {data?.post_images.slice(0, 1).map((x: any, i: number) => (
         <Image
           key={i}
-          src={"https://placehold.co/600x400"}
+          src={x.image_path}
           height={600}
           width={800}
           alt="post_image"
@@ -172,7 +169,6 @@ export default function PostCard({
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}
       />
-
       {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
         <div className="!space-x-2">
