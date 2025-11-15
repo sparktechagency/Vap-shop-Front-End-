@@ -54,14 +54,11 @@ export default function Post({ id }: { id: number }) {
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
         key={post.id || index}
-        user={{ name: my?.data.full_name ?? "", avatar: my?.data.avatar }}
+        user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
       />
     ));
 
-  if (data) {
-    console.log(data.data.data);
-  }
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">

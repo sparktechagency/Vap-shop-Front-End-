@@ -85,6 +85,10 @@ const data = {
           title: "Subscriptions & Billing",
           url: "/admin/business/subscriptions-billing",
         },
+        {
+          title: "Interaction Management",
+          url: "/admin/business/interaction-management",
+        },
       ],
     },
     {

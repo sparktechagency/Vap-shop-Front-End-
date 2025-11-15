@@ -29,20 +29,20 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HeartIcon } from "lucide-react";
-import { useGetPostsQuery } from "@/redux/features/users/postApi";
-import { useUser } from "@/context/userContext";
+import {
+  useGetPostsByIdQuery,
+  useGetPostsQuery,
+} from "@/redux/features/users/postApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import Image from "next/image";
 import DOMPurify from "dompurify";
-import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-export default function Gallery() {
+export default function Gallery({ id }: { id: string }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
 
-  const { data, isLoading, isError } = useGetPostsQuery();
-  const my = useUser();
+  const { data, isLoading, isError } = useGetPostsByIdQuery({ id });
 
   React.useEffect(() => {
     if (!api) return;
@@ -112,21 +112,15 @@ export default function Gallery() {
                   {post.post_images.map((img: any, i: number) => (
                     <CarouselItem key={i}>
                       <div className="p-1">
-                        <Card className="aspect-square! p-0!">
-                          <CardContent className="flex aspect-square! items-center justify-center p-0! ">
-                            <ImageZoom
-                              onZoomChange={() => {
-                                //keep dialog open
-                              }}
-                            >
-                              <Image
-                                src={img?.image_path}
-                                height={500}
-                                width={500}
-                                alt={`Post image ${i + 1}`}
-                                className="w-full h-full object-contain aspect-square rounded-md"
-                              />
-                            </ImageZoom>
+                        <Card className="aspect-square!">
+                          <CardContent className="flex aspect-square! items-center justify-center p-0">
+                            <Image
+                              src={img?.image_path}
+                              height={600}
+                              width={400}
+                              alt={`Post image ${i + 1}`}
+                              className="w-full h-full object-cover aspect-square rounded-md"
+                            />
                           </CardContent>
                         </Card>
                       </div>
