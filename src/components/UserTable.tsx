@@ -40,7 +40,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useBanAuserMutation, useDeleteUserMutation, useGetallusersQuery, useNotifyuserMutation, useSuspendUserMutation, useUnsuspanduserMutation } from "@/redux/features/admin/AdminApis";
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -182,11 +181,16 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
         try {
             const res = await banAuser({ id: selectedUser.id, _method: "PUT" }).unwrap();
             toast.success(res?.message || "User status updated successfully");
-            await refetch();
+            // Close the detail view immediately to avoid waiting for refetch
+            setBanDialogOpen(false);
+            setSelectedUser(null);
             setViewingUser(null);
+            // Trigger refetch in background (don't await) so UI isn't blocked
+            refetch();
         } catch (error: any) {
             toast.error(error?.data?.message || "An error occurred");
         } finally {
+            // UI already closed above; ensure state cleanup
             setBanDialogOpen(false);
             setSelectedUser(null);
         }
@@ -203,11 +207,15 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
         try {
             const res = await deleteUser({ id: selectedUserForDelete }).unwrap();
             toast.success(res?.message || "User deleted successfully");
-            await refetch();
+            // Close dialogs / view immediately to avoid blocking UI while refetch runs
+            setDeleteDialogOpen(false);
+            setSelectedUserForDelete(null);
             setViewingUser(null);
+            refetch();
         } catch (error: any) {
             toast.error(error?.data?.message || "An error occurred");
         } finally {
+            // Ensure cleanup in case of errors
             setDeleteDialogOpen(false);
             setSelectedUserForDelete(null);
         }
@@ -257,8 +265,13 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
             // Note: Adjust the payload structure based on your API requirements
             const res = await suspendUser({ user_id: selectedUserForSuspend, body: payload }).unwrap();
             toast.success(res?.message || "User suspended successfully!");
-            await refetch();
-            setViewingUser(null); // Close the main user detail view
+            // Close UI immediately and fetch in background so UI doesn't hang
+            setSuspendDialogOpen(false);
+            setSuspensionDays("");
+            setSuspensionReason("");
+            setSelectedUserForSuspend(null);
+            setViewingUser(null);
+            refetch();
         } catch (error: any) {
             toast.error(error?.data?.message || "Failed to suspend user.");
         } finally {
@@ -283,8 +296,9 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
 
             // 3. The .unwrap() handles errors, so no need for 'if (response.ok)'
             toast.success(res?.message || "User unsuspended successfully!");
-            await refetch();
+            // Close the view immediately so the UI stays responsive
             setViewingUser(null);
+            refetch();
 
         } catch (error: any) {
             toast.error(error?.data?.message || "Failed to unsuspend user.");
@@ -582,9 +596,18 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleBanUser} disabled={isBanning}>
+                        <Button
+                            variant="destructive"
+                            onClick={async () => {
+                                // close dialog immediately to avoid overlay/focus traps
+                                setBanDialogOpen(false);
+                                // call handler (which will refetch in background)
+                                await handleBanUser();
+                            }}
+                            disabled={isBanning}
+                        >
                             {isBanning ? 'Processing...' : `Yes, ${selectedUser?.isBanned ? 'Unban' : 'Ban'}`}
-                        </AlertDialogAction>
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -598,9 +621,19 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteUser} disabled={isDeleting} className="bg-red-600 hover:bg-red-700">
+                        <Button
+                            variant="destructive"
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={async () => {
+                                // close dialog immediately to avoid overlay/focus traps
+                                setDeleteDialogOpen(false);
+                                // call handler to perform deletion
+                                await handleDeleteUser();
+                            }}
+                            disabled={isDeleting}
+                        >
                             {isDeleting ? 'Deleting...' : 'Yes, Delete'}
-                        </AlertDialogAction>
+                        </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
