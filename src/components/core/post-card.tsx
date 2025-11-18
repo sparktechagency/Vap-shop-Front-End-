@@ -134,8 +134,28 @@ export default function PostCard({
         {data?.title}
       </div> */}
       {/* Content */}
-      {data.article_image && (
+      {data?.post_images?.slice(0, 1).map((x: any, i: number) => (
+        <Image
+          key={i}
+          src={x.image_path}
+          height={600}
+          width={800}
+          alt="post_image"
+          className="max-h-[400px] mx-auto object-contain"
+        />
+      ))}
+      {/* {data.article_image && (
         <div className="py-6">
+          {data?.post_images?.map((x: string) => (
+            <Image
+              src={x}
+              height={600}
+              width={800}
+              alt="post_image"
+              className="max-h-[400px] mx-auto object-contain"
+            />
+          ))}
+
           <Image
             src={data.article_image}
             height={600}
@@ -144,12 +164,11 @@ export default function PostCard({
             className="max-h-[400px] mx-auto object-contain"
           />
         </div>
-      )}
+      )} */}
       <div
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}
       />
-
       {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
         <div className="!space-x-2">

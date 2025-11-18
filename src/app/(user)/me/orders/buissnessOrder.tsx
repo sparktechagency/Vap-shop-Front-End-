@@ -217,13 +217,13 @@ export default function BuissnessOrder() {
                         onClose={() => setIsModalOpen(false)}
                       />
                     </TableCell>
-                    <TableCell className="hidden">
+                    {/* <TableCell className="hidden">
                       <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
                         <code className="whitespace-pre-wrap">
                           {JSON.stringify(x, null, 2)}
                         </code>
                       </pre>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>

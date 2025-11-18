@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import StoreProdCard from "@/components/core/store-prod-card";
 import LoadingScletion from "@/components/LoadingScletion";
@@ -36,9 +36,11 @@ export default function Page() {
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
   const [region, setRegion] = useState("");
   const { data: countries, isLoading: countriesLoading } = useCountysQuery();
-  const { location, loading } = useGoogleLocation();
-  console.log("location data--------------------> ", location);
-  if (isLoading || loading) {
+
+
+  const { location } = useGoogleLocation();
+  console.log("store data ", data);
+  if (isLoading) {
     return <LoadingScletion />;
   }
 
@@ -60,7 +62,9 @@ export default function Page() {
         <h3 className="text-xl md:text-4xl font-semibold">Stores</h3>
         <div className="w-full flex justify-end items-center gap-4">
           <Button variant="link" asChild>
-            <Link href="/map">
+            <Link
+              href={`/map?lat=${location?.lat}&lng=${location?.lng}&radius=16093`}
+            >
               <ArrowLeftIcon /> Map View
             </Link>
           </Button>

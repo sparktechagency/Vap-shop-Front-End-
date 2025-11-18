@@ -59,7 +59,7 @@ export default function UpdatePostPage() {
     if (!isLoading && data?.data) {
       form.setValue("title", data.data.title);
       form.setValue("content", data.data.content);
-      setPreview(data.data.article_image || null);
+      // setPreview(data.data.article_image || null);
     }
   }, [isLoading, data, form]);
 
@@ -82,7 +82,7 @@ export default function UpdatePostPage() {
       formData.append("title", values.title);
       formData.append("content", values.content);
       formData.append("_method", "PUT");
-      if (selectedFile) formData.append("article_image", selectedFile);
+      // if (selectedFile) formData.append("article_image", selectedFile);
 
       const response: { ok?: string } = await updatePost({
         id: postId!,
@@ -124,7 +124,7 @@ export default function UpdatePostPage() {
           /> */}
 
           {/* Image Upload */}
-          <label className="w-full h-64 border-2 border-dashed rounded-lg flex items-center justify-center overflow-hidden cursor-pointer relative">
+          {/* <label className="w-full h-64 border-2 border-dashed rounded-lg flex items-center justify-center overflow-hidden cursor-pointer relative">
             {preview ? (
               <img
                 src={preview}
@@ -142,7 +142,7 @@ export default function UpdatePostPage() {
               onChange={handleFileChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-          </label>
+          </label> */}
 
           {/* Content Editor */}
           <FormField

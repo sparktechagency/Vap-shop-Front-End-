@@ -17,6 +17,7 @@ import Post from "./post";
 import Catalog from "./catalog";
 import About from "./about";
 import Feed from "./feed";
+import Gallery from "./gallery";
 
 export default function TabsTriggerer() {
   const id = useParams().uid;
@@ -45,6 +46,7 @@ export default function TabsTriggerer() {
           {!isLoading && user?.data.role !== 2 && (
             <TabsTrigger value="reviews">Latest Reviews</TabsTrigger>
           )}
+          <TabsTrigger value="gallery">Gallery</TabsTrigger>
           {/* <TabsTrigger value="create-group">Group</TabsTrigger> */}
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
@@ -70,6 +72,9 @@ export default function TabsTriggerer() {
             </TabsContent>
             <TabsContent value="inbox">
               <Inbox />
+            </TabsContent>
+            <TabsContent value="gallery">
+              <Gallery id={String(id)} />
             </TabsContent>
             {/* <TabsContent value="create-group">
               <Groups user={user.data} />
