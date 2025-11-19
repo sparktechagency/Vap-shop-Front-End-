@@ -149,6 +149,11 @@ export const trendingApi = api.injectEndpoints({
       }),
       invalidatesTags: ["tranding"],
     }),
+
+    getGallery: builder.query<any, void>({
+      query: () => `/posts/trending?limit=50`,
+      providesTags: ["tranding"],
+    }),
   }),
 });
 
@@ -173,4 +178,5 @@ export const {
   useDeleteGroupMutation,
   useUpdateArticalMutation,
   useGetWholesalerProdByIdQuery,
+  useGetGalleryQuery,
 } = trendingApi;

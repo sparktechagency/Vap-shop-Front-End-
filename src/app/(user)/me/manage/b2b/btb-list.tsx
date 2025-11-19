@@ -30,7 +30,12 @@ export default function BtBList() {
   return (
     <div className="grid grid-cols-4 gap-6 p-4">
       {data?.data?.map((x: any, i: number) => (
-        <BtbProductCard key={i} show data={x} />
+        <BtbProductCard
+          link={`/me/manage/b2b/${x.product_id}`}
+          key={i}
+          show
+          data={x}
+        />
       ))}
     </div>
   );
