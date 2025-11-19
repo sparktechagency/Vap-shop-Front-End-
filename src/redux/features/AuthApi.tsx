@@ -105,6 +105,7 @@ const AuthApi = api.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["user", "brand"],
+      keepUnusedDataFor: 0,
     }),
     getProfile: builder.query<any, { id: any }>({
       query: ({ id }) => ({

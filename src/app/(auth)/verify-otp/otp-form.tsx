@@ -33,9 +33,8 @@ export function OTPForm({
   const email = searchParams.get('email');
   const isFromRegistration = searchParams?.get("isregistared");
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
-  const [resendotp, { isLoading: isResendLoading }] = useResendotpMutation();
+  const [resendotp] = useResendotpMutation();
   const router = useRouter();
-  console.log('email--------', email);
   console.log(isFromRegistration);
 
   const {
@@ -49,7 +48,6 @@ export function OTPForm({
   const onSubmit = async (data: OTPFormData) => {
     try {
       const response = await verifyEmail({ otp: data.otp }).unwrap();
-      console.log('response', response);
 
       if (response.ok) {
         Cookies.set("token", response.data.access_token);
@@ -77,7 +75,6 @@ export function OTPForm({
       toast.error(
         error.data?.message || "Verification failed. Please try again."
       );
-      console.error("Verification error:", error);
     }
   };
 
@@ -85,7 +82,6 @@ export function OTPForm({
   const handleResendOtp = async () => {
     try {
       const response = await resendotp({ email }).unwrap();
-      console.log("Resend OTP response:", response);
       if (response.ok) {
         toast.success(response.message || "OTP sent successfully!");
       } else {
@@ -95,7 +91,6 @@ export function OTPForm({
       toast.error(
         error.data?.message || "Failed to send OTP. Please try again."
       );
-      console.error("Resend OTP error:", error);
     }
   };
 

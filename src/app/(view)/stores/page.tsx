@@ -36,7 +36,9 @@ export default function Page() {
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
   const [region, setRegion] = useState("");
   const { data: countries, isLoading: countriesLoading } = useCountysQuery();
-  const { location, error } = useGoogleLocation();
+
+
+  const { location } = useGoogleLocation();
   console.log("store data ", data);
   if (isLoading) {
     return <LoadingScletion />;

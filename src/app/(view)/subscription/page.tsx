@@ -1,63 +1,34 @@
-// 'use client';
-
-// import { Suspense } from "react";
-// import Subsc from "./subsc";
-// import { Skeleton } from "@/components/ui/skeleton";
-// import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
-// import Membersubscriptionpackage from "./membersubscriptionpackage/page";
-// import StoreSubscriptionPage from "./storesubscription/page";
-// import WholesalerPage from "./wholesalersubscription/page";
-// import BrandSubscription from "./brandsubscription/page";
-
-
-// export default function Page() {
-//   const { data: userProfile, isLoading } = useGetOwnprofileQuery(undefined);
-//   const user = userProfile?.data;
-//   console.log('user', user?.role_label);
-
-//   if (isLoading || !user) {
-//     return (
-//       <div className="w-full h-[70dvh] p-12 grid grid-cols-3 gap-6">
-//         <Skeleton className="w-full" />
-//         <Skeleton className="w-full" />
-//         <Skeleton className="w-full" />
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       {!user.is_subscribed && ![1, 2].includes(user.role) && (
-//         <>
-//           {user.role_label === "Member" && <Membersubscriptionpackage />}
-//           {user.role_label === "Store" && <StoreSubscriptionPage />}
-//           {user.role_label === "Wholesaler" && <WholesalerPage />}
-//           {user.role_label === "Brand" && <BrandSubscription />}
-//         </>
-//       )}
-//     </>
-//   );
-// }
-
 'use client';
-
-import { Suspense } from "react";
-import Subsc from "./subsc";
+import { useEffect } from 'react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import Membersubscriptionpackage from "./membersubscriptionpackage/page";
-import StoreSubscriptionPage from "./storesubscription/page";
-import WholesalerPage from "./wholesalersubscription/page";
-import BrandSubscription from "./brandsubscription/page";
-import { CheckCircle } from "lucide-react"; // Or any checkmark icon you prefer
+import { CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 
 export default function Page() {
   const { data: userProfile, isLoading } = useGetOwnprofileQuery(undefined);
   const user = userProfile?.data;
-  console.log('user', user?.role_label);
+  // console.log('user======================================', user?.role_label);
+  // console.log('user', user);
 
-  if (isLoading || !user) {
+  const router = useRouter();
+
+
+  // 🔑 Redirection Logic: Redirect to homepage if user is loaded and NOT a Member
+  useEffect(() => {
+    // Check if loading is complete AND user data exists AND role_label is NOT "Member"
+    if (!isLoading && user && user.role_label !== "Member") {
+      // Use replace to prevent the user from navigating back to this subscription page
+      // console.log(`Redirecting user with role: ${user.role_label} to homepage.`);
+      router.replace('/');
+    }
+  }, [isLoading, user, router]); // Dependencies
+
+
+  // 1. Show Skeleton while loading
+  if (isLoading) {
     return (
       <div className="w-full h-[70dvh] p-12 grid grid-cols-3 gap-6">
         <Skeleton className="w-full" />
@@ -66,16 +37,18 @@ export default function Page() {
       </div>
     );
   }
-  let RoleBasedComponent = null;
-  if (user.role_label === "Member") {
-    RoleBasedComponent = <Membersubscriptionpackage />;
-  } else if (user.role_label === "Store") {
-    RoleBasedComponent = <StoreSubscriptionPage />;
-  } else if (user.role_label === "Wholesaler") {
-    RoleBasedComponent = <WholesalerPage />;
-  } else if (user.role_label === "Brand") {
-    RoleBasedComponent = <BrandSubscription />;
+
+  // 2. If the user is loaded but not a Member, return null 
+  //    and let the useEffect handle the redirection to the homepage.
+  if (!user || user.role_label !== "Member") {
+    return null;
   }
+
+  // --- Only runs if user is loaded AND user.role_label is "Member" ---
+
+  // Since we've confirmed the role is "Member" by this point, we can set the component.
+  const RoleBasedComponent = <Membersubscriptionpackage />;
+
 
   return (
     <>
@@ -97,7 +70,7 @@ export default function Page() {
         </div>
       )}
 
-      {/* If the user is NOT subscribed, show the normal page */}
+      {/* If the user is NOT subscribed, show the normal subscription package options */}
       {!user.is_subscribed && RoleBasedComponent}
     </>
   );
