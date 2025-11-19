@@ -70,7 +70,7 @@ export default function Navbar() {
 
   const user = data?.data ?? null;
   const role = Number(user?.role);
-
+  console.log('user', user);
   const [linkListDynamic, setLinkListDynamic] = useState(LinkList);
 
   useEffect(() => {
