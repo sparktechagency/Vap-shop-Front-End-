@@ -3,6 +3,7 @@
 import BrandProdCard from "@/components/core/brand-prod-card";
 import React, { useState, useEffect } from "react";
 import {
+  useGetGalleryQuery,
   useGetmostFollowrsBrandQuery,
   useGetSponsoredBrandsQuery,
 } from "@/redux/features/Trending/TrendingApi";
@@ -14,7 +15,28 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { ChevronDownIcon, ChevronLeft, Globe } from "lucide-react";
+import { ChevronDownIcon, ChevronLeft, Globe, HeartIcon } from "lucide-react";
+import DOMPurify from "dompurify";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import { IoCopySharp } from "react-icons/io5";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+import Image from "next/image";
 
 export default function MostFollowers() {
   const [region, setRegion] = useState(""); // empty = worldwide
@@ -27,7 +49,8 @@ export default function MostFollowers() {
     isError,
     error,
     refetch: refetchMostFollowers,
-  }: any = useGetmostFollowrsBrandQuery({ region });
+  }: any = useGetGalleryQuery();
+  // { region }
 
   const {
     data: sponsored,
@@ -38,7 +61,18 @@ export default function MostFollowers() {
   }: any = useGetSponsoredBrandsQuery({ region });
 
   const { data: countries, isLoading: cLoading } = useCountysQuery();
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
+  React.useEffect(() => {
+    if (!api) return;
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
 
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
   useEffect(() => {
     refetchMostFollowers();
     refetchSponsored();
@@ -145,7 +179,7 @@ export default function MostFollowers() {
       </div>
 
       {/* Sponsored brands */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
+      {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {isSponsoredError ? (
           <div className="py-4 col-span-4 flex justify-center items-center">
             {sponsoredError?.data?.message}
@@ -184,12 +218,11 @@ export default function MostFollowers() {
             )}
           </>
         )}
-      </div>
+      </div> */}
 
       <h2 className="font-semibold text-2xl !mt-12 text-center">
-        Top 50 Most Followed Brands
+        Top 50 Most Discovered
       </h2>
-
       {/* Most followed brands */}
       {isError ? (
         <div className="py-4 flex justify-center items-center">
@@ -197,30 +230,95 @@ export default function MostFollowers() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
-          {data?.data?.map((item: any, i: number) => (
-            <BrandProdCard
-              data={{
-                id: item?.id,
-                image: item?.avatar,
-                storeName: item?.full_name,
-                is_favourite: item?.is_favourite,
-                isVerified: true,
-                location: {
-                  city: "BROOKLYN, New York",
-                  distance: "4 mi",
-                },
-                rating: {
-                  value: item?.avg_rating,
-                  reviews: item?.total_reviews,
-                },
-                isOpen: true,
-                closingTime: "10 PM",
-                type: "normal",
-                isFollowing: item?.is_following,
-                totalFollowers: item?.total_followers,
-              }}
-              key={i}
-            />
+          {data?.data?.map((item: any) => (
+            <Dialog key={item.id}>
+              <DialogTrigger asChild>
+                <Card
+                  className="w-full relative aspect-[4/5] bg-cover rounded-none overflow-hidden"
+                  style={{
+                    backgroundImage: `url('${item?.post_images[0]?.image_path}')`,
+                  }}
+                >
+                  {item?.post_images?.length > 1 && (
+                    <div className="top-2 right-2 absolute z-20">
+                      <div className="text-background p-2 rounded-lg bg-background/30">
+                        <IoCopySharp className="size-5" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+                </Card>
+              </DialogTrigger>
+
+              <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
+                <DialogHeader className="hidden">
+                  <DialogTitle />
+                </DialogHeader>
+
+                <div className="w-full flex justify-center items-center">
+                  <Carousel className="w-[60dvh]" setApi={setApi}>
+                    <CarouselContent>
+                      {item.post_images.map((img: any, i: number) => (
+                        <CarouselItem key={i}>
+                          <div className="p-1">
+                            <Card className="aspect-square! p-0!">
+                              <CardContent className="flex aspect-square! items-center justify-center p-0! ">
+                                <ImageZoom
+                                  onZoomChange={() => {
+                                    //keep dialog open
+                                  }}
+                                >
+                                  <Image
+                                    src={img?.image_path}
+                                    height={500}
+                                    width={500}
+                                    alt={`Post image ${i + 1}`}
+                                    className="w-full h-full object-contain aspect-square rounded-md"
+                                  />
+                                </ImageZoom>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
+                </div>
+
+                <div className="flex gap-2 mt-2 w-full justify-center items-center">
+                  {Array.from({ length: count }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => api?.scrollTo(i)}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        current === i + 1
+                          ? "bg-foreground w-4"
+                          : "bg-muted-foreground"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
+                  <Button variant="special">
+                    <HeartIcon /> {item.likes_count ?? 0}
+                  </Button>
+                </DialogFooter>
+
+                <div className="border-t mt-4 pt-4">
+                  <p
+                    className="text-xs text-muted-foreground line-clamp-1"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(
+                        item.content || "No description available."
+                      ),
+                    }}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           ))}
           {data?.data?.length <= 0 && (
             <div className="flex justify-center items-center h-12 w-full">

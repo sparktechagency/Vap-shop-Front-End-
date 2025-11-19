@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { useBtbDeleteProductMutation } from "@/redux/features/b2b/btbApi";
 
 interface BtbProductCardProps {
   show?: boolean;
@@ -46,7 +47,7 @@ export default function BtbProductCard({
       onAddToCart(data, quantity);
     }
   };
-
+  const [deleteB2B] = useBtbDeleteProductMutation();
   const calculatePrice = (quantity: number) => {
     return (wholesalePrice * quantity).toLocaleString();
   };
@@ -122,10 +123,19 @@ export default function BtbProductCard({
         </div>
       </Link>
       <CardFooter className="flex items-center gap-4">
-        <Button className="flex-1" variant={"outline"}>
-          Update B2B
+        <Button className="flex-1" variant={"outline"} asChild>
+          <Link href={link ? link : "#"}>Update </Link>
         </Button>
-        <Button className="" size={"icon"} variant={"destructive"}>
+        <Button
+          className=""
+          size={"icon"}
+          variant={"destructive"}
+          onClick={async () => {
+            if (data?.product_id) {
+              await deleteB2B({ id: data?.product_id });
+            }
+          }}
+        >
           <Trash2Icon />
         </Button>
       </CardFooter>
