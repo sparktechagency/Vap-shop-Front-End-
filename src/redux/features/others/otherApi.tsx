@@ -42,6 +42,7 @@ export const otherApi = api.injectEndpoints({
         url: `/tigger-like/${id}`,
         method: "POST",
       }),
+      invalidatesTags: ["post"],
     }),
     search: builder.query<
       any,
