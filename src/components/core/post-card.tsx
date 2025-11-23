@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -59,6 +58,7 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 import { IoCopySharp } from "react-icons/io5";
+import { cn } from "@/lib/utils";
 
 const schema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -141,7 +141,7 @@ export default function PostCard({
         <Link
           href={
             String(data?.user?.role) === "3"
-              ? `/brands/brand/${data.user_id}`
+              ? `/brands/brand/${data?.user_id}`
               : String(data?.user?.role) === "5"
               ? `/stores/store/${data?.user_id}`
               : `/profile/${data?.user_id}`
@@ -156,11 +156,11 @@ export default function PostCard({
         </Link>
       </div>
       <Dialog>
-        <DialogTrigger asChild>
+        <DialogTrigger className={cn(!data.is_in_gallery && "hidden")} asChild>
           <Card
             className="relative aspect-[4/5] w-1/3 mx-auto bg-cover bg-center rounded-none"
             style={{
-              backgroundImage: `url('${data?.post_images[0].image_path}')`,
+              backgroundImage: `url('${data?.post_images[0]?.image_path}')`,
             }}
           >
             {data?.post_images?.length > 1 && (
@@ -178,7 +178,7 @@ export default function PostCard({
           <DialogHeader className="hidden">
             <DialogTitle />
           </DialogHeader>
-
+          {/* 
           <div className="w-full flex justify-center items-center">
             <Carousel className="w-[60dvh]" setApi={setApi}>
               <CarouselContent>
@@ -203,7 +203,7 @@ export default function PostCard({
               <CarouselPrevious />
               <CarouselNext />
             </Carousel>
-          </div>
+          </div> */}
 
           <div className="flex gap-2 mt-2 w-full justify-center items-center">
             {Array.from({ length: count }).map((_, i) => (
@@ -221,7 +221,7 @@ export default function PostCard({
 
           <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
             <Button variant="special">
-              <HeartIcon /> {data.likes_count ?? 0}
+              <HeartIcon /> {data?.likes_count ?? 0}
             </Button>
           </DialogFooter>
 
@@ -239,7 +239,7 @@ export default function PostCard({
       </Dialog>
       <div
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.content) }}
       />
       {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
