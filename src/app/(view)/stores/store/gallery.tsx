@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 
-export default function Post({ id }: { id: number }) {
+export default function Gallery({ id }: { id: number }) {
   const { data, isLoading, isError, isFetching, error } =
     useGetPostsByIdQuery<any>({
       id,
@@ -52,7 +52,7 @@ export default function Post({ id }: { id: number }) {
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
-        key={post?.id || index}
+        key={post.id || index}
         user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
       />

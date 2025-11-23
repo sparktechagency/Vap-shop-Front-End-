@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,18 +11,20 @@ import {
   RadioIcon,
   Share2Icon,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import TabsTriggerer from "../tabs-trigger";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useGetOwnprofileQuery, useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+import {
+  useGetOwnprofileQuery,
+  useGtStoreDetailsQuery,
+} from "@/redux/features/AuthApi";
 import { toast } from "sonner";
 import {
   useFollowBrandMutation,
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import OpenStatus from "./open-status";
-
 
 export default function Page() {
   const { id } = useParams();
@@ -32,10 +33,7 @@ export default function Page() {
   });
   const { data: userData } = useGetOwnprofileQuery();
   const Userrole = userData?.data?.role;
-
-
-  
-
+  const [mutated, setMutated] = React.useState(false);
   const navigation = useRouter();
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
@@ -43,7 +41,9 @@ export default function Page() {
     useUnfollowBrandMutation();
 
   const user = data?.data;
-
+  useEffect(() => {
+    setMutated(true);
+  }, []);
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -104,34 +104,38 @@ export default function Page() {
     );
   };
 
+  if (!mutated) {
+    return null;
+  }
+
   if (isError) {
     console.log("error", error);
   }
   if (isLoading) {
     return (
-      <div className="!p-6 flex justify-center items-center">
+      <div
+        className="!p-6 flex justify-center items-center"
+        suppressHydrationWarning
+      >
         <Loader2Icon className="animate-spin" />
       </div>
     );
   }
-
 
   return (
     <>
       <div
         className="h-[50dvh] w-full relative bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('${data?.data?.cover_photo || "/image/home/car2.png"
-            }')`,
+          backgroundImage: `url('${
+            data?.data?.cover_photo || "/image/home/car2.png"
+          }')`,
         }}
       >
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
           <AvatarImage src={data?.data?.avatar || "/image/icon/store.png"} />
           <AvatarFallback>VD</AvatarFallback>
-
         </Avatar>
-
-
       </div>
       <main className="!py-12 !p-4 lg:!px-[7%]">
         <div className="">
@@ -200,10 +204,11 @@ export default function Page() {
                 </p>
                 <Button
                   variant="outline"
-                  className={`${Userrole === 2 || Userrole === 6 ? "hidden" : ""} !text-sm font-extrabold `}
+                  className={`${
+                    Userrole === 2 || Userrole === 6 ? "hidden" : ""
+                  } !text-sm font-extrabold `}
                   asChild
                 >
-
                   <Button
                     variant="outline"
                     className="!text-sm font-extrabold"
@@ -211,7 +216,6 @@ export default function Page() {
                   >
                     <Link href="/stores/store/btb">B2B</Link>
                   </Button>
-
                 </Button>
                 <Button
                   variant="outline"
