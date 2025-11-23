@@ -19,6 +19,16 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import { useBtbDeleteProductMutation } from "@/redux/features/b2b/btbApi";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface BtbProductCardProps {
   show?: boolean;
@@ -36,6 +46,7 @@ export default function BtbProductCard({
   cartQuantity = 0,
 }: BtbProductCardProps) {
   const [copied, setCopied] = useState(false);
+
   const currentUrl = `${
     window.location.origin ?? "https://vapeshopmaps.com/"
   }/stores/store/product/${data.id}`;
@@ -126,18 +137,33 @@ export default function BtbProductCard({
         <Button className="flex-1" variant={"outline"} asChild>
           <Link href={link ? link : "#"}>Update </Link>
         </Button>
-        <Button
-          className=""
-          size={"icon"}
-          variant={"destructive"}
-          onClick={async () => {
-            if (data?.product_id) {
-              await deleteB2B({ id: data?.product_id });
-            }
-          }}
-        >
-          <Trash2Icon />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button className="" size={"icon"} variant={"destructive"}>
+              <Trash2Icon />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-sm">
+                Are you sure you want to delete this B2B product?
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/80 focus:ring-destructive/50"
+                onClick={async () => {
+                  if (data?.product_id) {
+                    await deleteB2B({ id: data?.product_id });
+                  }
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );

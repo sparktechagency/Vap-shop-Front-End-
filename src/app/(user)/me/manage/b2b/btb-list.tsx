@@ -29,9 +29,14 @@ export default function BtBList() {
 
   return (
     <div className="grid grid-cols-4 gap-6 p-4">
+      {/* <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+        <code className="whitespace-pre-wrap">
+          {JSON.stringify(data.data[0], null, 2)}
+        </code>
+      </pre> */}
       {data?.data?.map((x: any, i: number) => (
         <BtbProductCard
-          link={`/me/manage/b2b/${x.product_id}`}
+          link={`/me/manage/b2b/${x.product_id}?amount=${x?.b2b_details?.wholesale_price}&moq=${x?.b2b_details?.moq}`}
           key={i}
           show
           data={x}
