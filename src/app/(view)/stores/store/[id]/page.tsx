@@ -214,7 +214,7 @@ export default function Page() {
                     className="!text-sm font-extrabold"
                     asChild
                   >
-                    <Link href="/stores/store/btb">B2B</Link>
+                    <Link href={`${user.id}/btb`}>B2B</Link>
                   </Button>
                 </Button>
                 <Button
