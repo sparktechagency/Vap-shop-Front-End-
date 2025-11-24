@@ -1,6 +1,8 @@
+
+
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,31 +12,93 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
-import extractIdFromUrl from "@/lib/functions";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { useUpdateinteractionMutation } from "@/redux/features/admin/AdminApis";
+import { useGetProfileQuery } from "@/redux/features/AuthApi";
+
 
 type FollowersFormValues = {
+  targetType: string;
   profileUrl: string;
   followerCount: number;
 };
 
+// Helper: Extract ID (e.g., 176) from https://site.com/profile/176?query=...
+const extractIdFromUrl = (url: string | undefined): string | null => {
+  if (!url) return null;
+  const match = url.match(/(\d+)(?!.*\d)/);
+  return match ? match[1] : null;
+};
+
 export default function Followers() {
+  // FIX 2: Fixed hook name casing
+  const [updateInteraction, { isLoading: isUpdating }] = useUpdateinteractionMutation();
+
   const form = useForm<FollowersFormValues>({
     defaultValues: {
+      targetType: '',
       profileUrl: "",
       followerCount: 0,
     },
   });
 
-  const onSubmit = (values: FollowersFormValues) => {
-    console.log("Form Submitted:", values);
-    const id = extractIdFromUrl(values.profileUrl);
-    if (id === null) {
-      toast.error("Please input a valid url");
+  // 1. WATCH: Real-time monitoring of the URL input
+  const watchedUrl = form.watch("profileUrl");
+
+  // 2. EXTRACT: Get ID immediately when URL changes
+  const extractedId = useMemo(() => extractIdFromUrl(watchedUrl), [watchedUrl]);
+  console.log('id', extractedId);
+  // 3. AUTO-FETCH: Automatically triggers when 'extractedId' is available
+  const { data: userProfile, isLoading: isFetchingProfile } = useGetProfileQuery(
+    { id: extractedId },
+    {
+      skip: !extractedId, // Skips the API call if no ID is found
     }
-    console.log("Extracted id: ", id);
+  );
+
+
+  console.log('userporfile', userProfile);
+
+  const onSubmit = async (values: FollowersFormValues) => {
+    if (!extractedId) {
+      toast.error("Please provide a valid profile URL first.");
+      return;
+    }
+
+    try {
+
+      console.log('Submitting update with values:', {
+        target_id: extractedId, // Use the extracted ID
+        target_type: values.targetType,
+        metric_type: "follower",
+        count: Number(values.followerCount)
+      });
+      const response = await updateInteraction({
+        target_id: Number(extractedId), // Use the extracted ID
+        target_type: "user",
+        metric_type: "follower",
+        count: Number(values.followerCount),
+      }).unwrap();
+      console.log('response', response);
+      const userName = userProfile?.data?.full_name || "User";
+      toast.success(`Followers updated successfully for ${userName}`);
+      form.reset({
+        ...values,
+        profileUrl: "", // Clear URL after success
+        followerCount: 0,
+      });
+    } catch (error: any) {
+      toast.error(error.data?.message || "Failed to update followers.");
+      console.error(error);
+    }
   };
+
+  // Safe access to user data
+  const user = userProfile?.data;
 
   return (
     <>
@@ -42,58 +106,113 @@ export default function Followers() {
         Manage Followers
       </h2>
       <p className="text-gray-600 mb-6">
-        Easily update follower counts for shops, brands, or wholesalers.
+        Paste a profile link to auto-preview the user, then set their follower count.
       </p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="profileUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Profile URL</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="url"
-                    placeholder="Paste profile link here"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-          <FormField
-            control={form.control}
-            name="followerCount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Follower Count</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Set total followers"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <Button type="submit">Confirm</Button>
+            <FormField
+              control={form.control}
+              name="profileUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Profile URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="url"
+                      placeholder="https://vapeshopmaps.com/profile/176..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="followerCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Follower Count</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="e.g. 1500"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
+
+          </div>
+
+
+
+          {/* --- AUTOMATIC PREVIEW SECTION --- */}
+          <div className="min-h-[90px] transition-all duration-300">
+            {/* Loading State */}
+            {isFetchingProfile && (
+              <div className="flex items-center space-x-4 p-4 bg-gray-50 border rounded-lg animate-pulse">
+                <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                <div className="space-y-2">
+                  <div className="h-4 w-40 bg-gray-200 rounded"></div>
+                  <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            )}
+
+            {/* Success State */}
+            {!isFetchingProfile && user && (
+              <div className="flex items-center p-4 bg-blue-50/50 border border-blue-100 rounded-lg animate-in fade-in slide-in-from-top-2">
+                <Avatar className="h-14 w-14 border-2 border-white shadow-sm">
+                  <AvatarImage src={user.avatar} alt={user.full_name} />
+                  <AvatarFallback className="bg-blue-200 text-blue-700">
+                    {user.full_name?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="ml-4 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      {user.full_name}
+                    </h4>
+                    <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">
+                      ID: {user.id}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500 flex items-center gap-3">
+                    <span>{user.role_label}</span>
+                    <span className="text-gray-300">|</span>
+                    <span>Current Followers: <strong className="text-gray-700">{user.total_followers}</strong></span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Error/Empty State */}
+            {!isFetchingProfile && extractedId && !user && (
+              <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm flex items-center gap-2">
+                <span>⚠️</span> No user found with ID: <strong>{extractedId}</strong>
+              </div>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full md:w-auto"
+            disabled={isUpdating || !user} // Disable if no valid user loaded
+          >
+            {isUpdating ? "Processing Update..." : "Confirm & Update"}
+          </Button>
         </form>
       </Form>
-
-      <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <h3 className="font-semibold text-gray-800 mb-2">Quick Steps:</h3>
-        <ol className="list-decimal list-inside text-gray-600 space-y-1 text-sm">
-          <li>Copy the profile URL.</li>
-          <li>Paste it into the input above.</li>
-          <li>Set the total follower count.</li>
-          <li>Click Confirm to update.</li>
-        </ol>
-      </div>
     </>
   );
 }

@@ -16,15 +16,11 @@ export default function Page() {
   const router = useRouter();
 
 
-  // 🔑 Redirection Logic: Redirect to homepage if user is loaded and NOT a Member
   useEffect(() => {
-    // Check if loading is complete AND user data exists AND role_label is NOT "Member"
     if (!isLoading && user && user.role_label !== "Member") {
-      // Use replace to prevent the user from navigating back to this subscription page
-      // console.log(`Redirecting user with role: ${user.role_label} to homepage.`);
       router.replace('/');
     }
-  }, [isLoading, user, router]); // Dependencies
+  }, [isLoading, user, router]);
 
 
   // 1. Show Skeleton while loading
