@@ -164,6 +164,17 @@ export const adminApis = api.injectEndpoints({
     gettermspages: builder.query<any, { type: string }>({
       query: ({ type }) => `/admin/pages/${type}`,
     }),
+
+    // Change the generic type from { body: any } to the actual object structure or 'any'
+    updateinteraction: builder.mutation<any, any>({
+      query: (data) => ({
+        url: `/admin/interactions/update`,
+        method: "POST",
+        body: data, // Pass the data directly as the body
+      }),
+    }),
+
+
     updateAdRequestStatus: builder.mutation<
       any,
       { id: number; params: Record<string, any> }
@@ -200,4 +211,6 @@ export const {
   useUnsuspanduserMutation,
   useAdmintermsConditionsMutation,
   useGettermspagesQuery,
+  useUpdateinteractionMutation,
+  useUpdateAdRequestStatusMutation,
 } = adminApis;
