@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 import { createNavLinks } from "../navLinks";
 import { cn } from "@/lib/utils";
 import MeSharer from "./me-sharer";
+import { Badge } from "@/components/ui/badge";
 export default async function ProfileLayoutShell({
   children,
 }: Readonly<{
@@ -26,7 +27,7 @@ export default async function ProfileLayoutShell({
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;
-console.log('my:', my);
+  console.log("my:", my);
   function getNavs(role: number) {
     switch (role) {
       case 2:
@@ -103,6 +104,13 @@ console.log('my:', my);
                   <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-semibold justify-center sm:justify-start flex-1">
                     <p>Followers: {my.total_followers}</p>
                     <p>Following: {my.total_following}</p>
+                    {my.subscription_data?.map((x) => (
+                      <Badge
+                        variant={x.type === "hemp" ? "success" : "special"}
+                      >
+                        {x.badge}
+                      </Badge>
+                    ))}
                   </div>
                   <Button size="icon" variant="ghost" asChild>
                     <Link href="/me/settings">
@@ -131,19 +139,20 @@ console.log('my:', my);
                   href={
                     String(my.role) === "6"
                       ? `/profile/${my.id}?user=${my.full_name?.replace(
-                        /\s+/g,
-                        ""
-                      )}`
-                      : String(my.role) === "5"
-                        ? `/stores/store/${my.id}?${my.full_name?.replace(
-                          /\s+/g,""
+                          /\s+/g,
+                          ""
                         )}`
-                        : String(my.role) === "3"
-                          ? `/brands/brand/${my.id}`
-                          : `/profile/${my.id}?user=${my.full_name?.replace(
-                            /\s+/g,
-                            ""
-                          )}`
+                      : String(my.role) === "5"
+                      ? `/stores/store/${my.id}?${my.full_name?.replace(
+                          /\s+/g,
+                          ""
+                        )}`
+                      : String(my.role) === "3"
+                      ? `/brands/brand/${my.id}`
+                      : `/profile/${my.id}?user=${my.full_name?.replace(
+                          /\s+/g,
+                          ""
+                        )}`
                   }
                 >
                   Preview Profile
