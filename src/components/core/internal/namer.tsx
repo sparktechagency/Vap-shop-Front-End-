@@ -1,4 +1,6 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
+import { UserData } from "@/lib/types/apiTypes";
 import { Roles } from "@/lib/types/extras";
 import {
   BookOpenIcon,
@@ -16,11 +18,13 @@ export default function Namer({
   isVerified,
   type,
   size,
+  badge,
 }: {
   name: string;
   isVerified?: boolean;
   type: Roles;
   size?: "sm" | "md" | "lg" | "xl";
+  badge?: Array<{ type: string; badge: string }>;
 }) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -96,6 +100,11 @@ export default function Namer({
           />
         </div>
       )}
+      {badge?.map((x) => (
+        <Badge variant={x.type === "hemp" ? "success" : "special"}>
+          {x.badge}
+        </Badge>
+      ))}
     </div>
   );
 }
