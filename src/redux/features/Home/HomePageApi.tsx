@@ -41,9 +41,49 @@ export const homePageApi = api.injectEndpoints({
       }),
       invalidatesTags: ["category"],
     }),
-
-
+    connectReuqestApi: builder.mutation<any, { id: string | number }>({
+      query: ({ id }) => ({
+        url: `/connected-location/add`,
+        method: "POST",
+        body: { store_id: id },
+      }),
+      invalidatesTags: ["connected"],
+    }),
+    connectedListApi: builder.query<any, void>({
+      query: () => ({
+        url: `/connected-location/get`,
+      }),
+      providesTags: ["connected"],
+    }),
+    connectReuqestListApi: builder.query<any, void>({
+      query: () => ({
+        url: `/incoming-connected-location/requests`,
+      }),
+      providesTags: ["connected"],
+    }),
+    respondConnectApi: builder.mutation<
+      any,
+      { id: string | number; status: "accepted" | "rejected" }
+    >({
+      query: ({ id, status }) => ({
+        url: `/connected-location/respond/${id}`,
+        method: "POST",
+        body: { status },
+      }),
+      invalidatesTags: ["connected"],
+    }),
   }),
 });
 
-export const { useGetHomeBannerQuery, useGetallCategorysQuery, useCreateACategoryMutation, useDelteACategoryMutation, useUpdateCategoryMutation, useGetAllAdminCategoryQuery } = homePageApi;
+export const {
+  useGetHomeBannerQuery,
+  useConnectedListApiQuery,
+  useGetallCategorysQuery,
+  useCreateACategoryMutation,
+  useDelteACategoryMutation,
+  useUpdateCategoryMutation,
+  useGetAllAdminCategoryQuery,
+  useConnectReuqestApiMutation,
+  useConnectReuqestListApiQuery,
+  useRespondConnectApiMutation,
+} = homePageApi;
