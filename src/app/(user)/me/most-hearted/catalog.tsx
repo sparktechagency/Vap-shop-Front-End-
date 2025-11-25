@@ -60,11 +60,13 @@ export default function Catalog() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">
         {products.map((product: any) => {
           const productData = {
+            id: product.id,
             image: product.product_image || "/image/shop/item.jpg",
             title: product.product_name,
             category: product.category_name ? product.category_name : null,
-            note: `${product.average_rating ?? "0.0"}★ (${product.total_heart
-              } hearts)`,
+            note: `${product.average_rating ?? "0.0"}★ (${
+              product.total_heart
+            } hearts)`,
             price: product.product_price,
             discount: product.product_discount,
             hearts: product.total_heart,
@@ -77,6 +79,7 @@ export default function Catalog() {
               key={product.id}
               data={productData}
               role={parseInt(role)}
+              hearted={product.is_hearted}
               link={
                 String(role) === "5"
                   ? `/stores/store/product/${product.id}`

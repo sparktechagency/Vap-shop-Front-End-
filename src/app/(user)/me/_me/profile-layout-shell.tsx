@@ -104,8 +104,9 @@ export default async function ProfileLayoutShell({
                   <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-semibold justify-center sm:justify-start flex-1">
                     <p>Followers: {my.total_followers}</p>
                     <p>Following: {my.total_following}</p>
-                    {my.subscription_data?.map((x) => (
+                    {my.subscription_data?.map((x, i) => (
                       <Badge
+                        key={`${x.type}${i}`}
                         variant={x.type === "hemp" ? "success" : "special"}
                       >
                         {x.badge}

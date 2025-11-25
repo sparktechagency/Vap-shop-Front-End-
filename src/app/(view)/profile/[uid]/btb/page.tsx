@@ -16,13 +16,14 @@ import React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useGtStoreDetailsQuery } from "@/redux/features/AuthApi";
+
 import CartManage from "./cart-manage";
 
 export default function Page() {
-  const { id } = useParams();
+  const { uid } = useParams();
 
   const { data, isLoading, isError, error } = useGtStoreDetailsQuery({
-    id: id as any,
+    id: uid as any,
   });
 
   const navigation = useRouter();
@@ -74,7 +75,6 @@ export default function Page() {
             </div>
           </div>
           <div className="!mt-2 flex flex-col gap-4 lg:flex-row justify-between items-center">
-            <div className="text-xs md:text-sm text-muted-foreground"></div>
             <Button
               onClick={() => handleMapClick(data?.data)}
               variant="outline"
@@ -113,7 +113,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <CartManage id={id as string} />
+        <CartManage id={uid as string} />
       </main>
     </>
   );

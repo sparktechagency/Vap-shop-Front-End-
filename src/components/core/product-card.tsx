@@ -62,6 +62,7 @@ export default function ProductCard({
   role,
   blank,
   isBrand,
+  hearted,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
@@ -71,6 +72,7 @@ export default function ProductCard({
   role?: number;
   blank?: boolean;
   isBrand?: boolean;
+  hearted?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -92,13 +94,9 @@ export default function ProductCard({
 
   const handleFebandUnfev = async (id: number) => {
     const alldata = {
-      product_id: data.id,
+      product_id: data?.id ?? id,
       role: role || 3,
     };
-    console.log(`id`, data);
-
-    console.log(alldata);
-
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
       console.log("response", response);
@@ -144,7 +142,7 @@ export default function ProductCard({
               {data?.hearts || 0}
               <HeartIcon
                 className={`ml-1 size-5 ${
-                  data?.is_hearted ? "text-red-500 fill-red-500" : ""
+                  data?.is_hearted || hearted ? "text-red-500 fill-red-500" : ""
                 }`}
               />
             </Button>
