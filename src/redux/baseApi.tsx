@@ -44,6 +44,7 @@ export const api = createApi({
     "group",
     "category",
     "btb",
+    "connected",
   ],
   endpoints: () => ({}),
 });

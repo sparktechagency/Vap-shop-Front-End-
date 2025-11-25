@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useSearchQuery } from "@/redux/features/others/otherApi";
 import Namer from "@/components/core/internal/namer";
 import { toast } from "sonner";
+import { useConnectReuqestApiMutation } from "@/redux/features/Home/HomePageApi";
 
 export default function AddLocation() {
   const [searchInput, setSearchInput] = useState("");
@@ -37,7 +38,7 @@ export default function AddLocation() {
     type: "store",
     region: "",
   });
-
+  const [request, { isLoading }] = useConnectReuqestApiMutation();
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -126,8 +127,22 @@ export default function AddLocation() {
           {selectedStore && (
             <Button
               className="w-full"
-              onClick={() => {
-                toast.info("This feature is under development");
+              onClick={async () => {
+                // toast.info("This feature is under development");
+                try {
+                  const res = await request({ id: selectedStore }).unwrap();
+                  if (!res.ok) {
+                    toast.error(res?.data?.message ?? "Failed to send request");
+                    console.log(res?.data?.data?.message);
+                  } else {
+                    toast.success(
+                      res?.data?.message ?? "Sent connection request"
+                    );
+                  }
+                } catch (error) {
+                  console.log(error);
+                  toast.error("Request already sent");
+                }
               }}
             >
               Add Connected Location
