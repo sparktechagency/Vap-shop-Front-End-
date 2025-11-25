@@ -46,8 +46,7 @@ export default function WholesaleCart({
   const navig = useRouter();
   const totalItems = getCartItemCount();
   const subtotal = getCartTotal();
-  const estimatedShipping = subtotal > 10000 ? 0 : 299;
-  const total = subtotal + estimatedShipping;
+  const total = subtotal;
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
     const item = cartItems.find((item) => item.id === productId);
@@ -242,12 +241,6 @@ export default function WholesaleCart({
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>${subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Estimated Shipping</span>
-                  <span>
-                    {estimatedShipping === 0 ? "Free" : `$${estimatedShipping}`}
-                  </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold border-t pt-2">
                   <span>Total ({totalItems.toLocaleString()} items)</span>

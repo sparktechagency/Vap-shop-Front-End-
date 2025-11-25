@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import BtbProductCard from "@/components/core/btb-product-card";
 import { useMyBtbProductsQuery } from "@/redux/features/b2b/btbApi";
@@ -40,6 +39,7 @@ export default function BtBList() {
           key={i}
           show
           data={x}
+          manage
         />
       ))}
     </div>

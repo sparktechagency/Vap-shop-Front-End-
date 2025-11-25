@@ -147,6 +147,7 @@ export default function Page() {
                 isVerified
                 type="store"
                 size="xl"
+                badge={data?.data?.subscription_data}
               />
             </div>
           </div>

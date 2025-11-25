@@ -3,6 +3,12 @@ import { api } from "@/redux/baseApi";
 
 const MyApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getReviewsofMe: builder.query<any,void>({
+      query: () => ({
+        url: `/my-latest-reviews`,
+        method: "GET",
+      }),
+    }),
     getMyReviews: builder.query<any, { id: string }>({
       query: ({ id }) => ({
         url: `/user-latest-reviews?user_id=${id}`,
@@ -30,7 +36,8 @@ const MyApi = api.injectEndpoints({
     getMyMostHearted:builder.query<any, {per:number,page:number}>({
       query: ({per,page}) => ({
         url:`/product-manage?is_most_hearted=1&per_page=${per}&page=${page}`,
-      })
+      }),
+      providesTags:["fevorite"]
     }),
     getOrders:builder.query<any, void>({
       query: () => "/orders",
@@ -94,4 +101,4 @@ const MyApi = api.injectEndpoints({
 
 });
 
-export const { useGetMyReviewsQuery, useCancelCheckoutMutation, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation , useGetCheckoutsQuery,useGetCheckoutQuery} = MyApi;
+export const {useGetReviewsofMeQuery, useGetMyReviewsQuery, useCancelCheckoutMutation, useUpdateUserMutation,useUpdateAboutMutation ,useGetMyMostHeartedQuery, useGetOrdersQuery, useGetOrderQuery, useUpdateOrderStatusMutation , useGetInboxQuery, useSendInboxMutation ,useDeleteInboxMutation , useGetCheckoutsQuery,useGetCheckoutQuery} = MyApi;

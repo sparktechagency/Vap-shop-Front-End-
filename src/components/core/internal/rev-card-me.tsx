@@ -40,13 +40,13 @@ export default function LatestReviewCard({
         <Link
           className="flex items-center"
           href={
-            data.product.role === 3
-              ? `/brands/brand/product/${data?.product?.id}`
-              : `/stores/store/product/${data?.product?.id}`
+            data.user.role === 3
+              ? `/brands/brand/product/${data?.manage_products?.id}`
+              : `/stores/store/product/${data?.manage_products?.id}`
           }
         >
           <Image
-            src={data?.product.product_image ?? "/image/shop/item.jpg"}
+            src={data?.manage_products?.product_image ?? "/image/shop/item.jpg"}
             width={100}
             height={100}
             alt="icon"
@@ -54,7 +54,7 @@ export default function LatestReviewCard({
           />
           <div className="ml-4">
             <h4 className="font-semibold text-xl">
-              {data.product.product_name ?? ""}
+              {data?.manage_products?.product_name ?? ""}
             </h4>
           </div>
         </Link>
@@ -72,11 +72,11 @@ export default function LatestReviewCard({
       ) : (
         <Link
           href={
-            data?.product_user?.role === 3
-              ? `/brands/brand/${product_user?.id ?? data?.product_user?.id}`
-              : data?.product_user?.role === 5
-              ? `/stores/store/${product_user?.id ?? data?.product_user?.id}`
-              : `/profile/${product_user?.id ?? data?.product_user?.id}`
+            data?.user?.role === 3
+              ? `/brands/brand/${data?.user?.id}`
+              : data?.user?.role === 5
+              ? `/stores/store/${data?.user?.id}`
+              : `/profile/${data?.user?.id}`
           }
         >
           <div className="p-4 flex items-center gap-2 border-t border-b">

@@ -47,22 +47,18 @@ const formSchema = z.object({
   address: z.string().min(2),
   zip_code: z.string().min(2),
   region_id: z.string(),
-  latitude: z.string(),
-  longitude: z.string(),
 });
 export default function BrandEditForm({ my }: { my: UserData }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      brand_name: my?.first_name || "",
+      brand_name: my?.first_name || my?.full_name || "",
       email: my?.email || "",
       phone: my?.phone || "",
       city: my?.address?.city || "",
       address: my?.address?.address || "",
       zip_code: my?.address?.zip_code || "",
       region_id: String(my?.address?.region_id || ""),
-      latitude: String(my?.address?.latitude || ""),
-      longitude: String(my?.address?.longitude || ""),
     },
   });
 
@@ -72,14 +68,16 @@ export default function BrandEditForm({ my }: { my: UserData }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const res = await updateUser(values).unwrap();
-
+      const res = await updateUser({
+        ...values,
+        latitude: 0,
+        longitude: 0,
+      }).unwrap();
       toast.success("Store updated successfully ✅");
       console.log("Store update response:", res);
     } catch (error: any) {
       const message =
         error?.data?.message || "Something went wrong. Please try again.";
-
       toast.error(`Update failed ❌ - ${message}`);
       console.error("Update error:", error);
     }
@@ -165,11 +163,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
             )}
           />
 
-          <div className="col-span-2 space-y-2">
-            <Label>City</Label>
-            <Input placeholder="Enter your city" />
-          </div>
-
           <FormField
             control={control}
             name="zip_code"
@@ -203,34 +196,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
                       <SelectItem value="2">US</SelectItem>
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="latitude"
-            render={({ field }) => (
-              <FormItem className="hidden">
-                <FormLabel>Latitude</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="longitude"
-            render={({ field }) => (
-              <FormItem className="hidden">
-                <FormLabel>Longitude</FormLabel>
-                <FormControl>
-                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
