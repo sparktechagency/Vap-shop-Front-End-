@@ -51,7 +51,6 @@ export default function PostCreate({ id }: { id: string }) {
     if (!isLoading) {
       setValue("title", data.data.title);
       setValue("body", data.data.body);
-      // console.log(data.data);
     }
   }, [isLoading]);
   // Configuration for the Jodit Editor, memoized for performance
@@ -77,7 +76,6 @@ export default function PostCreate({ id }: { id: string }) {
       //   _method: "PUT",
       // };
       // await updateThread(finalData).unwrap();
-      // console.log(updateThread);
 
       toast.info("Under development");
       reset();

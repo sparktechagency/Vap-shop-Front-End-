@@ -1,42 +1,73 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-
-import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { IoCopySharp } from "react-icons/io5";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { HeartIcon } from "lucide-react";
+import {
+  useGetPostsByIdQuery,
+  useGetPostsQuery,
+} from "@/redux/features/users/postApi";
+import { useUser } from "@/context/userContext";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
-import { useGetProfileQuery } from "@/redux/features/AuthApi";
+import Link from "next/link";
+import Image from "next/image";
+import DOMPurify from "dompurify";
+export default function Gallery({ id }: { id: string }) {
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
 
-export default function Gallery({ id }: { id: number }) {
-  const { data, isLoading, isError, isFetching, error } =
-    useGetPostsByIdQuery<any>({
-      id,
+  const { data, isLoading, isError } = useGetPostsByIdQuery({ id });
+
+  React.useEffect(() => {
+    if (!api) return;
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
     });
-  const { data: my } = useGetProfileQuery<any>({
-    id: id,
-  });
-  if (!isLoading) {
-    if (isError) {
-      console.log(error);
-    } else {
-      console.log(data);
-    }
-  }
+  }, [api]);
 
-  if (isError) {
-    return (
-      <section className="py-6 flex items-center justify-center">
-        {error?.data?.message ?? "Something went wrong"}
-      </section>
-    );
-  }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
       {[...Array(3)].map((_, i) => (
         <Skeleton key={i} className="h-[300px] w-full" />
       ))}
+    </div>
+  );
+
+  const renderHeader = () => (
+    <div className="flex justify-end">
+      <Button asChild>
+        <Link href="/me/create-post">Upload a new post</Link>
+      </Button>
     </div>
   );
 
@@ -48,23 +79,120 @@ export default function Gallery({ id }: { id: number }) {
       </Button>
     </div>
   );
-
   const renderPosts = () =>
-    data?.data?.data?.map((post: any, index: number) => (
-      <PostCard
-        key={post.id || index}
-        user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
-        data={post}
-      />
-    ));
+    data?.data?.data
+      ?.filter((post: any) => post.post_images && post.post_images.length > 0)
+      ?.map((post: any, index: number) => (
+        <Dialog key={index}>
+          <DialogTrigger asChild>
+            <Card
+              className="w-full relative aspect-[4/5] bg-cover rounded-none"
+              style={{
+                backgroundImage: `url('${post?.post_images[0].image_path}')`,
+              }}
+            >
+              {post?.post_images?.length > 1 && (
+                <div className="top-2 right-2 absolute z-20">
+                  <div className="text-background p-2 rounded-lg bg-background/30">
+                    <IoCopySharp className="size-5" />
+                  </div>
+                </div>
+              )}
+              <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+            </Card>
+          </DialogTrigger>
+
+          <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
+            <DialogHeader className="hidden">
+              <DialogTitle />
+            </DialogHeader>
+
+            <div className="w-full flex justify-center items-center">
+              <Carousel className="w-[60dvh]" setApi={setApi}>
+                <CarouselContent>
+                  {post.post_images.map((img: any, i: number) => (
+                    <CarouselItem key={i}>
+                      <div className="p-1">
+                        <Card className="aspect-square!">
+                          <CardContent className="flex aspect-square! items-center justify-center p-0">
+                            <Image
+                              src={img?.image_path}
+                              height={600}
+                              width={400}
+                              alt={`Post image ${i + 1}`}
+                              className="w-full h-full object-cover aspect-square rounded-md"
+                            />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
+
+            <div className="flex gap-2 mt-2 w-full justify-center items-center">
+              {Array.from({ length: count }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => api?.scrollTo(i)}
+                  className={`h-2 w-2 rounded-full transition-all ${
+                    current === i + 1
+                      ? "bg-foreground w-4"
+                      : "bg-muted-foreground"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
+              <Button variant="special">
+                <HeartIcon /> {post.likes_count ?? 0}
+              </Button>
+            </DialogFooter>
+
+            <div className="border-t mt-4 pt-4">
+              <p
+                className="text-xs text-muted-foreground line-clamp-1"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    post.content || "No description available."
+                  ),
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      ));
+
+  if (isLoading) return renderSkeletons();
+  if (isError || !data?.data?.data?.length) return renderError();
 
   return (
-    <section className="p-6!">
-      <div className="my-12 space-y-6!">
-        {(isLoading || isFetching) && renderSkeletons()}
-        {isError && renderError()}
-        {!isLoading && !isError && data?.data?.data.length > 0 && renderPosts()}
+    <div className="w-full pt-2">
+      <div className="grid grid-cols-4 gap-0 relative mt-4">
+        {renderPosts()}
       </div>
-    </section>
+
+      <div className="w-full flex justify-center items-center mt-12">
+        <Pagination className="mx-auto flex justify-center items-center">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious />
+            </PaginationItem>
+            {[1].map((num) => (
+              <PaginationItem key={num}>
+                <PaginationLink>{num}</PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </div>
   );
 }

@@ -29,15 +29,11 @@ export default function Page() {
   const navigation = useRouter();
 
   const handleMapClick = (data: any) => {
-    console.log("data", data);
     navigation.push(
       `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
     );
   };
 
-  if (isError) {
-    console.log("error", error);
-  }
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">

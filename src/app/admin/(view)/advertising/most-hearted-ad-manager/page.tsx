@@ -124,7 +124,6 @@ const EditPriceModal = ({
 
   const savePricing = async () => {
     const payload = new FormData();
-    console.log({ ad_slot_id, region_id, category_id, desc });
 
     payload.append("ad_slot_id", String(ad_slot_id));
     payload.append("category_id", String(category_id));
@@ -150,7 +149,7 @@ const EditPriceModal = ({
     }
     const res = await call.json();
     toast.success(res.message ?? "");
-    console.log("API Response:", res);
+
     onClose();
   };
 

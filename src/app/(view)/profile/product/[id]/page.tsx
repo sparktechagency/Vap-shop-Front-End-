@@ -96,7 +96,6 @@ export default function Page() {
 
   const pathname = usePathname();
   const isStorePage = pathname.includes("/stores/");
-  console.log("isStorePage", isStorePage);
 
   const id = params.id;
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -119,8 +118,6 @@ export default function Page() {
       id: product?.data?.id,
     }
   );
-
-  console.log("product", product);
 
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();

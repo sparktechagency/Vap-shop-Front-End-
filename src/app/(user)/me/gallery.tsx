@@ -47,9 +47,7 @@ export default function Gallery() {
   const [likePost, { isLoading: liking }] = usePostLikeMutation();
   const { data, isLoading, isError } = useGetPostsQuery();
   const my = useUser();
-  // const [liked, setLiked] = useState<boolean>(false);
-  // const [liking, setLiking] = useState(false);
-  // const [totalLike, setTotalLike] = useState(0);
+
   const { resolvedTheme } = useTheme();
   React.useEffect(() => {
     if (!api) return;

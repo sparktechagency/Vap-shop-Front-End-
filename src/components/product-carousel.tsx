@@ -23,7 +23,7 @@ export default function ProductCarousel({
 }) {
   const [api, setApi] = useState<any>();
   const [current, setCurrent] = useState(0);
-  console.log('slides', slides);
+
   const plugin = Autoplay({ delay: 4000, stopOnInteraction: false });
 
   useEffect(() => {
@@ -86,8 +86,9 @@ export default function ProductCarousel({
         {slides?.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-2 rounded-full transition-all ${current === index ? "bg-purple-600 w-4" : "bg-gray-300"
-              }`}
+            className={`h-2 w-2 rounded-full transition-all ${
+              current === index ? "bg-purple-600 w-4" : "bg-gray-300"
+            }`}
             onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
           />

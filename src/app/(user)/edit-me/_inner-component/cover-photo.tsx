@@ -57,7 +57,6 @@ export default function CoverPhoto({ my }: { my: UserData }) {
       formData.append("cover_photo", file);
 
       const result = await updateUser(formData).unwrap();
-      console.log(result);
 
       if (!result.ok) {
         toast.error("Could not update your cover photo", {

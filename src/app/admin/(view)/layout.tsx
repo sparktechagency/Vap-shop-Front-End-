@@ -31,8 +31,6 @@ export default async function RootLayout({
 
   try {
     if (!res?.data || String(res.data.role) !== "1") {
-      console.log("not an admin");
-
       throw redirect("/login");
     }
   } catch (error) {

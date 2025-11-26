@@ -78,7 +78,6 @@ export default function Featured() {
     try {
       // Call the update mutation with the article ID and form data
       const response = await updateArtical({ id, formData }).unwrap();
-      console.log("response", response);
 
       if (response.ok) {
         toast.success(response.message || "Article updated successfully");

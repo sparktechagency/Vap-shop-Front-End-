@@ -22,9 +22,6 @@ export default function BtBList() {
       </div>
     );
   }
-  if (data) {
-    console.log(data.data[0]);
-  }
 
   return (
     <div className="grid grid-cols-4 gap-6 p-4">

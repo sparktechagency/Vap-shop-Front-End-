@@ -65,8 +65,6 @@ export default function BtbProductCard({
     return (wholesalePrice * quantity).toLocaleString();
   };
 
-  console.log(data);
-
   return (
     <Card className="!p-0 pb-6! !gap-0 shadow-sm overflow-hidden group relative">
       <div

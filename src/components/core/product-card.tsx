@@ -80,8 +80,6 @@ export default function ProductCard({
   const { data: user } = useGetOwnprofileQuery();
   const userRole = user?.data?.role;
 
-  console.log("userRole", userRole);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const origin = window.location.origin;
@@ -99,7 +97,6 @@ export default function ProductCard({
     };
     try {
       const response = await fevoriteUnveforite(alldata).unwrap();
-      console.log("response", response);
 
       if (response.ok) {
         refetchAds && refetchAds();
@@ -107,8 +104,6 @@ export default function ProductCard({
         toast.success(response.message || "Favourite successfully");
       }
     } catch (error) {
-      console.log(error);
-
       toast.error("Failed to favourite");
     }
   };

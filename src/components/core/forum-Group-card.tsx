@@ -43,22 +43,21 @@ export default function ForumGroupCard({
   // Format the creation date for display, with a fallback for missing dates
   const formattedDate = safeData.created_at
     ? new Date(safeData.created_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
     : "Unknown date";
 
   // Redux hooks for deleting a group and fetching user profile
   const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
-  console.log("user", user?.data?.role);
 
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at
     ? new Date().getTime() - new Date(safeData.created_at).getTime() <
-    7 * 24 * 60 * 60 * 1000
+      7 * 24 * 60 * 60 * 1000
     : false;
 
   // --- START: URL Construction Logic ---
@@ -91,7 +90,6 @@ export default function ForumGroupCard({
       const response = await deleteGroup({ id }).unwrap();
       if (!response.ok) throw new Error(response.message);
       if (response.ok) {
-
         toast.success(response.message || "Group deleted successfully");
         refetch?.();
       }

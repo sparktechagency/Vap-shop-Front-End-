@@ -37,9 +37,8 @@ export default function Page() {
   const [region, setRegion] = useState("");
   const { data: countries, isLoading: countriesLoading } = useCountysQuery();
 
-
   const { location } = useGoogleLocation();
-  console.log("store data ", data);
+
   if (isLoading) {
     return <LoadingScletion />;
   }

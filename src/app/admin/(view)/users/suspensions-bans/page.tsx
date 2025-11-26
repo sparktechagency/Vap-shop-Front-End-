@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import {
@@ -36,7 +36,10 @@ import Namer from "@/components/core/internal/namer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import LoadingScletion from "@/components/LoadingScletion";
-import { useGetallbandedusersQuery, useUnBanUserMutation } from "@/redux/features/admin/AdminApis";
+import {
+  useGetallbandedusersQuery,
+  useUnBanUserMutation,
+} from "@/redux/features/admin/AdminApis";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -50,7 +53,10 @@ export default function Page() {
   const [selectedUser, setSelectedUser] = React.useState<number | null>(null);
   const per_page = 8;
 
-  const { data, isLoading, refetch } = useGetallbandedusersQuery({ page, per_page });
+  const { data, isLoading, refetch } = useGetallbandedusersQuery({
+    page,
+    per_page,
+  });
   const [unBanUser, { isLoading: isUnBanning }] = useUnBanUserMutation();
 
   const handleUnbanUser = async (userId: number) => {
@@ -62,8 +68,11 @@ export default function Page() {
     if (!selectedUser) return;
 
     try {
-      const res = await unBanUser({ id: selectedUser, _method: "PUT" }).unwrap();
-      console.log('res', res);
+      const res = await unBanUser({
+        id: selectedUser,
+        _method: "PUT",
+      }).unwrap();
+
       if (res?.ok) {
         setOpenUnbanDialog(false);
         setOpenSuccessDialog(true);
@@ -72,7 +81,7 @@ export default function Page() {
     } catch (error) {
       setOpenUnbanDialog(false);
       setOpenErrorDialog(true);
-      console.error('Error unbanning user:', error);
+      console.error("Error unbanning user:", error);
     } finally {
       setSelectedUser(null);
     }
@@ -134,7 +143,8 @@ export default function Page() {
           <DialogHeader>
             <DialogTitle>Confirm Unban</DialogTitle>
             <DialogDescription>
-              Are you sure you want to unban this user? They will regain full access to their account.
+              Are you sure you want to unban this user? They will regain full
+              access to their account.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -253,7 +263,7 @@ export default function Page() {
                             className="object-cover"
                           />
                           <AvatarFallback>
-                            {user.full_name?.charAt(0) || 'U'}
+                            {user.full_name?.charAt(0) || "U"}
                           </AvatarFallback>
                         </Avatar>
                         <div className="">
@@ -303,11 +313,9 @@ export default function Page() {
                             variant="outline"
                             disabled={isUnBanning}
                           >
-                            {isUnBanning && selectedUser === user.id ? (
-                              "Processing..."
-                            ) : (
-                              "Remove User Ban"
-                            )}
+                            {isUnBanning && selectedUser === user.id
+                              ? "Processing..."
+                              : "Remove User Ban"}
                           </Button>
                         </div>
                       </div>
@@ -339,7 +347,6 @@ export default function Page() {
                     e.preventDefault();
                     if (page > 1) setPage(page - 1);
                   }}
-
                 />
               </PaginationItem>
               {Array.from({ length: paginationInfo.last_page || 1 }, (_, i) => (
@@ -361,9 +368,9 @@ export default function Page() {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (page < (paginationInfo.last_page || 1)) setPage(page + 1);
+                    if (page < (paginationInfo.last_page || 1))
+                      setPage(page + 1);
                   }}
-
                 />
               </PaginationItem>
             </PaginationContent>

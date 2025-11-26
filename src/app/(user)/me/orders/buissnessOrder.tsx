@@ -75,9 +75,6 @@ export default function BuissnessOrder() {
         id,
         body: { _method: "PUT", status: x },
       }).unwrap();
-      console.log("--------------------");
-
-      console.log(call);
 
       if (call?.ok) {
         toast.success(`Order ${x} successfully`);

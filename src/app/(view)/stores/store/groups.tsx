@@ -26,9 +26,21 @@ const diffData = {
   date: "May 28, 202",
 };
 export default function Groups({ id }: any) {
-  const { data: groupData, isLoading, isError, error } = useStoreGroupListQuery(id as any);
-  console.log('groupData', groupData);
-  if (isLoading) return <div className=" !my-6">{[...Array(4)].map((_, i) => (<Skeleton key={i} className="h-64 w-full rounded-lg mb-4" />))}</div>
+  const {
+    data: groupData,
+    isLoading,
+    isError,
+    error,
+  } = useStoreGroupListQuery(id as any);
+
+  if (isLoading)
+    return (
+      <div className=" !my-6">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-64 w-full rounded-lg mb-4" />
+        ))}
+      </div>
+    );
   return (
     <div className="!mt-12">
       <Card className="gap-0 !pt-0 overflow-hidden">
@@ -49,11 +61,11 @@ export default function Groups({ id }: any) {
             </SelectContent>
           </Select> */}
         </CardHeader>
-        {groupData ? groupData?.data?.data.map((item: any, index: number) => (
-          <ForumCard
-            key={index}
-            data={
-              {
+        {groupData ? (
+          groupData?.data?.data.map((item: any, index: number) => (
+            <ForumCard
+              key={index}
+              data={{
                 id: item.id,
                 title: item.title,
                 description: item.description,
@@ -63,16 +75,14 @@ export default function Groups({ id }: any) {
                 threads_count: item.total_threads,
                 total_threads: item.total_threads,
                 total_comments: item.total_comments,
-              }
-            }
-          />
-        )) : (
+              }}
+            />
+          ))
+        ) : (
           <div>
             <h1 className="text-2xl font-semibold">No Groups</h1>
           </div>
-        )
-        }
-
+        )}
       </Card>
     </div>
   );

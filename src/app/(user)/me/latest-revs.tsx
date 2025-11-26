@@ -15,9 +15,6 @@ export default function LatestRevs() {
     id,
   });
   const reviews = data?.data;
-  if (data) {
-    console.log(data);
-  }
 
   if (isLoading) {
     return (

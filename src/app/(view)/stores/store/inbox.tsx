@@ -26,10 +26,6 @@ export default function Inbox({ storeId }: { storeId: any }) {
   const { data: me } = useGetOwnprofileQuery();
   const { id } = me?.data;
   const { data, isLoading, refetch } = useGetInboxQuery({ id });
-  if (!isLoading) {
-    console.log(data);
-  }
-  console.log(storeId);
 
   return (
     <div className="!p-6">

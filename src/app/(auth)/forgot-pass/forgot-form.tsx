@@ -39,7 +39,6 @@ export function ForgotForm({
 
     try {
       const response = await resendOtp(formdata).unwrap();
-      console.log("Resend OTP response:", response);
       if (response.ok) {
         toast.success(response.message || "OTP sent successfully!");
         // Redirect to verify-otp page with email in query params

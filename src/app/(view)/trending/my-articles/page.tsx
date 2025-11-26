@@ -25,10 +25,9 @@ export default function MyArticles() {
     page: currentPage.toString(),
     per_page: "10",
   });
-  console.log("data", data);
+
   if (isLoading) return <LoadingSkeleton />;
   if (isError) {
-    console.log(error, "error");
   }
   if (!data?.data?.data?.length)
     return (
@@ -87,7 +86,6 @@ export default function MyArticles() {
               me
             />
           ))}
-         
         </div>
       </div>
 

@@ -39,7 +39,13 @@ const reviewSchema = z.object({
 
 type ReviewFormValues = z.infer<typeof reviewSchema>;
 
-export default function ReviewPost({ productId, role }: { productId: string, role: number }) {
+export default function ReviewPost({
+  productId,
+  role,
+}: {
+  productId: string;
+  role: number;
+}) {
   const [reviewAdd] = usePostReviewMutation();
 
   // 2. Form hook
@@ -60,7 +66,7 @@ export default function ReviewPost({ productId, role }: { productId: string, rol
         role: role,
         product_id: productId,
       }).unwrap();
-      console.log('reviewAdded', reviewAdded);
+
       if (!reviewAdded.ok) {
         toast.error("Review Submit Failed!");
       } else {

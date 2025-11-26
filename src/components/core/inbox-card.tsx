@@ -157,7 +157,7 @@ export default function InboxCard({
                         message,
                         parent_id: data.id,
                       };
-                      console.log(finalizer);
+
                       try {
                         const res = await sendInbox(finalizer).unwrap();
                         if (!res.ok) {

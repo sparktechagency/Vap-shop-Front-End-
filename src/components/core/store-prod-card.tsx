@@ -17,11 +17,10 @@ interface StoreProdCardProps {
 
 export default function StoreProdCard({ data, refetch }: StoreProdCardProps) {
   const [fevoritestore, { isLoading }] = useFevoritestoreMutation();
-  console.log("single store", data);
+
   const handleFavorite = async (id: string) => {
     try {
       const response = await fevoritestore({ favourite_id: id }).unwrap();
-      console.log("response", response);
       toast.success(response.message || "Favorite status updated");
       refetch?.(); // Only call refetch if it exists
     } catch (error) {

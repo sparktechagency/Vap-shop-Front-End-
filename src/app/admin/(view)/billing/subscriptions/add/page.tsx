@@ -49,7 +49,6 @@ export default function Page() {
         .map((feature) => feature.name)
         .filter((name) => name.trim() !== ""),
     };
-    console.log(submissionData);
   }
 
   const addFeature = () => {

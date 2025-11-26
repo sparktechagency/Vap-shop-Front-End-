@@ -29,7 +29,6 @@ export default function Page() {
   const navigation = useRouter();
 
   const handleMapClick = (data: any) => {
-    console.log("data", data);
     navigation.push(
       `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
     );
