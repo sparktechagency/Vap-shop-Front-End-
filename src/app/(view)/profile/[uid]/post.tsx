@@ -18,13 +18,6 @@ export default function Post({ user: my }: { user: UserData }) {
     useGetPostsByIdQuery<any>({
       id: id,
     });
-  if (!isLoading) {
-    if (isError) {
-      console.log(error);
-    } else {
-      console.log(data);
-    }
-  }
 
   if (isError) {
     return (
@@ -67,9 +60,6 @@ export default function Post({ user: my }: { user: UserData }) {
       />
     ));
 
-  if (data) {
-    console.log(data.data.data);
-  }
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">

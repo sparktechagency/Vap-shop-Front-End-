@@ -75,7 +75,7 @@ export default function AdProductsPage() {
         type: "featured",
         is_active: "1",
       }).unwrap();
-      console.log("response", response);
+
       if (response?.ok) {
         toast.success("Ad approved successfully");
         refetch();

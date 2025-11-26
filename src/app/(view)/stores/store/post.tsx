@@ -17,13 +17,6 @@ export default function Post({ id }: { id: number }) {
   const { data: my } = useGetProfileQuery<any>({
     id: id,
   });
-  if (!isLoading) {
-    if (isError) {
-      console.log(error);
-    } else {
-      console.log(data);
-    }
-  }
 
   if (isError) {
     return (

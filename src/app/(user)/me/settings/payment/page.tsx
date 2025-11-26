@@ -46,7 +46,6 @@ export default function PaymentGatewayForm() {
   });
 
   async function onSubmit(values: PaymentGatewayFormData) {
-    console.log(values);
     try {
       const res = await updateKeys(values).unwrap();
       if (!res.ok) {

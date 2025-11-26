@@ -6,6 +6,7 @@ import {
   ArrowBigUp,
   Edit3Icon,
   HeartIcon,
+  Loader2Icon,
   MessageCircle,
   Share2,
   Trash2Icon,
@@ -152,13 +153,18 @@ export default function PostCard({
             <AvatarImage src={user.avatar} />
             <AvatarFallback>IA</AvatarFallback>
           </Avatar>
-          {user.name}
+          {user.name}{" "}
+          {/* {user?.subscription_data?.map((x) => (
+            <Badge variant={x.type === "hemp" ? "success" : "special"}>
+              {x.badge}
+            </Badge>
+          ))} */}
         </Link>
       </div>
-      {data.is_in_gallery && (
+      {!!data.is_in_gallery && (
         <Dialog>
           <DialogTrigger
-            className={cn("hidden", !data.is_in_gallery && "hidden")}
+            className={cn(!data.is_in_gallery && "hidden")}
             asChild
           >
             <Card
@@ -178,7 +184,7 @@ export default function PostCard({
             </Card>
           </DialogTrigger>
 
-          <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0! hidden">
+          <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
             <DialogHeader className="hidden">
               <DialogTitle />
             </DialogHeader>
@@ -224,17 +230,69 @@ export default function PostCard({
             </div>
 
             <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
-              <Button variant="special">
-                <HeartIcon /> {data?.likes_count ?? 0}
+              <Button
+                variant="special"
+                onClick={async () => {
+                  try {
+                    const res = await likePost({ id: data.id }).unwrap();
+
+                    if (!res.ok) {
+                      throw new Error("Failed to update like status.");
+                    }
+
+                    toast.success(
+                      `${!data.is_post_liked ? "Liked" : "Unliked"} post!`
+                    );
+                    // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
+                  } catch (err: any) {
+                    // Revert optimistic update
+                    // setLiked(!nextLiked);
+                    // setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
+
+                    toast.error(
+                      err?.data?.message ||
+                        "Something went wrong. Please try again."
+                    );
+                    console.error("Like error:", err);
+                  }
+                }}
+                className="text-xs h-8 !px-3"
+                disabled={liking}
+              >
+                <HeartIcon
+                  className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
+                  fill={
+                    data.is_post_liked
+                      ? resolvedTheme === "dark"
+                        ? "#ffffff"
+                        : "#dc2626"
+                      : "transparent"
+                  }
+                />
+                {liking && <Loader2Icon className="animate-spin" />}
+                {data.like_count}
               </Button>
             </DialogFooter>
+
+            {/* <div className="border-t mt-4 pt-4">
+            <p
+              className="text-xs text-muted-foreground line-clamp-1"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(
+                  data.content || "No description available."
+                ),
+              }}
+            />
+          </div> */}
           </DialogContent>
         </Dialog>
       )}
+
       <div
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.content) }}
       />
+      {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
         <div className="!space-x-2">
           <Button

@@ -41,9 +41,6 @@ export default function Announcement({ id }: { id: number }) {
       />
     ));
 
-  if (data) {
-    console.log(data.data.data);
-  }
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">

@@ -14,9 +14,6 @@ export default function Feed({ my }: { my: UserData }) {
   const { id } = my;
   const { data, isLoading, isError, isFetching } = useGetUserFeedQuery({ id });
 
-  if (my) {
-    console.log(my);
-  }
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
       {[...Array(3)].map((_, i) => (
@@ -46,9 +43,6 @@ export default function Feed({ my }: { my: UserData }) {
       />
     ));
 
-  if (data) {
-    console.log(data.data.data);
-  }
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">

@@ -16,9 +16,6 @@ export default function Groups({ user }: { user: UserData }) {
   const my = user;
   const { data, isLoading } = useGetDashboardForumQuery({ id: my.id });
 
-  if (!isLoading) {
-    console.log(data);
-  }
   return (
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">

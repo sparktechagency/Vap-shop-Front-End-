@@ -163,7 +163,6 @@ export default function Page() {
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
     useUnfollowBrandMutation();
-  console.log("product", product);
 
   const getFAQAccordionItems = (): AccordionItemType[] => {
     if (!product?.data?.product_faqs?.length) return [];
@@ -185,7 +184,6 @@ export default function Page() {
   const handleFollow = async (id: string) => {
     try {
       const response = await followOrUnfollowBrand(id).unwrap();
-      console.log("Toggled follow/unfollow for brand:", response);
       if (response.ok) {
         toast.success(response.message || "Followed successfully");
         refetch();
@@ -199,7 +197,6 @@ export default function Page() {
   const handleUnfollow = async (id: string) => {
     try {
       const response = await unfollowBrand(id).unwrap();
-      console.log("Toggled follow/unfollow for brand:", response);
       if (response.ok) {
         toast.success(response.message || "Unfollowed successfully");
         refetch();
@@ -292,7 +289,6 @@ export default function Page() {
     return updatedAccordionData;
   };
 
-  console.log("product", product);
   if (!product) {
     return (
       <div className="flex justify-center items-center h-screen">

@@ -18,7 +18,6 @@ import { Badge } from "@/components/ui/badge";
 import { useUpdateinteractionMutation } from "@/redux/features/admin/AdminApis";
 import { useGetPostByIdQuery } from "@/redux/features/users/postApi";
 
-
 type UpvoteFormValues = {
   postIdInput: string; // Changed name to indicate it accepts ID or URL
   upvoteCount: number;
@@ -35,13 +34,13 @@ const extractId = (input: string | undefined): string | null => {
     const match = input.match(/\/(\d+)(\?|$)/); // Matches number before ? or end of string
     return match ? match[1] : null;
   } catch (e) {
-    console.log('e', e);
     return null;
   }
 };
 
 export default function Upvote() {
-  const [updateInteraction, { isLoading: isUpdating }] = useUpdateinteractionMutation();
+  const [updateInteraction, { isLoading: isUpdating }] =
+    useUpdateinteractionMutation();
 
   const form = useForm<UpvoteFormValues>({
     defaultValues: {
@@ -57,10 +56,7 @@ export default function Upvote() {
   const extractedId = useMemo(() => extractId(watchedInput), [watchedInput]);
 
   // 3. AUTO-FETCH: Fetch Post Details
-  const {
-    data: postData,
-    isLoading: isFetchingPost
-  } = useGetPostByIdQuery(
+  const { data: postData, isLoading: isFetchingPost } = useGetPostByIdQuery(
     { id: String(extractedId) },
     {
       skip: !extractedId,
@@ -80,7 +76,7 @@ export default function Upvote() {
         metric_type: "upvote",
         count: Number(values.upvoteCount),
       }).unwrap();
-      console.log('response', response);
+
       const postTitle = postData?.data?.title || "Post";
       toast.success(`Upvotes updated successfully for "${postTitle}"`);
       form.reset({
@@ -98,11 +94,12 @@ export default function Upvote() {
   return (
     <>
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Manage Upvotes</h2>
-      <p className="text-gray-600 mb-6">Easily update upvotes (likes) of posts.</p>
+      <p className="text-gray-600 mb-6">
+        Easily update upvotes (likes) of posts.
+      </p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -111,7 +108,10 @@ export default function Upvote() {
                 <FormItem>
                   <FormLabel>Post ID or URL</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g. 2 or https://.../post/2" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. 2 or https://.../post/2"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,14 +157,23 @@ export default function Upvote() {
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={post.user?.avatar} />
-                        <AvatarFallback>{post.user?.full_name?.[0]}</AvatarFallback>
+                        <AvatarFallback>
+                          {post.user?.full_name?.[0]}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{post.user?.full_name}</p>
-                        <p className="text-xs text-gray-500">{post.user?.role_label}</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {post.user?.full_name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {post.user?.role_label}
+                        </p>
                       </div>
                     </div>
-                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-600">
+                    <Badge
+                      variant="secondary"
+                      className="bg-indigo-50 text-indigo-600"
+                    >
                       👍 {post.like_count} Likes
                     </Badge>
                   </div>
@@ -176,7 +185,8 @@ export default function Upvote() {
                   </p>
 
                   <div className="mt-2 text-xs text-gray-400">
-                    Post ID: {post.id} • Created: {new Date(post.created_at).toLocaleDateString()}
+                    Post ID: {post.id} • Created:{" "}
+                    {new Date(post.created_at).toLocaleDateString()}
                   </div>
                 </div>
               </div>
@@ -185,7 +195,8 @@ export default function Upvote() {
             {/* Error/Empty State */}
             {!isFetchingPost && extractedId && !post && (
               <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm flex items-center gap-2">
-                <span>⚠️</span> No Post found with ID: <strong>{extractedId}</strong>
+                <span>⚠️</span> No Post found with ID:{" "}
+                <strong>{extractedId}</strong>
               </div>
             )}
           </div>

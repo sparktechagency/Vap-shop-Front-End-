@@ -62,7 +62,6 @@ export default function Page() {
   const onSubmit = async (data: PasswordFormType) => {
     try {
       const res: any = await updatePassword(data);
-      console.log(res);
 
       if (res.data.ok) {
         toast.success(res.data.message);
@@ -123,7 +122,9 @@ export default function Page() {
               <div className="flex items-start gap-4">
                 <div className="flex-1 space-y-3 flex w-full justify-between items-center">
                   <h3 className="font-semibold h-full">
-                    {my.role === 2 ? "Need Payment Processing to Accept Donations?" : "Need Payment Processing?"}
+                    {my.role === 2
+                      ? "Need Payment Processing to Accept Donations?"
+                      : "Need Payment Processing?"}
                   </h3>
                   <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between items-center">
                     <div className=""></div>

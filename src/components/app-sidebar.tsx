@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
-console.log("");
-
 // This is sample data.
 const data = {
   user: {
@@ -185,7 +183,6 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: usrData } = useGetOwnprofileQuery();
-  console.log("admin", usrData?.data);
 
   return (
     <Sidebar collapsible="icon" {...props}>

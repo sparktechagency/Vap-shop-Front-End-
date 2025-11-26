@@ -7,7 +7,6 @@ import BuissnessSub from "./buissness-sub";
 export default async function Subsc() {
   const token = (await cookies()).get("token")?.value;
   const my = await howl({ link: "me", token });
-  console.log(my.data.role);
 
   if (my.data.role === 6) {
     return <MemberSub />;

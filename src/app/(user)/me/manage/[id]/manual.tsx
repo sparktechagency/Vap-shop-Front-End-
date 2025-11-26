@@ -107,8 +107,6 @@ export default function ProductForm({ prod }: { prod: any }) {
 
   useEffect(() => {
     if (!prod || !cats?.data) return;
-    console.log(prod.product_discount);
-    console.log(prod.product_discount === "0.00%");
     setImageurl(prod?.product_image_url ?? null);
     form.reset({
       product_name: String(prod.product_name ?? ""),
@@ -191,11 +189,6 @@ export default function ProductForm({ prod }: { prod: any }) {
       formData.append("_method", "PUT");
       let res;
       try {
-        Object.entries(data).forEach(([key, value]) => {
-          console.log("Key:", key);
-          console.log("Value:", value);
-        });
-
         res = await updateProduct({
           body: formData,
           id: String(prod.id),

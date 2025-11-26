@@ -34,7 +34,6 @@ export function LoginForm({
 
     try {
       const response = await login({ email, password }).unwrap();
-      console.log("login response", response);
       if (response.ok) {
         toast.success(response.message || "Login successful");
         setCookie("token", response.data.access_token);

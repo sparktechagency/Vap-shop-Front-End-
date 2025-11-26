@@ -123,7 +123,6 @@ export default function Page() {
                             id: x.id,
                             status: "accepted",
                           });
-                          console.log(x.id);
 
                           if (!res.ok) {
                             toast.error(

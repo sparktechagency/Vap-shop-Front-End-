@@ -62,13 +62,12 @@ export default function ArticleCard({
   me?: boolean;
 }) {
   const pathname = usePathname();
-  console.log("pathnanme", pathname);
+
   const isMyarticalPage = pathname.includes("my-articles");
   const { data: user } = useGetOwnprofileQuery();
   const router = useRouter();
   const isAdmin = user?.data?.role === 1;
 
-  console.log("articleFrom article card", article);
   const [delteArtical] = useDelteArticalMutation();
   const [copied, setCopied] = useState(false);
   const articleUrl = `${window.location.origin}/trending/article/${article.id}`;
@@ -121,7 +120,6 @@ export default function ArticleCard({
     );
     if (!confirmed) return;
 
-    console.log("article id", articleId);
     try {
       const response = await delteArtical({ id: articleId }).unwrap();
 

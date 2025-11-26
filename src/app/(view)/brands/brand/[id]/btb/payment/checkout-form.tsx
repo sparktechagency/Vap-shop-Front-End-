@@ -103,7 +103,6 @@ export default function CheckoutForm() {
 
   useEffect(() => {
     const cartData = localStorage.getItem("btbCart");
-    console.log(cartData);
 
     if (cartData) {
       setCart(JSON.parse(cartData));
@@ -211,10 +210,8 @@ export default function CheckoutForm() {
 
     try {
       const checkoutData = prepareCheckoutData();
-      console.log("Submitting Checkout Data:", checkoutData);
 
       const response = await checkout(prepareCheckoutData()).unwrap();
-      console.log(response);
 
       if (!response.ok) {
         throw new Error("Failed to process checkout");
@@ -244,8 +241,6 @@ export default function CheckoutForm() {
       localStorage.removeItem("btbCart");
       navig.push("store/stores");
     } catch (error: any) {
-      console.log(error);
-
       toast.error(
         error.data.message ?? "Failed to submit order. Please try again."
       );

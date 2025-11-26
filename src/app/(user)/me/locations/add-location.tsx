@@ -133,14 +133,12 @@ export default function AddLocation() {
                   const res = await request({ id: selectedStore }).unwrap();
                   if (!res.ok) {
                     toast.error(res?.data?.message ?? "Failed to send request");
-                    console.log(res?.data?.data?.message);
                   } else {
                     toast.success(
                       res?.data?.message ?? "Sent connection request"
                     );
                   }
                 } catch (error) {
-                  console.log(error);
                   toast.error("Request already sent");
                 }
               }}

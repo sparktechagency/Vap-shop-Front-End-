@@ -16,9 +16,6 @@ export default function LatestRevs({ user }: { user: UserData }) {
     id: user.id,
   });
   const reviews = data?.data;
-  if (data) {
-    console.log(data);
-  }
 
   if (isLoading) {
     return (

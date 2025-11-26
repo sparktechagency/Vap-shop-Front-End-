@@ -20,9 +20,7 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
   const [updateUser] = useUpdateUserMutation();
 
   const [localAvatar, setLocalAvatar] = useState<string | null>(null);
-  // useEffect(() => {
-  //   console.log(my);
-  // }, []);
+
   useEffect(() => {
     return () => {
       // Cleanup blob URL if any

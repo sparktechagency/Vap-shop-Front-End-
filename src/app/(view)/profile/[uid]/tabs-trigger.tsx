@@ -24,10 +24,6 @@ export default function TabsTriggerer() {
 
   const { data: user, isLoading } = useGetProfileQuery({ id });
 
-  if (!isLoading) {
-    console.log(user);
-  }
-
   return (
     <div className="!py-10 lg:!p-10">
       <Tabs defaultValue="top-stores">

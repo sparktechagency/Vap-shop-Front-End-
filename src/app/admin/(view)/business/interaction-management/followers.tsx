@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -20,7 +18,6 @@ import { toast } from "sonner";
 import { useUpdateinteractionMutation } from "@/redux/features/admin/AdminApis";
 import { useGetProfileQuery } from "@/redux/features/AuthApi";
 
-
 type FollowersFormValues = {
   targetType: string;
   profileUrl: string;
@@ -36,11 +33,12 @@ const extractIdFromUrl = (url: string | undefined): string | null => {
 
 export default function Followers() {
   // FIX 2: Fixed hook name casing
-  const [updateInteraction, { isLoading: isUpdating }] = useUpdateinteractionMutation();
+  const [updateInteraction, { isLoading: isUpdating }] =
+    useUpdateinteractionMutation();
 
   const form = useForm<FollowersFormValues>({
     defaultValues: {
-      targetType: '',
+      targetType: "",
       profileUrl: "",
       followerCount: 0,
     },
@@ -51,17 +49,15 @@ export default function Followers() {
 
   // 2. EXTRACT: Get ID immediately when URL changes
   const extractedId = useMemo(() => extractIdFromUrl(watchedUrl), [watchedUrl]);
-  console.log('id', extractedId);
+
   // 3. AUTO-FETCH: Automatically triggers when 'extractedId' is available
-  const { data: userProfile, isLoading: isFetchingProfile } = useGetProfileQuery(
-    { id: extractedId },
-    {
-      skip: !extractedId, // Skips the API call if no ID is found
-    }
-  );
-
-
-  console.log('userporfile', userProfile);
+  const { data: userProfile, isLoading: isFetchingProfile } =
+    useGetProfileQuery(
+      { id: extractedId },
+      {
+        skip: !extractedId, // Skips the API call if no ID is found
+      }
+    );
 
   const onSubmit = async (values: FollowersFormValues) => {
     if (!extractedId) {
@@ -70,20 +66,13 @@ export default function Followers() {
     }
 
     try {
-
-      console.log('Submitting update with values:', {
-        target_id: extractedId, // Use the extracted ID
-        target_type: values.targetType,
-        metric_type: "follower",
-        count: Number(values.followerCount)
-      });
       const response = await updateInteraction({
         target_id: Number(extractedId), // Use the extracted ID
         target_type: "user",
         metric_type: "follower",
         count: Number(values.followerCount),
       }).unwrap();
-      console.log('response', response);
+
       const userName = userProfile?.data?.full_name || "User";
       toast.success(`Followers updated successfully for ${userName}`);
       form.reset({
@@ -106,14 +95,13 @@ export default function Followers() {
         Manage Followers
       </h2>
       <p className="text-gray-600 mb-6">
-        Paste a profile link to auto-preview the user, then set their follower count.
+        Paste a profile link to auto-preview the user, then set their follower
+        count.
       </p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
             <FormField
               control={form.control}
               name="profileUrl"
@@ -138,22 +126,13 @@ export default function Followers() {
                 <FormItem>
                   <FormLabel>Follower Count</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="e.g. 1500"
-                    />
+                    <Input {...field} type="number" placeholder="e.g. 1500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-
-
           </div>
-
-
 
           {/* --- AUTOMATIC PREVIEW SECTION --- */}
           <div className="min-h-[90px] transition-all duration-300">
@@ -190,7 +169,12 @@ export default function Followers() {
                   <div className="text-sm text-gray-500 flex items-center gap-3">
                     <span>{user.role_label}</span>
                     <span className="text-gray-300">|</span>
-                    <span>Current Followers: <strong className="text-gray-700">{user.total_followers}</strong></span>
+                    <span>
+                      Current Followers:{" "}
+                      <strong className="text-gray-700">
+                        {user.total_followers}
+                      </strong>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -199,7 +183,8 @@ export default function Followers() {
             {/* Error/Empty State */}
             {!isFetchingProfile && extractedId && !user && (
               <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm flex items-center gap-2">
-                <span>⚠️</span> No user found with ID: <strong>{extractedId}</strong>
+                <span>⚠️</span> No user found with ID:{" "}
+                <strong>{extractedId}</strong>
               </div>
             )}
           </div>

@@ -57,17 +57,6 @@ export default function MemberOrder() {
     setIsModalOpen(true);
   };
 
-  if (data) {
-    console.log(data.data);
-    // return <></>;
-  }
-
-  if (error) {
-    console.log(error);
-  }
-  if (!isLoading && !isError) {
-    console.log(data);
-  }
   if (isError) {
     return (
       <div className="!p-6">

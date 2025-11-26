@@ -85,8 +85,6 @@ export default function StoreRegister({
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-
   const onSubmit = async (data: StoreRegisterFormData) => {
     if (!data.terms) {
       toast.error("Please accept the terms and conditions");
@@ -111,8 +109,6 @@ export default function StoreRegister({
         role: data.role,
         ein: data.ein,
       };
-
-      console.log("formdata", formattedData);
 
       const response = await register(formattedData).unwrap();
       if (response?.ok) {
@@ -356,11 +352,9 @@ export default function StoreRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-
                       <button onClick={() => setIsModalOpen(true)}>
                         terms and conditions
                       </button>
-
                     </Label>
                   </div>
                   {errors.terms && (

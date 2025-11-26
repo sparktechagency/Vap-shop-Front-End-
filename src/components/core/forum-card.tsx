@@ -59,7 +59,6 @@ export default function ForumCard({
   const [deleteGroup, { isLoading }] = useDeleteGroupMutation();
   const { data: user } = useGetOwnprofileQuery();
   const token = Cookies.get("token");
-  console.log("user", user?.data?.role);
 
   // Determine if the group is new (created within the last 7 days)
   const isNew = safeData.created_at

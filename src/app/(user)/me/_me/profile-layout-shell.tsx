@@ -27,7 +27,7 @@ export default async function ProfileLayoutShell({
   const call = await howl({ link: "me", token });
 
   const my: UserData = call.data;
-  console.log("my:", my);
+
   function getNavs(role: number) {
     switch (role) {
       case 2:

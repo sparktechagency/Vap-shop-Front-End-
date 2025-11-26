@@ -34,7 +34,6 @@ export default function Page() {
   const Userrole = data?.data?.role;
 
   const user = brandDetails?.data?.user;
-  console.log(user);
 
   const handleShare = () => {
     if (navigator.share) {

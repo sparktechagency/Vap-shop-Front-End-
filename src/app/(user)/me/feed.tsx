@@ -11,10 +11,7 @@ import { useGetFeedQuery } from "@/redux/features/users/postApi";
 
 export default function Feed() {
   const { data, isLoading, isError, isFetching } = useGetFeedQuery();
-  console.log("data", data);
-  if (data) {
-    console.log(data);
-  }
+
   const renderSkeletons = () => (
     <div className="flex flex-col gap-6">
       {[...Array(3)].map((_, i) => (
@@ -52,9 +49,6 @@ export default function Feed() {
       />
     ));
 
-  if (data) {
-    console.log(data.data.data);
-  }
   return (
     <section className="p-6!">
       <div className="my-12 space-y-6!">

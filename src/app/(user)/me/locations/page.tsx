@@ -155,7 +155,7 @@ const Subscription = () => {
     useGetSubscriptionDetailsQuery({ type: "store" });
   // --- Memoized Data Extraction ---
   const subscription = subscriptionDetails?.data?.[0];
-  console.log(subscriptionDetails);
+
   if (isLoadingSubscription) {
     return (
       <div className="py-12 flex justify-center items-center">

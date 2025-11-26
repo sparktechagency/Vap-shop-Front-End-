@@ -14,8 +14,6 @@ import {
 import { useGetWholesalerProdByIdQuery } from "@/redux/features/Trending/TrendingApi";
 
 export default function Catalog({ id, role }: any) {
-  console.log("id", id);
-
   const [page, setPage] = React.useState(1);
   const per_page = 12;
 
@@ -27,16 +25,6 @@ export default function Catalog({ id, role }: any) {
     refetch,
   } = useGetWholesalerProdByIdQuery({ id, per_page, page });
 
-
-  console.log('brandDetails', brandDetails);
-
-
-  if (!isBrandLoading) {
-    console.log(brandDetails);
-  }
-  if (isError) {
-    console.log(error);
-  }
   const totalPages = brandDetails?.products?.last_page || 1;
   const products =
     brandDetails?.products?.data || brandDetails?.data?.products?.data || [];

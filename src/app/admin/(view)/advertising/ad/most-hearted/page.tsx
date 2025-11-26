@@ -225,8 +225,6 @@ export default function AdProductsPage() {
     type: "products",
   });
 
-  console.log("data", data);
-
   const [approveAdd, { isLoading: isApproving }] = useApproveAddMutation();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -274,8 +272,6 @@ export default function AdProductsPage() {
         filterStatus === "all" || ad.status === filterStatus;
       return matchesSearch && matchesStatus;
     }) || [];
-
-  console.log("filteredProducts", filteredProducts);
 
   if (isLoading) {
     return (

@@ -5,8 +5,6 @@ import TabsTriggerer from "./tabs-trigger";
 export default function Page() {
   const searched = useSearchParams();
 
-  console.log(searched.get("type"));
-
   return (
     <main className="">
       <TabsTriggerer />
