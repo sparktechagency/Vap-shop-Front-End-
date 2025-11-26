@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
