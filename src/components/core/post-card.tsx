@@ -93,7 +93,6 @@ export default function PostCard({
 
   useEffect(() => {
     if (data) {
-      console.log("Like count: ", data?.like_count);
       setTotalLike(data?.like_count);
       setLiked(data?.is_post_liked);
     }
@@ -153,18 +152,13 @@ export default function PostCard({
             <AvatarImage src={user.avatar} />
             <AvatarFallback>IA</AvatarFallback>
           </Avatar>
-          {user.name}{" "}
-          {/* {user?.subscription_data?.map((x) => (
-            <Badge variant={x.type === "hemp" ? "success" : "special"}>
-              {x.badge}
-            </Badge>
-          ))} */}
+          {user.name}
         </Link>
       </div>
       {data.is_in_gallery && (
         <Dialog>
           <DialogTrigger
-            className={cn(!data.is_in_gallery && "hidden")}
+            className={cn("hidden", !data.is_in_gallery && "hidden")}
             asChild
           >
             <Card
@@ -184,7 +178,7 @@ export default function PostCard({
             </Card>
           </DialogTrigger>
 
-          <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
+          <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0! hidden">
             <DialogHeader className="hidden">
               <DialogTitle />
             </DialogHeader>
@@ -234,26 +228,13 @@ export default function PostCard({
                 <HeartIcon /> {data?.likes_count ?? 0}
               </Button>
             </DialogFooter>
-
-            {/* <div className="border-t mt-4 pt-4">
-            <p
-              className="text-xs text-muted-foreground line-clamp-1"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  data.content || "No description available."
-                ),
-              }}
-            />
-          </div> */}
           </DialogContent>
         </Dialog>
       )}
-
       <div
         className="!p-4 text-sm text-muted-foreground leading-relaxed"
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.content) }}
       />
-      {/* Footer */}
       <div className="border-t !p-2 flex flex-row justify-between items-center bg-secondary">
         <div className="!space-x-2">
           <Button
