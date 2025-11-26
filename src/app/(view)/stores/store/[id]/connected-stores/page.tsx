@@ -43,7 +43,7 @@ export default function Page() {
     isError: locationError,
     error: locErr,
   } = useConnectListApiQuery({ id: id as string });
-  console.log(data?.data);
+
   const navigation = useRouter();
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
@@ -79,12 +79,7 @@ export default function Page() {
         });
     }
   };
-  if (locations) {
-    console.log(locations);
-  }
-  if (locationError) {
-    console.log(locationError);
-  }
+  // ...
   const handleFollow = async (id: string) => {
     try {
       const response = await followOrUnfollowBrand(id).unwrap();
@@ -110,15 +105,11 @@ export default function Page() {
   };
 
   const handleMapClick = (data: any) => {
-    console.log("data", data);
     navigation.push(
       `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
     );
   };
 
-  if (isError) {
-    console.log("error", error);
-  }
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">
