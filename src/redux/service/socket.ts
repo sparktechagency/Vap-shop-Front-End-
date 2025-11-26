@@ -14,13 +14,13 @@ export const initiateSocket = () => {
     transports: ["websocket"], // or ['polling', 'websocket'] depending on your server configuration
   });
 
-  socket.on("connect", () => {
-    console.log("Connected to Socket.IO server");
-  });
+  // socket.on("connect", () => {
+  //   console.log("Connected to Socket.IO server");
+  // });
 
-  socket.on("disconnect", () => {
-    console.log("Disconnected from Socket.IO server");
-  });
+  // socket.on("disconnect", () => {
+  //   console.log("Disconnected from Socket.IO server");
+  // });
 
   socket.on("connect_error", (error) => {
     console.warn("Connection Error:", error.message);

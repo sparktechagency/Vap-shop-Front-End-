@@ -51,7 +51,6 @@ export default function Searcher({
     }
   }, [locationInput]);
   const { location, error } = useGoogleLocation();
-  console.log("location-----------------------------------", location);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -139,10 +138,6 @@ export default function Searcher({
       router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=16093`);
     }
   }, [searchInput, router, location]);
-
-  if (error) {
-    console.log("error", error);
-  }
 
   return (
     <div className={className} {...props} ref={searchContainerRef}>
