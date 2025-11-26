@@ -69,8 +69,10 @@ const schema = z.object({
 export default function PostCard({
   data,
   user,
+  manage,
 }: {
   data: any;
+  manage?: boolean;
   user: {
     name: string;
     avatar: string;
@@ -403,43 +405,49 @@ export default function PostCard({
           </Dialog>
         </div>
         <div>
-          <Button variant="ghost" asChild>
-            <Link href={`/me/edit-post?id=${data.id}`}>
-              <Edit3Icon />
-            </Link>
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="ghost">
-                <Trash2Icon className="text-destructive" />
+          {!!manage && (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href={`/me/edit-post?id=${data.id}`}>
+                  <Edit3Icon />
+                </Link>
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  You are going to delete this post. this action can not be
-                  undone
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive"
-                  onClick={async () => {
-                    const res = await deletePost({ id: data.id }).unwrap();
-                    if (!res.ok) {
-                      toast.error(res.message ?? "Failed to delete post");
-                      return;
-                    }
-                    toast.success(res.message ?? "Successfully deleted post");
-                  }}
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost">
+                    <Trash2Icon className="text-destructive" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You are going to delete this post. this action can not be
+                      undone
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive"
+                      onClick={async () => {
+                        const res = await deletePost({ id: data.id }).unwrap();
+                        if (!res.ok) {
+                          toast.error(res.message ?? "Failed to delete post");
+                          return;
+                        }
+                        toast.success(
+                          res.message ?? "Successfully deleted post"
+                        );
+                      }}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          )}
           <Button variant="ghost">
             <Share2 />
           </Button>
