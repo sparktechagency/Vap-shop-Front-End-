@@ -61,6 +61,12 @@ export const homePageApi = api.injectEndpoints({
       }),
       providesTags: ["connected"],
     }),
+    connectListApi: builder.query<any, { id: string | number }>({
+      query: ({ id }) => ({
+        url: `/connected-location/user/${id}`,
+      }),
+      providesTags: ["connected"],
+    }),
     respondConnectApi: builder.mutation<
       any,
       { id: string | number; status: "accepted" | "rejected" }
@@ -86,4 +92,5 @@ export const {
   useConnectReuqestApiMutation,
   useConnectReuqestListApiQuery,
   useRespondConnectApiMutation,
+  useConnectListApiQuery,
 } = homePageApi;
