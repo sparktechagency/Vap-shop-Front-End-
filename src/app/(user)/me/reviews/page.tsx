@@ -53,7 +53,6 @@ export default function LatestRevs() {
         {reviews?.data?.map((review: any) => (
           <LatestReviewCard key={review?.id} data={review} userId={id} />
         ))}
-        {/* {data} */}
       </div>
     </div>
   );

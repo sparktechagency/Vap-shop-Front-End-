@@ -37,13 +37,13 @@ export default function LatestReviewCard({
         <Link
           className="flex items-center"
           href={
-            data.user.role === 3
-              ? `/brands/brand/product/${data?.manage_products?.id}`
-              : `/stores/store/product/${data?.manage_products?.id}`
+            data.store_products.role === 3
+              ? `/brands/brand/product/${data?.store_products?.id}`
+              : `/stores/store/product/${data?.store_products?.id}`
           }
         >
           <Image
-            src={data?.manage_products?.product_image ?? "/image/shop/item.jpg"}
+            src={data?.store_products?.product_image ?? "/image/shop/item.jpg"}
             width={100}
             height={100}
             alt="icon"
@@ -51,7 +51,7 @@ export default function LatestReviewCard({
           />
           <div className="ml-4">
             <h4 className="font-semibold text-xl">
-              {data?.manage_products?.product_name ?? ""}
+              {data?.store_products?.product_name ?? ""}
             </h4>
           </div>
         </Link>
@@ -60,11 +60,11 @@ export default function LatestReviewCard({
       {noLinker ? (
         <div className="p-4 flex items-center gap-2 border-t border-b">
           <Avatar>
-            <AvatarImage src={me?.data?.avatar} className="object-cover" />
+            <AvatarImage src={data?.user?.avatar} className="object-cover" />
             <AvatarFallback>UI</AvatarFallback>
           </Avatar>
 
-          <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
+          <h4 className="text-sm font-semibold">{data?.user?.full_name}</h4>
         </div>
       ) : (
         <Link
@@ -78,11 +78,11 @@ export default function LatestReviewCard({
         >
           <div className="p-4 flex items-center gap-2 border-t border-b">
             <Avatar>
-              <AvatarImage src={me?.data?.avatar} className="object-cover" />
+              <AvatarImage src={data?.user?.avatar} className="object-cover" />
               <AvatarFallback>UI</AvatarFallback>
             </Avatar>
 
-            <h4 className="text-sm font-semibold">{me?.data?.full_name}</h4>
+            <h4 className="text-sm font-semibold">{data?.user?.full_name}</h4>
           </div>
         </Link>
       )}

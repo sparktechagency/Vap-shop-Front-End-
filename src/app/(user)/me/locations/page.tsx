@@ -35,12 +35,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import AddLocation from "./add-location";
 import Link from "next/link";
-import { useConnectedListApiQuery } from "@/redux/features/Home/HomePageApi";
+import {
+  useConnectedListApiQuery,
+  useDeleteConnectApiMutation,
+} from "@/redux/features/Home/HomePageApi";
 
 export default function Page() {
   const my = useUser();
 
-  const [deleteLocation] = useCancelConnectMutation();
+  const [deleteLocation] = useDeleteConnectApiMutation();
   const { data, isLoading } = useConnectedListApiQuery();
 
   return (
@@ -75,7 +78,7 @@ export default function Page() {
                 <TableHead>Store Name</TableHead>
                 <TableHead>EIN</TableHead>
                 <TableHead>Active</TableHead>
-                {/* <TableHead>Action</TableHead> */}
+                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -91,7 +94,7 @@ export default function Page() {
                       <Badge variant={"destructive"}>Rejected</Badge>
                     )}
                   </TableCell>
-                  {/* <TableCell>
+                  <TableCell>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="outline" size="icon">
@@ -138,7 +141,7 @@ export default function Page() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  </TableCell> */}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
