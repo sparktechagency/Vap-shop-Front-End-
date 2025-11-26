@@ -78,6 +78,13 @@ export const homePageApi = api.injectEndpoints({
       }),
       invalidatesTags: ["connected"],
     }),
+    deleteConnectApi: builder.mutation<any, { id: string | number }>({
+      query: ({ id }) => ({
+        url: `/connected-location/remove/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["connected"],
+    }),
   }),
 });
 
@@ -93,4 +100,5 @@ export const {
   useConnectReuqestListApiQuery,
   useRespondConnectApiMutation,
   useConnectListApiQuery,
+  useDeleteConnectApiMutation,
 } = homePageApi;
