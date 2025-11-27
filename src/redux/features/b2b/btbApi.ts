@@ -32,7 +32,8 @@ export const  btbApi = api.injectEndpoints({
       query:()=>({
         url:`/b2b/get-product-list`,
         method:"GET",
-      })
+      }),
+      providesTags: ["btb","manage"],
     }),
     sendBtbRequest: builder.mutation<any,{id:string|number}>({
       query:({id})=>({
@@ -48,9 +49,16 @@ export const  btbApi = api.injectEndpoints({
         body
       })
     }),
+    btbDeleteProduct: builder.mutation<any,{id:string|number}>({
+      query:({id})=>({
+        url:`/b2b/product-pricing/${id}`,
+        method:"DELETE",
+      }),
+      invalidatesTags: ["btb","manage"],
+    }),
   })
 })
 
-export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery,useMyBtbProductsQuery, useSendBtbRequestMutation, useBtbCheckoutMutation} = btbApi;
+export const {useGetBtbConnectsQuery, useBtbStatusUpdateMutation, useBtbProductPricingMutation,useBtbProductsQuery,useMyBtbProductsQuery, useSendBtbRequestMutation,useBtbDeleteProductMutation, useBtbCheckoutMutation} = btbApi;
 
 

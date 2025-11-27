@@ -13,6 +13,8 @@ import About from "./about";
 import Groups from "./groups";
 import Feed from "./feed";
 import Post from "./post";
+import Gallery from "./gallery";
+
 // import Inbox from "./inbox";
 
 export default function TabsTriggerer({ id }: any) {
@@ -39,6 +41,9 @@ export default function TabsTriggerer({ id }: any) {
         </TabsContent>
         <TabsContent value="feed">
           <Feed id={id} />
+        </TabsContent>
+        <TabsContent value="gallery">
+          <Gallery id={id} />
         </TabsContent>
         <TabsContent value="post">
           <Post id={id} />

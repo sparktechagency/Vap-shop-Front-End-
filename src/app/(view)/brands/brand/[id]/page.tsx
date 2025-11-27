@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,7 +34,6 @@ export default function Page() {
   const Userrole = data?.data?.role;
 
   const user = brandDetails?.data?.user;
-  console.log(user);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -125,7 +123,6 @@ export default function Page() {
       </main>
     );
   }
-  console.log(brandDetails);
 
   return (
     <main className="">
@@ -169,7 +166,7 @@ export default function Page() {
                 className="!text-sm font-extrabold"
                 asChild
               >
-                <Link href="/stores/store/btb">B2B</Link>
+                <Link href={`${user.id}/btb`}>B2B</Link>
               </Button>
             </Button>
 

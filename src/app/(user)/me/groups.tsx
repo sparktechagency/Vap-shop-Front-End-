@@ -18,11 +18,6 @@ export default function Groups() {
 
   const { data, isLoading, refetch, isError, error }: any =
     useGetDashboardForumQuery({ id: my.id });
-
-  if (!isLoading) {
-    console.log(data);
-  }
-
   return (
     <div className="!p-6">
       <Card className="gap-0 !pt-0 ">

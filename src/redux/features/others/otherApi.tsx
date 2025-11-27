@@ -42,6 +42,7 @@ export const otherApi = api.injectEndpoints({
         url: `/tigger-like/${id}`,
         method: "POST",
       }),
+      invalidatesTags: ["post"],
     }),
     search: builder.query<
       any,
@@ -78,7 +79,7 @@ export const otherApi = api.injectEndpoints({
       query: ({ id, page }) => ({
         url: `/users/${id}/active-branches?per_page=16&page=${page ?? 1}`,
       }),
-      providesTags: ["location"],
+      providesTags: ["location", "connected"],
     }),
     createRegion: builder.mutation<any, any>({
       query: (data) => {

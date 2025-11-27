@@ -108,8 +108,6 @@ export default function Page() {
 
   // --- Event Handlers ---
   const handleComment = async () => {
-    console.log({ thread_id: id, comment });
-
     if (!comment) return;
     try {
       const res = await createcomment({
@@ -123,7 +121,6 @@ export default function Page() {
         refetch();
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to create comment");
     }
   };

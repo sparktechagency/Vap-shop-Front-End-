@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,7 +19,6 @@ export default function LatestReviewCard({
 }) {
   const [mounted, setMounted] = useState(false);
   const { data: me, isLoading } = useGetProfileQuery({ id: userId });
-  console.log("data", data);
 
   useEffect(() => {
     setMounted(true);
@@ -32,8 +30,6 @@ export default function LatestReviewCard({
       </div>
     );
   }
-
-  console.log("product_user", data);
 
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden w-full">

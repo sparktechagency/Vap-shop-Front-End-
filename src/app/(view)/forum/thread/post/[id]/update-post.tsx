@@ -53,7 +53,7 @@ export default function PostUpdate({
   }, [data, setValue]);
 
   const token = Cookies.get("token");
-  console.log("token", token);
+
   const onSubmit = async (data: PostFormData) => {
     if (!token) {
       return toast.error("Please login to update the thread.");

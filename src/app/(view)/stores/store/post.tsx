@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -18,13 +17,6 @@ export default function Post({ id }: { id: number }) {
   const { data: my } = useGetProfileQuery<any>({
     id: id,
   });
-  if (!isLoading) {
-    if (isError) {
-      console.log(error);
-    } else {
-      console.log(data);
-    }
-  }
 
   if (isError) {
     return (
@@ -53,7 +45,7 @@ export default function Post({ id }: { id: number }) {
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
       <PostCard
-        key={post.id || index}
+        key={post?.id || index}
         user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
       />

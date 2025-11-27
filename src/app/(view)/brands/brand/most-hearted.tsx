@@ -13,7 +13,7 @@ export default function MostHearted({ id }: any) {
     refetch,
   } = useGetMostHurtedBrandQuery(id as any);
   const products = brandData?.data?.products?.data || [];
-  console.log("brandData", brandData);
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 !my-6">

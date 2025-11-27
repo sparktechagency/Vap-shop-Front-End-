@@ -26,7 +26,7 @@ export default function Page() {
   const { data: apiResponse, isLoading } = useGetAdminStatisticsQuery({
     period: "7d",
   });
-  console.log("apiResponse", apiResponse);
+
   const stats = React.useMemo(() => {
     const data = apiResponse?.data;
     if (isLoading || !data) {

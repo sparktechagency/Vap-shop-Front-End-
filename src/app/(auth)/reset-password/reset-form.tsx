@@ -40,7 +40,6 @@ export function ResetForm({
         password: data.password,
         password_confirmation: data.password_confirmation,
       }).unwrap();
-      console.log("Password reset response:", response);
       if (response.ok) {
         toast.success(response.message || "Password reset successfully");
         router.push("/login"); // Redirect to login after successful password reset

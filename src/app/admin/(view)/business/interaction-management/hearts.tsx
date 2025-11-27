@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from "react";
@@ -26,8 +25,6 @@ import { Badge } from "@/components/ui/badge";
 import { useUpdateinteractionMutation } from "@/redux/features/admin/AdminApis";
 import { useProductDetailsByIdRoleQuery } from "@/redux/features/Trending/TrendingApi";
 
-
-
 type HeartsFormValues = {
   targetType: string; // 'brand', 'wholesaler', 'store'
   url: string;
@@ -41,7 +38,6 @@ const extractIdFromUrl = (url: string | undefined): string | null => {
     const match = url.match(/\/(\d+)(\?|$)/); // Matches number before ? or end of string
     return match ? match[1] : null;
   } catch (e) {
-    console.log('e', e);
     return null;
   }
 };
@@ -49,15 +45,20 @@ const extractIdFromUrl = (url: string | undefined): string | null => {
 // Helper: Map string type to Role ID
 const getRoleId = (type: string): number => {
   switch (type) {
-    case "brand": return 3;
-    case "wholesaler": return 4;
-    case "shop": return 5; // Assuming 'shop' matches 'STORE' = 5
-    default: return 3; // Default to Brand
+    case "brand":
+      return 3;
+    case "wholesaler":
+      return 4;
+    case "shop":
+      return 5; // Assuming 'shop' matches 'STORE' = 5
+    default:
+      return 3; // Default to Brand
   }
 };
 
 export default function Hearts() {
-  const [updateInteraction, { isLoading: isUpdating }] = useUpdateinteractionMutation();
+  const [updateInteraction, { isLoading: isUpdating }] =
+    useUpdateinteractionMutation();
 
   const form = useForm<HeartsFormValues>({
     defaultValues: {
@@ -75,18 +76,16 @@ export default function Hearts() {
   const extractedId = useMemo(() => extractIdFromUrl(watchedUrl), [watchedUrl]);
 
   // 3. AUTO-FETCH: Fetch Product Details based on ID + Role
-  const {
-    data: productData,
-    isLoading: isFetchingProduct
-  } = useProductDetailsByIdRoleQuery(
-    {
-      id: String(extractedId),
-      role: getRoleId(watchedType) // Dynamically pass 3, 4, or 5
-    },
-    {
-      skip: !extractedId, // Skip if no ID extracted
-    }
-  );
+  const { data: productData, isLoading: isFetchingProduct } =
+    useProductDetailsByIdRoleQuery(
+      {
+        id: String(extractedId),
+        role: getRoleId(watchedType), // Dynamically pass 3, 4, or 5
+      },
+      {
+        skip: !extractedId, // Skip if no ID extracted
+      }
+    );
 
   const onSubmit = async (values: HeartsFormValues) => {
     if (!extractedId) {
@@ -126,7 +125,6 @@ export default function Hearts() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -134,7 +132,10 @@ export default function Hearts() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Product Owner Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select type" />
@@ -158,11 +159,7 @@ export default function Hearts() {
                 <FormItem>
                   <FormLabel>Heart Count</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="e.g. 500"
-                    />
+                    <Input {...field} type="number" placeholder="e.g. 500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -223,7 +220,10 @@ export default function Hearts() {
                         Category: {product.category?.name}
                       </p>
                     </div>
-                    <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200">
+                    <Badge
+                      variant="outline"
+                      className="bg-rose-50 text-rose-600 border-rose-200"
+                    >
                       ❤️ {product.total_heart} Hearts
                     </Badge>
                   </div>
@@ -231,9 +231,16 @@ export default function Hearts() {
                   <div className="mt-2 flex items-center gap-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
                     <Avatar className="h-5 w-5">
                       <AvatarImage src={product.user?.avatar} />
-                      <AvatarFallback>{product.user?.full_name?.[0]}</AvatarFallback>
+                      <AvatarFallback>
+                        {product.user?.full_name?.[0]}
+                      </AvatarFallback>
                     </Avatar>
-                    <span>Owned by: <span className="font-semibold">{product.user?.full_name}</span></span>
+                    <span>
+                      Owned by:{" "}
+                      <span className="font-semibold">
+                        {product.user?.full_name}
+                      </span>
+                    </span>
                     <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
                       {product.user?.role_label}
                     </span>
@@ -249,9 +256,14 @@ export default function Hearts() {
                   <span>⚠️</span> Product not found
                 </div>
                 <p>
-                  Checked ID: <strong>{extractedId}</strong> with Role: <strong>{getRoleId(watchedType)} ({watchedType})</strong>.
+                  Checked ID: <strong>{extractedId}</strong> with Role:{" "}
+                  <strong>
+                    {getRoleId(watchedType)} ({watchedType})
+                  </strong>
+                  .
                   <br />
-                  Try changing the Product Owner Type dropdown if the ID is correct.
+                  Try changing the Product Owner Type dropdown if the ID is
+                  correct.
                 </p>
               </div>
             )}

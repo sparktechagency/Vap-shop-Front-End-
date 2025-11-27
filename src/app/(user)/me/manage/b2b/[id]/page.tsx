@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect } from "react";
@@ -22,8 +20,12 @@ import ProductCard from "@/components/core/product-card";
 
 import { useBtbProductPricingMutation } from "@/redux/features/b2b/btbApi";
 import { toast } from "sonner";
-import { useRouter, useParams } from "next/navigation";
-import { useStoreProductDetailsByIdQuery } from "@/redux/features/Trending/TrendingApi";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
+import {
+  useProductDetailsByIdRoleQuery,
+  useStoreProductDetailsByIdQuery,
+} from "@/redux/features/Trending/TrendingApi";
+import { useUser } from "@/context/userContext";
 
 // --- Schema ---
 const productSchema = z.object({
@@ -37,10 +39,21 @@ type ProductFormValues = z.infer<typeof productSchema>;
 export default function Page() {
   const navig = useRouter();
   const params = useParams();
+  const { role } = useUser();
+  const amount = useSearchParams().get("amount");
+  const moq = useSearchParams().get("moq");
+  useEffect(() => {
+    if (amount) {
+      form.setValue("price", amount);
+    }
+    if (moq) {
+      form.setValue("moq", moq);
+    }
+  }, []);
   const productId = params.id as string; // Assuming route is /product/[productId]
 
-  const { data: productData, isLoading } = useStoreProductDetailsByIdQuery(
-    productId,
+  const { data: productData, isLoading } = useProductDetailsByIdRoleQuery(
+    { id: productId, role },
     {
       skip: !productId,
     }
@@ -72,7 +85,7 @@ export default function Page() {
       if (!res.ok) {
         toast.error(res?.message ?? "Something went wrong.");
       } else {
-        toast.success(res.data?.message ?? "Product added successfully!");
+        toast.success("B2B Product initialized successfully!");
         navig.push("/me/manage");
       }
     } catch (error: any) {

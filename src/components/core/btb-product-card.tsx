@@ -18,6 +18,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { useBtbDeleteProductMutation } from "@/redux/features/b2b/btbApi";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface BtbProductCardProps {
   show?: boolean;
@@ -25,6 +36,7 @@ interface BtbProductCardProps {
   link?: string;
   onAddToCart?: (product: any, quantity: number) => void;
   cartQuantity?: number;
+  manage?: boolean;
 }
 
 export default function BtbProductCard({
@@ -33,8 +45,10 @@ export default function BtbProductCard({
   link,
   onAddToCart,
   cartQuantity = 0,
+  manage,
 }: BtbProductCardProps) {
   const [copied, setCopied] = useState(false);
+
   const currentUrl = `${
     window.location.origin ?? "https://vapeshopmaps.com/"
   }/stores/store/product/${data.id}`;
@@ -46,12 +60,10 @@ export default function BtbProductCard({
       onAddToCart(data, quantity);
     }
   };
-
+  const [deleteB2B] = useBtbDeleteProductMutation();
   const calculatePrice = (quantity: number) => {
     return (wholesalePrice * quantity).toLocaleString();
   };
-
-  console.log(data);
 
   return (
     <Card className="!p-0 pb-6! !gap-0 shadow-sm overflow-hidden group relative">
@@ -121,14 +133,40 @@ export default function BtbProductCard({
           </CardContent>
         </div>
       </Link>
-      <CardFooter className="flex items-center gap-4">
-        <Button className="flex-1" variant={"outline"}>
-          Update B2B
-        </Button>
-        <Button className="" size={"icon"} variant={"destructive"}>
-          <Trash2Icon />
-        </Button>
-      </CardFooter>
+      {manage && (
+        <CardFooter className="flex items-center gap-4">
+          <Button className="flex-1" variant={"outline"} asChild>
+            <Link href={link ? link : "#"}>Update </Link>
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="" size={"icon"} variant={"destructive"}>
+                <Trash2Icon />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-sm">
+                  Are you sure you want to delete this B2B product?
+                </AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive hover:bg-destructive/80 focus:ring-destructive/50"
+                  onClick={async () => {
+                    if (data?.product_id) {
+                      await deleteB2B({ id: data?.product_id });
+                    }
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardFooter>
+      )}
     </Card>
   );
 }

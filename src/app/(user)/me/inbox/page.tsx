@@ -6,7 +6,7 @@ import { useGetChatlistQuery } from "@/redux/features/chat/ChatApi";
 import { InboxIcon, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 
 // Define the type for the chat item props
@@ -26,22 +26,30 @@ interface InboxCardProps {
 // The InboxCard component is now defined inside the same file
 const InboxCard: React.FC<InboxCardProps> = ({ data }) => {
   // State to hold the client-side rendered time string to prevent hydration errors
-  const [timeAgo, setTimeAgo] = useState('');
+  const [timeAgo, setTimeAgo] = useState("");
 
   // This effect runs only on the client, after the initial render
   useEffect(() => {
     // Calculate the relative time and update the state.
-    setTimeAgo(formatDistanceToNow(new Date(data.created_at), { addSuffix: true }));
+    setTimeAgo(
+      formatDistanceToNow(new Date(data.created_at), { addSuffix: true })
+    );
   }, [data.created_at]);
 
   // Function to get initials from a name for the avatar fallback
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
   };
 
   return (
-    <Link href={`/chat`} className="w-full p-3 flex items-center space-x-4 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors duration-200">
-
+    <Link
+      href={`/chat`}
+      className="w-full p-3 flex items-center space-x-4 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+    >
       {/* Avatar */}
       <Avatar className="h-14 w-14">
         <AvatarImage src={data.user.avatar} alt={data.user.full_name} />
@@ -51,9 +59,15 @@ const InboxCard: React.FC<InboxCardProps> = ({ data }) => {
       {/* Message Content */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-center">
-          <p className="text-md font-semibold truncate">{data.user.full_name}</p>
+          <p className="text-md font-semibold truncate">
+            {data.user.full_name}
+          </p>
         </div>
-        <p className={`text-sm text-gray-500 truncate ${data.unread_messages_count > 0 ? 'font-bold text-gray-800' : ''}`}>
+        <p
+          className={`text-sm text-gray-500 truncate ${
+            data.unread_messages_count > 0 ? "font-bold text-gray-800" : ""
+          }`}
+        >
           {data.message}
         </p>
       </div>
@@ -71,7 +85,6 @@ const InboxCard: React.FC<InboxCardProps> = ({ data }) => {
   );
 };
 
-
 export default function Page() {
   // Fetching the chat list data from the API
   const { data: chatListData, isLoading } = useGetChatlistQuery();
@@ -87,9 +100,7 @@ export default function Page() {
   }
 
   // The chat data from the API response (assuming it's an array)
-  const chats = chatListData?.chat_list
-    || [];
-  console.log('chats', chats);
+  const chats = chatListData?.chat_list || [];
 
   return (
     <div className="p-2 md:p-6">
@@ -97,9 +108,7 @@ export default function Page() {
       <div className="border rounded-lg bg-white shadow-sm">
         {chats.length > 0 ? (
           // If chats exist, map over them and render the local InboxCard for each one
-          chats.map((chat: any) => (
-            <InboxCard key={chat.id} data={chat} />
-          ))
+          chats.map((chat: any) => <InboxCard key={chat.id} data={chat} />)
         ) : (
           // If there are no chats, display an "Empty Inbox" message
           <div className="flex flex-col items-center justify-center h-80 text-muted-foreground">

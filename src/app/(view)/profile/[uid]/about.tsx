@@ -5,11 +5,6 @@ import React from "react";
 import DOMPurify from "dompurify";
 export default function About({ id }: { id: any }) {
   const { data, isLoading, error, isError } = useGetstoreAboutQuery(id);
-  console.log("about", data);
-
-  if (isError) {
-    console.log("error", error);
-  }
 
   if (isLoading) return <Loader />;
   return (

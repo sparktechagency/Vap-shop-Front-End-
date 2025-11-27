@@ -115,7 +115,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const per_page = 20;
 
     const [viewingUser, setViewingUser] = useState<UserData | null>(null);
-    console.log('viewingUser', viewingUser);
+
 
     // Dialog states
     const [banDialogOpen, setBanDialogOpen] = useState(false);
@@ -135,7 +135,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     const [selectedUserForSuspend, setSelectedUserForSuspend] = useState<number | null>(null);
     const [suspensionDays, setSuspensionDays] = useState("");
     const [suspensionReason, setSuspensionReason] = useState("");
-    console.log('selectedUserForSuspend', selectedUserForSuspend);
+
 
 
     // --- Debounce Search Term ---
@@ -161,7 +161,7 @@ const UserTable: React.FC<UserTableProps> = ({ role, tableCaption = "A list of t
     // --- Data ---
     const users = data?.data || [];
     const totalPages = data?.meta?.last_page || 1;
-    console.log('users', users);
+
 
     // --- Event Handlers ---
     const handlePageChange = (newPage: number) => {

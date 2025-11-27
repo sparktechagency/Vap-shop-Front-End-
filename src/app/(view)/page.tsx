@@ -10,7 +10,6 @@ export default function Home() {
   const token = Cookies.get("token");
   const { data: categorys, isLoading: isCategoriesLoading } =
     useGetallCategorysQuery();
-  console.log(categorys);
 
   const trendingCategories = categorys?.data?.map(
     (category: any) => category

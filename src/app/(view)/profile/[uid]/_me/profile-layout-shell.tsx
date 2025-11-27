@@ -8,6 +8,7 @@ import howl from "@/lib/howl";
 import { cookies } from "next/headers";
 import { UserData } from "@/lib/types/apiTypes";
 import FollowUnfollow from "@/components/ui/FollowUnfollow";
+import { Badge } from "@/components/ui/badge";
 export default async function ProfileLayoutShell({
   children,
   id,
@@ -18,10 +19,8 @@ export default async function ProfileLayoutShell({
   const token = (await cookies()).get("token")?.value;
   const call = await howl({ link: `profile/${id}`, token });
   // const call = await howl({ link: `me`, token });
-  console.log(id);
 
   const my: UserData = call.data;
-  console.log('my----------', my);
 
   return (
     <>
@@ -58,6 +57,13 @@ export default async function ProfileLayoutShell({
                   <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-semibold justify-center sm:justify-start flex-1">
                     <p>Followers: {my.total_followers}</p>
                     <p>Following: {my.total_following}</p>
+                    {my.subscription_data?.map((x) => (
+                      <Badge
+                        variant={x.type === "hemp" ? "success" : "special"}
+                      >
+                        {x.badge}
+                      </Badge>
+                    ))}
                   </div>
                   <Button size="icon" variant="ghost" asChild>
                     <Link href="/me/settings">
@@ -74,7 +80,9 @@ export default async function ProfileLayoutShell({
               </Button> */}
               <Button
                 variant="outline"
-                className={`!text-sm font-extrabold ${my.role === 6 || my.role === 2 ? "hidden" : "hidden"}`}
+                className={`!text-sm font-extrabold ${
+                  my.role === 6 || my.role === 2 ? "hidden" : "hidden"
+                }`}
                 asChild
               >
                 <Link href={`/stores/store/${id}/btb`}>B2B</Link>
@@ -91,8 +99,6 @@ export default async function ProfileLayoutShell({
                 </Link>
               </Button>
               {/* <Button variant="outline">Follow</Button> */}
-
-
             </div>
 
             <div className="">{children}</div>

@@ -34,12 +34,17 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import AddLocation from "./add-location";
+import Link from "next/link";
+import {
+  useConnectedListApiQuery,
+  useDeleteConnectApiMutation,
+} from "@/redux/features/Home/HomePageApi";
 
 export default function Page() {
   const my = useUser();
 
-  const [deleteLocation] = useCancelConnectMutation();
-  const { data, isLoading } = useGetLocationsQuery();
+  const [deleteLocation] = useDeleteConnectApiMutation();
+  const { data, isLoading } = useConnectedListApiQuery();
 
   return (
     <section className="border-t p-6">
@@ -47,7 +52,10 @@ export default function Page() {
         Manage Connected Locations
       </h1>
 
-      <div className="py-6 flex justify-end">
+      <div className="py-6 flex justify-end gap-4">
+        <Button variant={"outline"} asChild>
+          <Link href={"locations/list"}>Manage Reuqests</Link>
+        </Button>
         <AddLocation />
       </div>
 
@@ -58,29 +66,32 @@ export default function Page() {
         </div>
       ) : (
         <>
+          {/* <pre className="bg-gradient-to-br max-h-[80dvh] overflow-scroll fixed top-1/2 left-1/2 -translate-1/2 w-[90dvw] z-50 from-zinc-900/60 via-zinc-800/40 to-zinc-900/20 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700/20">
+            <code className="whitespace-pre-wrap">
+              {JSON.stringify(data, null, 2)}
+            </code>
+          </pre> */}
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>Store Name</TableHead>
-                <TableHead>Location</TableHead>
+                <TableHead>EIN</TableHead>
                 <TableHead>Active</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.data?.data?.map((x: any, i: any) => (
+              {data?.data?.map((x: any, i: any) => (
                 <TableRow key={i}>
                   <TableCell>#{x.id}</TableCell>
-                  <TableCell className="font-semibold">
-                    {x.branch_name}
-                  </TableCell>
-                  <TableCell>{x?.address?.address}</TableCell>
+                  <TableCell className="font-semibold">{x.full_name}</TableCell>
+                  <TableCell>{x?.ein}</TableCell>
                   <TableCell>
-                    {x.is_active ? (
-                      <Badge variant={"success"}>Active</Badge>
+                    {x?.pivot?.status === "accepted" ? (
+                      <Badge variant={"success"}>Accepted</Badge>
                     ) : (
-                      <Badge variant={"destructive"}>Inctive</Badge>
+                      <Badge variant={"destructive"}>Rejected</Badge>
                     )}
                   </TableCell>
                   <TableCell>
@@ -147,7 +158,7 @@ const Subscription = () => {
     useGetSubscriptionDetailsQuery({ type: "store" });
   // --- Memoized Data Extraction ---
   const subscription = subscriptionDetails?.data?.[0];
-  console.log(subscriptionDetails);
+
   if (isLoadingSubscription) {
     return (
       <div className="py-12 flex justify-center items-center">

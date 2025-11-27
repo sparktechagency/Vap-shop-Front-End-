@@ -40,11 +40,10 @@ export default function Page() {
     const allData = {
       ...data,
       type: "public",
-    }
+    };
 
     try {
       const res = await createGroup(allData).unwrap();
-      console.log(res);
 
       if (!res.ok) {
         toast.error(res.message);
@@ -105,7 +104,3 @@ export default function Page() {
     </main>
   );
 }
-
-
-
-

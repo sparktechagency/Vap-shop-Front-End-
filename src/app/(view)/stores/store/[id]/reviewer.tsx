@@ -21,8 +21,6 @@ export default function Reviewer({
 
   // const role = user?.data?.role
 
-  console.log("product", product, "role", role);
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -30,8 +28,6 @@ export default function Reviewer({
       </div>
     );
   }
-
-  console.log("review", data);
 
   return (
     <div className="">

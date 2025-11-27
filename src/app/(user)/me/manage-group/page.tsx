@@ -36,9 +36,7 @@ export default function Page() {
   const navig = useRouter();
   const id = useSearchParams().get("id");
   const { data, isLoading } = useGetGroupQuery({ id: id ?? "" });
-  if (!isLoading) {
-    console.log(data);
-  }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

@@ -67,9 +67,6 @@ export default function Page() {
   useEffect(() => {
     if (!isLoading) {
       if (prices) {
-        console.log(prices.data[0].details);
-        console.log("____");
-
         if (pdur === "1_week") {
           if (prices.data[0].details.week_1) {
             form.setValue("amount", prices.data[0].details.week_1 ?? 0);

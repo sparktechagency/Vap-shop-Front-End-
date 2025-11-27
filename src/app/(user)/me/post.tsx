@@ -45,6 +45,7 @@ export default function Post() {
         key={post.id || index} // Prefer post.id if available
         user={{ name: my.full_name ?? "", avatar: my.avatar }}
         data={post}
+        manage
       />
     ));
 

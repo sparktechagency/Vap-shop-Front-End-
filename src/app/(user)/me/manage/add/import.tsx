@@ -78,9 +78,6 @@ export default function Import() {
     { skip: !debouncedBrand }
   );
 
-  if (error) console.error(error);
-  if (data) console.log(data);
-
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -127,7 +124,6 @@ export default function Import() {
         product_description: data.description,
       };
       const res: any = await postProduct(finalizer);
-      console.log(res);
 
       if (!res.ok) {
         toast.error(res?.message ?? "Something went wrong.");

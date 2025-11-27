@@ -179,6 +179,7 @@ export default function Catalog({ id, addToCart, cartItems }: CatalogProps) {
             link={`/stores/store/product/${item.product_id}`}
             onAddToCart={handleAddToCart}
             cartQuantity={getProductCartQuantity(item.product_id)}
+            manage
           />
         ))}
       </div>

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,14 +39,13 @@ export function ResetForm({
       return;
     }
 
-
     try {
       // Call the mutation with the FormData object
       const response = await adminResetPasswrod({
         password,
         password_confirmation: confirmPassword,
       }).unwrap();
-      console.log('response', response);
+
       if (!response.ok) {
         setError(response.message || "Failed to reset password.");
         return;
@@ -54,14 +53,11 @@ export function ResetForm({
 
       if (response.ok) {
         toast.success(response.message || "Password reset successfully");
-        //reset form 
+        //reset form
         setPassword("");
         setConfirmPassword("");
         router.push("/admin/dashboard");
       }
-
-
-
     } catch (err: any) {
       // Handle error from the API
       const errorMessage = err?.data?.message || "Failed to reset password.";

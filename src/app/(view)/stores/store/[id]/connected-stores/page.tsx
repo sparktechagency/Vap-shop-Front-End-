@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Namer from "@/components/core/internal/namer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,14 +22,15 @@ import {
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import OpenStatus from "../open-status";
-import { useGetActiveLocationsQuery } from "@/redux/features/others/otherApi";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useConnectListApiQuery } from "@/redux/features/Home/HomePageApi";
 export default function Page() {
   const { id } = useParams();
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
@@ -40,8 +40,9 @@ export default function Page() {
     data: locations,
     isLoading: locationLoading,
     isError: locationError,
-  } = useGetActiveLocationsQuery({ id });
-  console.log(data?.data);
+    error: locErr,
+  } = useConnectListApiQuery({ id: id as string });
+
   const navigation = useRouter();
   const [followOrUnfollowBrand, { isLoading: isFollowing }] =
     useFollowBrandMutation();
@@ -77,7 +78,7 @@ export default function Page() {
         });
     }
   };
-
+  // ...
   const handleFollow = async (id: string) => {
     try {
       const response = await followOrUnfollowBrand(id).unwrap();
@@ -103,15 +104,11 @@ export default function Page() {
   };
 
   const handleMapClick = (data: any) => {
-    console.log("data", data);
     navigation.push(
       `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
     );
   };
 
-  if (isError) {
-    console.log("error", error);
-  }
   if (isLoading) {
     return (
       <div className="!p-6 flex justify-center items-center">
@@ -241,17 +238,31 @@ export default function Page() {
           <div className="grid grid-cols-4 gap-6 mt-6">
             {!locationLoading &&
               !locationError &&
-              locations?.data?.data?.map((item: any) => (
-                <Card key={item.id} className="pt-0!">
-                  <CardContent
-                    className="h-64 w-full bg-cover bg-center rounded-t-xl"
-                    style={{ backgroundImage: `url('${item?.owner?.avatar}')` }}
-                  />
-                  <CardHeader>
-                    <CardTitle>{item?.branch_name}</CardTitle>
-                    <CardDescription>{item?.address.address}</CardDescription>
-                  </CardHeader>
-                </Card>
+              locations?.data?.map((item: any) => (
+                <>
+                  <Card key={item.id} className="pt-0!">
+                    <CardContent
+                      className="h-64 w-full bg-cover bg-center rounded-t-xl"
+                      style={{
+                        backgroundImage: `url('${item?.avatar}')`,
+                      }}
+                    />
+                    <CardHeader>
+                      <CardTitle>{item?.first_name}</CardTitle>
+                      <CardDescription className="flex justify-between items-center">
+                        <p>Rating: {item?.avg_rating} ⭐</p>
+                        <p>Followers: {item?.total_followers}</p>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                      <Button className="w-full" variant={"special"} asChild>
+                        <Link href={`/stores/store/${item?.id}`}>
+                          Visit this store
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </>
               ))}
           </div>
           {/* {!locationLoading && (

@@ -22,7 +22,6 @@ export default async function FavList() {
       link: `get/${my.data.id}/products?type=brand&is_most_hearted=1`,
       token,
     });
-    console.log(myFavs);
 
     if (!myFavs?.ok) {
       return (

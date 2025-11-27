@@ -151,7 +151,6 @@ export const adminApis = api.injectEndpoints({
 
     admintermsConditions: builder.mutation<any, { body: any }>({
       query: ({ body }) => {
-        console.log("Request body from RTK mutation:", body);
         return {
           url: `/admin/pages/update`,
           method: "POST",
@@ -173,7 +172,6 @@ export const adminApis = api.injectEndpoints({
         body: data, // Pass the data directly as the body
       }),
     }),
-
 
     updateAdRequestStatus: builder.mutation<
       any,

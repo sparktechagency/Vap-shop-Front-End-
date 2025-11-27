@@ -114,8 +114,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
   const countryId = watch("country_id");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("values", values);
-
     try {
       const res = await updateUser({
         ...values,
@@ -123,7 +121,6 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       }).unwrap();
 
       toast.success("Store updated successfully ✅");
-      console.log(" update response:", res);
     } catch (error: any) {
       const message =
         error?.data?.message || "Something went wrong. Please try again.";

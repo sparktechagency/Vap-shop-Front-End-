@@ -107,7 +107,6 @@ export default function UserEditForm({ my }: { my: UserData }) {
     try {
       const res = await updateUser(values).unwrap();
       toast.success("User updated successfully ✅");
-      console.log("User update response:", res);
     } catch (error: any) {
       const message =
         error?.data?.message || "Something went wrong. Please try again.";

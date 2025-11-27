@@ -71,13 +71,12 @@ const StoreSubscriptionPage: NextPage = () => {
 
     try {
       const response = await sendSubscriptionToAdmin({ plan_ids }).unwrap();
-      console.log("response", response);
+
       if (response.ok) {
         toast.success(response.message || "Subscribed successfully");
         refetch();
       }
     } catch (error: any) {
-      console.log("error", error);
       toast.error(error?.data?.message || "Failed to Subscribe");
     }
   }, [subscription, selectedAddons, router]);
@@ -90,7 +89,6 @@ const StoreSubscriptionPage: NextPage = () => {
       </div>
     );
   }
-
 
   // --- Render Logic ---
   return (
@@ -212,8 +210,9 @@ const StoreSubscriptionPage: NextPage = () => {
         {/* Action Buttons at the bottom */}
         <footer className="w-full max-w-md mx-auto mt-16 flex flex-col items-center gap-4 text-center">
           <button
-            className={`w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors ${isSubscribing ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`w-full rounded bg-zinc-900 p-3 text-base font-medium text-white cursor-pointer hover:bg-zinc-700 transition-colors ${
+              isSubscribing ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             onClick={onRegisterClick}
           >
             {isSubscribing ? "  Subscribeing..." : "  Subscribe"}

@@ -18,7 +18,10 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { useResendotpMutation, useVerifyemailMutation } from "@/redux/features/AuthApi";
+import {
+  useResendotpMutation,
+  useVerifyemailMutation,
+} from "@/redux/features/AuthApi";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface OTPFormData {
@@ -30,12 +33,11 @@ export function OTPForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const searchParams = useSearchParams();
-  const email = searchParams.get('email');
+  const email = searchParams.get("email");
   const isFromRegistration = searchParams?.get("isregistared");
   const [verifyEmail, { isLoading }] = useVerifyemailMutation();
   const [resendotp] = useResendotpMutation();
   const router = useRouter();
-  console.log(isFromRegistration);
 
   const {
     register,
@@ -52,7 +54,9 @@ export function OTPForm({
       if (response.ok) {
         Cookies.set("token", response.data.access_token);
         if (isFromRegistration === "true") {
-          toast.success(response.message || "Verification successful! Welcome.");
+          toast.success(
+            response.message || "Verification successful! Welcome."
+          );
           if (response?.data?.user?.role === 2) {
             return router.push("/");
           }
@@ -63,10 +67,10 @@ export function OTPForm({
           }
         } else {
           toast.success(
-            response.message || "Email verified. You can now reset your password."
+            response.message ||
+              "Email verified. You can now reset your password."
           );
           router.push("/reset-password");
-
         }
       } else {
         toast.error(response.message || "Verification failed");
@@ -77,7 +81,6 @@ export function OTPForm({
       );
     }
   };
-
 
   const handleResendOtp = async () => {
     try {
@@ -141,7 +144,10 @@ export function OTPForm({
               </Button>
             </div>
             <div>
-              <p onClick={handleResendOtp} className="text-center  text-gray-500 mt-4">
+              <p
+                onClick={handleResendOtp}
+                className="text-center  text-gray-500 mt-4"
+              >
                 Didn&apos;t receive the OTP?{" "}
                 <span className="text-black font-normal cursor-pointer">
                   Resend OTP

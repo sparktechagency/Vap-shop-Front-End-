@@ -50,8 +50,6 @@ export function ChartAreaInteractive() {
     period: timeRange,
   });
 
-  console.log('time range', timeRange);
-
   // Transform the API response into the format required by the chart.
   // This memoizes the calculation so it only runs when the API response changes.
   const chartData = React.useMemo(() => {
@@ -83,14 +81,18 @@ export function ChartAreaInteractive() {
           {isLoading ? (
             <Skeleton className="h-4 w-48" />
           ) : (
-            `A total of ${apiResponse?.data?.userGrowth?.original?.total_new_users ?? 0} new users in this period`
+            `A total of ${
+              apiResponse?.data?.userGrowth?.original?.total_new_users ?? 0
+            } new users in this period`
           )}
         </CardDescription>
         <div className="absolute right-4 top-4">
           <ToggleGroup
             type="single"
             value={timeRange}
-            onValueChange={(value: string) => value && setTimeRange(value as TimeRange)}
+            onValueChange={(value: string) =>
+              value && setTimeRange(value as TimeRange)
+            }
             variant="outline"
             className="@[767px]/card:flex hidden"
             aria-label="Select a time range"
@@ -105,7 +107,10 @@ export function ChartAreaInteractive() {
               Last 7 days
             </ToggleGroupItem>
           </ToggleGroup>
-          <Select value={timeRange} onValueChange={(value: TimeRange) => setTimeRange(value)}>
+          <Select
+            value={timeRange}
+            onValueChange={(value: TimeRange) => setTimeRange(value)}
+          >
             <SelectTrigger
               className="@[767px]/card:hidden flex w-40"
               aria-label="Select a value"

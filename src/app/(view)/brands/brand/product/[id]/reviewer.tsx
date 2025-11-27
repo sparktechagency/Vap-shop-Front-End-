@@ -9,9 +9,6 @@ export default function Reviewer({ product }: { product: any }) {
     id: product.id,
   });
 
-  console.log('product', product);
-  console.log('review', data);
-
   return (
     <div className="">
       <h3 className="text-3xl my-6!">Product Reviews</h3>
