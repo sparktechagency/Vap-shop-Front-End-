@@ -11,15 +11,15 @@ import Cookies from "js-cookie";
 export interface NavActionType {
   icon?: React.ReactNode;
   variant?:
-    | "ghost"
-    | "special"
-    | "link"
-    | "default"
-    | "destructive"
-    | "outline"
-    | "secondary"
-    | null
-    | undefined;
+  | "ghost"
+  | "special"
+  | "link"
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | null
+  | undefined;
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
   href: string;
   label?: string;

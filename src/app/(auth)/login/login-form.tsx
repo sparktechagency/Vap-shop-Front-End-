@@ -37,6 +37,7 @@ export function LoginForm({
       if (response.ok) {
         toast.success(response.message || "Login successful");
         setCookie("token", response.data.access_token);
+        window.location.reload();
         if (response?.data?.user?.role === 1) {
           router.push("/admin/dashboard");
         } else {
