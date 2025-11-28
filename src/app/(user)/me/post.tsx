@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetPostsQuery } from "@/redux/features/users/postApi";
 import { useUser } from "@/context/userContext";
+import MyPostCard from "@/components/core/my-post-card";
 
 export default function Post() {
   const { data, isLoading, isError, isFetching } = useGetPostsQuery();
@@ -41,7 +42,7 @@ export default function Post() {
 
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
-      <PostCard
+      <MyPostCard
         key={post.id || index} // Prefer post.id if available
         user={{ name: my.full_name ?? "", avatar: my.avatar }}
         data={post}
