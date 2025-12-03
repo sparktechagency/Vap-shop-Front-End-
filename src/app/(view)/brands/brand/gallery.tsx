@@ -39,14 +39,14 @@ import Link from "next/link";
 import Image from "next/image";
 import DOMPurify from "dompurify";
 import { toast } from "sonner";
-import { usePostLikeMutation } from "@/redux/features/others/otherApi";
+import { usePosHeartMutation } from "@/redux/features/others/otherApi";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 export default function Gallery({ id }: { id: string }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-  const [likePost, { isLoading: liking }] = usePostLikeMutation();
+  const [likePost, { isLoading: liking }] = usePosHeartMutation();
   const { data, isLoading, isError } = useGetPostsByIdQuery({ id });
   const { resolvedTheme } = useTheme();
   React.useEffect(() => {
@@ -163,19 +163,13 @@ export default function Gallery({ id }: { id: string }) {
                     }
 
                     toast.success(
-                      `${!post.is_post_liked ? "Liked" : "Unliked"} post!`
+                      `${!post.is_hearted ? "Hearted" : "UnHearted"} post!`
                     );
-                    // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
                   } catch (err: any) {
-                    // Revert optimistic update
-                    // setLiked(!nextLiked);
-                    // setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
-
                     toast.error(
                       err?.data?.message ||
                         "Something went wrong. Please try again."
                     );
-                    console.error("Like error:", err);
                   }
                 }}
                 className="text-xs h-8 !px-3"
@@ -184,7 +178,7 @@ export default function Gallery({ id }: { id: string }) {
                 <HeartIcon
                   className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
                   fill={
-                    post.is_post_liked
+                    post.is_hearted
                       ? resolvedTheme === "dark"
                         ? "#ffffff"
                         : "#dc2626"
@@ -192,7 +186,7 @@ export default function Gallery({ id }: { id: string }) {
                   }
                 />
                 {liking && <Loader2Icon className="animate-spin" />}
-                {post.like_count}
+                {post.hearts_count}
               </Button>
             </DialogFooter>
 

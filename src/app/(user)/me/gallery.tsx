@@ -36,7 +36,10 @@ import Link from "next/link";
 import Image from "next/image";
 import DOMPurify from "dompurify";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import { usePostLikeMutation } from "@/redux/features/others/otherApi";
+import {
+  usePosHeartMutation,
+  usePostLikeMutation,
+} from "@/redux/features/others/otherApi";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -44,7 +47,7 @@ export default function Gallery() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-  const [likePost, { isLoading: liking }] = usePostLikeMutation();
+  const [likePost, { isLoading: liking }] = usePosHeartMutation();
   const { data, isLoading, isError } = useGetPostsQuery();
   const my = useUser();
 
@@ -169,7 +172,7 @@ export default function Gallery() {
                     }
 
                     toast.success(
-                      `${!post.is_post_liked ? "Liked" : "Unliked"} post!`
+                      `${!post.is_hearted ? "Hearted" : "Unhearted"} post!`
                     );
                     // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
                   } catch (err: any) {
@@ -190,7 +193,7 @@ export default function Gallery() {
                 <HeartIcon
                   className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
                   fill={
-                    post.is_post_liked
+                    post.is_hearted
                       ? resolvedTheme === "dark"
                         ? "#ffffff"
                         : "#dc2626"
@@ -198,7 +201,7 @@ export default function Gallery() {
                   }
                 />
                 {liking && <Loader2Icon className="animate-spin" />}
-                {post.like_count}
+                {post.hearts_count}
               </Button>
             </DialogFooter>
 

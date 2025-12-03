@@ -28,7 +28,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { HeartIcon } from "lucide-react";
+import { HeartIcon, Loader2Icon } from "lucide-react";
 import {
   useGetPostsByIdQuery,
   useGetPostsQuery,
@@ -38,13 +38,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import Image from "next/image";
 import DOMPurify from "dompurify";
+import { toast } from "sonner";
+import { usePosHeartMutation } from "@/redux/features/others/otherApi";
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 export default function Gallery({ id }: { id: string }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-
+  const [likePost, { isLoading: liking }] = usePosHeartMutation();
   const { data, isLoading, isError } = useGetPostsByIdQuery({ id });
-
+  const { resolvedTheme } = useTheme();
   React.useEffect(() => {
     if (!api) return;
     setCount(api.scrollSnapList().length);
@@ -148,8 +152,41 @@ export default function Gallery({ id }: { id: string }) {
             </div>
 
             <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
-              <Button variant="special">
-                <HeartIcon /> {post.likes_count ?? 0}
+              <Button
+                variant="special"
+                onClick={async () => {
+                  try {
+                    const res = await likePost({ id: post.id }).unwrap();
+
+                    if (!res.ok) {
+                      throw new Error("Failed to update like status.");
+                    }
+
+                    toast.success(
+                      `${!post.is_hearted ? "Hearted" : "UnHearted"} post!`
+                    );
+                  } catch (err: any) {
+                    toast.error(
+                      err?.data?.message ||
+                        "Something went wrong. Please try again."
+                    );
+                  }
+                }}
+                className="text-xs h-8 !px-3"
+                disabled={liking}
+              >
+                <HeartIcon
+                  className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
+                  fill={
+                    post.is_hearted
+                      ? resolvedTheme === "dark"
+                        ? "#ffffff"
+                        : "#dc2626"
+                      : "transparent"
+                  }
+                />
+                {liking && <Loader2Icon className="animate-spin" />}
+                {post.hearts_count}
               </Button>
             </DialogFooter>
 
