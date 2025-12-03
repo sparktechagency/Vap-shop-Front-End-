@@ -122,6 +122,13 @@ const AuthApi = api.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    toggleProductFavouriteApi: builder.query({
+      query: (typeID) => ({
+        url: `/favourite?role=${typeID}`,
+        method: "GET",
+      }),
+      providesTags: ["user"],
+    }),
 
     gtStoreDetails: builder.query<any, { id: string }>({
       query: ({ id }) => ({

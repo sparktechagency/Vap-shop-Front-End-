@@ -15,6 +15,7 @@ import {
   Share2Icon,
   CopyIcon,
   MailIcon,
+  HeartIcon,
 } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
@@ -28,6 +29,7 @@ import Link from "next/link";
 import ProductCard from "@/components/core/product-card";
 import { useParams, usePathname } from "next/navigation";
 import {
+  useFevoriteUnveforiteMutation,
   useFollowBrandMutation,
   useStoreProductDetailsByIdQuery,
   useTrendingProductDetailsByIdQuery,
@@ -51,7 +53,7 @@ import {
 } from "react-share";
 import { Separator } from "@/components/ui/separator";
 import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
-import ProductReviewCard from "@/components/core/review-card";
+
 import ReviewPost from "../../[id]/review-post";
 import Reviewer from "../../[id]/reviewer";
 import { ProductPrice } from "@/components/ui/ProductPrice";
@@ -101,6 +103,7 @@ export default function Page() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [fevoriteUnveforite] = useFevoriteUnveforiteMutation();
   const {
     data: product,
     isLoading,
@@ -135,6 +138,16 @@ export default function Page() {
       content: faq.answer,
     })) || [];
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy link");
+    }
+  };
   const handleFollow = async (id: string) => {
     try {
       const response = await followOrUnfollowBrand(id).unwrap();
@@ -156,17 +169,6 @@ export default function Page() {
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to unfollow");
-    }
-  };
-
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(currentUrl);
-      setCopied(true);
-      toast.success("Link copied to clipboard!");
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      toast.error("Failed to copy link");
     }
   };
 
@@ -235,6 +237,7 @@ export default function Page() {
                 <MessageSquareMoreIcon />
               </Link>
             </Button>
+
             {product?.data?.user?.is_following ? (
               <Button
                 onClick={() => handleUnfollow(product?.data?.user?.id)}

@@ -15,7 +15,7 @@ import {
   useCancelCheckoutMutation,
   useGetCheckoutsQuery,
 } from "@/redux/features/users/userApi";
-import { EyeIcon, Loader2Icon, Trash2Icon } from "lucide-react";
+import { Edit3Icon, EyeIcon, Loader2Icon, Trash2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CheckOutDetail from "./checkout-detail";
@@ -31,6 +31,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 
 interface OrderType {
   checkout_date: string;
@@ -129,6 +137,38 @@ export default function MemberOrder() {
                     >
                       <EyeIcon />
                     </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        {/* <Button variant={"ghost"} size={"icon"}>
+                          <Edit3Icon />
+                        </Button> */}
+                      </DialogTrigger>
+                      <DialogContent className="min-w-[96dvw] xl:min-w-[60dvw]">
+                        <DialogHeader className="border-b pb-2">
+                          <DialogTitle>Update order</DialogTitle>
+                        </DialogHeader>
+
+                        {/* {x.order_items?.map((y) => (
+                          <div key={y.product_id} className="flex gap-4">
+                            <Image
+                              height={124}
+                              width={124}
+                              className="size-[64px] object-cover rounded-lg"
+                              alt="product-image"
+                              src={y.product_image}
+                            />
+                            <div className="grid grid-cols-3 gap-4">
+                              <h4>{y.product_name}</h4>
+                              <pre className="bg-gradient-to-br max-h-[80dvh] overflow-scroll fixed top-1/2 left-1/2 -translate-1/2 w-[90dvw] z-50 from-zinc-900/60 via-zinc-800/40 to-zinc-900/20 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700/20">
+                                <code className="whitespace-pre-wrap">
+                                  {JSON.stringify(x, null, 2)}
+                                </code>
+                              </pre>
+                            </div>
+                          </div>
+                        ))} */}
+                      </DialogContent>
+                    </Dialog>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="outline" size="icon">
@@ -177,7 +217,6 @@ export default function MemberOrder() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-
                     <CheckOutDetail
                       id={selectedOrderId}
                       isOpen={isModalOpen}

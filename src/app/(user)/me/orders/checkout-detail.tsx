@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useState, useEffect } from "react";
 import { useGetCheckoutQuery } from "@/redux/features/users/userApi";
 import {
   Dialog,
@@ -21,11 +21,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Package, Receipt, User, Mail, MapPin, Calendar } from "lucide-react";
+import {
+  Package,
+  Receipt,
+  User,
+  Mail,
+  MapPin,
+  Calendar,
+  Loader2Icon,
+} from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useUpdateInvoiceApiMutation } from "@/redux/features/manage/product";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 // --- Type Definitions ---
-
 interface OrderItem {
   product_id: string | number;
   product_name: string;
@@ -66,7 +88,7 @@ interface InvoiceDetailProps {
 
 // --- Helper Function ---
 const parseToNumber = (value: string | number | undefined | null): number =>
-  typeof value === "number" ? value : parseFloat(value || "0");
+  typeof value === "number" ? value : Number.parseFloat(value || "0");
 
 // --- Main Component ---
 export default function CheckOutDetail({
@@ -75,6 +97,14 @@ export default function CheckOutDetail({
   onClose,
 }: InvoiceDetailProps) {
   const { data, isLoading } = useGetCheckoutQuery({ id });
+  const [editableData, setEditableData] = useState<MemberData | null>(null);
+  const [updateInvoice, { isLoading: updating }] =
+    useUpdateInvoiceApiMutation();
+  useEffect(() => {
+    if (data?.data) {
+      setEditableData(JSON.parse(JSON.stringify(data.data)));
+    }
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -90,6 +120,87 @@ export default function CheckOutDetail({
       </Dialog>
     );
   }
+
+  const handleQuantityChange = (
+    subOrderIndex: number,
+    itemIndex: number,
+    newQuantity: string | number
+  ) => {
+    if (!editableData) return;
+
+    const quantity = parseToNumber(newQuantity);
+    const updatedData = JSON.parse(JSON.stringify(editableData));
+    const item = updatedData.sub_orders[subOrderIndex].order_items[itemIndex];
+
+    // Update quantity and recalculate line total
+    item.quantity = quantity;
+    item.line_total = quantity * parseToNumber(item.price_at_order);
+
+    // Recalculate sub_total for the order
+    const subTotal = updatedData.sub_orders[subOrderIndex].order_items.reduce(
+      (sum: number, orderItem: any) =>
+        sum + parseToNumber(orderItem.line_total),
+      0
+    );
+    updatedData.sub_orders[subOrderIndex].sub_total = subTotal;
+
+    // Recalculate grand total
+    const grandTotal = updatedData.sub_orders.reduce(
+      (sum: number, order: any) => sum + parseToNumber(order.sub_total),
+      0
+    );
+    updatedData.grand_total = grandTotal;
+
+    setEditableData(updatedData);
+  };
+  console.log(data);
+
+  const handleUpdateInvoice = async (checkoutID: string | number) => {
+    if (!editableData) return;
+
+    // Prepare the output in the requested format
+    const firstCustomer = editableData.sub_orders?.[0]?.customer;
+    const allOrderItems =
+      editableData.sub_orders?.flatMap((order) => order.order_items) || [];
+    const dob = firstCustomer?.dob ? new Date(firstCustomer.dob) : null;
+
+    const customer_dob = dob
+      ? `${dob.getDate().toString().padStart(2, "0")}-${(dob.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${dob.getFullYear()}`
+      : "";
+    const outputData = {
+      customer_name: firstCustomer?.name || "",
+      customer_email: firstCustomer?.email || "",
+      customer_dob,
+      customer_phone: "",
+      customer_address:
+        typeof firstCustomer?.address === "string"
+          ? firstCustomer.address
+          : firstCustomer?.address?.address || "",
+      cart_items: allOrderItems.map((item) => ({
+        product_id: item.product_id,
+        quantity: parseToNumber(item.quantity),
+      })),
+    };
+    try {
+      const res: any = await updateInvoice({
+        id: checkoutID,
+        body: outputData,
+      });
+
+      if (res.data.ok) {
+        toast.success(res.data.message ?? "Successfully updated invoice!");
+      } else {
+        toast.error(res.data.message ?? "Something went wrong");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+    console.log("[v0] Updated Dataset:", outputData);
+    // console.log("[v0] Full Updated Data:", editableData);
+  };
 
   const renderMemberInvoice = (memberData: MemberData) => {
     const allOrderItems =
@@ -112,7 +223,6 @@ export default function CheckOutDetail({
             ID: {String(memberData.checkout_id)}
           </DialogDescription>
         </DialogHeader>
-
         <div className="px-6">
           {customer && (
             <Card className="mb-6">
@@ -196,7 +306,7 @@ export default function CheckOutDetail({
 
         {/* Order Table */}
         <ScrollArea className="flex-1 px-6">
-          {memberData?.sub_orders?.map((subOrder) => (
+          {memberData?.sub_orders?.map((subOrder, subOrderIndex) => (
             <div key={subOrder.order_id} className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-lg">
@@ -209,7 +319,6 @@ export default function CheckOutDetail({
                   </Badge>
                 </div>
               </div>
-
               <div className="rounded-md border mb-4">
                 <Table>
                   <TableHeader>
@@ -222,10 +331,10 @@ export default function CheckOutDetail({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {subOrder.order_items.map((item: any, index) => (
-                      <TableRow key={index} className="hover:bg-muted/50">
+                    {subOrder.order_items.map((item: any, itemIndex) => (
+                      <TableRow key={itemIndex} className="hover:bg-muted/50">
                         <TableCell className="font-medium text-muted-foreground">
-                          {index + 1}
+                          {itemIndex + 1}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-4">
@@ -240,7 +349,6 @@ export default function CheckOutDetail({
                               width={100}
                               alt="icon"
                             />
-
                             <div className="flex flex-col">
                               <span className="font-medium">
                                 {item.product_name}
@@ -252,28 +360,53 @@ export default function CheckOutDetail({
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge variant="secondary" className="font-mono">
-                            {parseToNumber(item.quantity)}
-                          </Badge>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={
+                              editableData?.sub_orders[subOrderIndex]
+                                ?.order_items[itemIndex]?.quantity ||
+                              item.quantity
+                            }
+                            onChange={(e) =>
+                              handleQuantityChange(
+                                subOrderIndex,
+                                itemIndex,
+                                e.target.value
+                              )
+                            }
+                          />
                         </TableCell>
                         <TableCell className="text-right font-mono">
-                          ${parseToNumber(item.price_at_order).toFixed(2)}
+                          <Input
+                            disabled
+                            defaultValue={item.price_at_order}
+                            className=""
+                          />
                         </TableCell>
                         <TableCell className="text-right font-mono font-medium">
-                          ${parseToNumber(item.line_total).toFixed(2)}
+                          $
+                          {parseToNumber(
+                            editableData?.sub_orders[subOrderIndex]
+                              ?.order_items[itemIndex]?.line_total ||
+                              item.line_total
+                          ).toFixed(2)}
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
-
               <div className="text-right mb-4">
                 <span className="text-sm text-muted-foreground">
                   Sub Total:{" "}
                 </span>
                 <span className="font-semibold">
-                  ${parseToNumber(subOrder.sub_total).toFixed(2)}
+                  $
+                  {parseToNumber(
+                    editableData?.sub_orders[subOrderIndex]?.sub_total ||
+                      subOrder.sub_total
+                  ).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -289,8 +422,48 @@ export default function CheckOutDetail({
                 Grand Total
               </div>
               <div className="text-2xl font-bold text-green-600">
-                ${grandTotal.toFixed(2)}
+                $
+                {parseToNumber(editableData?.grand_total || grandTotal).toFixed(
+                  2
+                )}
               </div>
+            </div>
+            <div className="">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button disabled={updating}>
+                    {updating ? (
+                      <>
+                        <Loader2Icon className="animate-spin" />
+                        Updating invoice
+                      </>
+                    ) : (
+                      "Update Invoice"
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirm update?</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <div className="">
+                    <AlertDescription>
+                      Please review the changes and make sure you want to update
+                      this order
+                    </AlertDescription>
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        handleUpdateInvoice(memberData.checkout_id);
+                      }}
+                    >
+                      Confirm & Update
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>
@@ -305,9 +478,7 @@ export default function CheckOutDetail({
       </DialogHeader>
       <DialogContent className="min-w-[90dvw] lg:min-w-[60dvw] max-h-[80vh] p-0 overflow-hidden">
         <div className="max-h-[80vh] overflow-auto pb-8">
-          {data?.data?.sub_orders
-            ? renderMemberInvoice(data.data as MemberData)
-            : null}
+          {editableData ? renderMemberInvoice(editableData) : null}
         </div>
       </DialogContent>
     </Dialog>

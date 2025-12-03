@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import React, { useState, useEffect } from "react";
@@ -15,7 +14,13 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { ChevronDownIcon, ChevronLeft, Globe, HeartIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronLeft,
+  Globe,
+  HeartIcon,
+  Loader2Icon,
+} from "lucide-react";
 import DOMPurify from "dompurify";
 import {
   Dialog,
@@ -37,12 +42,17 @@ import {
 } from "@/components/ui/carousel";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import Image from "next/image";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { usePosHeartMutation } from "@/redux/features/others/otherApi";
 
 export default function MostFollowers() {
   const [region, setRegion] = useState(""); // empty = worldwide
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [likePost, { isLoading: liking }] = usePosHeartMutation();
   const [open, setOpen] = useState(false);
-
+  const { resolvedTheme } = useTheme();
   const {
     data,
     isLoading,
@@ -302,8 +312,47 @@ export default function MostFollowers() {
                 </div>
 
                 <DialogFooter className="mt-0 pt-0 flex justify-start items-center">
-                  <Button variant="special">
-                    <HeartIcon /> {item.likes_count ?? 0}
+                  <Button
+                    variant="special"
+                    onClick={async () => {
+                      try {
+                        const res = await likePost({ id: item.id }).unwrap();
+
+                        if (!res.ok) {
+                          throw new Error("Failed to update like status.");
+                        }
+
+                        toast.success(
+                          `${!item.is_hearted ? "Hearted" : "Unhearted"} post!`
+                        );
+                        // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
+                      } catch (err: any) {
+                        // Revert optimistic update
+                        // setLiked(!nextLiked);
+                        // setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
+
+                        toast.error(
+                          err?.data?.message ||
+                            "Something went wrong. Please try again."
+                        );
+                        console.error("Like error:", err);
+                      }
+                    }}
+                    className="text-xs h-8 !px-3"
+                    disabled={liking}
+                  >
+                    <HeartIcon
+                      className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
+                      fill={
+                        item.is_hearted
+                          ? resolvedTheme === "dark"
+                            ? "#ffffff"
+                            : "#dc2626"
+                          : "transparent"
+                      }
+                    />
+                    {liking && <Loader2Icon className="animate-spin" />}
+                    {item.hearts_count}
                   </Button>
                 </DialogFooter>
 

@@ -86,19 +86,20 @@ export default function MostHearted() {
               {region === ""
                 ? "Worldwide"
                 : (() => {
-                  const country = countries?.data?.find((c: any) =>
-                    c.regions.some((r: any) => r.id.toString() === region)
-                  );
-                  const regionData = country?.regions?.find(
-                    (r: any) => r.id.toString() === region
-                  );
-                  return regionData
-                    ? `${regionData.name} (${regionData.code})`
-                    : "Select Region";
-                })()}
+                    const country = countries?.data?.find((c: any) =>
+                      c.regions.some((r: any) => r.id.toString() === region)
+                    );
+                    const regionData = country?.regions?.find(
+                      (r: any) => r.id.toString() === region
+                    );
+                    return regionData
+                      ? `${regionData.name} (${regionData.code})`
+                      : "Select Region";
+                  })()}
               <ChevronDownIcon
-                className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"
-                  }`}
+                className={`ml-2 h-4 w-4 transition-transform duration-200 ${
+                  open ? "rotate-180" : "rotate-0"
+                }`}
               />
             </Button>
           </PopoverTrigger>
@@ -204,11 +205,12 @@ export default function MostHearted() {
                 image: product.product_image || "/image/shop/item.jpg",
                 title: product.product_name,
                 category: product.brand || "PODS",
-                price: product.product_price,
                 discount: product.product_discount,
                 hearts: product.hearts_count,
                 is_hearted: product.is_hearted,
               }}
+              blank
+              noPrice
               link={`/brands/brand/product/${product.id}`}
               key={product.id}
             />

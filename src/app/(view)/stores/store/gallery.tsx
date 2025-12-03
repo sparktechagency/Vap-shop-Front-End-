@@ -31,7 +31,6 @@ import {
 import { HeartIcon, Loader2Icon } from "lucide-react";
 import {
   useGetPostsByIdQuery,
-  useGetPostsQuery,
 } from "@/redux/features/users/postApi";
 import { useUser } from "@/context/userContext";
 import { Skeleton } from "@/components/ui/skeleton";
