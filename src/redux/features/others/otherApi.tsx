@@ -41,6 +41,15 @@ export const otherApi = api.injectEndpoints({
       query: ({ id }) => ({
         url: `/tigger-like/${id}`,
         method: "POST",
+        body: { type: "like" },
+      }),
+      invalidatesTags: ["post"],
+    }),
+    posHeart: builder.mutation<any, any>({
+      query: ({ id }) => ({
+        url: `/tigger-like/${id}`,
+        method: "POST",
+        body: { type: "heart" },
       }),
       invalidatesTags: ["post"],
     }),
@@ -120,6 +129,7 @@ export const {
   useToggleLikeMutation,
   useReplyReviewMutation,
   usePostLikeMutation,
+  usePosHeartMutation,
   useSearchQuery,
   useCreateConnectMutation,
   useGetLocationsQuery,

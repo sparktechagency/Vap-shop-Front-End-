@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -89,9 +88,7 @@ export default function Import() {
     data: prods,
     isLoading: prodLoading,
     isError,
-  } = useGetBrandDetailsByIdQuery(selectedBrand as any, {
-    // skip: !selectedBrand,
-  });
+  } = useGetBrandDetailsByIdQuery(selectedBrand as any);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -194,9 +191,9 @@ export default function Import() {
                                 variant="ghost"
                                 className="w-full justify-start text-left"
                                 onClick={() => {
+                                  setSelectedBrand(item.id); // update this first!
                                   form.setValue("brandName", item.full_name);
                                   setShowSuggestions(false);
-                                  setSelectedBrand(item.id);
                                 }}
                               >
                                 <Avatar className="size-6">

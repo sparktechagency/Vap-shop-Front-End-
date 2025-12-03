@@ -33,7 +33,10 @@ import {
   useGetCommentQuery,
 } from "@/redux/features/users/postApi";
 import Namer from "./internal/namer";
-import { usePostLikeMutation } from "@/redux/features/others/otherApi";
+import {
+  usePosHeartMutation,
+  usePostLikeMutation,
+} from "@/redux/features/others/otherApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {
@@ -80,11 +83,13 @@ export default function MyPostCard({
 }) {
   const [liked, setLiked] = useState<boolean>(false);
   const [liking, setLiking] = useState(false);
+  const [hearted, setHearted] = useState<boolean>(false);
   const { resolvedTheme } = useTheme();
   const [comment] = useCommentPostMutation();
   const [deletePost] = useDeletePostMutation();
   const { data: comments, refetch } = useGetCommentQuery({ id: data.id });
   const [likePost] = usePostLikeMutation();
+  const [heartPost, { isLoading: hearting }] = usePosHeartMutation();
   const [totalLike, setTotalLike] = useState(0);
   type FormSchema = z.infer<typeof schema>;
   const form = useForm<FormSchema>({
@@ -228,43 +233,38 @@ export default function MyPostCard({
               variant="special"
               onClick={async () => {
                 try {
-                  const res = await likePost({ id: data.id }).unwrap();
+                  const res = await heartPost({ id: data.id }).unwrap();
 
                   if (!res.ok) {
-                    throw new Error("Failed to update like status.");
+                    throw new Error("Failed to update heart status.");
                   }
 
                   toast.success(
-                    `${!data.is_post_liked ? "Liked" : "Unliked"} post!`
+                    `${!data.is_hearted ? "Hearted" : "Unhearted"} Image!`
                   );
-                  // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
                 } catch (err: any) {
-                  // Revert optimistic update
-                  // setLiked(!nextLiked);
-                  // setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
-
                   toast.error(
                     err?.data?.message ||
                       "Something went wrong. Please try again."
                   );
-                  console.error("Like error:", err);
+                  console.error("Hearting error:", err);
                 }
               }}
               className="text-xs h-8 !px-3"
-              disabled={liking}
+              disabled={hearting}
             >
               <HeartIcon
-                className={cn("w-4 h-4 !mr-1", liking ? "hidden" : "")}
+                className={cn("w-4 h-4 !mr-1", hearting ? "hidden" : "")}
                 fill={
-                  data.is_post_liked
+                  data.is_hearted
                     ? resolvedTheme === "dark"
                       ? "#ffffff"
                       : "#dc2626"
                     : "transparent"
                 }
               />
-              {liking && <Loader2Icon className="animate-spin" />}
-              {data.like_count}
+              {hearting && <Loader2Icon className="animate-spin" />}
+              {data.hearts_count}
             </Button>
           </DialogFooter>
 
