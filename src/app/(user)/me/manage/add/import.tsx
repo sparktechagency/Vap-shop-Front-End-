@@ -83,12 +83,14 @@ export default function Import() {
   const inputRef = useRef<HTMLDivElement>(null);
 
   const [postProduct] = usePostProductMutation();
-
+  const page = 1;
   const {
     data: prods,
     isLoading: prodLoading,
     isError,
-  } = useGetBrandDetailsByIdQuery(selectedBrand as any);
+  } = useGetBrandDetailsByIdQuery({ id: selectedBrand, page });
+
+  console.log("products----------------->", prods);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
