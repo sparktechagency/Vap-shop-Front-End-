@@ -51,7 +51,7 @@ export const otherApi = api.injectEndpoints({
         method: "POST",
         body: { type: "heart" },
       }),
-      invalidatesTags: ["post"],
+      invalidatesTags: ["post", "tranding"],
     }),
     search: builder.query<
       any,
@@ -116,6 +116,18 @@ export const otherApi = api.injectEndpoints({
         };
       },
     }),
+    favAccApi: builder.mutation<any, { id: string | number }>({
+      query: ({ id }) => {
+        return {
+          url: `/favourite`,
+          method: "POST",
+          body: {
+            favourite_id: id,
+          },
+        };
+      },
+      invalidatesTags: ["brand", "store"],
+    }),
   }),
 });
 
@@ -135,4 +147,5 @@ export const {
   useGetLocationsQuery,
   useCancelConnectMutation,
   useGetActiveLocationsQuery,
+  useFavAccApiMutation,
 } = otherApi;

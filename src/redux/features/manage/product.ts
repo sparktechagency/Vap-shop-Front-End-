@@ -43,8 +43,15 @@ export const manageApi = api.injectEndpoints({
         method:"POST",
         body
       })
+    }),
+    updateInvoiceApi: builder.mutation<any, any>({
+      query:({id,body})=>({
+        url:`/order/update/${id}`,
+        method:"PUT",
+        body
+      })
     })
   }),
 });
 
-export const { usePostProductMutation, useGetProductsQuery,useDeleteProdMutation,useUpdateProductMutation , useTrendAdProductMutation ,useTrendAdBrandMutation } = manageApi;
+export const {useUpdateInvoiceApiMutation, usePostProductMutation, useGetProductsQuery,useDeleteProdMutation,useUpdateProductMutation , useTrendAdProductMutation ,useTrendAdBrandMutation } = manageApi;

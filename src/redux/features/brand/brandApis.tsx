@@ -4,6 +4,7 @@ export const brandApis = api.injectEndpoints({
   endpoints: (builder) => ({
     getallBrands: builder.query<any, void>({
       query: () => `/get-all-store-brand-wholesaler?type=brand`,
+      providesTags: ["brand"],
     }),
     getBrandDetailsById: builder.query<any, { id: any; page: any }>({
       query: ({ id, page = 1 }) =>

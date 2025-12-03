@@ -54,7 +54,7 @@ export default function Page() {
 
       <div className="py-6 flex justify-end gap-4">
         <Button variant={"outline"} asChild>
-          <Link href={"locations/list"}>Manage Reuqests</Link>
+          <Link href={"locations/list"}>Manage Requests</Link>
         </Button>
         <AddLocation />
       </div>

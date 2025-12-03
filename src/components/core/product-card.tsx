@@ -63,6 +63,7 @@ export default function ProductCard({
   blank,
   isBrand,
   hearted,
+  noPrice,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
@@ -73,6 +74,7 @@ export default function ProductCard({
   blank?: boolean;
   isBrand?: boolean;
   hearted?: boolean;
+  noPrice?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -254,7 +256,8 @@ export default function ProductCard({
                 {data?.thc_percentage}% THC
               </div>
             )}
-            {userRole !== 6 &&
+            {!noPrice &&
+              userRole !== 6 &&
               (!data?.price || parseFloat(data.price) <= 0 ? (
                 <div className="text-xs md:text-sm text-muted-foreground">
                   <span>Contact for pricing</span>

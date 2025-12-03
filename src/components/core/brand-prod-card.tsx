@@ -1,14 +1,19 @@
 "use client";
 import React from "react";
-import { EyeIcon, HeartIcon, StarIcon } from "lucide-react";
+import { EyeIcon, HeartIcon, Loader2Icon, StarIcon } from "lucide-react";
 import Link from "next/link";
 import { BrandType } from "@/lib/types/product";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Namer from "./internal/namer";
 import { Badge } from "@/components/ui/badge";
+import { useFavAccApiMutation } from "@/redux/features/others/otherApi";
+import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 export default function BrandProdCard({ data }: { data: BrandType }) {
+  const { resolvedTheme } = useTheme();
+  const [fav, { isLoading }] = useFavAccApiMutation();
   return (
     <div className="!p-0 !gap-0 shadow-sm rounded-lg border overflow-hidden">
       <div
@@ -22,7 +27,11 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
 
-        <Link href={`/brands/brand/${data?.id}?${data?.storeName?.toLocaleLowerCase()}`}>
+        <Link
+          href={`/brands/brand/${
+            data?.id
+          }?${data?.storeName?.toLocaleLowerCase()}`}
+        >
           <div className="bg-background/70 h-full w-full opacity-0 hover:opacity-60 hover:backdrop-blur-xs transition-all z-0">
             <div className="absolute flex items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-foreground hover:scale-125 transition-transform cursor-pointer gap-1 text-xs md:text-base">
               <EyeIcon className="size-4 md:size-6" /> View
@@ -34,11 +43,39 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
           className="absolute bottom-2 right-2 bg-background hover:bg-secondary dark:hover:bg-zinc-800 text-foreground"
           variant="default"
           size="icon"
+          disabled={isLoading}
+          onClick={async () => {
+            try {
+              const res = await fav({ id: data.id }).unwrap();
+              console.log(res);
+              if (res.ok) {
+                toast.success(res.message);
+              } else {
+                toast.error(res.message);
+              }
+            } catch (error) {
+              console.error(error);
+              toast.error("Something went wrong");
+            }
+          }}
         >
-          <HeartIcon
-            className={`text-foreground ${data?.isFollowing ? "fill-foreground" : ""
+          {isLoading ? (
+            <Loader2Icon className={`text-foreground animate-spin`} />
+          ) : data?.is_favourite ? (
+            <HeartIcon
+              fill={resolvedTheme === "dark" ? "#f9f9f9" : "#191919"}
+              className={`text-foreground ${
+                data?.isFollowing ? "fill-foreground" : ""
               }`}
-          />
+            />
+          ) : (
+            <HeartIcon
+              fill=""
+              className={`text-foreground ${
+                data?.isFollowing ? "fill-foreground" : ""
+              }`}
+            />
+          )}
         </Button>
       </div>
 
@@ -47,9 +84,7 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
           <div className="flex items-center gap-3">
             <Avatar className="size-10 border">
               <AvatarImage src={data?.image} />
-              <AvatarFallback>
-                {data?.storeName}
-              </AvatarFallback>
+              <AvatarFallback>{data?.storeName}</AvatarFallback>
             </Avatar>
             <div>
               <Link href={`/brands/brand/${data?.id}`}>
