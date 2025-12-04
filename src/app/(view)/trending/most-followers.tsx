@@ -257,6 +257,9 @@ export default function MostFollowers() {
                     </div>
                   )}
                   <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+                  <div className="absolute bottom-0 right-0 px-4 py-2 rounded-sm bg-background flex items-center gap-2">
+                    <HeartIcon className="size-5" /> {item.hearts_count}
+                  </div>
                 </Card>
               </DialogTrigger>
 

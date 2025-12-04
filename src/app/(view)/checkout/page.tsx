@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -44,17 +44,16 @@ export default function CheckoutPage() {
 
     loadCart();
 
-
     const handleStorageChange = () => {
       loadCart();
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('cart-updated', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("cart-updated", handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('cart-updated', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("cart-updated", handleStorageChange);
     };
   }, []);
 
@@ -63,29 +62,29 @@ export default function CheckoutPage() {
     setCartItems(newCartItems);
     localStorage.setItem(cartKey, JSON.stringify(newCartItems));
     // Dispatch both storage and custom events
-    window.dispatchEvent(new Event('storage'));
-    window.dispatchEvent(new CustomEvent('cart-updated'));
+    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new CustomEvent("cart-updated"));
   };
 
   const removeItem = (id: string) => {
     try {
-      const updatedCart = cartItems.filter(item => item.id !== id);
+      const updatedCart = cartItems.filter((item) => item.id !== id);
       updateCart(updatedCart);
-      toast.success('Item removed from cart');
+      toast.success("Item removed from cart");
     } catch (error) {
-      toast.error('Failed to remove item');
+      toast.error("Failed to remove item");
     }
   };
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     try {
-      const updatedCart = cartItems.map(item =>
+      const updatedCart = cartItems.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       );
       updateCart(updatedCart);
     } catch (error) {
-      toast.error('Failed to update quantity');
+      toast.error("Failed to update quantity");
     }
   };
 
@@ -103,13 +102,15 @@ export default function CheckoutPage() {
       <div className="lg:col-span-5 !space-y-12">
         <Card>
           <CardContent className="pt-6">
-            <CheckoutForm cartItems={cartItems.map(item => ({
-              id: parseInt(item.id),
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-              image: item.image || null,
-            }))} />
+            <CheckoutForm
+              cartItems={cartItems.map((item) => ({
+                id: parseInt(item.id),
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image || null,
+              }))}
+            />
           </CardContent>
         </Card>
       </div>
@@ -127,7 +128,10 @@ export default function CheckoutPage() {
                   <p className="text-gray-500">Your cart is empty</p>
                 ) : (
                   cartItems.map((item) => (
-                    <li key={item.id} className="flex flex-col gap-2 pb-4 border-b">
+                    <li
+                      key={item.id}
+                      className="flex flex-col gap-2 pb-4 border-b"
+                    >
                       <div className="flex justify-between items-start w-full">
                         <div className="flex gap-3">
                           <div className="relative h-16 w-16">
@@ -141,7 +145,9 @@ export default function CheckoutPage() {
                           </div>
                           <div>
                             <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
+                            <p className="text-sm text-gray-500">
+                              ${item.price.toFixed(2)}
+                            </p>
                           </div>
                         </div>
                         <Button
@@ -159,17 +165,23 @@ export default function CheckoutPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
                             disabled={item.quantity <= 1}
                             className="h-8 w-8 p-0"
                           >
                             -
                           </Button>
-                          <span className="w-8 text-center">{item.quantity}</span>
+                          <span className="w-8 text-center">
+                            {item.quantity}
+                          </span>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                             className="h-8 w-8 p-0"
                           >
                             +
@@ -187,7 +199,11 @@ export default function CheckoutPage() {
           </CardContent>
 
           <Separator />
-
+          <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
+            <code className="whitespace-pre-wrap">
+              {JSON.stringify(cartItems, null, 2)}
+            </code>
+          </pre>
           <CardFooter className="py-4">
             <div className="flex justify-between w-full font-bold text-lg">
               <p>Total</p>
