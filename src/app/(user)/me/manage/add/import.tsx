@@ -136,6 +136,24 @@ export default function Import() {
     }
   };
 
+  useEffect(() => {
+    if (selectedProduct) {
+      if (selectedProduct.product_price) {
+        form.setValue("price", selectedProduct.product_price);
+      }
+      if (selectedProduct.product_stock) {
+        form.setValue("stock", selectedProduct.product_stock);
+      }
+      if (selectedProduct.product_description) {
+        const div = document.createElement("div");
+        div.innerHTML = selectedProduct.product_description;
+        const purified_textonly_description =
+          div.textContent || div.innerText || "";
+
+        form.setValue("description", purified_textonly_description);
+      }
+    }
+  }, [selectedProduct]);
   return (
     <div className="py-12!">
       {/* <Button

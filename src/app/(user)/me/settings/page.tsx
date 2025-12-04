@@ -121,15 +121,11 @@ export default function Page() {
             <CardContent className="p-0">
               <div className="flex items-start gap-4">
                 <div className="flex-1 space-y-3 flex w-full justify-between items-center">
-                  <h3 className="font-semibold h-full">
-                    {my.role === 2
-                      ? "Need Payment Processing to Accept Donations?"
-                      : "Need Payment Processing?"}
-                  </h3>
+                  <h3 className="font-semibold h-full">Business Center Link</h3>
                   <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between items-center">
                     <div className=""></div>
                     <Button className="w-full" asChild>
-                      <Link href={"https://pages.ecrypt.com/vape-shop-maps"}>
+                      <Link href={"http://lobbiessentials.com"}>
                         Click Here
                       </Link>
                     </Button>

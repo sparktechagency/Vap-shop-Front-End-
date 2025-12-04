@@ -194,15 +194,21 @@ export default function MyPostCard({
                 {data?.post_images?.map((img: any, i: number) => (
                   <CarouselItem key={i}>
                     <div className="p-1">
-                      <Card className="aspect-square!">
-                        <CardContent className="flex aspect-square! items-center justify-center p-0">
-                          <Image
-                            src={img?.image_path}
-                            height={600}
-                            width={400}
-                            alt={`Post image ${i + 1}`}
-                            className="w-full h-full object-cover aspect-square rounded-md"
-                          />
+                      <Card className="aspect-square! p-0!">
+                        <CardContent className="flex aspect-square! items-center justify-center p-0! ">
+                          <ImageZoom
+                            onZoomChange={() => {
+                              //keep dialog open
+                            }}
+                          >
+                            <Image
+                              src={img?.image_path}
+                              height={500}
+                              width={500}
+                              alt={`Post image ${i + 1}`}
+                              className="w-full h-full object-contain aspect-square rounded-md"
+                            />
+                          </ImageZoom>
                         </CardContent>
                       </Card>
                     </div>

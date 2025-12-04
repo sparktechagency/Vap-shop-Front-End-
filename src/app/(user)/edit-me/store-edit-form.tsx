@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,12 +25,17 @@ import {
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { useCountysQuery } from "@/redux/features/AuthApi"; // ✅ Added
 import { toast } from "sonner";
-import { Loader2Icon, TriangleAlertIcon } from "lucide-react";
+import { BadgePercentIcon, Loader2Icon, TriangleAlertIcon } from "lucide-react";
 import LocationPicker from "@/components/core/location-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 const formSchema = z.object({
   store_name: z.string().min(2),
@@ -40,13 +44,14 @@ const formSchema = z.object({
   city: z.string().optional(),
   address: z.string().min(2),
   zip_code: z.string().min(2),
-  country_id: z.string(), // ✅ Added
+  country_id: z.string(),
   region_id: z.string(),
   latitude: z.string(),
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
   pl: z.boolean(),
+  tax_percentage: z.string(),
 });
 
 interface Country {
@@ -93,6 +98,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       open_from: String(my?.open_from || ""),
       close_at: String(my?.close_at || ""),
       pl: my?.pl === 1 ? true : false,
+      tax_percentage: String(my?.tax_percentage),
     },
   });
 
@@ -373,6 +379,30 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                 )}
               />
             )}
+          </CardContent>
+        </Card>
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle>Tax Percentage</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              control={control}
+              name="tax_percentage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <InputGroup>
+                      <InputGroupInput {...field} />
+                      <InputGroupAddon>
+                        <BadgePercentIcon />
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
 
