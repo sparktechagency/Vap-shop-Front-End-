@@ -15,6 +15,8 @@ interface ProductPriceProps {
   productImage?: string;
   initialQuantity?: number;
   description?: string;
+  userId: string;
+  userTax: number;
 }
 
 interface CartItem {
@@ -24,9 +26,13 @@ interface CartItem {
   quantity: number;
   image?: string;
   description?: string;
+  ownerid: string;
+  ownerTax: number;
 }
 
 export function ProductPrice({
+  userId,
+  userTax,
   currentPrice,
   originalPrice,
   productId,
@@ -37,6 +43,7 @@ export function ProductPrice({
 }: ProductPriceProps) {
   const { data: userData } = useGetOwnprofileQuery();
   const user_id = userData?.data?.id;
+
   const [quantity, setQuantity] = useState(initialQuantity);
 
   const handleAddToCart = () => {
@@ -69,6 +76,8 @@ export function ProductPrice({
         quantity: quantity,
         image: productImage,
         description,
+        ownerid: userId,
+        ownerTax: userTax,
       });
     }
 

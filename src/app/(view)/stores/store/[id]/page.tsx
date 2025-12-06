@@ -25,12 +25,14 @@ import {
   useUnfollowBrandMutation,
 } from "@/redux/features/Trending/TrendingApi";
 import OpenStatus from "./open-status";
+import { useGoogleLocation } from "@/hooks/useCurrentLocation";
 
 export default function Page() {
   const { id } = useParams();
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
     id: id as any,
   });
+  const { location } = useGoogleLocation();
   const { data: userData } = useGetOwnprofileQuery();
   const Userrole = userData?.data?.role;
   const [mutated, setMutated] = React.useState(false);
@@ -100,7 +102,7 @@ export default function Page() {
   const handleMapClick = (data: any) => {
     console.log("data", data);
     navigation.push(
-      `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}`
+      `/map?lat=${location?.lat}&lng=${location?.lng}`
     );
   };
 
@@ -127,9 +129,8 @@ export default function Page() {
       <div
         className="h-[50dvh] w-full relative bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('${
-            data?.data?.cover_photo || "/image/home/car2.png"
-          }')`,
+          backgroundImage: `url('${data?.data?.cover_photo || "/image/home/car2.png"
+            }')`,
         }}
       >
         <Avatar className="size-40 absolute -bottom-[10rem] -translate-y-1/2 -translate-x-1/2 md:translate-x-0 left-1/2 lg:left-[7%]">
@@ -205,9 +206,8 @@ export default function Page() {
                 </p>
                 <Button
                   variant="outline"
-                  className={`${
-                    Userrole === 2 || Userrole === 6 ? "hidden" : ""
-                  } !text-sm font-extrabold `}
+                  className={`${Userrole === 2 || Userrole === 6 ? "hidden" : ""
+                    } !text-sm font-extrabold `}
                   asChild
                 >
                   <Button

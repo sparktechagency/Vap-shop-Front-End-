@@ -53,6 +53,9 @@ export default function CheckoutForm({
 }) {
   const [checkout, { isLoading }] = useCheckoutMutation();
 
+
+  console.log('ccartitems form chekout', cartItems);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,6 +84,7 @@ export default function CheckoutForm({
         })),
       };
       const result = await checkout(checkoutData).unwrap();
+      console.log('result', result);
       if (result?.ok) {
         toast.success("Order placed successfully!", {
           description: "Thank you for your purchase.",

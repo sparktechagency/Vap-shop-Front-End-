@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 import CheckoutForm from "./checkout-form";
 import Image from "next/image";
@@ -17,12 +16,16 @@ import { XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
+
 interface CartItem {
   id: string;
   name: string;
   price: number;
   quantity: number;
   image?: string;
+  description?: string;
+  ownerid: string;
+  ownerTax: number;
 }
 
 export default function CheckoutPage() {
@@ -31,6 +34,7 @@ export default function CheckoutPage() {
   const { data: userData } = useGetOwnprofileQuery();
   const user_id = userData?.data?.id;
   const cartKey = `cart_${user_id}`;
+
   useEffect(() => {
     const loadCart = () => {
       try {
@@ -61,7 +65,6 @@ export default function CheckoutPage() {
   const updateCart = (newCartItems: CartItem[]) => {
     setCartItems(newCartItems);
     localStorage.setItem(cartKey, JSON.stringify(newCartItems));
-    // Dispatch both storage and custom events
     window.dispatchEvent(new Event("storage"));
     window.dispatchEvent(new CustomEvent("cart-updated"));
   };
@@ -88,10 +91,25 @@ export default function CheckoutPage() {
     }
   };
 
-  const totalPrice = cartItems.reduce(
+  // --- CALCULATIONS START ---
+
+  // 1. Calculate the price of items without tax
+  const subTotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  // 2. Calculate the total tax amount based on each item's specific tax rate
+  const totalTaxAmount = cartItems.reduce((sum, item) => {
+    const itemTotal = item.price * item.quantity;
+    const taxAmount = itemTotal * (Number(item.ownerTax) / 100);
+    return sum + taxAmount;
+  }, 0);
+
+  // 3. Final Total
+  const grandTotal = subTotal + totalTaxAmount;
+
+  // --- CALCULATIONS END ---
 
   return (
     <main className="!py-12 !px-4 md:!px-[7%] grid grid-cols-1 lg:grid-cols-7 gap-12">
@@ -102,6 +120,9 @@ export default function CheckoutPage() {
       <div className="lg:col-span-5 !space-y-12">
         <Card>
           <CardContent className="pt-6">
+            {/* NOTE: You might want to pass the grandTotal 
+                to CheckoutForm if your payment logic needs it there 
+            */}
             <CheckoutForm
               cartItems={cartItems.map((item) => ({
                 id: parseInt(item.id),
@@ -130,11 +151,11 @@ export default function CheckoutPage() {
                   cartItems.map((item) => (
                     <li
                       key={item.id}
-                      className="flex flex-col gap-2 pb-4 border-b"
+                      className="flex flex-col gap-2 pb-4 border-b last:border-0"
                     >
                       <div className="flex justify-between items-start w-full">
                         <div className="flex gap-3">
-                          <div className="relative h-16 w-16">
+                          <div className="relative h-16 w-16 min-w-[4rem]">
                             <Image
                               src={item.image || "/image/shop/item.jpg"}
                               alt={item.name}
@@ -144,7 +165,7 @@ export default function CheckoutPage() {
                             />
                           </div>
                           <div>
-                            <p className="font-medium">{item.name}</p>
+                            <p className="font-medium line-clamp-1">{item.name}</p>
                             <p className="text-sm text-gray-500">
                               ${item.price.toFixed(2)}
                             </p>
@@ -160,7 +181,7 @@ export default function CheckoutPage() {
                         </Button>
                       </div>
 
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center mt-2">
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -173,7 +194,7 @@ export default function CheckoutPage() {
                           >
                             -
                           </Button>
-                          <span className="w-8 text-center">
+                          <span className="w-8 text-center text-sm">
                             {item.quantity}
                           </span>
                           <Button
@@ -187,9 +208,16 @@ export default function CheckoutPage() {
                             +
                           </Button>
                         </div>
+
                         <p className="font-medium">
                           ${(item.price * item.quantity).toFixed(2)}
                         </p>
+                      </div>
+
+                      {/* Individual Item Tax Display */}
+                      <div className="flex justify-between items-center text-xs text-gray-500 mt-1">
+                        <span>Tax ({item.ownerTax}%)</span>
+                        <span>+${(item.price * item.quantity * (Number(item.ownerTax) / 100)).toFixed(2)}</span>
                       </div>
                     </li>
                   ))
@@ -198,16 +226,27 @@ export default function CheckoutPage() {
             </CardDescription>
           </CardContent>
 
-          <Separator />
-          <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
-            <code className="whitespace-pre-wrap">
-              {JSON.stringify(cartItems, null, 2)}
-            </code>
-          </pre>
-          <CardFooter className="py-4">
+          {/* Summary Section */}
+          <div className="px-6 pb-4">
+            {/* If you don't have a Separator component, use <hr className="my-4" /> */}
+            <hr className="my-4 border-gray-200" />
+          </div>
+
+          <CardFooter className="flex flex-col gap-3 pb-6">
+            <div className="flex justify-between w-full text-sm text-gray-600">
+              <p>Subtotal</p>
+              <p>${subTotal.toFixed(2)}</p>
+            </div>
+            <div className="flex justify-between w-full text-sm text-gray-600">
+              <p>Total Tax</p>
+              <p>${totalTaxAmount.toFixed(2)}</p>
+            </div>
+
+            <hr className="w-full border-gray-200 my-1" />
+
             <div className="flex justify-between w-full font-bold text-lg">
               <p>Total</p>
-              <p>${totalPrice.toFixed(2)}</p>
+              <p>${grandTotal.toFixed(2)}</p>
             </div>
           </CardFooter>
         </Card>

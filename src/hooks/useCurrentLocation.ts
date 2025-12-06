@@ -14,13 +14,9 @@ export function useGoogleLocation() {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const res = await fetch(
-          `https://www.googleapis.com/geolocation/v1/geolocate?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
-          {
-            method: "POST",
-          }
-        );
+        const res = await fetch("/api/location", { method: "POST" });
 
+        console.log("response location-----", res);
         if (!res.ok) throw new Error("Failed to fetch location");
 
         const data = await res.json();
