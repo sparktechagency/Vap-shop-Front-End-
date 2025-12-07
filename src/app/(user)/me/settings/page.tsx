@@ -125,9 +125,7 @@ export default function Page() {
                   <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between items-center">
                     <div className=""></div>
                     <Button className="w-full" asChild>
-                      <Link href={"http://lobbiessentials.com"}>
-                        Click Here
-                      </Link>
+                      <Link href={"http://lobbisupply.com"}>Click Here</Link>
                     </Button>
                   </div>
                 </div>
