@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetUserFeedQuery } from "@/redux/features/users/postApi";
 import { UserData } from "@/lib/types/apiTypes";
+import MyPostCard from "@/components/core/my-post-card";
 
 export default function Feed({ my }: { my: UserData }) {
   const { id } = my;
@@ -33,7 +33,7 @@ export default function Feed({ my }: { my: UserData }) {
 
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
-      <PostCard
+      <MyPostCard
         key={post.id || index} // Prefer post.id if available
         user={{
           name: post?.user?.full_name ?? "Name not found",
