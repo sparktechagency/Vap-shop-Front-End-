@@ -91,6 +91,7 @@ export default function MyPostCard({
   const [likePost] = usePostLikeMutation();
   const [heartPost, { isLoading: hearting }] = usePosHeartMutation();
   const [totalLike, setTotalLike] = useState(0);
+
   type FormSchema = z.infer<typeof schema>;
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -445,6 +446,7 @@ export default function MyPostCard({
               </AlertDialog>
             </>
           )}
+
           <Button variant="ghost">
             <Share2 />
           </Button>

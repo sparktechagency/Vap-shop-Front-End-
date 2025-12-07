@@ -25,7 +25,12 @@ import {
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { useCountysQuery } from "@/redux/features/AuthApi"; // ✅ Added
 import { toast } from "sonner";
-import { BadgePercentIcon, Loader2Icon, TriangleAlertIcon } from "lucide-react";
+import {
+  BadgePercentIcon,
+  BikeIcon,
+  Loader2Icon,
+  TriangleAlertIcon,
+} from "lucide-react";
 import LocationPicker from "@/components/core/location-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -383,7 +388,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
         </Card>
         <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>Tax Percentage</CardTitle>
+            <CardTitle>State Tax % (Optional)</CardTitle>
           </CardHeader>
           <CardContent>
             <FormField
@@ -393,7 +398,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                 <FormItem>
                   <FormControl>
                     <InputGroup>
-                      <InputGroupInput {...field} />
+                      <InputGroupInput placeholder="0.00" {...field} />
                       <InputGroupAddon>
                         <BadgePercentIcon />
                       </InputGroupAddon>
@@ -407,7 +412,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
         </Card>
         <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>B2B Shipping cost</CardTitle>
+            <CardTitle>B2B Shipping cost (Optional)</CardTitle>
           </CardHeader>
           <CardContent>
             {/* <FormField
@@ -417,9 +422,9 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                 <FormItem>
                   <FormControl> */}
             <InputGroup>
-              <InputGroupInput />
+              <InputGroupInput placeholder="0.00" />
               <InputGroupAddon>
-                <BadgePercentIcon />
+                <BikeIcon />
               </InputGroupAddon>
             </InputGroup>
             {/* </FormControl>
