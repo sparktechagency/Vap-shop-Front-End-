@@ -11,6 +11,7 @@ import {
   Share2Icon,
   CopyIcon,
   MailIcon,
+  BookmarkIcon,
 } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
@@ -327,14 +328,14 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
+            <Button variant={"outline"}>
+              <BookmarkIcon />
+              Add to favourite
+            </Button>
             {/* <Button variant="outline" className="!text-sm font-extrabold">
               B2B
             </Button> */}
-            <Button variant="outline" size="icon">
-              <Link href={`/chat?email=${product?.data?.user?.email}`}>
-                <MessageSquareMoreIcon />
-              </Link>
-            </Button>
+
             {product?.data?.user?.is_following ? (
               <Button
                 onClick={() => handleUnfollow(product?.data?.user?.id)}
@@ -350,7 +351,11 @@ export default function Page() {
                 {isFollowing ? "Following..." : "Follow"}
               </Button>
             )}
-
+            <Button variant="outline" size="icon">
+              <Link href={`/chat?email=${product?.data?.user?.email}`}>
+                <MessageSquareMoreIcon />
+              </Link>
+            </Button>
             <Dialog
               open={isShareDialogOpen}
               onOpenChange={setIsShareDialogOpen}

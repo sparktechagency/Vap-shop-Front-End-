@@ -1,6 +1,5 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { Activity, useState } from "react";
 import {
   Table,
   TableBody,
@@ -16,6 +15,7 @@ import {
   useUpdateOrderStatusMutation,
 } from "@/redux/features/users/userApi";
 import {
+  CheckIcon,
   Edit3Icon,
   EditIcon,
   EyeIcon,
@@ -36,11 +36,18 @@ import { useUser } from "@/context/userContext";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useUpdateBusinessOrderMutation } from "@/redux/features/store/StoreApi";
+import ReplaceInvoice from "./replace-invoice";
+import { isPending } from "@reduxjs/toolkit";
 
 interface OrderType {
   order_id: number;
@@ -66,6 +73,7 @@ interface OrderType {
 export default function BuissnessOrder() {
   const { data, isLoading, isError, error } = useGetOrdersQuery<any>();
   const [updateOrder] = useUpdateOrderStatusMutation();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("12345");
   const { role } = useUser();
@@ -177,37 +185,18 @@ export default function BuissnessOrder() {
                     </TableCell>
                     <TableCell className="text-right">${x.sub_total}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant={"ghost"} size={"icon"}>
-                            <Edit3Icon />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="min-w-[96dvw] xl:min-w-[60dvw]">
-                          <DialogHeader className="border-b pb-2">
-                            <DialogTitle>Update order</DialogTitle>
-                          </DialogHeader>
-                          {x.order_items?.map((y) => (
-                            <div key={y.product_id} className="flex gap-4">
-                              <Image
-                                height={124}
-                                width={124}
-                                className="size-[64px] object-cover rounded-lg"
-                                alt="product-image"
-                                src={y.product_image}
-                              />
-                              <div className="grid grid-cols-3 gap-4">
-                                <h4>{y.product_name}</h4>
-                                {/* <pre className="bg-gradient-to-br max-h-[80dvh] overflow-scroll fixed top-1/2 left-1/2 -translate-1/2 w-[90dvw] z-50 from-zinc-900/60 via-zinc-800/40 to-zinc-900/20 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700/20">
-                                  <code className="whitespace-pre-wrap">
-                                    {JSON.stringify(x, null, 2)}
-                                  </code>
-                                </pre> */}
-                              </div>
-                            </div>
-                          ))}
-                        </DialogContent>
-                      </Dialog>
+                      {isLoading ? (
+                        <Loader2Icon />
+                      ) : (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant={"ghost"} size={"icon"}>
+                              <Edit3Icon />
+                            </Button>
+                          </DialogTrigger>
+                          <ReplaceInvoice data={x} id={x.order_id} />
+                        </Dialog>
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button size="icon" variant="outline">
