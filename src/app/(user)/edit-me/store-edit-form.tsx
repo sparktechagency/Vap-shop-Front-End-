@@ -405,6 +405,30 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             />
           </CardContent>
         </Card>
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle>B2B Shipping cost</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* <FormField
+              // control={control}
+              // name="tax_percentage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl> */}
+            <InputGroup>
+              <InputGroupInput />
+              <InputGroupAddon>
+                <BadgePercentIcon />
+              </InputGroupAddon>
+            </InputGroup>
+            {/* </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+          </CardContent>
+        </Card>
 
         <div className="col-span-2">
           <Button type="submit" className="w-full" disabled={isLoading}>
