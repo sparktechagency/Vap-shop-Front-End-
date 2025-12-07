@@ -194,7 +194,7 @@ export default function BuissnessOrder() {
                               <Edit3Icon />
                             </Button>
                           </DialogTrigger>
-                          <ReplaceInvoice data={x} id={x.order_id} />
+                          <ReplaceInvoice data={x} />
                         </Dialog>
                       )}
                       <DropdownMenu>
