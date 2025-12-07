@@ -3,11 +3,13 @@
 import React from "react";
 import Link from "next/link";
 
-import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
-import { useGetProfileQuery } from "@/redux/features/AuthApi";
+import {
+  useGetOwnprofileQuery,
+  useGetProfileQuery,
+} from "@/redux/features/AuthApi";
 import MyPostCard from "@/components/core/my-post-card";
 
 export default function Post({ id }: { id: number }) {
@@ -18,6 +20,7 @@ export default function Post({ id }: { id: number }) {
   const { data: my } = useGetProfileQuery<any>({
     id: id,
   });
+  const { data: me } = useGetOwnprofileQuery<any>();
 
   if (isError) {
     return (
@@ -49,6 +52,7 @@ export default function Post({ id }: { id: number }) {
         key={post?.id || index}
         user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
+        manage={me.data.role === 1}
       />
     ));
 

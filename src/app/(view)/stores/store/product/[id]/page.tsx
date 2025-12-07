@@ -110,8 +110,7 @@ export default function Page() {
     refetch,
   } = useStoreProductDetailsByIdQuery(id as any);
 
-
-  console.log('productDetails-0---------', product);
+  console.log("productDetails-0---------", product);
   // Add this hook to fetch reviews
   const { data: reviewsData, isLoading: isReviewsLoading } = useGetReviewsQuery(
     {
@@ -309,7 +308,7 @@ export default function Page() {
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 product?.data?.product_description ||
-                "Premium product with excellent features."
+                  "Premium product with excellent features."
               ),
             }}
           />
@@ -344,8 +343,9 @@ export default function Page() {
             </div>
           ) : null}
           <div
-            className={`flex items-center justify-end mt-4 ${product?.data?.stock < 1 ? "opacity-50 pointer-events-none" : ""
-              }`}
+            className={`flex items-center justify-end mt-4 ${
+              product?.data?.stock < 1 ? "opacity-50 pointer-events-none" : ""
+            }`}
           >
             <ProductPrice
               currentPrice={
@@ -354,7 +354,7 @@ export default function Page() {
               }
               originalPrice={
                 product?.data?.original_price &&
-                  parseFloat(product.data.original_price) > 0
+                parseFloat(product.data.original_price) > 0
                   ? parseFloat(product.data.original_price)
                   : undefined
               }
