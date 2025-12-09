@@ -59,6 +59,8 @@ export default function Followers() {
       }
     );
 
+  console.log('userProfile', userProfile);
+
   const onSubmit = async (values: FollowersFormValues) => {
     if (!extractedId) {
       toast.error("Please provide a valid profile URL first.");
@@ -88,6 +90,8 @@ export default function Followers() {
 
   // Safe access to user data
   const user = userProfile?.data;
+
+  console.log('user', user);
 
   return (
     <>
@@ -166,6 +170,7 @@ export default function Followers() {
                       ID: {user.id}
                     </span>
                   </div>
+
                   <div className="text-sm text-gray-500 flex items-center gap-3">
                     <span>{user.role_label}</span>
                     <span className="text-gray-300">|</span>
@@ -175,6 +180,14 @@ export default function Followers() {
                         {user.total_followers}
                       </strong>
                     </span>
+
+                    <span className="text-sm text-gray-500">
+                      real_follower_count: {user?.real_follower_count}
+                    </span>
+                    <span className="text-sm text-green-500">
+                      Admin Adjustment: {user?.metric_adjustments[0].adjustment_count}
+                    </span>
+
                   </div>
                 </div>
               </div>
