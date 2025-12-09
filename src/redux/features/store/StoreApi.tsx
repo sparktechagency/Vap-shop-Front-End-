@@ -73,6 +73,17 @@ export const storeApi = api.injectEndpoints({
         return `/stores-by-location?${params.toString()}`;
       },
     }),
+    updateBusinessOrder: builder.mutation<
+      any,
+      { id: string | number; body: any }
+    >({
+      query: ({ id, body }) => ({
+        url: `/seller/order/update/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["order"],
+    }),
   }),
 });
 
@@ -84,4 +95,5 @@ export const {
   useFevoritestoreMutation,
   useCheckoutMutation,
   useGetAllStoresInMapQuery,
+  useUpdateBusinessOrderMutation,
 } = storeApi;

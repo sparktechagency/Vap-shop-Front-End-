@@ -8,6 +8,7 @@ import PostCard from "@/components/core/post-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetFeedQuery } from "@/redux/features/users/postApi";
+import MyPostCard from "@/components/core/my-post-card";
 
 export default function Feed() {
   const { data, isLoading, isError, isFetching } = useGetFeedQuery();
@@ -39,7 +40,7 @@ export default function Feed() {
 
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
-      <PostCard
+      <MyPostCard
         key={post.id || index} // Prefer post.id if available
         user={{
           name: post?.user?.full_name ?? "Name not found",
