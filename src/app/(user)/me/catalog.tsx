@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import ProductCard from "@/components/core/product-card";
 import React, { useState } from "react";
