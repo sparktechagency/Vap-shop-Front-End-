@@ -339,11 +339,9 @@ export default function BrandRegister({
                     />
                     <Label htmlFor="terms">
                       Accept{" "}
-
                       <button onClick={() => setIsModalOpen(true)}>
                         terms and conditions
                       </button>
-
                     </Label>
                   </div>
                   {errors.terms && (
