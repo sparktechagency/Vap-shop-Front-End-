@@ -245,7 +245,7 @@ export default function Page() {
 
                   const res = await favToggle({
                     id: product.data.id,
-                    type: "store",
+                    type: "brand",
                   }).unwrap();
                   if (!res.ok) {
                     toast.error(res.message ?? "Something went wrong");
@@ -262,12 +262,21 @@ export default function Page() {
               {favWorking ? (
                 <>
                   <Loader2Icon className="animate-spin" />
-                  Adding to favourite
+                  Adding to favorites
                 </>
               ) : (
                 <>
-                  <BookmarkIcon />
-                  Add to favourite
+                  {!isLoading && product?.data?.is_favorite ? (
+                    <>
+                      <BookmarkIcon fill="" />
+                      Remove from favourite
+                    </>
+                  ) : (
+                    <>
+                      <BookmarkIcon />
+                      Add to favorites
+                    </>
+                  )}
                 </>
               )}
             </Button>

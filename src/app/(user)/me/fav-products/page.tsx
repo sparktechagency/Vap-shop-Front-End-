@@ -52,11 +52,13 @@ export default function Page() {
               is_hearted: x?.details?.is_hearted,
               thc_percentage: x?.details?.thc_percentage,
             }}
-            // link={
-            //   role === 4
-            //     ? `/profile/product/${x.id}`
-            //     : `/stores/store/product/${x.id}`
-            // }
+            link={
+              x?.details.role === 4
+                ? `/profile/product/${x.id}`
+                : x?.details?.role === 3
+                ? `/brands/brand/product/${x.id}`
+                : `/stores/store/product/${x.id}`
+            }
           />
         ))}
         {/* {data?.data?.map((x: any) => (

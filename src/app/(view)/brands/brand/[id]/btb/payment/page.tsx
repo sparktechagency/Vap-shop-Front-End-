@@ -31,16 +31,9 @@ interface CartItem {
 
 export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const { id } = useParams();
+
   const { data: userData } = useGetOwnprofileQuery();
-  const {
-    data: store,
-    isLoading,
-    isError,
-    error,
-  } = useGtStoreDetailsQuery({
-    id: id as any,
-  });
+
   const user_id = userData?.data?.id;
   const cartKey = `cart_${user_id}`;
   useEffect(() => {

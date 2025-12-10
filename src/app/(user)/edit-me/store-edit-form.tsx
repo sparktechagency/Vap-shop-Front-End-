@@ -56,8 +56,8 @@ const formSchema = z.object({
   open_from: z.string(),
   close_at: z.string(),
   pl: z.boolean(),
-  tax_percentage: z.string(),
-  shipping_cost: z.string(),
+  tax_percentage: z.string().optional(),
+  shipping_cost: z.string().optional(),
 });
 
 interface Country {
@@ -424,7 +424,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
                 <FormItem>
                   <FormControl>
                     <InputGroup>
-                      <InputGroupInput placeholder="0.00" />
+                      <InputGroupInput placeholder="0.00" {...field} />
                       <InputGroupAddon>
                         <BikeIcon />
                       </InputGroupAddon>

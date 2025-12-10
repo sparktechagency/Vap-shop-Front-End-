@@ -51,7 +51,7 @@ const formSchema = z.object({
   address: z.string().min(2),
   zip_code: z.string().min(2),
   region_id: z.string(),
-  shipping_cost: z.string(),
+  shipping_cost: z.string().optional(),
   country_id: z.string(),
 });
 export default function BrandEditForm({ my }: { my: UserData }) {
@@ -294,7 +294,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
                   <FormItem>
                     <FormControl>
                       <InputGroup>
-                        <InputGroupInput placeholder="0.00" />
+                        <InputGroupInput placeholder="0.00" {...field} />
                         <InputGroupAddon>
                           <BikeIcon />
                         </InputGroupAddon>

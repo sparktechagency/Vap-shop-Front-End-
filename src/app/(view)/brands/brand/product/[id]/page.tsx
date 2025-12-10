@@ -56,6 +56,7 @@ import Reviewer from "./reviewer";
 import ReviewPost from "./review-post";
 
 import DOMPurify from "dompurify";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 // Define the props for your component
 interface SafeHtmlRendererProps {
@@ -170,9 +171,9 @@ export default function Page() {
     useUnfollowBrandMutation();
   const [favToggle, { isLoading: favWorking }] =
     useFavProductToggleApiMutation();
+  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
   const getFAQAccordionItems = (): AccordionItemType[] => {
     if (!product?.data?.product_faqs?.length) return [];
-
     return product.data.product_faqs.map((faq: FAQItem, index: number) => ({
       id: `faq-${index}`,
       title: faq.question,
@@ -334,44 +335,56 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
-            <Button
-              variant={"outline"}
-              onClick={async () => {
-                try {
-                  console.log(product);
 
-                  const res = await favToggle({
-                    id: product.data.id,
-                    type: "brand",
-                  }).unwrap();
-                  if (!res.ok) {
-                    toast.error(res.message ?? "Something went wrong");
-                  } else {
-                    toast.success(res.message ?? "Successful");
+            {isLoading ? (
+              <Loader2Icon />
+            ) : me.data.role !== 6 ? (
+              <></>
+            ) : (
+              <Button
+                variant={"outline"}
+                onClick={async () => {
+                  try {
+                    console.log(product);
+
+                    const res = await favToggle({
+                      id: product.data.id,
+                      type: "brand",
+                    }).unwrap();
+                    if (!res.ok) {
+                      toast.error(res.message ?? "Something went wrong");
+                    } else {
+                      toast.success(res.message ?? "Successful");
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    toast.error("Something went wrong");
                   }
-                } catch (error) {
-                  console.error(error);
-                  toast.error("Something went wrong");
-                }
-              }}
-              disabled={favWorking}
-            >
-              {favWorking ? (
-                <>
-                  <Loader2Icon className="animate-spin" />
-                  Adding to favourite
-                </>
-              ) : (
-                <>
-                  <BookmarkIcon />
-                  Add to favourite
-                </>
-              )}
-            </Button>
-            {/* <Button variant="outline" className="!text-sm font-extrabold">
-              B2B
-            </Button> */}
-
+                }}
+                disabled={favWorking}
+              >
+                {favWorking ? (
+                  <>
+                    <Loader2Icon className="animate-spin" />
+                    Adding to favorites
+                  </>
+                ) : (
+                  <>
+                    {!isLoading && product?.data?.is_favorite ? (
+                      <>
+                        <BookmarkIcon fill="" />
+                        Remove from favourite
+                      </>
+                    ) : (
+                      <>
+                        <BookmarkIcon />
+                        Add to favorites
+                      </>
+                    )}
+                  </>
+                )}
+              </Button>
+            )}
             {product?.data?.user?.is_following ? (
               <Button
                 onClick={() => handleUnfollow(product?.data?.user?.id)}
