@@ -165,7 +165,13 @@ export default function Upvote() {
                       </div>
                     </div>
                     <Badge variant="secondary" className="bg-indigo-50 text-indigo-600">
-                      👍 {post.like_count} Likes
+                      👍 {post.real_like_count} Real Likes
+                    </Badge>
+                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-600">
+                      Admin Likes 👍 {post.real_like_count - post.like_count}
+                    </Badge>
+                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-600">
+                      👍 {post.like_count} Total Likes
                     </Badge>
                   </div>
 

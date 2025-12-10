@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useUpdateinteractionMutation } from "@/redux/features/admin/AdminApis";
 import { useProductDetailsByIdRoleQuery } from "@/redux/features/Trending/TrendingApi";
+import Image from "next/image";
 
 type HeartsFormValues = {
   targetType: string; // 'brand', 'wholesaler', 'store'
@@ -116,6 +117,8 @@ export default function Hearts() {
 
   const product = productData?.data;
 
+  console.log('product', product)
+
   return (
     <>
       <h2 className="text-2xl font-bold text-gray-900 mb-4">Manage Hearts</h2>
@@ -203,7 +206,9 @@ export default function Hearts() {
               <div className="flex items-start p-4 bg-white border border-gray-200 shadow-sm rounded-lg animate-in fade-in slide-in-from-top-2">
                 {/* Product Image */}
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                  <img
+                  <Image
+                    height={0}
+                    width={0}
                     src={product.product_image}
                     alt={product.product_name}
                     className="h-full w-full object-cover"
@@ -220,6 +225,18 @@ export default function Hearts() {
                         Category: {product.category?.name}
                       </p>
                     </div>
+                    <Badge
+                      variant="outline"
+                      className="bg-rose-50 text-rose-600 border-rose-200"
+                    >
+                      ❤️ {product.real_heart_count} Real Hearts
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-rose-50 text-green-600 border-rose-200"
+                    >
+                      Admin Added Hearts ❤️ {product.real_heart_count - product.total_heart}
+                    </Badge>
                     <Badge
                       variant="outline"
                       className="bg-rose-50 text-rose-600 border-rose-200"
