@@ -12,6 +12,7 @@ import {
   CopyIcon,
   MailIcon,
   BookmarkIcon,
+  Loader2Icon,
 } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
@@ -46,12 +47,16 @@ import {
   EmailShareButton,
 } from "react-share";
 import { Separator } from "@/components/ui/separator";
-import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
+import {
+  useFavProductToggleApiMutation,
+  useGetReviewsQuery,
+} from "@/redux/features/others/otherApi";
 import ProductReviewCard from "@/components/core/review-card";
 import Reviewer from "./reviewer";
 import ReviewPost from "./review-post";
 
 import DOMPurify from "dompurify";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 // Define the props for your component
 interface SafeHtmlRendererProps {
@@ -164,16 +169,18 @@ export default function Page() {
     useFollowBrandMutation();
   const [unfollowBrand, { isLoading: isUnFollowing }] =
     useUnfollowBrandMutation();
-
+  const [favToggle, { isLoading: favWorking }] =
+    useFavProductToggleApiMutation();
+  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
   const getFAQAccordionItems = (): AccordionItemType[] => {
     if (!product?.data?.product_faqs?.length) return [];
-
     return product.data.product_faqs.map((faq: FAQItem, index: number) => ({
       id: `faq-${index}`,
       title: faq.question,
       content: faq.answer,
     }));
   };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -328,14 +335,56 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
-            <Button variant={"outline"}>
-              <BookmarkIcon />
-              Add to favourite
-            </Button>
-            {/* <Button variant="outline" className="!text-sm font-extrabold">
-              B2B
-            </Button> */}
 
+            {isLoading ? (
+              <Loader2Icon />
+            ) : me.data.role !== 6 ? (
+              <></>
+            ) : (
+              <Button
+                variant={"outline"}
+                onClick={async () => {
+                  try {
+                    console.log(product);
+
+                    const res = await favToggle({
+                      id: product.data.id,
+                      type: "brand",
+                    }).unwrap();
+                    if (!res.ok) {
+                      toast.error(res.message ?? "Something went wrong");
+                    } else {
+                      toast.success(res.message ?? "Successful");
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    toast.error("Something went wrong");
+                  }
+                }}
+                disabled={favWorking}
+              >
+                {favWorking ? (
+                  <>
+                    <Loader2Icon className="animate-spin" />
+                    Adding to favorites
+                  </>
+                ) : (
+                  <>
+                    {!isLoading && product?.data?.is_favorite ? (
+                      <>
+                        <BookmarkIcon fill="" />
+                        Remove from favourite
+                      </>
+                    ) : (
+                      <>
+                        <BookmarkIcon />
+                        Add to favorites
+                      </>
+                    )}
+                  </>
+                )}
+              </Button>
+            )}
             {product?.data?.user?.is_following ? (
               <Button
                 onClick={() => handleUnfollow(product?.data?.user?.id)}

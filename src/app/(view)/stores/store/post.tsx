@@ -53,6 +53,7 @@ export default function Post({ id }: { id: number }) {
         user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
         data={post}
         manage={me.data.role === 1}
+        admin={me.data.role === 1}
       />
     ));
 

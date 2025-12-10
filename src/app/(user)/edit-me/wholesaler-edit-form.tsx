@@ -26,10 +26,16 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { Loader2Icon } from "lucide-react";
+import { BikeIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useCountysQuery } from "@/redux/features/AuthApi";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 // --- UPDATED: Schema with country_id ---
 const formSchema = z.object({
@@ -44,6 +50,7 @@ const formSchema = z.object({
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
+  shipping_cost: z.string().optional(),
 });
 
 // --- ADDED: Interfaces for type safety ---
@@ -78,6 +85,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       longitude: "",
       open_from: "",
       close_at: "",
+      shipping_cost: String(my?.shipping_cost || ""),
     },
   });
 
@@ -351,6 +359,30 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>B2B Shipping cost (Optional)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={control}
+                name="shipping_cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <InputGroup>
+                        <InputGroupInput placeholder="0.00" />
+                        <InputGroupAddon>
+                          <BikeIcon />
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
           <div className="col-span-2">
             <Button type="submit" className="w-full" disabled={isLoading}>

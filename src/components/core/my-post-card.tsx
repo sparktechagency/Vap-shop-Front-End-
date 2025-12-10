@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   ArrowBigUp,
+  CheckIcon,
+  CopyIcon,
   Edit3Icon,
   HeartIcon,
   Loader2Icon,
@@ -73,9 +75,11 @@ export default function MyPostCard({
   data,
   user,
   manage,
+  admin,
 }: {
   data: any;
   manage?: boolean;
+  admin?: boolean;
   user: {
     name: string;
     avatar: string;
@@ -91,6 +95,7 @@ export default function MyPostCard({
   const [likePost] = usePostLikeMutation();
   const [heartPost, { isLoading: hearting }] = usePosHeartMutation();
   const [totalLike, setTotalLike] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   type FormSchema = z.infer<typeof schema>;
   const form = useForm<FormSchema>({
@@ -166,24 +171,25 @@ export default function MyPostCard({
       </div>
 
       <Dialog>
-        <DialogTrigger asChild>
-          <Card
-            className="relative aspect-[4/5] w-1/3 mx-auto bg-cover bg-center rounded-none"
-            style={{
-              backgroundImage: `url('${data?.post_images[0]?.image_path}')`,
-            }}
-          >
-            {data?.post_images?.length > 1 && (
-              <div className="top-2 right-2 absolute z-20">
-                <div className="text-background p-2 rounded-lg bg-background/30">
-                  <IoCopySharp className="size-5" />
+        {data?.post_images.length > 0 && (
+          <DialogTrigger asChild>
+            <Card
+              className="relative aspect-[4/5] w-1/3 mx-auto bg-cover bg-center rounded-none"
+              style={{
+                backgroundImage: `url('${data?.post_images[0]?.image_path}')`,
+              }}
+            >
+              {data?.post_images?.length > 1 && (
+                <div className="top-2 right-2 absolute z-20">
+                  <div className="text-background p-2 rounded-lg bg-background/30">
+                    <IoCopySharp className="size-5" />
+                  </div>
                 </div>
-              </div>
-            )}
-            <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
-          </Card>
-        </DialogTrigger>
-
+              )}
+              <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+            </Card>
+          </DialogTrigger>
+        )}
         <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
           <DialogHeader className="hidden">
             <DialogTitle />
@@ -403,6 +409,25 @@ export default function MyPostCard({
           </Dialog>
         </div>
         <div>
+          {!!admin && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                try {
+                  navigator.clipboard.writeText(data.id.toString());
+                  setCopied(true);
+
+                  setTimeout(() => setCopied(false), 2000);
+                  toast.success(`Post id: "${data.id}" copied`);
+                } catch {
+                  toast.error("Failed to copy");
+                }
+              }}
+            >
+              {copied ? <CheckIcon className="text-green-500" /> : <CopyIcon />}
+            </Button>
+          )}
           {!!manage && (
             <>
               <Button variant="ghost" asChild>

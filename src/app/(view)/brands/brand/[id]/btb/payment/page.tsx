@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -16,7 +15,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import {
+  useGetOwnprofileQuery,
+  useGtStoreDetailsQuery,
+} from "@/redux/features/AuthApi";
+import { useParams } from "next/navigation";
 
 interface CartItem {
   id: string;
@@ -30,6 +33,7 @@ export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const { data: userData } = useGetOwnprofileQuery();
+
   const user_id = userData?.data?.id;
   const cartKey = `cart_${user_id}`;
   useEffect(() => {

@@ -41,8 +41,6 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
         case 5:
           formData.append("store_name", my.first_name);
           formData.append("address", my.address?.address ?? "");
-          formData.append("latitude", my.address?.latitude ?? "");
-          formData.append("longitude", my.address?.longitude ?? "");
           formData.append("region_id", my.address?.region_id ?? "");
           formData.append("zip_code", my.address?.zip_code ?? "");
           break;
@@ -52,9 +50,11 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
         default:
           formData.append("first_name", my.first_name);
           formData.append("last_name", my.last_name);
+
           break;
       }
-
+      formData.append("latitude", my.address?.latitude ?? "0");
+      formData.append("longitude", my.address?.longitude ?? "0");
       formData.append("avatar", file);
 
       const avUpdate = await updateUser(formData).unwrap();

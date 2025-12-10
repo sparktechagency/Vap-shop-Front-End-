@@ -128,6 +128,31 @@ export const otherApi = api.injectEndpoints({
       },
       invalidatesTags: ["brand", "store"],
     }),
+    favProductToggleApi: builder.mutation<
+      any,
+      { id: string | number; type: string }
+    >({
+      query: ({ id, type }) => {
+        return {
+          url: `/product/toggle-favorite`,
+          method: "POST",
+          body: {
+            product_id: id,
+            type,
+          },
+        };
+      },
+      invalidatesTags: ["fevorite"],
+    }),
+    getFavProducts: builder.query<any, void>({
+      query: () => {
+        return {
+          url: `/product/user-favorites`,
+          method: "GET",
+        };
+      },
+      providesTags: ["fevorite"],
+    }),
   }),
 });
 
@@ -148,4 +173,6 @@ export const {
   useCancelConnectMutation,
   useGetActiveLocationsQuery,
   useFavAccApiMutation,
+  useFavProductToggleApiMutation,
+  useGetFavProductsQuery,
 } = otherApi;

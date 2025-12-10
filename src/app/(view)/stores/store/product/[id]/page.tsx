@@ -16,6 +16,8 @@ import {
   CopyIcon,
   MailIcon,
   HeartIcon,
+  Loader2Icon,
+  BookmarkIcon,
 } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
@@ -52,7 +54,10 @@ import {
   EmailShareButton,
 } from "react-share";
 import { Separator } from "@/components/ui/separator";
-import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
+import {
+  useFavProductToggleApiMutation,
+  useGetReviewsQuery,
+} from "@/redux/features/others/otherApi";
 
 import ReviewPost from "../../[id]/review-post";
 import Reviewer from "../../[id]/reviewer";
@@ -109,6 +114,8 @@ export default function Page() {
     isLoading,
     refetch,
   } = useStoreProductDetailsByIdQuery(id as any);
+  const [favToggle, { isLoading: favWorking }] =
+    useFavProductToggleApiMutation();
 
   console.log("productDetails-0---------", product);
   // Add this hook to fetch reviews
@@ -230,6 +237,49 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
+            <Button
+              variant={"outline"}
+              onClick={async () => {
+                try {
+                  console.log(product);
+
+                  const res = await favToggle({
+                    id: product.data.id,
+                    type: "brand",
+                  }).unwrap();
+                  if (!res.ok) {
+                    toast.error(res.message ?? "Something went wrong");
+                  } else {
+                    toast.success(res.message ?? "Successful");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  toast.error("Something went wrong");
+                }
+              }}
+              disabled={favWorking}
+            >
+              {favWorking ? (
+                <>
+                  <Loader2Icon className="animate-spin" />
+                  Adding to favorites
+                </>
+              ) : (
+                <>
+                  {!isLoading && product?.data?.is_favorite ? (
+                    <>
+                      <BookmarkIcon fill="" />
+                      Remove from favourite
+                    </>
+                  ) : (
+                    <>
+                      <BookmarkIcon />
+                      Add to favorites
+                    </>
+                  )}
+                </>
+              )}
+            </Button>
             {/* <Button variant="outline" className="!text-sm font-extrabold">
               B2B
             </Button> */}

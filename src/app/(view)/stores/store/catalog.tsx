@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import ProductCard from "@/components/core/product-card";
 import React from "react";
@@ -12,11 +11,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useGetStoreDetailsByIdQuery } from "@/redux/features/store/StoreApi";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function Catalog({ id }: any) {
   const [page, setPage] = React.useState(1);
   const per_page = 16;
-
+  const { data: me } = useGetOwnprofileQuery();
   const {
     data: brandDetails,
     isLoading: isBrandLoading,
@@ -127,16 +127,18 @@ export default function Catalog({ id }: any) {
               note: item.product_type,
               price:
                 parseFloat(item.product_price) >= 0 &&
-                  !isNaN(parseFloat(item.product_price))
+                !isNaN(parseFloat(item.product_price))
                   ? `${item.product_price}`
                   : undefined,
 
               is_hearted: item.is_hearted,
               hearts: item.total_heart,
             }}
+            manage={me?.data?.role === 1}
             link={`/stores/store/product/${item.id}`}
             refetch={refetch}
             role={5}
+            admin
           />
         ))}
       </div>

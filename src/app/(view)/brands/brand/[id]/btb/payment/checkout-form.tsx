@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import type React from "react";
@@ -25,12 +23,16 @@ import {
   Phone,
   Calendar,
   MapPin,
+  Loader2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useUser } from "@/context/userContext";
-import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import {
+  useGetOwnprofileQuery,
+  useGtStoreDetailsQuery,
+} from "@/redux/features/AuthApi";
 import { useBtbCheckoutMutation } from "@/redux/features/b2b/btbApi";
 
 interface CardDetails {
@@ -58,7 +60,11 @@ interface CheckoutData extends CustomerData {
 
 export default function CheckoutForm() {
   const navig = useRouter();
+  const { id } = useParams();
   const { data: me } = useGetOwnprofileQuery();
+  const { data: store, isLoading } = useGtStoreDetailsQuery({
+    id: id as any,
+  });
   const [checkout] = useBtbCheckoutMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cart, setCart] = useState<any>();
@@ -160,6 +166,11 @@ export default function CheckoutForm() {
       (total: any, item: any) => total + item.unitPrice * item.quantity,
       0
     );
+  };
+  const getGrandTotal = () => {
+    const cartTotal = getCartTotal();
+    const shipping = parseFloat(store?.data?.shipping_cost || "0");
+    return cartTotal + shipping;
   };
 
   const handleInputChange = (field: keyof CustomerData, value: string) => {
@@ -297,12 +308,28 @@ export default function CheckoutForm() {
                 </div>
               </div>
             ))}
-            <div className="pt-3 border-t">
-              <div className="flex justify-between items-center font-bold text-lg">
-                <span>Total:</span>
-                <span>${getCartTotal().toFixed(2)}</span>
+            {isLoading ? (
+              <div className={`flex justify-center items-center h-24 mx-auto`}>
+                <Loader2Icon className={`animate-spin`} />
               </div>
-            </div>
+            ) : (
+              <div className="pt-3 space-y-1">
+                <div className="flex justify-between items-center font-medium text-base">
+                  <span>Subtotal:</span>
+                  <span>${getCartTotal().toFixed(2)}</span>
+                </div>
+
+                <div className="flex justify-between items-center font-medium text-base">
+                  <span>Shipping:</span>
+                  <span>${store?.data?.shipping_cost}</span>
+                </div>
+
+                <div className="flex justify-between items-center font-bold text-lg pt-2 border-t">
+                  <span>Grand Total:</span>
+                  <span>${getGrandTotal().toFixed(2)}</span>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -478,7 +505,11 @@ export default function CheckoutForm() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || isLoading}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

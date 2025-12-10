@@ -41,6 +41,11 @@ const baseLinks = {
     label: "Most Hearted",
     to: "/me/most-hearted",
   },
+  favProducts: {
+    icon: <Lucide.BookHeart className="size-5" />,
+    label: "Favourite Products",
+    to: "/me/fav-products",
+  },
   manageLocations: {
     icon: <Lucide.MapPin className="size-5" />,
     label: "Manage Locations",
@@ -78,6 +83,7 @@ export const createNavLinks = (
         baseLinks.editProfile,
         baseLinks.inbox,
         baseLinks.favs,
+        baseLinks.favProducts,
         baseLinks.orders,
         baseLinks.reviews,
         baseLinks.settings,
