@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/pagination";
 import { useGetBrandDetailsByIdQuery } from "@/redux/features/brand/brandApis";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 export default function Catalog({ id }: any) {
   const [page, setPage] = useState(1);
@@ -20,6 +21,7 @@ export default function Catalog({ id }: any) {
       setPage(newPage);
     }
   };
+  const { data: me } = useGetOwnprofileQuery();
   const {
     data: catalog,
     isLoading,
@@ -77,6 +79,8 @@ export default function Catalog({ id }: any) {
               data={productData}
               link={`/brands/brand/product/${product.id}`}
               role={3}
+              manage={me?.data?.role === 1}
+              admin
             />
           );
         })}

@@ -64,6 +64,7 @@ export default function ProductCard({
   isBrand,
   hearted,
   noPrice,
+  admin,
 }: {
   refetchAds?: () => void;
   refetch?: () => void;
@@ -75,6 +76,7 @@ export default function ProductCard({
   isBrand?: boolean;
   hearted?: boolean;
   noPrice?: boolean;
+  admin?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
@@ -155,12 +157,14 @@ export default function ProductCard({
               </DropdownMenuTrigger>
 
               <DropdownMenuContent side="bottom" align="end">
-                <DropdownMenuItem asChild>
-                  <Link href={`/me/manage/${data.id}`}>
-                    <Edit2Icon />
-                    Edit
-                  </Link>
-                </DropdownMenuItem>
+                {!admin && (
+                  <DropdownMenuItem asChild>
+                    <Link href={`/me/manage/${data.id}`}>
+                      <Edit2Icon />
+                      Edit
+                    </Link>
+                  </DropdownMenuItem>
+                )}
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -186,7 +190,22 @@ export default function ProductCard({
                         disabled={isLoading}
                         className="bg-destructive hover:bg-destructive/60!"
                         onClick={async () => {
-                          deleteProd({ id: data.id });
+                          try {
+                            const res: any = await deleteProd({ id: data.id });
+                            console.log(res);
+
+                            if (!res.ok) {
+                              toast.error(res.message ?? "Failed to delete");
+                            } else {
+                              toast.success(
+                                res.message ??
+                                  "Successfully deleted the product"
+                              );
+                            }
+                          } catch (error) {
+                            console.error(error);
+                            toast.error("Something went wrong");
+                          }
                         }}
                       >
                         Delete
@@ -227,11 +246,13 @@ export default function ProductCard({
                     </DialogContent>
                   </Dialog>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={`/me/manage/b2b/${data.id}`}>
-                    <WaypointsIcon /> B2B
-                  </Link>
-                </DropdownMenuItem>
+                {!admin && (
+                  <DropdownMenuItem asChild>
+                    <Link href={`/me/manage/b2b/${data.id}`}>
+                      <WaypointsIcon /> B2B
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -276,7 +297,7 @@ export default function ProductCard({
       </Link>
 
       {/* 🔹 Manage buttons */}
-      {manage && (
+      {manage && !admin && (
         <CardFooter className="!p-4 grid grid-cols-2 gap-4">
           {isBrand && (
             <Button
