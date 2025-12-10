@@ -96,7 +96,6 @@ export const createNavLinks = (
         baseLinks.manageProducts,
         baseLinks.inbox,
         baseLinks.orders,
-        baseLinks.favProducts,
         baseLinks.mostHearted,
         baseLinks.reviews,
         baseLinks.settings,

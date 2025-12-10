@@ -28,7 +28,7 @@ export const trendingApi = api.injectEndpoints({
 
     trendingProductDetailsById: builder.query<any, void>({
       query: (id) => `/get-product/${id}?role=3`,
-      providesTags: ["tranding"],
+      providesTags: ["tranding", "fevorite"],
     }),
 
     getWholesalerProdById: builder.query<

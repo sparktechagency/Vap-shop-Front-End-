@@ -50,7 +50,7 @@ const formSchema = z.object({
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
-  shipping_cost: z.string(),
+  shipping_cost: z.string().optional(),
 });
 
 // --- ADDED: Interfaces for type safety ---
