@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -27,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { ArrowRight, Loader2Icon } from "lucide-react";
+import { ArrowRight, BikeIcon, Loader2Icon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -37,7 +36,12 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { useCountysQuery } from "@/redux/features/AuthApi";
 
 const formSchema = z.object({
   brand_name: z.string().min(2),
@@ -47,6 +51,8 @@ const formSchema = z.object({
   address: z.string().min(2),
   zip_code: z.string().min(2),
   region_id: z.string(),
+  shipping_cost: z.string(),
+  country_id: z.string(),
 });
 export default function BrandEditForm({ my }: { my: UserData }) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,10 +65,32 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       address: my?.address?.address || "",
       zip_code: my?.address?.zip_code || "",
       region_id: String(my?.address?.region_id || ""),
+      shipping_cost: String(my?.shipping_cost || ""),
+      country_id: "",
     },
   });
 
   const [updateUser, { isLoading }] = useUpdateUserMutation();
+  const { data: countriesResponse, isLoading: isLoadingCountries } =
+    useCountysQuery();
+  const [regions, setRegions] = React.useState([]);
+
+  React.useEffect(() => {
+    if (my?.address?.region_id && countriesResponse?.data) {
+      const regionId = my.address.region_id;
+
+      const foundCountry = countriesResponse.data.find((country: any) =>
+        country.regions.some(
+          (region: any) => String(region.id) === String(regionId)
+        )
+      );
+
+      if (foundCountry) {
+        form.setValue("country_id", foundCountry.id.toString());
+        setRegions(foundCountry.regions);
+      }
+    }
+  }, [my, countriesResponse, form]);
 
   const { control, handleSubmit } = form;
 
@@ -176,31 +204,108 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+          {/* Country & Region */}
+          <div className="col-span-2 grid grid-cols-2 gap-6">
+            <FormField
+              control={control}
+              name="country_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
 
-          <FormField
-            control={control}
-            name="region_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Region</FormLabel>
-                <FormControl>
+                      const selected = countriesResponse?.data?.find(
+                        (c: any) => c.id.toString() === value
+                      );
+
+                      setRegions(selected?.regions || []);
+                      form.setValue("region_id", "");
+                    }}
+                    value={field.value}
+                    disabled={isLoadingCountries}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      {countriesResponse?.data?.map((country: any) => (
+                        <SelectItem
+                          key={country.id}
+                          value={country.id.toString()}
+                        >
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="region_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Region</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     value={field.value || ""}
+                    disabled={!regions.length}
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select your region" />
-                    </SelectTrigger>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your region" />
+                      </SelectTrigger>
+                    </FormControl>
+
                     <SelectContent>
-                      <SelectItem value="1">Canada</SelectItem>
-                      <SelectItem value="2">US</SelectItem>
+                      {regions.map((region: any) => (
+                        <SelectItem
+                          key={region.id}
+                          value={region.id.toString()}
+                        >
+                          {region.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>B2B Shipping cost (Optional)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={control}
+                name="shipping_cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <InputGroup>
+                        <InputGroupInput placeholder="0.00" />
+                        <InputGroupAddon>
+                          <BikeIcon />
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
           <div className="col-span-2">
             <Button type="submit" className="w-full" disabled={isLoading}>

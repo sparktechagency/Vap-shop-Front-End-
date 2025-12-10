@@ -57,6 +57,7 @@ const formSchema = z.object({
   close_at: z.string(),
   pl: z.boolean(),
   tax_percentage: z.string(),
+  shipping_cost: z.string(),
 });
 
 interface Country {
@@ -104,6 +105,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       close_at: String(my?.close_at || ""),
       pl: my?.pl === 1 ? true : false,
       tax_percentage: String(my?.tax_percentage),
+      shipping_cost: String(my?.shipping_cost || ""),
     },
   });
 
@@ -415,23 +417,23 @@ export default function StoreEditForm({ my }: { my: UserData }) {
             <CardTitle>B2B Shipping cost (Optional)</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* <FormField
-              // control={control}
-              // name="tax_percentage"
+            <FormField
+              control={control}
+              name="shipping_cost"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl> */}
-            <InputGroup>
-              <InputGroupInput placeholder="0.00" />
-              <InputGroupAddon>
-                <BikeIcon />
-              </InputGroupAddon>
-            </InputGroup>
-            {/* </FormControl>
+                  <FormControl>
+                    <InputGroup>
+                      <InputGroupInput placeholder="0.00" />
+                      <InputGroupAddon>
+                        <BikeIcon />
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </CardContent>
         </Card>
 

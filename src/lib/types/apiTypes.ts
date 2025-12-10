@@ -52,6 +52,7 @@ export interface UserData {
   pl: boolean | number;
   unread_conversations_count?: number | string; // add unread_conversations_count
   tax_percentage?:number|string;
+  shipping_cost?:number|string;
 }
 export interface Message {
   id: number | string; // id এখন number অথবা string দুটোই হতে পারে

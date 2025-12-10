@@ -14,7 +14,7 @@ import { InboxIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 
 export default function Page() {
-  const { data, isLoading, isError, error } = useGetFavProductsQuery();
+  const { data, isLoading, isError, error }: any = useGetFavProductsQuery();
 
   if (isLoading) {
     return (
