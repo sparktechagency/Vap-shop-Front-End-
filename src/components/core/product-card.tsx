@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
@@ -131,7 +129,7 @@ export default function ProductCard({
         {data.type === "ad" && (
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
-        {!blank && !manage && (
+        {!blank && (
           <div className="absolute bottom-2 right-2 flex z-50">
             <Button
               className="!text-sm"
