@@ -269,7 +269,7 @@ export default function Page() {
                   {!isLoading && product?.data?.is_favorite ? (
                     <>
                       <BookmarkIcon fill="" />
-                      Remove from favourite
+                      Remove from Favorite
                     </>
                   ) : (
                     <>

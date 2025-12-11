@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import StoreProdCard from "@/components/core/store-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,7 +33,7 @@ export default function TopStores() {
   if (favList.length === 0) {
     return (
       <p className="text-center text-sm text-muted-foreground">
-        You have no favourite stores yet
+        You have no favorite stores yet
       </p>
     );
   }

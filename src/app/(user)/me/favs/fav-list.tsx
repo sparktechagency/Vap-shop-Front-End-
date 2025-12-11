@@ -7,7 +7,7 @@ export default async function FavList() {
     const token = (await cookies()).get("token")?.value;
 
     if (!token) {
-      return <div>Please login to see favorites.</div>;
+      return <div>Please login to see Favorites.</div>;
     }
 
     const my = await howl({ link: "me", token });
@@ -25,14 +25,14 @@ export default async function FavList() {
       return (
         <div className="py-8 w-full flex items-center justify-center font-semibold text-sm text-purple-500">
           {myFavs.message === "No data found"
-            ? "Please mark a brand product as favourite"
+            ? "Please mark a brand product as Favorite"
             : myFavs.message ?? "Something went wrong.."}
         </div>
       );
     }
 
     if (!Array.isArray(myFavs.data) || myFavs.data.length === 0) {
-      return <div>No favourite product found.</div>;
+      return <div>No Favorites product found.</div>;
     }
 
     return (

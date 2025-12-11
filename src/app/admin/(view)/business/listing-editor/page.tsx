@@ -119,7 +119,7 @@ export default function Page() {
                       </div>
                       <div className="grid grid-cols-7">
                         <div className="col-span-3 text-sm font-semibold">
-                          <p>Top Favourite Brands:</p>
+                          <p>Top Favorite Brands:</p>
                         </div>
                         <div className="grid grid-cols-4 gap-3 col-span-4">
                           <Badge>SMOK</Badge>
@@ -133,7 +133,7 @@ export default function Page() {
                       </div>
                       <div className="grid grid-cols-7">
                         <div className="col-span-3 text-sm font-semibold">
-                          <p>Top Favourite Stores:</p>
+                          <p>Top Favorite Stores:</p>
                         </div>
                         <div className="grid grid-cols-4 gap-3 col-span-4">
                           <Badge>SMOK</Badge>

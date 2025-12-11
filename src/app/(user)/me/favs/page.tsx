@@ -6,7 +6,7 @@ export default async function Page() {
   return (
     <section>
       <h1 className="text-center font-semibold text-2xl pb-2 border-b">
-        My Favourite Products
+        My Favorite Products
       </h1>
       <Suspense
         fallback={

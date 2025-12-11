@@ -28,12 +28,12 @@ export default function FavControl() {
     <div className="w-full grid grid-cols-2 gap-6">
       <div className="col-span-2">
         <h2 className="text-center font-semibold text-2xl">
-          Favourite stores and brands
+          Favorite stores and brands
         </h2>
       </div>
       <div className="border p-4 rounded-md space-y-2">
         <div className="text-base border-b p-4 pt-0! mb-2 font-semibold text-center">
-          Favourite Stores
+          Favorite Stores
         </div>
         {brandsData?.data?.map((x: any, i: number) => (
           <Button className="w-full" variant="outline" key={i} asChild>
@@ -48,7 +48,7 @@ export default function FavControl() {
       </div>
       <div className="border p-4 rounded-md space-y-2">
         <div className="text-base border-b p-4 pt-0! mb-2 font-semibold text-center">
-          Favourite Brands
+          Favorite Brands
         </div>
         {storesData?.data?.map((x: any, i: number) => (
           <Button className="w-full" variant="outline" key={i} asChild>
