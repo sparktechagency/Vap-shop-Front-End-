@@ -30,14 +30,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCountysQuery } from "@/redux/features/AuthApi";
-import { useGoogleLocation } from "@/hooks/useCurrentLocation";
+import useAutoLocation from "@/hooks/browserlocation";
 export default function Page() {
   const [page, setPage] = useState(1);
   const { data, isLoading, refetch } = useGetAllstoreQuery({ page });
   const [region, setRegion] = useState("");
   const { data: countries, isLoading: countriesLoading } = useCountysQuery();
 
-  const { location } = useGoogleLocation();
+  const { location } = useAutoLocation();
 
   if (isLoading) {
     return <LoadingScletion />;

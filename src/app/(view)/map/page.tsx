@@ -49,6 +49,9 @@ const MapPage: React.FC = () => {
     lng: 90.4125,
   });
 
+  console.log('map center', mapCenter);
+
+  console.log('all store', allStores);
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
   const radius = searchParams.get("radius");
@@ -225,9 +228,8 @@ const MapPage: React.FC = () => {
                 <div
                   key={store.id}
                   onClick={() => handleSelectStore(store)}
-                  className={`w-full bg-background p-4 rounded-md cursor-pointer hover:shadow-md transition-shadow ${
-                    selectedStore?.id === store.id ? "ring-2 ring-primary" : ""
-                  }`}
+                  className={`w-full bg-background p-4 rounded-md cursor-pointer hover:shadow-md transition-shadow ${selectedStore?.id === store.id ? "ring-2 ring-primary" : ""
+                    }`}
                 >
                   <h3 className="font-semibold">{store.full_name}</h3>
                   <p className="text-sm text-gray-600">

@@ -84,6 +84,8 @@ export default function ProductCard({
   const { data: user } = useGetOwnprofileQuery();
   const userRole = user?.data?.role;
 
+
+  console.log('data', data);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const origin = window.location.origin;
@@ -131,22 +133,21 @@ export default function ProductCard({
         {data.type === "ad" && (
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
-        {!blank && !manage && (
-          <div className="absolute bottom-2 right-2 flex z-50">
-            <Button
-              className="!text-sm"
-              variant="outline"
-              onClick={(e) => handleFebandUnfev(data?.id as number)}
-            >
-              {data?.hearts || 0}
-              <HeartIcon
-                className={`ml-1 size-5 ${
-                  data?.is_hearted || hearted ? "text-red-500 fill-red-500" : ""
+
+        <div className="absolute bottom-2 right-2 flex z-50">
+          <Button
+            className="!text-sm"
+            variant="outline"
+            onClick={(e) => handleFebandUnfev(data?.id as number)}
+          >
+            {data?.hearts || 0}
+            <HeartIcon
+              className={`ml-1 size-5 ${data?.is_hearted || hearted ? "text-red-500 fill-red-500" : ""
                 }`}
-              />
-            </Button>
-          </div>
-        )}
+            />
+          </Button>
+        </div>
+
         {manage && (
           <div className="absolute top-2 right-2">
             <DropdownMenu>
@@ -199,7 +200,7 @@ export default function ProductCard({
                             } else {
                               toast.success(
                                 res.message ??
-                                  "Successfully deleted the product"
+                                "Successfully deleted the product"
                               );
                             }
                           } catch (error) {
