@@ -37,7 +37,7 @@ const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 // ✅ Schema updated with gallery toggle
 const postSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
-  content: z.string().min(1, { message: "Content is required" }),
+  content: z.string().optional(),
   is_in_gallery: z.boolean(),
 });
 
@@ -60,7 +60,7 @@ export default function Page() {
   const onSubmit = async (values: PostForm) => {
     const formData = new FormData();
     formData.append("title", values.title);
-    formData.append("content", values.content);
+    formData.append("content", values.content ?? "");
     formData.append("is_in_gallery", values.is_in_gallery ? "1" : "0");
     formData.append("content_type", "post");
 

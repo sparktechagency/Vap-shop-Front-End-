@@ -21,7 +21,7 @@ export default function TopStores({ user }: { user: UserData }) {
   if (favList.length === 0) {
     return (
       <p className="text-center text-sm text-muted-foreground">
-        You have no favourite stores yet
+        You have no favorite stores yet
       </p>
     );
   }

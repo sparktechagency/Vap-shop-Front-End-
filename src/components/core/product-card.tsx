@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductType } from "@/lib/types/product";
@@ -25,14 +23,12 @@ import {
 } from "../ui/dropdown-menu";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useDeleteProdMutation } from "@/redux/features/manage/product";
 import {
@@ -47,7 +43,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
@@ -81,11 +76,13 @@ export default function ProductCard({
   const [copied, setCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
 
+  // State to control modals preventing "ghost menu" bug
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+
   const { data: user } = useGetOwnprofileQuery();
   const userRole = user?.data?.role;
 
-
-  console.log('data', data);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const origin = window.location.origin;
@@ -105,12 +102,14 @@ export default function ProductCard({
       const response = await fevoriteUnveforite(alldata).unwrap();
 
       if (response.ok) {
-        refetchAds && refetchAds();
-        refetch && refetch();
-        toast.success(response.message || "Favourite successfully");
+        // ✅ FIXED: Use optional chaining to call the function only if it exists
+        refetchAds?.();
+        refetch?.();
+
+        toast.success(response.message || "Favorite successfully");
       }
-    } catch (error) {
-      toast.error("Failed to favourite");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to Favorite");
     }
   };
   const copyToClipboard = async () => {
@@ -119,8 +118,8 @@ export default function ProductCard({
       setCopied(true);
       toast.success("Link copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      toast.error("Failed to copy link");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to copy link");
     }
   };
 
@@ -134,19 +133,21 @@ export default function ProductCard({
           <div className="absolute top-4 left-4 text-2xl md:text-4xl">🔥</div>
         )}
 
-        <div className="absolute bottom-2 right-2 flex z-50">
-          <Button
-            className="!text-sm"
-            variant="outline"
-            onClick={(e) => handleFebandUnfev(data?.id as number)}
-          >
-            {data?.hearts || 0}
-            <HeartIcon
-              className={`ml-1 size-5 ${data?.is_hearted || hearted ? "text-red-500 fill-red-500" : ""
-                }`}
-            />
-          </Button>
-        </div>
+        {!blank && (
+          <div className="absolute bottom-2 right-2 flex z-50">
+            <Button
+              className="!text-sm"
+              variant="outline"
+              onClick={(e) => handleFebandUnfev(data?.id as number)}
+            >
+              {data?.hearts || 0}
+              <HeartIcon
+                className={`ml-1 size-5 ${data?.is_hearted || hearted ? "text-red-500 fill-red-500" : ""
+                  }`}
+              />
+            </Button>
+          </div>
+        )}
 
         {manage && (
           <div className="absolute top-2 right-2">
@@ -161,101 +162,98 @@ export default function ProductCard({
                 {!admin && (
                   <DropdownMenuItem asChild>
                     <Link href={`/me/manage/${data.id}`}>
-                      <Edit2Icon />
+                      <Edit2Icon className="mr-2 h-4 w-4" />
                       Edit
                     </Link>
                   </DropdownMenuItem>
                 )}
 
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem
-                      onSelect={(e) => e.preventDefault()}
-                      variant="destructive"
-                    >
-                      <Trash2Icon />
-                      Delete
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        disabled={isLoading}
-                        className="bg-destructive hover:bg-destructive/60!"
-                        onClick={async () => {
-                          try {
-                            const res: any = await deleteProd({ id: data.id });
-                            console.log(res);
-
-                            if (!res.ok) {
-                              toast.error(res.message ?? "Failed to delete");
-                            } else {
-                              toast.success(
-                                res.message ??
-                                "Successfully deleted the product"
-                              );
-                            }
-                          } catch (error) {
-                            console.error(error);
-                            toast.error("Something went wrong");
-                          }
-                        }}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button className="flex items-center gap-2 w-full cursor-pointer">
-                        <Share2Icon />
-                        Share
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle>Share this product</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex items-center space-x-2">
-                        <div className="grid flex-1 gap-2">
-                          <Input value={currentUrl} readOnly />
-                        </div>
-                        <Button
-                          type="button"
-                          size="sm"
-                          className="px-3"
-                          onClick={copyToClipboard}
-                        >
-                          <span className="sr-only">Copy</span>
-                          <CopyIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <ShareButtons
-                        url={currentUrl}
-                        title={data?.title || "Check out this product"}
-                      />
-                    </DialogContent>
-                  </Dialog>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={() => setIsDeleteOpen(true)}
+                >
+                  <Trash2Icon className="mr-2 h-4 w-4" />
+                  Delete
                 </DropdownMenuItem>
+
+                <DropdownMenuItem onSelect={() => setIsShareOpen(true)}>
+                  <Share2Icon className="mr-2 h-4 w-4" />
+                  Share
+                </DropdownMenuItem>
+
                 {!admin && (
                   <DropdownMenuItem asChild>
                     <Link href={`/me/manage/b2b/${data.id}`}>
-                      <WaypointsIcon /> B2B
+                      <WaypointsIcon className="mr-2 h-4 w-4" /> B2B
                     </Link>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Modals are now outside the DropdownMenu to prevent UI bugs */}
+
+            <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button
+                    variant="destructive"
+                    disabled={isLoading}
+                    onClick={async () => {
+                      try {
+                        const res: any = await deleteProd({ id: data.id });
+                        if (!res.ok) {
+                          toast.error(res.message ?? "Failed to delete");
+                        } else {
+                          toast.success(
+                            res.message ?? "Successfully deleted the product"
+                          );
+                          setIsDeleteOpen(false);
+                        }
+                      } catch (error) {
+                        console.error(error);
+                        toast.error("Something went wrong");
+                      }
+                    }}
+                  >
+                    {isLoading ? "Deleting..." : "Delete"}
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Share this product</DialogTitle>
+                </DialogHeader>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Input value={currentUrl} readOnly />
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="px-3"
+                    onClick={copyToClipboard}
+                  >
+                    <span className="sr-only">Copy</span>
+                    <CopyIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <ShareButtons
+                  url={currentUrl}
+                  title={data?.title || "Check out this product"}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </div>

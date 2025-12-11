@@ -37,7 +37,7 @@ export default function Page() {
   }
   return (
     <section className="w-full border-t py-8 mt-4">
-      <h4 className="text-center text-2xl"> Favourite product list</h4>
+      <h4 className="text-center text-2xl"> Favorite product list</h4>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-6">
         {data?.data?.map((x: any) => (
           <ProductCard
