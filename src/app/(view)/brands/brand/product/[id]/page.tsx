@@ -366,19 +366,19 @@ export default function Page() {
                 {favWorking ? (
                   <>
                     <Loader2Icon className="animate-spin" />
-                    Adding to favorites
+                    Adding to Favorite
                   </>
                 ) : (
                   <>
                     {!isLoading && product?.data?.is_favorite ? (
                       <>
                         <BookmarkIcon fill="" />
-                        Remove from favourite
+                        Remove from Favorite
                       </>
                     ) : (
                       <>
                         <BookmarkIcon />
-                        Add to favorites
+                        Add to Favorite
                       </>
                     )}
                   </>

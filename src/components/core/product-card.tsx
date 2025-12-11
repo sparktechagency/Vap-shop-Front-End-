@@ -103,10 +103,10 @@ export default function ProductCard({
       if (response.ok) {
         refetchAds && refetchAds();
         refetch && refetch();
-        toast.success(response.message || "Favourite successfully");
+        toast.success(response.message || "Favorite successfully");
       }
     } catch (error) {
-      toast.error("Failed to favourite");
+      toast.error("Failed to Favorite");
     }
   };
   const copyToClipboard = async () => {

@@ -40,7 +40,7 @@ export const LinkList = [
     dropdown: {
       main: [{ label: "All brands", to: "/brands" }],
       sub: {
-        title: "My Favourite Brands",
+        title: "My Favorite Brands",
         items: [] as { label: string; to: string }[],
       },
     },
@@ -51,7 +51,7 @@ export const LinkList = [
     dropdown: {
       main: [{ label: "All stores", to: "/stores" }],
       sub: {
-        title: "My Favourite Stores",
+        title: "My Favorite Stores",
         items: [] as { label: string; to: string }[],
       },
     },
