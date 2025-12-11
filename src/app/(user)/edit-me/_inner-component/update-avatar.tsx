@@ -54,7 +54,7 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
       // formData.append("address", my.address?.address ?? "");
       // formData.append("region_id", my.address?.region_id ?? "");
       // formData.append("zip_code", my.address?.zip_code ?? "");
-
+      //
       formData.append("avatar", file);
       const avUpdate = await updateUser(formData).unwrap();
 
