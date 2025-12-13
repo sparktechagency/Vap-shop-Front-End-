@@ -33,9 +33,9 @@ export default function Page() {
   const { data, isLoading, isError, error, refetch } = useGtStoreDetailsQuery({
     id: id as any,
   });
-  const { location } = useAutoLocation();
+  const { location, error: locationError } = useAutoLocation();
 
-
+  console.log('location error', locationError);
   const { data: userData } = useGetOwnprofileQuery();
   const Userrole = userData?.data?.role;
   const [mutated, setMutated] = React.useState(false);
@@ -46,7 +46,7 @@ export default function Page() {
     useUnfollowBrandMutation();
 
 
-  console.log('location', location);
+  console.log('location-------', location);
 
   const user = data?.data;
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function Page() {
   const handleMapClick = (data: any) => {
     console.log("data", data);
     navigation.push(
-      `/map?lat=${location?.lat}&lng=${location?.lng}&radius=16093`
+      `/map?lat=${location?.lat}&lng=${location?.lng}&radius=56093`
     );
   };
 
