@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductReviewCard from "@/components/core/review-card";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { useGetReviewsQuery } from "@/redux/features/others/otherApi";
 import React from "react";
 
@@ -8,6 +8,7 @@ export default function Reviewer({ product }: { product: any }) {
     role: 3,
     id: product.id,
   });
+  const { data: me } = useGetOwnprofileQuery();
 
   return (
     <div className="">
@@ -21,6 +22,7 @@ export default function Reviewer({ product }: { product: any }) {
               productData={product}
               role={3}
               refetch={refetch}
+              manage={x.user_id === me.data.id || String(me.data.role) === "1"}
             />
           ))}
       </div>
