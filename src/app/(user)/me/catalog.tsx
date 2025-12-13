@@ -56,7 +56,9 @@ export default function Catalog() {
             link={
               role === 4
                 ? `/profile/product/${x.id}`
-                : `/stores/store/product/${x.id}`
+                : role === 5
+                ? `/stores/store/product/${x.id}`
+                : `/brands/brand/product/${x.id}`
             }
             manage
           />

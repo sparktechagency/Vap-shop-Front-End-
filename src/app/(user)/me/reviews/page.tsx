@@ -8,23 +8,35 @@ import {
   useGetMyReviewsQuery,
   useGetReviewsofMeQuery,
 } from "@/redux/features/users/userApi";
-import { Loader2Icon } from "lucide-react";
+import { InboxIcon, Loader2Icon } from "lucide-react";
 
 import { useUser } from "@/context/userContext";
 import LatestReviewCard from "@/components/core/internal/rev-card-me";
+import {
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export default function LatestRevs() {
   const { id } = useUser();
-  const { data, isLoading, isError, error } = useGetReviewsofMeQuery();
+  const { data, isLoading, isError, error }: any = useGetReviewsofMeQuery();
   const reviews = data?.data;
 
   if (isError) {
     return (
-      <pre className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-amber-400 rounded-xl p-6 shadow-lg overflow-x-auto text-sm leading-relaxed border border-zinc-700">
-        <code className="whitespace-pre-wrap">
-          {JSON.stringify(error, null, 2)}
-        </code>
-      </pre>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant={"icon"}>
+            <InboxIcon />
+          </EmptyMedia>
+        </EmptyHeader>
+        <EmptyContent>
+          <EmptyTitle>{error?.data?.message ?? "No Reviews found"}</EmptyTitle>
+        </EmptyContent>
+      </Empty>
     );
   }
   if (isLoading) {
@@ -34,7 +46,7 @@ export default function LatestRevs() {
       </div>
     );
   }
-  if (isError || !Array.isArray(reviews?.data) || reviews?.data.length === 0) {
+  if (isError || !Array.isArray(reviews?.data) || reviews?.data?.length === 0) {
     return (
       <div className="!p-6 flex flex-col items-center gap-3 text-center">
         <p className="text-sm font-medium text-muted-foreground">

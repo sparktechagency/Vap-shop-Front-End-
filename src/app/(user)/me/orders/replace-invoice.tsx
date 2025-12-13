@@ -76,6 +76,11 @@ export default function ReplaceInvoice({ data }: { data: any }) {
                 defaultValue={String(y.quantity)}
                 onChange={(e) => updateQty(y.product_id, e.target.value)}
               />
+              <Input
+                className="w-fit"
+                defaultValue={`$${String(y.price_at_order)}`}
+                disabled
+              />
             </div>
           </div>
         </div>

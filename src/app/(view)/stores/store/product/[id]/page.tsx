@@ -252,7 +252,7 @@ export default function Page() {
 
                     const res = await favToggle({
                       id: product.data.id,
-                      type: "brand",
+                      type: "store",
                     }).unwrap();
                     if (!res.ok) {
                       toast.error(res.message ?? "Something went wrong");

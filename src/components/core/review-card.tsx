@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +9,7 @@ import {
   MessageCircle,
   Send,
   Share2,
+  Trash2Icon,
 } from "lucide-react";
 import {
   Dialog,
@@ -25,6 +25,7 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import Image from "next/image";
 import {
+  useDeleteReviewApiMutation,
   useReplyReviewMutation,
   useToggleLikeMutation,
 } from "@/redux/features/others/otherApi";
@@ -36,11 +37,13 @@ export default function ProductReviewCard({
   productData,
   role,
   refetch,
+  manage,
 }: {
   refetch: any;
   data: any;
   productData?: any;
   role: number;
+  manage?: boolean;
 }) {
   const [helpful, setHelpful] = useState(false);
   const [helpfulCount, setHelpfulCount] = useState(0);
@@ -50,7 +53,7 @@ export default function ProductReviewCard({
   const [likeIt] = useToggleLikeMutation();
   const [liking, setLiking] = useState(false);
   const [replier] = useReplyReviewMutation();
-
+  const [deleteReview] = useDeleteReviewApiMutation();
   useEffect(() => {
     setMounted(true);
     if (data) {
@@ -323,9 +326,33 @@ export default function ProductReviewCard({
           </Dialog>
         </div>
 
-        <Button variant="ghost" size="sm" className="h-8 !px-3">
-          <Share2 className="w-4 h-4" />
-        </Button>
+        <div className="space-x-4">
+          {manage && (
+            <Button
+              onClick={async () => {
+                try {
+                  const res = await deleteReview({ id: data.id }).unwrap();
+                  if (!res.ok) {
+                    toast.error(res.message ?? "Failed to delete");
+                  } else {
+                    toast.success(res.message ?? "Failed to delete");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  toast.error("Something went wrong");
+                }
+              }}
+              size={"icon"}
+              variant={"ghost"}
+              className="text-destructive!"
+            >
+              <Trash2Icon />
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" className="h-8 !px-3">
+            <Share2 className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

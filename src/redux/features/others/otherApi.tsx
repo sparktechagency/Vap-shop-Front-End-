@@ -31,6 +31,13 @@ export const otherApi = api.injectEndpoints({
       }),
       invalidatesTags: ["review"],
     }),
+    deleteReviewApi: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `/product-review/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["review"],
+    }),
     toggleLike: builder.mutation<any, any>({
       query: ({ id }) => ({
         url: `/reviews/${id}/toggle-like`,
@@ -175,4 +182,5 @@ export const {
   useFavAccApiMutation,
   useFavProductToggleApiMutation,
   useGetFavProductsQuery,
+  useDeleteReviewApiMutation,
 } = otherApi;

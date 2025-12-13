@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import BrandProdCard from "@/components/core/brand-prod-card";
 import SliderWithSkeleton from "@/components/SliderWithSkeleton";
@@ -61,6 +60,7 @@ export default function Page() {
       reviews: apiBrand.total_reviews || 0,
     },
     isOpen: true,
+    is_favourite: apiBrand.is_favourite,
     closingTime: "10 PM",
     isFollowing: apiBrand.is_following || false,
     totalFollowers: apiBrand.total_followers || 0,
