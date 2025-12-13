@@ -62,7 +62,7 @@ export default function Page() {
         <div className="w-full flex justify-end items-center gap-4">
           <Button variant="link" asChild>
             <Link
-              href={`/map?lat=${location?.lat}&lng=${location?.lng}&radius=16093`}
+              href={`/map?lat=${location?.lat}&lng=${location?.lng}&radius=56093`}
             >
               <ArrowLeftIcon /> Map View
             </Link>
