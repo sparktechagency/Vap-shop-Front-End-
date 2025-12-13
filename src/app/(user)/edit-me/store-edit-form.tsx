@@ -104,7 +104,7 @@ export default function StoreEditForm({ my }: { my: UserData }) {
       open_from: String(my?.open_from || ""),
       close_at: String(my?.close_at || ""),
       pl: my?.pl === 1 ? true : false,
-      tax_percentage: String(my?.tax_percentage),
+      tax_percentage: String(my?.tax_percentage || ""),
       shipping_cost: String(my?.shipping_cost || ""),
     },
   });

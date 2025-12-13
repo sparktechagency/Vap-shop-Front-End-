@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { BikeIcon, Loader2Icon } from "lucide-react";
+import { BadgePercentIcon, BikeIcon, Loader2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useCountysQuery } from "@/redux/features/AuthApi";
 import { Label } from "@/components/ui/label";
@@ -50,6 +50,7 @@ const formSchema = z.object({
   longitude: z.string(),
   open_from: z.string(),
   close_at: z.string(),
+  tax_percentage: z.string().optional(),
   shipping_cost: z.string().optional(),
 });
 
@@ -86,6 +87,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       open_from: "",
       close_at: "",
       shipping_cost: String(my?.shipping_cost || ""),
+      tax_percentage: String(my?.tax_percentage || ""),
     },
   });
 
@@ -359,6 +361,30 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               </FormItem>
             )}
           />
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>State Tax % (Optional)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={control}
+                name="tax_percentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <InputGroup>
+                        <InputGroupInput placeholder="0.00" {...field} />
+                        <InputGroupAddon>
+                          <BadgePercentIcon />
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
           <Card className="col-span-2">
             <CardHeader>
               <CardTitle>B2B Shipping cost (Optional)</CardTitle>

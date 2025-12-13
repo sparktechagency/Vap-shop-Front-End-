@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -10,14 +9,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetPostsByIdQuery } from "@/redux/features/users/postApi";
 import { useParams } from "next/navigation";
 import { UserData } from "@/lib/types/apiTypes";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
+import MyPostCard from "@/components/core/my-post-card";
 
 export default function Post({ user: my }: { user: UserData }) {
   const id = useParams().uid;
-
   const { data, isLoading, isError, isFetching, error } =
     useGetPostsByIdQuery<any>({
       id: id,
     });
+  const { data: me } = useGetOwnprofileQuery<any>();
 
   if (isError) {
     return (
@@ -53,10 +54,12 @@ export default function Post({ user: my }: { user: UserData }) {
 
   const renderPosts = () =>
     data?.data?.data?.map((post: any, index: number) => (
-      <PostCard
+      <MyPostCard
         key={post.id || index} // Prefer post.id if available
         user={{ name: my.full_name ?? "", avatar: my.avatar }}
         data={post}
+        admin={me.data.role === 1}
+        manage={me.data.role === 1}
       />
     ));
 

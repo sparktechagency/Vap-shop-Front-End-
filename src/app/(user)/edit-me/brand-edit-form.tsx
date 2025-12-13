@@ -26,7 +26,12 @@ import {
 } from "@/components/ui/select";
 import { useUpdateUserMutation } from "@/redux/features/users/userApi";
 import { toast } from "sonner";
-import { ArrowRight, BikeIcon, Loader2Icon } from "lucide-react";
+import {
+  ArrowRight,
+  BadgePercentIcon,
+  BikeIcon,
+  Loader2Icon,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -51,6 +56,7 @@ const formSchema = z.object({
   address: z.string().min(2),
   zip_code: z.string().min(2),
   region_id: z.string(),
+  tax_percentage: z.string().optional(),
   shipping_cost: z.string().optional(),
   country_id: z.string(),
 });
@@ -65,6 +71,7 @@ export default function BrandEditForm({ my }: { my: UserData }) {
       address: my?.address?.address || "",
       zip_code: my?.address?.zip_code || "",
       region_id: String(my?.address?.region_id || ""),
+      tax_percentage: String(my?.tax_percentage || ""),
       shipping_cost: String(my?.shipping_cost || ""),
       country_id: "",
     },
@@ -281,7 +288,30 @@ export default function BrandEditForm({ my }: { my: UserData }) {
               )}
             />
           </div>
-
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>State Tax % (Optional)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={control}
+                name="tax_percentage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <InputGroup>
+                        <InputGroupInput placeholder="0.00" {...field} />
+                        <InputGroupAddon>
+                          <BadgePercentIcon />
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
           <Card className="col-span-2">
             <CardHeader>
               <CardTitle>B2B Shipping cost (Optional)</CardTitle>
