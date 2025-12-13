@@ -15,7 +15,7 @@ export default function useAutoLocation() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return; // SSR-safe
+    if (typeof window === "undefined") return;
 
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by this browser.");
