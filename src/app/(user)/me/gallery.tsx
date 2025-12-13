@@ -211,7 +211,7 @@ export default function Gallery() {
       ));
   if (isLoading) return renderSkeletons();
   if (isError || !data?.data?.data?.length) return renderError();
-
+  //
   return (
     <div className="w-full pt-2">
       <div className="grid grid-cols-4 gap-0 relative mt-4">
