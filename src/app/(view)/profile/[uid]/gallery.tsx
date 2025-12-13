@@ -85,23 +85,26 @@ export default function Gallery({ id }: { id: string }) {
       ?.filter((post: any) => post.post_images && post.post_images.length > 0)
       ?.map((post: any, index: number) => (
         <Dialog key={index}>
-          <DialogTrigger asChild>
-            <Card
-              className="w-full relative aspect-[4/5] bg-cover rounded-none"
-              style={{
-                backgroundImage: `url('${post?.post_images[0].image_path}')`,
-              }}
-            >
-              {post?.post_images?.length > 1 && (
-                <div className="top-2 right-2 absolute z-20">
-                  <div className="text-background p-2 rounded-lg bg-background/30">
-                    <IoCopySharp className="size-5" />
+          {!!post.is_in_gallery && (
+            <DialogTrigger asChild>
+              <Card
+                className="w-full relative aspect-[4/5] bg-cover rounded-none"
+                style={{
+                  backgroundImage: `url('${post?.post_images[0].image_path}')`,
+                }}
+              >
+                {post?.post_images?.length > 1 && (
+                  <div className="top-2 right-2 absolute z-20">
+                    <div className="text-background p-2 rounded-lg bg-background/30">
+                      <IoCopySharp className="size-5" />
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
-            </Card>
-          </DialogTrigger>
+                )}
+
+                <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+              </Card>
+            </DialogTrigger>
+          )}
 
           <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
             <DialogHeader className="hidden">

@@ -62,7 +62,7 @@ export default function Page() {
     formData.append("title", values.title);
     formData.append("content", values.content ?? "");
     formData.append("is_in_gallery", values.is_in_gallery ? "1" : "0");
-    formData.append("content_type", "post");
+    // formData.append("content_type", "post");
 
     if (selectedFile && selectedFile.length > 0) {
       selectedFile.forEach((file, i) => {

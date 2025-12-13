@@ -63,6 +63,7 @@ import ReviewPost from "../../[id]/review-post";
 import Reviewer from "../../[id]/reviewer";
 import { ProductPrice } from "@/components/ui/ProductPrice";
 import DOMPurify from "dompurify";
+import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
 interface ShareButtonsProps {
   url: string;
@@ -108,7 +109,7 @@ export default function Page() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [fevoriteUnveforite] = useFevoriteUnveforiteMutation();
+
   const {
     data: product,
     isLoading,
@@ -116,6 +117,7 @@ export default function Page() {
   } = useStoreProductDetailsByIdQuery(id as any);
   const [favToggle, { isLoading: favWorking }] =
     useFavProductToggleApiMutation();
+  const { data: me, isLoading: meLoading } = useGetOwnprofileQuery();
 
   console.log("productDetails-0---------", product);
   // Add this hook to fetch reviews
@@ -237,49 +239,55 @@ export default function Page() {
               {product?.data?.user?.total_followers?.toLocaleString() || "0"}{" "}
               followers
             </p>
-            <Button
-              variant={"outline"}
-              onClick={async () => {
-                try {
-                  console.log(product);
+            {isLoading ? (
+              <Loader2Icon />
+            ) : me.data.role !== 6 ? (
+              <></>
+            ) : (
+              <Button
+                variant={"outline"}
+                onClick={async () => {
+                  try {
+                    console.log(product);
 
-                  const res = await favToggle({
-                    id: product.data.id,
-                    type: "brand",
-                  }).unwrap();
-                  if (!res.ok) {
-                    toast.error(res.message ?? "Something went wrong");
-                  } else {
-                    toast.success(res.message ?? "Successful");
+                    const res = await favToggle({
+                      id: product.data.id,
+                      type: "brand",
+                    }).unwrap();
+                    if (!res.ok) {
+                      toast.error(res.message ?? "Something went wrong");
+                    } else {
+                      toast.success(res.message ?? "Successful");
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    toast.error("Something went wrong");
                   }
-                } catch (error) {
-                  console.error(error);
-                  toast.error("Something went wrong");
-                }
-              }}
-              disabled={favWorking}
-            >
-              {favWorking ? (
-                <>
-                  <Loader2Icon className="animate-spin" />
-                  Adding to favorites
-                </>
-              ) : (
-                <>
-                  {!isLoading && product?.data?.is_favorite ? (
-                    <>
-                      <BookmarkIcon fill="" />
-                      Remove from Favorite
-                    </>
-                  ) : (
-                    <>
-                      <BookmarkIcon />
-                      Add to favorites
-                    </>
-                  )}
-                </>
-              )}
-            </Button>
+                }}
+                disabled={favWorking}
+              >
+                {favWorking ? (
+                  <>
+                    <Loader2Icon className="animate-spin" />
+                    Adding to Favorite
+                  </>
+                ) : (
+                  <>
+                    {!isLoading && product?.data?.is_favorite ? (
+                      <>
+                        <BookmarkIcon fill="" />
+                        Remove from Favorite
+                      </>
+                    ) : (
+                      <>
+                        <BookmarkIcon />
+                        Add to Favorite
+                      </>
+                    )}
+                  </>
+                )}
+              </Button>
+            )}
             {/* <Button variant="outline" className="!text-sm font-extrabold">
               B2B
             </Button> */}

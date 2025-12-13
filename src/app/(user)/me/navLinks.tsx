@@ -43,7 +43,7 @@ const baseLinks = {
   },
   favProducts: {
     icon: <Lucide.BookHeart className="size-5" />,
-    label: "Favorites Products",
+    label: "Favorite Products",
     to: "/me/fav-products",
   },
   manageLocations: {

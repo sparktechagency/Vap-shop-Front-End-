@@ -91,23 +91,26 @@ export default function Gallery() {
       ?.filter((post: any) => post.post_images && post.post_images.length > 0)
       ?.map((post: any, index: number) => (
         <Dialog key={index}>
-          <DialogTrigger asChild>
-            <Card
-              className="w-full relative aspect-[4/5] bg-cover rounded-none"
-              style={{
-                backgroundImage: `url('${post?.post_images[0].image_path}')`,
-              }}
-            >
-              {post?.post_images?.length > 1 && (
-                <div className="top-2 right-2 absolute z-20">
-                  <div className="text-background p-2 rounded-lg bg-background/30">
-                    <IoCopySharp className="size-5" />
+          {!!post.is_in_gallery && (
+            <DialogTrigger asChild>
+              <Card
+                className="w-full relative aspect-[4/5] bg-cover rounded-none"
+                style={{
+                  backgroundImage: `url('${post?.post_images[0].image_path}')`,
+                }}
+              >
+                {post?.post_images?.length > 1 && (
+                  <div className="top-2 right-2 absolute z-20">
+                    <div className="text-background p-2 rounded-lg bg-background/30">
+                      <IoCopySharp className="size-5" />
+                    </div>
                   </div>
-                </div>
-              )}
-              <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
-            </Card>
-          </DialogTrigger>
+                )}
+
+                <div className="h-full w-full absolute top-0 left-0 z-30 hover:bg-foreground/60 opacity-0 hover:opacity-100 transition-opacity cursor-pointer" />
+              </Card>
+            </DialogTrigger>
+          )}
 
           <DialogContent className="h-[90dvh] !min-w-fit px-[4%]! gap-0!">
             <DialogHeader className="hidden">
@@ -120,21 +123,15 @@ export default function Gallery() {
                   {post.post_images.map((img: any, i: number) => (
                     <CarouselItem key={i}>
                       <div className="p-1">
-                        <Card className="aspect-square! p-0!">
-                          <CardContent className="flex aspect-square! items-center justify-center p-0! ">
-                            <ImageZoom
-                              onZoomChange={() => {
-                                //keep dialog open
-                              }}
-                            >
-                              <Image
-                                src={img?.image_path}
-                                height={500}
-                                width={500}
-                                alt={`Post image ${i + 1}`}
-                                className="w-full h-full object-contain aspect-square rounded-md"
-                              />
-                            </ImageZoom>
+                        <Card className="aspect-square!">
+                          <CardContent className="flex aspect-square! items-center justify-center p-0">
+                            <Image
+                              src={img?.image_path}
+                              height={600}
+                              width={400}
+                              alt={`Post image ${i + 1}`}
+                              className="w-full h-full object-cover aspect-square rounded-md"
+                            />
                           </CardContent>
                         </Card>
                       </div>
@@ -172,19 +169,13 @@ export default function Gallery() {
                     }
 
                     toast.success(
-                      `${!post.is_hearted ? "Hearted" : "Unhearted"} post!`
+                      `${!post.is_hearted ? "Hearted" : "UnHearted"} post!`
                     );
-                    // toast.success(`${post.is_ ? "Liked" : "Unliked"} post!`);
                   } catch (err: any) {
-                    // Revert optimistic update
-                    // setLiked(!nextLiked);
-                    // setTotalLike((prev) => prev + (nextLiked ? -1 : 1));
-
                     toast.error(
                       err?.data?.message ||
                         "Something went wrong. Please try again."
                     );
-                    console.error("Like error:", err);
                   }
                 }}
                 className="text-xs h-8 !px-3"
@@ -218,7 +209,6 @@ export default function Gallery() {
           </DialogContent>
         </Dialog>
       ));
-
   if (isLoading) return renderSkeletons();
   if (isError || !data?.data?.data?.length) return renderError();
 
