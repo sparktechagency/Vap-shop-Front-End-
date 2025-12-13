@@ -137,7 +137,7 @@ export default function Searcher({
     ) {
       router.push(`/map?lat=${location.lat}&lng=${location.lng}&radius=16093`);
     }
-  }, [searchInput, router, location]);
+  }, [searchInput, router, location, selectedSearch, selectedRegion]);
 
   return (
     <div className={className} {...props} ref={searchContainerRef}>
@@ -204,12 +204,12 @@ export default function Searcher({
                                 x.role === 3
                                   ? "brand"
                                   : x.role === 4
-                                  ? "wholesaler"
-                                  : x.role === 5
-                                  ? "store"
-                                  : x.role === 2
-                                  ? "association"
-                                  : "member"
+                                    ? "wholesaler"
+                                    : x.role === 5
+                                      ? "store"
+                                      : x.role === 2
+                                        ? "association"
+                                        : "member"
                               }
                               // isVerified
                               size="sm"
