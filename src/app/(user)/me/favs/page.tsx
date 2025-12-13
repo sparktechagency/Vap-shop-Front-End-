@@ -1,22 +1,71 @@
-import React, { Suspense } from "react";
-import FavList from "./fav-list";
-import { Loader2Icon } from "lucide-react";
+"use client";
 
-export default async function Page() {
+import ProductCard from "@/components/core/product-card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { useUser } from "@/context/userContext";
+import { useGetFavProductsQuery } from "@/redux/features/others/otherApi";
+import { InboxIcon, Loader2Icon } from "lucide-react";
+import React from "react";
+
+export default function Page() {
+  const { data, isLoading, isError, error }: any = useGetFavProductsQuery();
+  const { role } = useUser();
+  if (isLoading) {
+    return (
+      <div className="p-6 py-12 flex justify-center items-center">
+        <Loader2Icon className="animate-spin" />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant={"icon"}>
+            <InboxIcon />
+          </EmptyMedia>
+          <EmptyTitle>{error?.data?.message}</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
   return (
-    <section>
-      <h1 className="text-center font-semibold text-2xl pb-2 border-b">
-        My Favorite Products
-      </h1>
-      <Suspense
-        fallback={
-          <div className="h-12 w-full flex justify-center items-center">
-            <Loader2Icon className="animate-spin" />
-          </div>
-        }
-      >
-        <FavList />
-      </Suspense>
+    <section className="w-full border-t py-8 mt-4">
+      <h4 className="text-center text-2xl"> Favorite brands product list</h4>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-6">
+        {data?.data
+          ?.filter((x: any) => String(x.details.role) === "3")
+          .map((x: any) => (
+            <ProductCard
+              key={x.id}
+              data={{
+                id: x.id,
+                image: x?.details?.product_image,
+                title: x?.details?.product_name,
+                category: x?.details?.brand_name,
+                note: "",
+                hearts: x?.details?.total_heart,
+                is_hearted: x?.details?.is_hearted,
+                thc_percentage: x?.details?.thc_percentage,
+              }}
+              link={
+                x?.details.role === 4
+                  ? `/profile/product/${x.id}`
+                  : x?.details?.role === 3
+                  ? `/brands/brand/product/${x.id}`
+                  : `/stores/store/product/${x.id}`
+              }
+            />
+          ))}
+      </div>
     </section>
   );
 }

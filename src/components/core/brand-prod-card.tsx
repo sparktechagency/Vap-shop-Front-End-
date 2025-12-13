@@ -70,7 +70,6 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
             />
           ) : (
             <HeartIcon
-              fill=""
               className={`text-foreground ${
                 data?.isFollowing ? "fill-foreground" : ""
               }`}
