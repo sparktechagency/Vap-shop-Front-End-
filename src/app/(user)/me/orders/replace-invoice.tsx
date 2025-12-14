@@ -31,6 +31,8 @@ export default function ReplaceInvoice({ data }: { data: any }) {
       )
     );
   };
+  const getQty = (id: number, fallback: number) =>
+    items.find((i: any) => i.product_id === id)?.quantity ?? fallback;
 
   const handleUpdate = async () => {
     const payload = {
@@ -73,12 +75,15 @@ export default function ReplaceInvoice({ data }: { data: any }) {
               <Label>Quantity:</Label>
               <Input
                 className="w-fit"
-                defaultValue={String(y.quantity)}
+                value={getQty(y.product_id, y.quantity)}
                 onChange={(e) => updateQty(y.product_id, e.target.value)}
               />
+
               <Input
                 className="w-fit"
-                defaultValue={`$${String(y.price_at_order)}`}
+                value={`$${
+                  y.price_at_order * getQty(y.product_id, y.quantity)
+                }`}
                 disabled
               />
             </div>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-// import ReviewCard from "@/components/core/review-card";
+
 import { Button } from "@/components/ui/button";
 import {
   useGetMyReviewsQuery,
@@ -11,7 +11,7 @@ import {
 import { InboxIcon, Loader2Icon } from "lucide-react";
 
 import { useUser } from "@/context/userContext";
-import LatestReviewCard from "@/components/core/internal/rev-card-me";
+
 import {
   Empty,
   EmptyContent,
@@ -19,9 +19,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import BrandLatestReviewCard from "@/components/core/brand-rev-card-me";
+import LatestReviewCard from "@/components/core/internal/rev-card-me";
 
 export default function LatestRevs() {
-  const { id } = useUser();
+  const { id, role } = useUser();
   const { data, isLoading, isError, error }: any = useGetReviewsofMeQuery();
   const reviews = data?.data;
 
@@ -62,9 +64,13 @@ export default function LatestRevs() {
   return (
     <div className="!p-6">
       <div className="!my-12 !space-y-6">
-        {reviews?.data?.map((review: any) => (
-          <LatestReviewCard key={review?.id} data={review} userId={id} />
-        ))}
+        {reviews?.data?.map((review: any) =>
+          role === 5 ? (
+            <LatestReviewCard key={review?.id} data={review} userId={id} />
+          ) : (
+            <BrandLatestReviewCard key={review?.id} data={review} userId={id} />
+          )
+        )}
       </div>
     </div>
   );

@@ -37,13 +37,13 @@ export default function LatestReviewCard({
         <Link
           className="flex items-center"
           href={
-            data.product.role === 3
+            data?.product?.role === 3
               ? `/brands/brand/product/${data?.product?.id}`
               : `/stores/store/product/${data?.product?.id}`
           }
         >
           <Image
-            src={data?.product.product_image ?? "/image/shop/item.jpg"}
+            src={data?.product?.product_image ?? "/image/shop/item.jpg"}
             width={100}
             height={100}
             alt="icon"
@@ -51,7 +51,7 @@ export default function LatestReviewCard({
           />
           <div className="ml-4">
             <h4 className="font-semibold text-xl">
-              {data.product.product_name ?? ""}
+              {data?.product?.product_name ?? ""}
             </h4>
           </div>
         </Link>
