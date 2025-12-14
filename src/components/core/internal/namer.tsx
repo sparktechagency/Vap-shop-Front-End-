@@ -74,9 +74,9 @@ export default function Namer({
         ) : type === "store" ? (
           <StoreIcon className="size-3 md:size-5" />
         ) : type === "association" ? (
-          <WarehouseIcon className="size-3 md:size-5" />
-        ) : type === "wholesaler" ? (
           <StarIcon className="size-3 md:size-5" />
+        ) : type === "wholesaler" ? (
+          <WarehouseIcon className="size-3 md:size-5" />
         ) : (
           <div className="">
             <Image

@@ -37,7 +37,7 @@ export default function LatestReviewCard({
         <Link
           className="flex items-center"
           href={
-            data.store_products.role === 3
+            data?.store_products?.role === 3
               ? `/brands/brand/product/${data?.store_products?.id}`
               : `/stores/store/product/${data?.store_products?.id}`
           }

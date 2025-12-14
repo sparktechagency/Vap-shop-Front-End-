@@ -227,9 +227,9 @@ export default function Page() {
               className="text-black hover:text-[#3a3a3a] underline"
             >
               <Namer
-                name={product?.data?.user?.full_name || "Brand"}
+                name={product?.data?.user?.full_name || "Store"}
                 isVerified
-                type="brand"
+                type="store"
                 size="xl"
               />
             </Link>
