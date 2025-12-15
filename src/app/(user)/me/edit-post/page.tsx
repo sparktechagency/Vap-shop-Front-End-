@@ -27,7 +27,6 @@ import {
   FileUploadDropzone,
   FileUploadItem,
   FileUploadItemDelete,
-  FileUploadItemMetadata,
   FileUploadItemPreview,
   FileUploadItemProgress,
   FileUploadList,
@@ -40,107 +39,97 @@ import { cn } from "@/lib/utils";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-// ----------------------------
-// Extend File type for preview
-// ----------------------------
 interface FileWithPreview extends File {
   preview?: string;
 }
 
-// ----------------------------
-// Schema
-// ----------------------------
 const postSchema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
-  content: z.string().min(1, { message: "Content is required" }),
+  title: z.string().min(1),
+  content: z.string().optional(),
   is_in_gallery: z.boolean(),
 });
 
 type PostForm = z.infer<typeof postSchema>;
 
 export default function Page() {
-  const [selectedFile, setSelectedFile] = useState<FileWithPreview[]>([]);
   const { id } = useUser();
   const postId = useSearchParams().get("id");
+  const router = useRouter();
+
   const { data, isLoading } = useGetPostsByIdQuery({ id }, { skip: !id });
-  const [updatedImg, setUpdatedImg] = useState(false);
-  const navig = useRouter();
-  const [activeFiles, setActiveFiles] = useState<string[] | null>(null);
-  const [updatePost, { isLoading: updating, isSuccess }] =
-    useUpdatePostMutation();
+  const [updatePost, { isLoading: updating }] = useUpdatePostMutation();
+
+  const [existingImages, setExistingImages] = useState<any[]>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<FileWithPreview[]>([]);
+
   const form = useForm<PostForm>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      title: "...",
+      title: "",
       content: "",
       is_in_gallery: false,
     },
   });
 
   // ----------------------------
-  // Load existing post
+  // Load post
   // ----------------------------
   useEffect(() => {
     if (!isLoading && data?.data?.data) {
-      const currentPost = data.data.data.find(
+      const post = data.data.data.find(
         (x: any) => String(x.id) === String(postId)
       );
-      if (currentPost) {
-        form.reset({
-          title: currentPost.title,
-          content: currentPost.content,
-          is_in_gallery: Boolean(currentPost.is_in_gallery),
-        });
-        if (currentPost?.post_images.length > 0) {
-          setActiveFiles(currentPost?.post_images);
-        } else {
-          setUpdatedImg(true);
-        }
-      }
+
+      if (!post) return;
+
+      form.reset({
+        title: post.title,
+        content: post.content,
+        is_in_gallery: Boolean(post.is_in_gallery),
+      });
+
+      setExistingImages(post.post_images ?? []);
     }
   }, [isLoading]);
 
   // ----------------------------
-  // File reject
+  // Remove existing image
   // ----------------------------
-  const onFileReject = React.useCallback((file: File, message: string) => {
-    toast(message, {
-      description: `"${
-        file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name
-      }" has been rejected`,
-    });
-  }, []);
+  const removeExistingImage = (img: any) => {
+    setExistingImages((prev) => prev.filter((x) => x.id !== img.id));
+    setDeletedImageIds((prev) => [...prev, String(img.id)]);
+    console.log(String(img.id));
+  };
 
   // ----------------------------
-  // Submit: FormData ready
+  // Submit
   // ----------------------------
   const onSubmit = async (values: PostForm) => {
     const formData = new FormData();
+
     formData.append("title", values.title);
-    formData.append("content", values.content);
+    formData.append("content", values.content ?? "");
     formData.append("is_in_gallery", values.is_in_gallery ? "1" : "0");
     formData.append("content_type", "post");
     formData.append("_method", "PUT");
-    // Append all files (existing + new)
-    if (updatedImg) {
-      selectedFile.forEach((file) => formData.append("images[]", file));
-    }
-    try {
-      const res = await updatePost({ id: String(postId), data: formData });
 
-      if (isSuccess) {
-        toast.success(res.data.message);
-      } else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update the post");
-    }
-    // Log FormData
-    console.log("=== FORM DATA ===");
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+    // deleted images
+    deletedImageIds.forEach((id) => formData.append("deleted_image_ids[]", id));
+
+    // new images only
+    newFiles.forEach((file) => formData.append("images[]", file));
+
+    try {
+      const res = await updatePost({
+        id: String(postId),
+        data: formData,
+      }).unwrap();
+
+      toast.success(res.message ?? "Post updated");
+      router.back();
+    } catch (err: any) {
+      toast.error(err?.data?.message ?? "Update failed");
     }
   };
 
@@ -150,98 +139,82 @@ export default function Page() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* File Upload */}
-          {!!activeFiles && !updatedImg && (
+          {/* Existing Images */}
+          {existingImages.length > 0 && (
             <div
-              className={cn(
-                `w-full min-h-[300px] p-6 border grid gap-2 relative`,
-                `grid-cols-${activeFiles.length}`
-              )}
+              className={cn("grid gap-3", `grid-cols-${existingImages.length}`)}
             >
-              {activeFiles?.map((x: any, i) => (
-                <Image
-                  alt="img-post"
-                  className="w-full max-h-[300px] object-contain aspect-square"
-                  height={500}
-                  width={500}
-                  key={i}
-                  src={x.image_path}
-                />
+              {existingImages.map((img) => (
+                <div key={img.id} className="relative group">
+                  <Image
+                    src={img.image_path}
+                    alt="post-img"
+                    width={300}
+                    height={300}
+                    className="object-contain max-h-[300px]"
+                  />
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="destructive"
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100"
+                    onClick={() => removeExistingImage(img)}
+                  >
+                    <X className="size-4" />
+                  </Button>
+                </div>
               ))}
-              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center backdrop-blur-2xl opacity-0 hover:opacity-100 transition-opacity">
-                <Button
-                  variant={"special"}
-                  onClick={() => {
-                    setUpdatedImg(true);
-                  }}
-                >
-                  Update Images
-                </Button>
-              </div>
             </div>
           )}
-          {updatedImg && (
-            <FileUpload
-              value={selectedFile}
-              onValueChange={setSelectedFile}
-              maxFiles={10}
-              maxSize={5 * 1024 * 1024}
-              className="w-full"
-              onFileReject={onFileReject}
-              multiple
-            >
-              <FileUploadDropzone>
-                <div className="flex flex-col items-center gap-1 text-center">
-                  <div className="flex items-center justify-center rounded-full border p-2.5">
-                    <Upload className="size-6 text-muted-foreground" />
-                  </div>
-                  <p className="font-medium text-sm">Drag & drop files here</p>
-                  <p className="text-muted-foreground text-xs">
-                    Or click to browse (max 10 files, up to 5MB each)
-                  </p>
-                </div>
-                <FileUploadTrigger asChild>
-                  <Button variant="outline" size="sm" className="mt-2 w-fit">
-                    Browse files
-                  </Button>
-                </FileUploadTrigger>
-              </FileUploadDropzone>
 
-              <FileUploadList orientation="horizontal">
-                {selectedFile.map((file, index) => (
-                  <FileUploadItem key={index} value={file} className="p-0">
-                    <FileUploadItemPreview>
-                      {file.preview ? (
-                        <img
-                          src={file.preview}
-                          alt={file.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <FileUploadItemProgress variant="circular" size={40} />
-                      )}
-                    </FileUploadItemPreview>
+          {/* New Uploads */}
+          <FileUpload
+            value={newFiles}
+            onValueChange={setNewFiles}
+            maxFiles={10}
+            maxSize={5 * 1024 * 1024}
+            multiple
+          >
+            <FileUploadDropzone>
+              <div className="flex flex-col items-center gap-1">
+                <Upload className="size-6 text-muted-foreground" />
+                <p className="text-sm">Add new images</p>
+              </div>
+              <FileUploadTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Browse
+                </Button>
+              </FileUploadTrigger>
+            </FileUploadDropzone>
 
-                    <FileUploadItemMetadata className="sr-only" />
-                    <FileUploadItemDelete asChild>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="-top-1 -right-1 absolute size-5 rounded-full"
-                        onClick={() =>
-                          setSelectedFile((prev) =>
-                            prev.filter((_, i) => i !== index)
-                          )
-                        }
-                      >
-                        <X className="size-3" />
-                      </Button>
-                    </FileUploadItemDelete>
-                  </FileUploadItem>
-                ))}
-              </FileUploadList>
-            </FileUpload>
-          )}
+            <FileUploadList orientation="horizontal">
+              {newFiles.map((file, i) => (
+                <FileUploadItem key={i} value={file}>
+                  <FileUploadItemPreview>
+                    {file.preview ? (
+                      <img
+                        src={file.preview}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <FileUploadItemProgress variant="circular" size={40} />
+                    )}
+                  </FileUploadItemPreview>
+                  <FileUploadItemDelete asChild>
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      onClick={() =>
+                        setNewFiles((p) => p.filter((_, x) => x !== i))
+                      }
+                    >
+                      <X className="size-3" />
+                    </Button>
+                  </FileUploadItemDelete>
+                </FileUploadItem>
+              ))}
+            </FileUploadList>
+          </FileUpload>
 
           {/* Content */}
           <FormField
@@ -251,18 +224,14 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Post Content</FormLabel>
                 <FormControl>
-                  <JoditEditor
-                    value={field.value}
-                    onChange={(newContent) => field.onChange(newContent)}
-                    className="h-[30dvh]"
-                  />
+                  <JoditEditor value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Gallery Toggle */}
+          {/* Gallery */}
           <FormField
             control={form.control}
             name="is_in_gallery"
@@ -270,7 +239,7 @@ export default function Page() {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={field.value}
-                  onCheckedChange={(val) => field.onChange(val)}
+                  onCheckedChange={field.onChange}
                 />
                 <Label>Keep in Gallery</Label>
               </div>
@@ -278,7 +247,7 @@ export default function Page() {
           />
 
           <Button type="submit" disabled={updating}>
-            {!!updating ? (
+            {updating ? (
               <Loader2Icon className="animate-spin" />
             ) : (
               "Update Post"

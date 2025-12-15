@@ -56,6 +56,11 @@ const baseLinks = {
     label: "Reviews",
     to: "/me/reviews",
   },
+  my_reviews: {
+    icon: <Lucide.ListChecks className="size-5" />,
+    label: "Reviews",
+    to: "/me/myreviews",
+  },
   settings: {
     icon: <Lucide.Settings className="size-5" />,
     label: "Settings",
@@ -85,7 +90,7 @@ export const createNavLinks = (
         baseLinks.favs,
         baseLinks.favProducts,
         baseLinks.orders,
-        baseLinks.reviews,
+        baseLinks.my_reviews,
         baseLinks.settings,
         baseLinks.logout,
       ];
