@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import ProductReviewCard from "@/components/core/review-card";
 import LoadingScletion from "@/components/LoadingScletion";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
@@ -16,6 +16,7 @@ export default function Reviewer({
     role: role,
     id: product?.data?.id,
   });
+  const { data: me } = useGetOwnprofileQuery();
 
   //   const { data: user } = useGetOwnprofileQuery()
 
@@ -41,6 +42,7 @@ export default function Reviewer({
               productData={product}
               role={role}
               refetch={refetch}
+              manage={x.user_id === me.data.id || String(me.data.role) === "1"}
             />
           ))}
       </div>

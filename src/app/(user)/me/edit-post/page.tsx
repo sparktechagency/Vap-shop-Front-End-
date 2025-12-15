@@ -162,6 +162,7 @@ export default function Page() {
                   >
                     <X className="size-4" />
                   </Button>
+                  {img.id}
                 </div>
               ))}
             </div>
