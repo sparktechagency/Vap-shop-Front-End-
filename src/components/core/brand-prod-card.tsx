@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { EyeIcon, HeartIcon, Loader2Icon, StarIcon } from "lucide-react";
 import Link from "next/link";
 import { BrandType } from "@/lib/types/product";
@@ -14,6 +14,34 @@ import { useTheme } from "next-themes";
 export default function BrandProdCard({ data }: { data: BrandType }) {
   const { resolvedTheme } = useTheme();
   const [fav, { isLoading }] = useFavAccApiMutation();
+
+  // LOCAL STATE FOR OPTIMISTIC UI
+  const [isFavourite, setIsFavourite] = useState(data?.is_favourite ?? false);
+
+  const handleFavourite = async () => {
+    if (isLoading) return; // prevent double click
+
+    // 1️⃣ flip optimistically
+    setIsFavourite((prev) => !prev);
+
+    try {
+      const res = await fav({ id: data.id }).unwrap();
+
+      if (res.ok) {
+        toast.success(res.message);
+      } else {
+        // rollback on failure
+        setIsFavourite((prev) => !prev);
+        toast.error(res.message);
+      }
+    } catch (error) {
+      // rollback on error
+      setIsFavourite((prev) => !prev);
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <div className="!p-0 !gap-0 shadow-sm rounded-lg border overflow-hidden">
       <div
@@ -44,35 +72,21 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
           variant="default"
           size="icon"
           disabled={isLoading}
-          onClick={async () => {
-            try {
-              const res = await fav({ id: data.id }).unwrap();
-              console.log(res);
-              if (res.ok) {
-                toast.success(res.message);
-              } else {
-                toast.error(res.message);
-              }
-            } catch (error) {
-              console.error(error);
-              toast.error("Something went wrong");
-            }
-          }}
+          onClick={handleFavourite}
         >
           {isLoading ? (
             <Loader2Icon className={`text-foreground animate-spin`} />
-          ) : data?.is_favourite ? (
-            <HeartIcon
-              fill={resolvedTheme === "dark" ? "#f9f9f9" : "#191919"}
-              className={`text-foreground ${
-                data?.isFollowing ? "fill-foreground" : ""
-              }`}
-            />
           ) : (
             <HeartIcon
-              className={`text-foreground ${
-                data?.isFollowing ? "fill-foreground" : ""
-              }`}
+              className="size-5"
+              fill={
+                isFavourite
+                  ? resolvedTheme === "dark"
+                    ? "#f9f9f9"
+                    : "#191919"
+                  : "none"
+              }
+              stroke={isFavourite ? "none" : "currentColor"} // outlines if not favourite
             />
           )}
         </Button>
@@ -94,8 +108,6 @@ export default function BrandProdCard({ data }: { data: BrandType }) {
                 />
               </Link>
               <div className="flex items-center gap-2 mt-1">
-                {/* <p className="text-xs text-muted-foreground">{data?.location.city}</p> */}
-
                 {data?.totalFollowers !== undefined && (
                   <div className="text-xs text-muted-foreground">
                     {data?.totalFollowers} followers

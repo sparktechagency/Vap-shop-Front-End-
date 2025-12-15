@@ -47,15 +47,18 @@ export default function Post({ id }: { id: number }) {
   );
 
   const renderPosts = () =>
-    data?.data?.data?.map((post: any, index: number) => (
-      <MyPostCard
-        key={post?.id || index}
-        user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
-        data={post}
-        manage={me.data.role === 1}
-        admin={me.data.role === 1}
-      />
-    ));
+    data?.data?.data
+      ?.slice()
+      .reverse()
+      .map((post: any, index: number) => (
+        <MyPostCard
+          key={post?.id || index}
+          user={{ name: my?.data?.full_name ?? "", avatar: my?.data.avatar }}
+          data={post}
+          manage={me.data.role === 1}
+          admin={me.data.role === 1}
+        />
+      ));
 
   return (
     <section className="p-6!">
