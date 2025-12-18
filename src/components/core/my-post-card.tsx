@@ -151,7 +151,7 @@ export default function MyPostCard({
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="border-b !p-4">
+      <div className="border-b !p-4 w-full flex justify-between items-center">
         <Link
           href={
             String(data?.user?.role) === "3"
@@ -168,6 +168,9 @@ export default function MyPostCard({
           </Avatar>
           {user.name}
         </Link>
+        <p className="text-xs font-semibold text-muted-foreground">
+          Posted at: {new Date(data?.created_at).toLocaleDateString()}
+        </p>
       </div>
 
       <Dialog>

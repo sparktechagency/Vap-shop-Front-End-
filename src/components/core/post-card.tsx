@@ -149,7 +149,7 @@ export default function PostCard({
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="border-b !p-4">
+      <div className="border-b !p-4 flex justify-between items-center">
         <Link
           href={
             String(data?.user?.role) === "3"
@@ -171,6 +171,9 @@ export default function PostCard({
             </Badge>
           ))} */}
         </Link>
+        <p className="text-xs font-semibold text-muted-foreground">
+          Posted at: {new Date(data?.created_at).toLocaleDateString()}
+        </p>
       </div>
       {!!data.is_in_gallery && (
         <Dialog>

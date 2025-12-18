@@ -11,15 +11,15 @@ import Cookies from "js-cookie";
 export interface NavActionType {
   icon?: React.ReactNode;
   variant?:
-  | "ghost"
-  | "special"
-  | "link"
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | null
-  | undefined;
+    | "ghost"
+    | "special"
+    | "link"
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | null
+    | undefined;
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
   href: string;
   label?: string;
@@ -91,7 +91,7 @@ export const NavActions = () => {
   const isAuthenticated = !!userData?.data && !!token;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="lg:flex items-center gap-2 hidden">
       {allActions.map((action, index) => {
         const shouldHide =
           (action.requiresAuth && !isAuthenticated) ||
