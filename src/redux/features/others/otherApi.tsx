@@ -65,11 +65,16 @@ export const otherApi = api.injectEndpoints({
       { search: string; type: string; region?: string }
     >({
       query: ({ search, type, region }) => ({
-        url: `/search?search_term=${search}&type=${type}&per_page=8${
-          region ? `&region_id=${region}` : ""
-        }`,
+        url: "/search",
+        params: {
+          search_term: search,
+          type,
+          per_page: 8,
+          ...(region && { region_id: region }),
+        },
       }),
     }),
+
     createConnect: builder.mutation({
       query: (body) => ({
         url: `/connected-location`,
