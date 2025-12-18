@@ -174,7 +174,7 @@ export default function Searcher({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute top-[calc(148px/3)] -left-[10dvw] 2xl:left-0 w-[80dvw] 2xl:w-full bg-background border shadow-lg max-h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-1 2xl:grid-cols-4 z-50  p-4!"
+              className="absolute top-[calc(148px/3)] lg:-left-[10dvw] 2xl:left-0 sm:w-[80dvw] 2xl:w-full bg-background border shadow-lg max-h-[70dvh] lg:h-[40vh] rounded-lg grid grid-rows-1 2xl:grid-cols-4 z-50  p-4!"
             >
               <div className="col-span-2 w-full h-full space-y-4 overflow-auto overflow-x-hidden row-span-2 lg:row-span-1">
                 {searching?.data?.data ? (
@@ -204,12 +204,12 @@ export default function Searcher({
                                 x.role === 3
                                   ? "brand"
                                   : x.role === 4
-                                    ? "wholesaler"
-                                    : x.role === 5
-                                      ? "store"
-                                      : x.role === 2
-                                        ? "association"
-                                        : "member"
+                                  ? "wholesaler"
+                                  : x.role === 5
+                                  ? "store"
+                                  : x.role === 2
+                                  ? "association"
+                                  : "member"
                               }
                               // isVerified
                               size="sm"
