@@ -1,6 +1,4 @@
-
-
-'use client';
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { TrashIcon, UploadIcon } from "lucide-react";
 import React, { useState } from "react";
-import { useGetAdminSlidersQuery, useCreateAdminSliderMutation, useDeleteAdminSliderMutation } from "@/redux/features/admin/AdminApis";
+import {
+  useGetAdminSlidersQuery,
+  useCreateAdminSliderMutation,
+  useDeleteAdminSliderMutation,
+} from "@/redux/features/admin/AdminApis";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -32,30 +34,32 @@ export default function Page() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // State for image preview
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [sliderToDelete, setSliderToDelete] = useState<any>(null);
-  const [link, setLink] = useState('');
+  const [link, setLink] = useState("");
 
   // Fetch sliders
   const { data: slidersData, isLoading, refetch } = useGetAdminSlidersQuery();
   const sliders: Slider[] = slidersData?.data || [];
 
   // Mutations
-  const [createSlider, { isLoading: isCreating }] = useCreateAdminSliderMutation();
-  const [deleteSlider, { isLoading: isDeleting }] = useDeleteAdminSliderMutation();
+  const [createSlider, { isLoading: isCreating }] =
+    useCreateAdminSliderMutation();
+  const [deleteSlider, { isLoading: isDeleting }] =
+    useDeleteAdminSliderMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type and size
-      const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+      const validTypes = ["image/png", "image/jpeg", "image/webp"];
       const maxSize = 3 * 1024 * 1024; // 3MB
 
       if (!validTypes.includes(file.type)) {
-        toast.error('Only PNG, JPEG, and WebP images are allowed');
+        toast.error("Only PNG, JPEG, and WebP images are allowed");
         return;
       }
 
       if (file.size > maxSize) {
-        toast.error('File size must be less than 3MB');
+        toast.error("File size must be less than 3MB");
         return;
       }
 
@@ -72,8 +76,8 @@ export default function Page() {
     }
 
     const formData = new FormData();
-    formData.append('image', selectedFile);
-    formData.append('link', link); // Link is now correctly included
+    formData.append("image", selectedFile);
+    formData.append("link", link); // Link is now correctly included
 
     try {
       const res = await createSlider(formData).unwrap();
@@ -83,13 +87,13 @@ export default function Page() {
         // Reset state after successful upload
         setSelectedFile(null);
         setPreviewUrl(null);
-        setLink('');
+        setLink("");
       } else {
-        toast.error(res?.message || 'Failed to upload slider');
+        toast.error(res?.message || "Failed to upload slider");
       }
     } catch (error) {
-      console.error('Error uploading slider:', error);
-      toast.error('An unexpected error occurred during upload.');
+      console.error("Error uploading slider:", error);
+      toast.error("An unexpected error occurred during upload.");
     }
   };
 
@@ -103,12 +107,13 @@ export default function Page() {
         refetch(); // Refresh the slider list
         setDeleteDialogOpen(false); // Close dialog on success
       } else {
-        toast.error(res?.message || 'Failed to delete slider');
+        toast.error(res?.message || "Failed to delete slider");
       }
     } catch (error) {
-      console.error('Error deleting slider:', error);
-      toast.error('An unexpected error occurred during deletion.');
+      console.error("Error deleting slider:", error);
+      toast.error("An unexpected error occurred during deletion.");
     }
+    window.location.reload();
   };
 
   // **FIX**: Reset the sliderToDelete state when the dialog closes.
@@ -117,13 +122,15 @@ export default function Page() {
     if (!isOpen) {
       setSliderToDelete(null);
     }
-  }
+  };
 
   // Loading Skeleton
   if (isLoading) {
     return (
       <main className="flex-1 w-full bg-background rounded-xl !p-6">
-        <h1 className="text-2xl text-center font-semibold !pb-6">Slider Management</h1>
+        <h1 className="text-2xl text-center font-semibold !pb-6">
+          Slider Management
+        </h1>
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
           {Array.from({ length: 7 }).map((_, i) => (
             <Skeleton key={i} className="aspect-square w-full rounded-lg" />
@@ -135,7 +142,9 @@ export default function Page() {
 
   return (
     <main className="flex-1 w-full bg-background rounded-xl !p-6">
-      <h1 className="text-2xl text-center font-semibold !pb-6">Slider Management</h1>
+      <h1 className="text-2xl text-center font-semibold !pb-6">
+        Slider Management
+      </h1>
 
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
         {/* Upload Card */}
@@ -145,7 +154,13 @@ export default function Page() {
             className="cursor-pointer aspect-square text-muted-foreground w-full bg-inherit rounded-lg border-2 border-dashed flex flex-col justify-center items-center hover:bg-muted transition"
           >
             {previewUrl ? (
-              <Image src={previewUrl} width={100} height={100} alt="Selected preview" className="object-cover rounded-lg h-[100px] w-[100px]" />
+              <Image
+                src={previewUrl}
+                width={100}
+                height={100}
+                alt="Selected preview"
+                className="object-cover rounded-lg h-[100px] w-[100px]"
+              />
             ) : (
               <>
                 <UploadIcon className="mb-2" />
@@ -179,7 +194,7 @@ export default function Page() {
               onClick={handleUpload}
               disabled={!selectedFile || isCreating}
             >
-              {isCreating ? 'Uploading...' : 'Upload'}
+              {isCreating ? "Uploading..." : "Upload"}
             </Button>
           </div>
         </div>
@@ -198,7 +213,10 @@ export default function Page() {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             <div className="hidden group-hover:flex absolute z-50 h-full w-full left-0 top-0 justify-center items-center hover:bg-background/70 rounded-lg">
-              <Dialog open={deleteDialogOpen && sliderToDelete === slider.id} onOpenChange={handleDialogChange}>
+              <Dialog
+                open={deleteDialogOpen && sliderToDelete === slider.id}
+                onOpenChange={handleDialogChange}
+              >
                 <DialogTrigger asChild>
                   <Button
                     size="icon"
@@ -215,7 +233,8 @@ export default function Page() {
                   <DialogHeader>
                     <DialogTitle>Confirm Delete</DialogTitle>
                     <DialogDescription>
-                      Are you sure you want to delete this slider image? This action cannot be undone.
+                      Are you sure you want to delete this slider image? This
+                      action cannot be undone.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
@@ -227,7 +246,7 @@ export default function Page() {
                       onClick={() => handleDelete()} // **FIX**: No parameter needed
                       disabled={isDeleting}
                     >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>

@@ -92,6 +92,7 @@ function CountryRow({
                     console.error(error);
                     toast.error("Something went wrong");
                   }
+                  window.location.reload();
                 }}
               >
                 Update Country
@@ -119,6 +120,7 @@ function CountryRow({
               console.error(error);
               toast.error("Something went wrong");
             }
+            window.location.reload();
           }}
         >
           <Trash2Icon />

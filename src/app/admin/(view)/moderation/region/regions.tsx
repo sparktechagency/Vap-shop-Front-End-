@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -86,6 +85,7 @@ export default function Regions({ countries, loading, refetch }: RegionsProps) {
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Something went wrong");
     }
+    window.location.reload();
   };
 
   const handleDelete = async (id: string | number) => {
@@ -100,6 +100,7 @@ export default function Regions({ countries, loading, refetch }: RegionsProps) {
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Failed to delete region");
     }
+    window.location.reload();
   };
 
   if (loading) return <div>Loading...</div>;
