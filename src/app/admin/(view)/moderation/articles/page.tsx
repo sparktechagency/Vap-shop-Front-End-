@@ -87,6 +87,7 @@ export default function ArticlesPage() {
     } finally {
       setCurrentlyDeleting(null);
     }
+    window.location.reload();
   };
 
   const handlePageChange = (newPage: number) => {

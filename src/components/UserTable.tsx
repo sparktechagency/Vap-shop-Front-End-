@@ -240,6 +240,7 @@ const UserTable: React.FC<UserTableProps> = ({
       // Ensure cleanup in case of errors
       setDeleteDialogOpen(false);
       setSelectedUserForDelete(null);
+      window.location.reload();
     }
   };
 
