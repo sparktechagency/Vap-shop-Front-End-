@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { useSearchParams } from "next/navigation"; // Import this
 import { Store } from "@/lib/types/store";
 
-// This is a sample style array to hide points of interest (POIs)
 const mapStyles = [
   {
     featureType: "poi",
@@ -47,11 +47,44 @@ const Map: React.FC<MapProps> = ({
   onBoundsChange,
 }) => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const searchParams = useSearchParams(); // Hook to read URL params
+  console.log('selectedStore', selectedStore);
+  // State to manage the dynamic center and zoom
+  const [mapCenter, setMapCenter] = useState(center);
+  const [mapZoom, setMapZoom] = useState(12);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: libraries,
   });
+
+  // Handle URL store_id logic
+  useEffect(() => {
+    const storeIdFromUrl = searchParams.get("store_id");
+
+    if (storeIdFromUrl && stores.length > 0) {
+      // Find the store that matches the ID in the URL
+      // Ensure type consistency (string vs number)
+      const targetStore = stores.find(
+        (s) => s.id.toString() === storeIdFromUrl
+      );
+
+      if (targetStore) {
+        // 1. Trigger the click handler to "select" it (popup logic)
+        onMarkerClick(targetStore);
+
+        // 2. Center the map on this store
+        const newCenter = {
+          lat: parseFloat(targetStore.address.latitude || "0"),
+          lng: parseFloat(targetStore.address.longitude || "0"),
+        };
+        setMapCenter(newCenter);
+
+        // 3. Zoom in closer for the specific store
+        setMapZoom(16); // High zoom level for specific selection
+      }
+    }
+  }, [searchParams, stores]); // Re-run when URL or stores list changes
 
   const handleLoad = React.useCallback((mapInstance: google.maps.Map) => {
     setMap(mapInstance);
@@ -81,8 +114,8 @@ const Map: React.FC<MapProps> = ({
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
-      zoom={12}
-      center={center}
+      zoom={mapZoom} // Use dynamic zoom state
+      center={mapCenter} // Use dynamic center state
       options={{
         styles: mapStyles,
         disableDefaultUI: true,
@@ -102,7 +135,12 @@ const Map: React.FC<MapProps> = ({
             lat: parseFloat(store.address.latitude || "0"),
             lng: parseFloat(store.address.longitude || "0"),
           }}
-          onClick={() => onMarkerClick(store)}
+          onClick={() => {
+            onMarkerClick(store);
+            // Optional: When user manually clicks, also center/zoom
+            // setMapCenter({ lat: ..., lng: ... })
+            // setMapZoom(16)
+          }}
           icon={{
             url:
               selectedStore?.id === store.id
@@ -113,11 +151,11 @@ const Map: React.FC<MapProps> = ({
           label={
             selectedStore?.id === store.id
               ? {
-                  text: store.full_name,
-                  color: "#000000",
-                  fontWeight: "bold",
-                  className: "marker-label",
-                }
+                text: store.full_name,
+                color: "#000000",
+                fontWeight: "bold",
+                className: "marker-label",
+              }
               : undefined
           }
         />

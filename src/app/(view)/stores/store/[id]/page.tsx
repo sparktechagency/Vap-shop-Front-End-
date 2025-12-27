@@ -49,6 +49,8 @@ export default function Page() {
   console.log('location-------', location);
 
   const user = data?.data;
+
+  console.log('data', data);
   useEffect(() => {
     setMutated(true);
   }, []);
@@ -108,7 +110,7 @@ export default function Page() {
   const handleMapClick = (data: any) => {
     console.log("data", data);
     navigation.push(
-      `/map?lat=${location?.lat}&lng=${location?.lng}&radius=56093`
+      `/map?lat=${data?.address?.latitude}&lng=${data?.address?.longitude}&radius=56093&store_id=${data.id}`
     );
   };
 
