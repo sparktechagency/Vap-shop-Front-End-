@@ -23,7 +23,7 @@ import { useGetAllStoresInMapQuery } from "@/redux/features/store/StoreApi";
 import dynamic from "next/dynamic";
 import { Store } from "@/lib/types/store";
 
-// Dynamically import the Map component to prevent SSR issues
+// Dynamically import the Map component
 const MapWithNoSSR = dynamic(() => import("@/components/Map"), {
   ssr: false,
   loading: () => (
@@ -33,7 +33,6 @@ const MapWithNoSSR = dynamic(() => import("@/components/Map"), {
   ),
 });
 
-// Type definition for map bounds
 interface MapBounds {
   ne: { lat: number; lng: number };
   sw: { lat: number; lng: number };
@@ -44,27 +43,25 @@ const MapPage: React.FC = () => {
   const searchParams = useSearchParams();
   const [allStores, setAllStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+
+  // Map State
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
-    lat: 23.8103,
+    lat: 23.8103, // Default (e.g., Dhaka)
     lng: 90.4125,
   });
 
-  console.log('map center', mapCenter);
 
-  console.log('all store', allStores);
+  // URL Params
+  const store_id = searchParams.get("store_id");
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
   const radius = searchParams.get("radius");
 
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
-  const [debouncedBounds, setDebouncedBounds] = useState<MapBounds | null>(
-    null
-  );
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [debouncedBounds, setDebouncedBounds] = useState<MapBounds | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
+  // Debounce Bounds
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedBounds(mapBounds);
@@ -72,8 +69,8 @@ const MapPage: React.FC = () => {
     return () => clearTimeout(handler);
   }, [mapBounds]);
 
+  // Determine Map Query Params
   let map_params;
-
   if (lat && lng && radius) {
     map_params = {
       latitude: parseFloat(lat),
@@ -89,28 +86,55 @@ const MapPage: React.FC = () => {
     };
   }
 
-  // Fetch stores within the current map bounds
+  // Fetch Data
   const {
     data: storesData,
     isLoading,
     isFetching,
   } = useGetAllStoresInMapQuery(map_params, {
-    skip: !debouncedBounds, // Skip query if bounds are not set
+    skip: !debouncedBounds && !lat,
   });
 
-  // Update the list of stores when API data is received
+  // --- MAIN LOGIC: Handle Data & Auto-Select Store ---
   useEffect(() => {
     if (storesData?.data) {
+      // 1. Set Stores List
       const validStores = storesData.data.filter(
         (store: Store) => store.address?.latitude && store.address?.longitude
       );
       setAllStores(validStores);
-    }
-  }, [storesData]);
 
-  // This effect runs once on mount to get the user's location
+      // 2. Check for store_id in URL
+      if (store_id) {
+        // Convert both to string to avoid "1" (string) !== 1 (number) issues
+        const targetStore = validStores.find(
+          (s: Store) => String(s.id) === String(store_id)
+        );
+
+        if (targetStore) {
+          console.log("Found Store from URL:", targetStore.full_name);
+
+          // A. Select Store (triggers Popup)
+          setSelectedStore(targetStore);
+
+          // B. Center Map & Zoom In (Focus the pin)
+          if (targetStore.address?.latitude && targetStore.address?.longitude) {
+            setMapCenter({
+              lat: parseFloat(targetStore.address.latitude),
+              lng: parseFloat(targetStore.address.longitude),
+            });
+          }
+        }
+      }
+    }
+  }, [storesData, store_id]);
+
+
+  // --- Handle User Location (Only if NOT looking for a specific store) ---
   useEffect(() => {
-    // Check if coordinates are provided in the URL
+    // If user is trying to see a specific store, do not force geolocation center
+    if (store_id) return;
+
     const latParam = searchParams.get("lat");
     const lngParam = searchParams.get("lng");
 
@@ -121,74 +145,56 @@ const MapPage: React.FC = () => {
         setMapCenter({ lat, lng });
       }
     } else if (navigator.geolocation) {
-      // If no URL params, use the browser's Geolocation API
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const currentUserLocation = {
+          const loc = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          // Set the user's location in state for directions
-          setUserLocation(currentUserLocation);
-          // Center the map on the user's location
-          setMapCenter(currentUserLocation);
+          setUserLocation(loc);
+          setMapCenter(loc);
         },
-        (error) => {
-          // If geolocation fails, log the error and use the fallback location
-          console.error("Geolocation error:", error);
-        }
+        (err) => console.error(err)
       );
     }
-  }, []); // Empty dependency array ensures this runs only once
+  }, [store_id]); // Re-run if store_id changes/removes
 
-  // Handler to select a store and center the map on it
+
+  // Handle Manual Click on Store
   const handleSelectStore = (store: Store) => {
     setSelectedStore(store);
-    setMapCenter({
-      lat: parseFloat(store.address?.latitude || "0"),
-      lng: parseFloat(store.address?.longitude || "0"),
-    });
+
+    if (store.address?.latitude && store.address?.longitude) {
+      setMapCenter({
+        lat: parseFloat(store.address.latitude),
+        lng: parseFloat(store.address.longitude),
+      });
+    }
   };
 
-  // Handler to update map bounds when the user pans or zooms
   const handleBoundsChange = (bounds: MapBounds) => {
     setMapBounds(bounds);
   };
 
-  // This function generates a Google Maps URL and opens it in a new tab
   const handleGetDirections = (store: Store) => {
     if (!userLocation) {
-      alert(
-        "Your location is not available. Please enable location services in your browser and try again."
-      );
+      alert("Location services needed for directions.");
       return;
     }
+    if (!store.address?.latitude) return;
 
-    if (!store.address?.latitude || !store.address?.longitude) {
-      alert("Sorry, the location for this store is not available.");
-      return;
-    }
-
-    // Construct the Google Maps directions URL
     const origin = `${userLocation.lat},${userLocation.lng}`;
     const destination = `${store.address.latitude},${store.address.longitude}`;
-    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`;
-
-    // Open the URL in a new tab
-    window.open(googleMapsUrl, "_blank");
+    window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`, "_blank");
   };
 
   return (
     <main className="my-12 px-4 lg:px-[7%]">
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
+          <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Map</BreadcrumbPage>
-          </BreadcrumbItem>
+          <BreadcrumbItem><BreadcrumbPage>Map</BreadcrumbPage></BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
@@ -199,12 +205,11 @@ const MapPage: React.FC = () => {
       </div>
 
       <div className="relative grid grid-cols-1 md:grid-cols-3 md:gap-5 space-y-6 md:space-y-0">
+        {/* Sidebar List */}
         <div className="relative h-[80dvh] w-full border bg-secondary rounded-md overflow-hidden flex flex-col z-30">
           <div className="h-[48px] w-full bg-primary flex justify-between items-center px-4">
             <div className="flex items-center gap-2 text-xs text-background font-semibold">
-              {isFetching
-                ? "Searching..."
-                : `Showing ${allStores.length} results`}
+              {isFetching ? "Searching..." : `Showing ${allStores.length} results`}
               <InfoIcon className="ml-1 size-3" />
             </div>
             <div>
@@ -222,82 +227,79 @@ const MapPage: React.FC = () => {
 
           <div className="flex-1 w-full overflow-y-auto p-4 space-y-6">
             {isLoading && allStores.length === 0 ? (
-              <p>Move the map to find stores...</p>
+              <p className="p-4 text-center">Loading stores...</p>
+            ) : allStores.length === 0 && !isLoading ? (
+              <p className="p-4 text-center">Move the map to find stores...</p>
             ) : (
               allStores.map((store) => (
                 <div
                   key={store.id}
                   onClick={() => handleSelectStore(store)}
-                  className={`w-full bg-background p-4 rounded-md cursor-pointer hover:shadow-md transition-shadow ${selectedStore?.id === store.id ? "ring-2 ring-primary" : ""
+                  className={`w-full bg-background p-4 rounded-md cursor-pointer hover:shadow-md transition-shadow relative ${selectedStore?.id === store.id ? "ring-2 ring-primary" : ""
                     }`}
                 >
                   <h3 className="font-semibold">{store.full_name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {store.address?.address}
-                  </p>
+                  <p className="text-sm text-gray-600">{store.address?.address}</p>
                   <div className="flex items-center mt-2">
                     <span className="text-yellow-500">
-                      ★ {store.avg_rating.toFixed(1)}
+                      ★ {store.avg_rating ? store.avg_rating.toFixed(1) : "N/A"}
                     </span>
                     <span className="text-sm text-gray-500 ml-2">
                       ({store.total_reviews} reviews)
                     </span>
                   </div>
-                  <span className="abslute top-4 right-4 pt-2">
-                    {" "}
-                    distance: {store?.distance}
-                  </span>
+                  {store.distance && (
+                    <span className="absolute top-4 right-4 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                      {typeof store.distance === 'number' ? store.distance : store.distance}
+                    </span>
+                  )}
                 </div>
               ))
             )}
           </div>
         </div>
 
+        {/* Map Area */}
         <div className="relative col-span-2">
           <MapWithNoSSR
             center={mapCenter}
             stores={allStores}
-            selectedStore={selectedStore}
+            selectedStore={selectedStore} // Pass selectedStore for the "Large Pin" logic
             onMarkerClick={handleSelectStore}
             onBoundsChange={handleBoundsChange}
           />
+
+          {/* Popup */}
           {selectedStore && (
-            <div className="absolute top-4 right-4 z-10 bg-white p-4 rounded-lg shadow-lg max-w-xs">
+            <div className="absolute top-4 right-4 z-10 bg-white p-4 rounded-lg shadow-lg max-w-xs w-full">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-lg">
-                    {selectedStore.full_name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {selectedStore.address?.address}
-                  </p>
-                  <div className="flex items-center mt-1">
-                    <span className="text-yellow-500">
-                      ★ {selectedStore.avg_rating.toFixed(1) || "N/A"}
+                  <h3 className="font-bold text-lg">{selectedStore.full_name}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{selectedStore.address?.address}</p>
+                  <div className="flex items-center mt-2">
+                    <span className="text-yellow-500 font-bold">
+                      ★ {selectedStore.avg_rating ? selectedStore.avg_rating.toFixed(1) : "N/A"}
                     </span>
                     <span className="text-sm text-gray-500 ml-1">
                       ({selectedStore.total_reviews} reviews)
                     </span>
                   </div>
                   {selectedStore.phone && (
-                    <p className="text-sm mt-1">Phone: {selectedStore.phone}</p>
+                    <p className="text-sm mt-2 font-medium">📞 {selectedStore.phone}</p>
                   )}
                 </div>
                 <button
                   onClick={() => setSelectedStore(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                  aria-label="Close popup"
+                  className="text-gray-400 hover:text-gray-700"
                 >
-                  <X size={16} />
+                  <X size={20} />
                 </button>
               </div>
-              <div className="mt-2 flex space-x-2">
+              <div className="mt-4 flex space-x-2">
                 <Button
-                  onClick={() =>
-                    router.push(`/stores/store/${selectedStore.id}`)
-                  }
+                  onClick={() => router.push(`/stores/store/${selectedStore.id}`)}
                   size="sm"
-                  className="rounded-full"
+                  className="rounded-full flex-1"
                 >
                   View Store
                 </Button>
@@ -305,7 +307,7 @@ const MapPage: React.FC = () => {
                   onClick={() => handleGetDirections(selectedStore)}
                   size="sm"
                   variant="outline"
-                  className="rounded-full"
+                  className="rounded-full flex-1"
                 >
                   Get Directions
                 </Button>
