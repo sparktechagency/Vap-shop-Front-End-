@@ -23,16 +23,14 @@ export default function Footer() {
           <span>Vape Shop Maps</span>
         </div>
         <div className="flex flex-col gap-3">
-
           <p className="text-sm sm:text-base">
             <span className="font-bold">🚫 For Adults 21+:</span> Access limited
             to users in jurisdictions where vape-related products are legal.
           </p>
           <p className="text-sm sm:text-base">
-            <span className="font-bold">⚠️ No Sales or Payments in App: </span>
-            Vape Shop Maps facilitates information and store discovery only. Any
-            consumer purchases are completed in-store. B2B transactions are
-            managed externally.
+            <span className="font-bold">⚠️Digital Catalog Only: </span> No
+            Online Sales: Vape Shop Maps is a product discovery and reservation
+            platform. We do not processpremises.
           </p>
           <p className="text-sm sm:text-base">
             <span className="font-bold">📚 Built for the Community: </span>
