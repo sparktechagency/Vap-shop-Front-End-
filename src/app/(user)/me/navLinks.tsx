@@ -28,7 +28,7 @@ const baseLinks = {
   },
   orders: {
     icon: <Lucide.ShoppingCart className="size-5" />, // Fits orders
-    label: "Orders & Requests",
+    label: "Requests",
     to: "/me/orders",
   },
   favs: {

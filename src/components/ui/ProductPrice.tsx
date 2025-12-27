@@ -139,7 +139,7 @@ export function ProductPrice({
           -
         </Button>
         <Button variant={"default"} onClick={handleAddToCart}>
-          Add to cart
+          Check Availability
         </Button>
         <Button
           variant={"default"}
