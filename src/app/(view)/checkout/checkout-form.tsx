@@ -2,6 +2,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -11,9 +12,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useCheckoutMutation } from "@/redux/features/store/StoreApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -52,9 +54,10 @@ export default function CheckoutForm({
   }>;
 }) {
   const [checkout, { isLoading }] = useCheckoutMutation();
+  const [storeVer, setStoreVer] = useState(false);
+  const [ageVer, setAgeVer] = useState(false);
 
-
-  console.log('ccartitems form chekout', cartItems);
+  console.log("ccartitems form chekout", cartItems);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,7 +87,7 @@ export default function CheckoutForm({
         })),
       };
       const result = await checkout(checkoutData).unwrap();
-      console.log('result', result);
+      console.log("result", result);
       if (result?.ok) {
         toast.success("Order placed successfully!", {
           description: "Thank you for your purchase.",
@@ -201,8 +204,37 @@ export default function CheckoutForm({
         <p className="text-sm text-muted-foreground font-semibold">
           Note: This request will be sent directly to the product&apos;s store.
         </p>
+        <div className="space-y-4">
+          <div className="flex items-start justify-start gap-2 text-amber-500 ">
+            <Checkbox
+              id="storeVer"
+              checked={storeVer}
+              onCheckedChange={(checked) => {
+                setStoreVer(checked === true);
+              }}
+            />
 
-        <Button type="submit" disabled={isLoading}>
+            <Label className="font-semibold!" htmlFor="storeVer">
+              I understand this is a reservation, not a purchase. I will pay for
+              my items at the store counter.
+            </Label>
+          </div>
+          <div className="flex items-start justify-start gap-2 text-amber-500 ">
+            <Checkbox
+              id="ageVer"
+              checked={ageVer}
+              onCheckedChange={(checked) => {
+                setAgeVer(checked === true);
+              }}
+            />
+            <Label className="font-semibold!" htmlFor="ageVer">
+              I am 21 years of age or older. I will bring my valid ID to the
+              store for verification.
+            </Label>
+          </div>
+        </div>
+
+        <Button type="submit" disabled={isLoading || !storeVer || !ageVer}>
           {isLoading ? "Processing..." : "Send order request"}
         </Button>
       </form>

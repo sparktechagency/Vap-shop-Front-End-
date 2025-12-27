@@ -18,7 +18,7 @@ export default function BuyMachine() {
         >
           <PlusIcon />
         </Button>{" "}
-        <Button>Add to cart</Button>{" "}
+        <Button>Check Availability</Button>{" "}
         <Button
           onClick={() => {
             if (amm > 0) {

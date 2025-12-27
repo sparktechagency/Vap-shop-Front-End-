@@ -30,7 +30,9 @@ export default function Footer() {
           <p className="text-sm sm:text-base">
             <span className="font-bold">⚠️Digital Catalog Only: </span> No
             Online Sales: Vape Shop Maps is a product discovery and reservation
-            platform. We do not processpremises.
+            platform. We do not process payments, ship products, or facilitate
+            delivery. All transactions and ID verifications must occur
+            face-to-face at the licensed retailer's premises.
           </p>
           <p className="text-sm sm:text-base">
             <span className="font-bold">📚 Built for the Community: </span>

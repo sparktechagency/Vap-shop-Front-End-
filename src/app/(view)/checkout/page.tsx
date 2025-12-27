@@ -16,7 +16,6 @@ import { XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 
-
 interface CartItem {
   id: string;
   name: string;
@@ -165,7 +164,9 @@ export default function CheckoutPage() {
                             />
                           </div>
                           <div>
-                            <p className="font-medium line-clamp-1">{item.name}</p>
+                            <p className="font-medium line-clamp-1">
+                              {item.name}
+                            </p>
                             <p className="text-sm text-gray-500">
                               ${item.price.toFixed(2)}
                             </p>
@@ -217,7 +218,14 @@ export default function CheckoutPage() {
                       {/* Individual Item Tax Display */}
                       <div className="flex justify-between items-center text-xs text-gray-500 mt-1">
                         <span>Tax ({item.ownerTax}%)</span>
-                        <span>+${(item.price * item.quantity * (Number(item.ownerTax) / 100)).toFixed(2)}</span>
+                        <span>
+                          +$
+                          {(
+                            item.price *
+                            item.quantity *
+                            (Number(item.ownerTax) / 100)
+                          ).toFixed(2)}
+                        </span>
                       </div>
                     </li>
                   ))
