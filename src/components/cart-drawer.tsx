@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -32,8 +31,8 @@ export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const { data: userData } = useGetOwnprofileQuery()
-  const user_id = userData?.data?.id
+  const { data: userData } = useGetOwnprofileQuery();
+  const user_id = userData?.data?.id;
 
   const cartKey = user_id ? `cart_${user_id}` : null;
 
@@ -60,8 +59,8 @@ export default function CartDrawer() {
     };
 
     loadCart();
-    window.addEventListener('storage', loadCart);
-    return () => window.removeEventListener('storage', loadCart);
+    window.addEventListener("storage", loadCart);
+    return () => window.removeEventListener("storage", loadCart);
   }, [isClient, cartKey]);
 
   // Calculate total price
@@ -73,12 +72,12 @@ export default function CartDrawer() {
   const removeItem = (id: string) => {
     if (!cartKey) return;
     try {
-      const updatedCart = cartItems.filter(item => item.id !== id);
+      const updatedCart = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedCart);
       localStorage.setItem(cartKey, JSON.stringify(updatedCart));
-      toast.success('Item removed from cart');
+      toast.success("Item removed from cart");
     } catch (error) {
-      toast.error('Failed to remove item');
+      toast.error("Failed to remove item");
       console.error("Error removing item:", error);
     }
   };
@@ -87,14 +86,14 @@ export default function CartDrawer() {
     if (newQuantity < 1 || !cartKey) return;
 
     try {
-      const updatedCart = cartItems.map(item =>
+      const updatedCart = cartItems.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       );
 
       setCartItems(updatedCart);
       localStorage.setItem(cartKey, JSON.stringify(updatedCart));
     } catch (error) {
-      toast.error('Failed to update quantity');
+      toast.error("Failed to update quantity");
       console.error("Error updating quantity:", error);
     }
   };
@@ -131,7 +130,7 @@ export default function CartDrawer() {
             <div className="flex justify-center items-center gap-4">
               {cartItems.length > 0 && (
                 <Button onClick={handleCheckout} variant="special">
-                  Checkout (${totalPrice.toFixed(2)})
+                  Reserve for Pickup (${totalPrice.toFixed(2)})
                 </Button>
               )}
               <DrawerClose asChild>
@@ -155,7 +154,10 @@ export default function CartDrawer() {
           ) : (
             <div className="space-y-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 p-4 border rounded-lg"
+                >
                   <div className="relative h-16 w-16">
                     <Image
                       src={item.image || "/image/shop/item.jpg"}
@@ -167,7 +169,9 @@ export default function CartDrawer() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-500">${item.price.toFixed(2)} each</p>
+                    <p className="text-sm text-gray-500">
+                      ${item.price.toFixed(2)} each
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
