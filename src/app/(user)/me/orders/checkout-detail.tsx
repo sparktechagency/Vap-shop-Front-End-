@@ -217,7 +217,7 @@ export default function CheckOutDetail({
         <DialogHeader className="p-6">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Receipt className="h-5 w-5" />
-            Invoice Details - Checkout
+            Invoice Details - Items Requested
           </DialogTitle>
           <DialogDescription>
             ID: {String(memberData.checkout_id)}
@@ -292,7 +292,7 @@ export default function CheckOutDetail({
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Sub Orders
+                  Sub Reservations
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -310,7 +310,7 @@ export default function CheckOutDetail({
             <div key={subOrder.order_id} className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-lg">
-                  Sub Order #{String(subOrder.order_id)}
+                  Sub reservation #{String(subOrder.order_id)}
                 </h3>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span>{subOrder.order_date}</span>
@@ -449,7 +449,7 @@ export default function CheckOutDetail({
                   <div className="">
                     <AlertDescription>
                       Please review the changes and make sure you want to update
-                      this order
+                      this reservation
                     </AlertDescription>
                   </div>
                   <AlertDialogFooter>

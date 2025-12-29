@@ -113,7 +113,7 @@ export default function CheckoutPage() {
   return (
     <main className="!py-12 !px-4 md:!px-[7%] grid grid-cols-1 lg:grid-cols-7 gap-12">
       <div className="col-span-7">
-        <h1 className="text-4xl font-bold">Checkout</h1>
+        <h1 className="text-4xl font-bold">Items Requested</h1>
       </div>
 
       <div className="lg:col-span-5 !space-y-12">
@@ -138,7 +138,7 @@ export default function CheckoutPage() {
       <div className="lg:col-span-2">
         <Card className="w-full sticky top-4">
           <CardHeader>
-            <CardTitle>Your order</CardTitle>
+            <CardTitle>Your reservations</CardTitle>
           </CardHeader>
 
           <CardContent>

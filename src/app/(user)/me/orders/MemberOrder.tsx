@@ -92,7 +92,7 @@ export default function MemberOrder() {
             <TableCaption>A list of your recent orders.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Order</TableHead>
+                <TableHead>Reservation</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
