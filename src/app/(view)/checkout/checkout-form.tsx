@@ -89,17 +89,17 @@ export default function CheckoutForm({
       const result = await checkout(checkoutData).unwrap();
       console.log("result", result);
       if (result?.ok) {
-        toast.success("Order placed successfully!", {
-          description: "Thank you for your purchase.",
+        toast.success("Reservation placed successfully!", {
+          description: "Thank you for your reservation.",
         });
         form.reset();
         localStorage.removeItem("cart");
       }
       if (result?.error) {
-        toast.error(result?.error || "Checkout failed");
+        toast.error(result?.error || "Request failed");
       }
     } catch (error: any) {
-      toast.error(error.data?.message || "Checkout failed");
+      toast.error(error.data?.message || "Request failed");
 
       // Handle API validation errors
       if (error.data?.errors) {
@@ -235,7 +235,7 @@ export default function CheckoutForm({
         </div>
 
         <Button type="submit" disabled={isLoading || !storeVer || !ageVer}>
-          {isLoading ? "Processing..." : "Send order request"}
+          {isLoading ? "Processing..." : "Check Availability"}
         </Button>
       </form>
     </Form>

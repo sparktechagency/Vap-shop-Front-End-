@@ -119,7 +119,7 @@ export default function InvoiceDetail({
           <DialogHeader className="p-0">
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Receipt className="h-5 w-5" />
-              Invoice Details - Order #{id}
+              Invoice Details - Reservation #{id}
             </DialogTitle>
           </DialogHeader>
           <Button

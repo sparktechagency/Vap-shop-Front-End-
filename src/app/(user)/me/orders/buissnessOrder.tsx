@@ -117,15 +117,15 @@ export default function BuissnessOrder() {
         !isLoading &&
         (data.data.length <= 0 ? (
           <div className="h-24 w-full flex justify-center items-center text-sm font-semibold text-purple-700">
-            No order is made yet
+            No Reservation is made yet
           </div>
         ) : (
           <>
             <Table className="!text-xs">
-              <TableCaption>A list of your recent orders.</TableCaption>
+              <TableCaption>A list of your recent reservations.</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Order</TableHead>
+                  <TableHead>Reservation</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Status</TableHead>
