@@ -52,7 +52,6 @@ export default async function ProfileLayoutShell({
                 <p className="text-muted-foreground text-center sm:text-end">
                   {my.email}
                 </p>
-
                 <div className="flex flex-row md:flex-row justify-between items-center w-full gap-4">
                   <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm font-semibold justify-center sm:justify-start flex-1">
                     <p>Followers: {my.total_followers}</p>
@@ -81,7 +80,10 @@ export default async function ProfileLayoutShell({
               <Button
                 variant="outline"
                 className={`!text-sm font-extrabold ${
-                  my.role === 6 || my.role === 2 ? "hidden" : "hidden"
+                  (my.role === 3 || my.role === 4 || my.role === 5) &&
+                  call.data.role === 4
+                    ? "block"
+                    : "hidden"
                 }`}
                 asChild
               >

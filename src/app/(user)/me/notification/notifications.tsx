@@ -328,7 +328,8 @@ export default function Notifications() {
                           variant={
                             notification.data.status === "pending"
                               ? "secondary"
-                              : notificationStatus === "accepted"
+                              : notificationStatus === "accepted" ||
+                                notificationStatus === "approved"
                               ? "default"
                               : "destructive"
                           }

@@ -596,7 +596,7 @@ export default function CheckoutForm() {
                   Processing...
                 </>
               ) : (
-                "Complete Order"
+                "Complete Request"
               )}
             </Button>
           </form>

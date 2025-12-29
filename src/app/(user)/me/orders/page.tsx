@@ -12,7 +12,7 @@ export default function Page() {
   const { role } = useUser();
   return (
     <div className="!p-6">
-      <h1 className="text-3xl !pb-4">Reservation</h1>
+      <h1 className="text-3xl !pb-4">Reservations</h1>
       <Separator />
       {["5", "3", "4"].includes(String(role)) && (
         <div className="mt-6 flex justify-end">

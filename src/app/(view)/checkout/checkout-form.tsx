@@ -25,7 +25,6 @@ const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   phone: z.string().optional(),
   dob: z.string().optional(),
-  address: z.string().optional(),
 });
 
 // Function to format date to DD-MM-YYYY
@@ -66,7 +65,6 @@ export default function CheckoutForm({
       email: "",
       phone: "",
       dob: "",
-      address: "",
     },
   });
 
@@ -80,7 +78,6 @@ export default function CheckoutForm({
         customer_email: values.email,
         customer_phone: values.phone ? values.phone.slice(0, 15) : "",
         customer_dob: formattedDob || "24-04-1987",
-        customer_address: values.address,
         cart_items: cartItems.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -188,7 +185,7 @@ export default function CheckoutForm({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="address"
           render={({ field }) => (
@@ -200,7 +197,7 @@ export default function CheckoutForm({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <p className="text-sm text-muted-foreground font-semibold">
           Note: This request will be sent directly to the product&apos;s store.
         </p>
