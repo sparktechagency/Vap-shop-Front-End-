@@ -110,9 +110,7 @@ export default function CheckoutForm() {
     () => Object.values(checks).every(Boolean),
     [checks]
   );
-  if (!cart) {
-    return <></>;
-  }
+
   useEffect(() => {
     const cartData = localStorage.getItem("btbCart");
 
@@ -496,51 +494,69 @@ export default function CheckoutForm() {
                 />
               </div>
             </div>
-            <div className="flex justify-start gap-4 items-start">
-              <Checkbox
-                checked={checks.resaleCompliance}
-                id="b"
-                onCheckedChange={(v) =>
-                  handleChange("resaleCompliance", Boolean(v))
-                }
-              />
-              <Label className="font-semibold" htmlFor="b">
-                All products purchased are intended for resale in jurisdictions
-                where hemp-derived cannabinoid products are legally permitted,
-                and will be sold in full compliance with all applicable federal,
-                state, and local laws, including age restrictions (21+), THC
-                limits (≤0.3% Delta-9 THC on a dry-weight basis), and all
-                packaging, labeling, testing, and display requirements.
-              </Label>
-            </div>
+            <div className="border-t py-4 space-y-4 text-amber-500">
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.authorizedRep}
+                  id="a"
+                  onCheckedChange={(v) =>
+                    handleChange("authorizedRep", Boolean(v))
+                  }
+                />
+                <Label className="font-semibold" htmlFor="a">
+                  I am an authorized representative of a legally operating
+                  business
+                </Label>
+              </div>
 
-            <div className="flex justify-start gap-4 items-start">
-              <Checkbox
-                checked={checks.coaVerified}
-                onCheckedChange={(v) => handleChange("coaVerified", Boolean(v))}
-                id="c"
-              />
-              <Label className="font-semibold" htmlFor="c">
-                I confirm that I have reviewed the Certificates of Analysis
-                (COAs) for the products and verify they comply with federal and
-                applicable state THC limits and testing standards.
-              </Label>
-            </div>
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.resaleCompliance}
+                  id="b"
+                  onCheckedChange={(v) =>
+                    handleChange("resaleCompliance", Boolean(v))
+                  }
+                />
+                <Label className="font-semibold" htmlFor="b">
+                  All products purchased are intended for resale in
+                  jurisdictions where hemp-derived cannabinoid products are
+                  legally permitted, and will be sold in full compliance with
+                  all applicable federal, state, and local laws, including age
+                  restrictions (21+), THC limits (≤0.3% Delta-9 THC on a
+                  dry-weight basis), and all packaging, labeling, testing, and
+                  display requirements.
+                </Label>
+              </div>
 
-            <div className="flex justify-start gap-4 items-start">
-              <Checkbox
-                checked={checks.recordKeeping}
-                id="d"
-                onCheckedChange={(v) =>
-                  handleChange("recordKeeping", Boolean(v))
-                }
-              />
-              <Label className="font-semibold" htmlFor="d">
-                I agree to maintain records of these purchases as required for
-                regulatory compliance and audits.
-              </Label>
-            </div>
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.coaVerified}
+                  onCheckedChange={(v) =>
+                    handleChange("coaVerified", Boolean(v))
+                  }
+                  id="c"
+                />
+                <Label className="font-semibold" htmlFor="c">
+                  I confirm that I have reviewed the Certificates of Analysis
+                  (COAs) for the products and verify they comply with federal
+                  and applicable state THC limits and testing standards.
+                </Label>
+              </div>
 
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.recordKeeping}
+                  id="d"
+                  onCheckedChange={(v) =>
+                    handleChange("recordKeeping", Boolean(v))
+                  }
+                />
+                <Label className="font-semibold" htmlFor="d">
+                  I agree to maintain records of these purchases as required for
+                  regulatory compliance and audits.
+                </Label>
+              </div>
+            </div>
             <Button
               type="submit"
               className="w-full"

@@ -30,6 +30,7 @@ import Image from "next/image";
 import { useUser } from "@/context/userContext";
 import { useGetOwnprofileQuery } from "@/redux/features/AuthApi";
 import { useBtbCheckoutMutation } from "@/redux/features/b2b/btbApi";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CardDetails {
   card_number: string;
@@ -109,9 +110,6 @@ export default function CheckoutForm() {
     () => Object.values(checks).every(Boolean),
     [checks]
   );
-  if (!cart) {
-    return <></>;
-  }
   useEffect(() => {
     const cartData = localStorage.getItem("btbCart");
 
@@ -438,62 +436,67 @@ export default function CheckoutForm() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="card_number">Card Number</Label>
-              <Input
-                id="card_number"
-                type="text"
-                placeholder="Card Number"
-                value={formData.card_details.card_number}
-                onChange={(e) =>
-                  handleCardInputChange("card_number", e.target.value)
-                }
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiration_month">Exp. Month</Label>
-                <Input
-                  id="expiration_month"
-                  type="number"
-                  min={1}
-                  max={12}
-                  value={formData.card_details.expiration_month}
-                  onChange={(e) =>
-                    handleCardInputChange(
-                      "expiration_month",
-                      parseInt(e.target.value)
-                    )
+            <div className="border-t py-4 space-y-4 text-amber-500">
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.authorizedRep}
+                  id="a"
+                  onCheckedChange={(v) =>
+                    handleChange("authorizedRep", Boolean(v))
                   }
                 />
+                <Label className="font-semibold" htmlFor="a">
+                  I am an authorized representative of a legally operating
+                  business
+                </Label>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="expiration_year">Exp. Year</Label>
-                <Input
-                  id="expiration_year"
-                  type="number"
-                  min={2024}
-                  value={formData.card_details.expiration_year}
-                  onChange={(e) =>
-                    handleCardInputChange(
-                      "expiration_year",
-                      parseInt(e.target.value)
-                    )
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.resaleCompliance}
+                  id="b"
+                  onCheckedChange={(v) =>
+                    handleChange("resaleCompliance", Boolean(v))
                   }
                 />
+                <Label className="font-semibold" htmlFor="b">
+                  All products purchased are intended for resale in
+                  jurisdictions where hemp-derived cannabinoid products are
+                  legally permitted, and will be sold in full compliance with
+                  all applicable federal, state, and local laws, including age
+                  restrictions (21+), THC limits (≤0.3% Delta-9 THC on a
+                  dry-weight basis), and all packaging, labeling, testing, and
+                  display requirements.
+                </Label>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="cvc">CVC</Label>
-                <Input
-                  id="cvc"
-                  type="text"
-                  placeholder="CVC"
-                  value={formData.card_details.cvc}
-                  onChange={(e) => handleCardInputChange("cvc", e.target.value)}
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.coaVerified}
+                  onCheckedChange={(v) =>
+                    handleChange("coaVerified", Boolean(v))
+                  }
+                  id="c"
                 />
+                <Label className="font-semibold" htmlFor="c">
+                  I confirm that I have reviewed the Certificates of Analysis
+                  (COAs) for the products and verify they comply with federal
+                  and applicable state THC limits and testing standards.
+                </Label>
+              </div>
+
+              <div className="flex justify-start gap-4 items-start">
+                <Checkbox
+                  checked={checks.recordKeeping}
+                  id="d"
+                  onCheckedChange={(v) =>
+                    handleChange("recordKeeping", Boolean(v))
+                  }
+                />
+                <Label className="font-semibold" htmlFor="d">
+                  I agree to maintain records of these purchases as required for
+                  regulatory compliance and audits.
+                </Label>
               </div>
             </div>
 
