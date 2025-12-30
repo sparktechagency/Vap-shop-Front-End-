@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -56,10 +56,17 @@ interface CheckoutData extends CustomerData {
 
 export default function CheckoutForm() {
   const navig = useRouter();
-  const { data: me } = useGetOwnprofileQuery();
+  const { data: me, isLoading } = useGetOwnprofileQuery();
   const [checkout] = useBtbCheckoutMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cart, setCart] = useState<any>();
+  const [checks, setChecks] = useState({
+    authorizedRep: false,
+    resaleCompliance: false,
+    coaVerified: false,
+    recordKeeping: false,
+  });
+
   const [formData, setFormData] = useState<CustomerData>({
     customer_name: "",
     customer_email: "",
@@ -98,7 +105,13 @@ export default function CheckoutForm() {
       }));
     }
   }, [my]);
-
+  const allChecked = useMemo(
+    () => Object.values(checks).every(Boolean),
+    [checks]
+  );
+  if (!cart) {
+    return <></>;
+  }
   useEffect(() => {
     const cartData = localStorage.getItem("btbCart");
 
@@ -112,6 +125,12 @@ export default function CheckoutForm() {
     return () => {};
   }, []);
 
+  const handleChange = (key: keyof typeof checks, value: boolean) => {
+    setChecks((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
   const validateForm = (): boolean => {
     const newErrors: Partial<CustomerData> = {};
 
@@ -478,7 +497,11 @@ export default function CheckoutForm() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || isLoading || !allChecked}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
