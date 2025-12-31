@@ -44,7 +44,7 @@ export default function Post() {
     data?.data?.data?.map((post: any, index: number) => (
       <MyPostCard
         key={post.id || index} // Prefer post.id if available
-        user={{ name: my.full_name ?? "", avatar: my.avatar }}
+        user={{ name: my.full_name ?? "", avatar: my?.avatar }}
         data={post}
         manage
       />

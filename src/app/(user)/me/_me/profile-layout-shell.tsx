@@ -59,7 +59,7 @@ export default async function ProfileLayoutShell({
           }}
         >
           <Avatar className="size-[120px] md:size-[220px] bg-background lg:size-[300px] absolute -bottom-[60px] md:-bottom-[110px] lg:-bottom-[150px] right-1/2 translate-x-1/2 md:translate-0 md:right-4 lg:right-[7%] border">
-            <AvatarImage src={my.avatar} className="object-cover" />
+            <AvatarImage src={my?.avatar} className="object-cover" />
             <AvatarFallback>
               {my.first_name.toUpperCase().slice(0, 2)}
             </AvatarFallback>
@@ -140,20 +140,20 @@ export default async function ProfileLayoutShell({
                   href={
                     String(my.role) === "6"
                       ? `/profile/${my.id}?user=${my.full_name?.replace(
-                          /\s+/g,
-                          ""
-                        )}`
+                        /\s+/g,
+                        ""
+                      )}`
                       : String(my.role) === "5"
-                      ? `/stores/store/${my.id}?${my.full_name?.replace(
+                        ? `/stores/store/${my.id}?${my.full_name?.replace(
                           /\s+/g,
                           ""
                         )}`
-                      : String(my.role) === "3"
-                      ? `/brands/brand/${my.id}`
-                      : `/profile/${my.id}?user=${my.full_name?.replace(
-                          /\s+/g,
-                          ""
-                        )}`
+                        : String(my.role) === "3"
+                          ? `/brands/brand/${my.id}`
+                          : `/profile/${my.id}?user=${my.full_name?.replace(
+                            /\s+/g,
+                            ""
+                          )}`
                   }
                 >
                   Preview Profile

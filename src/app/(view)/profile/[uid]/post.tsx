@@ -59,7 +59,7 @@ export default function Post({ user: my }: { user: UserData }) {
       .map((post: any, index: number) => (
         <MyPostCard
           key={post.id || index}
-          user={{ name: my.full_name ?? "", avatar: my.avatar }}
+          user={{ name: my.full_name ?? "", avatar: my?.avatar }}
           data={post}
           admin={me.data.role === 1}
           manage={me.data.role === 1}
