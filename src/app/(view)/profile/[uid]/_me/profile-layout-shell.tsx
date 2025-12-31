@@ -34,7 +34,7 @@ export default async function ProfileLayoutShell({
           }}
         >
           <Avatar className="size-[120px] md:size-[220px] lg:size-[300px] absolute -bottom-[60px] md:-bottom-[110px] lg:-bottom-[150px] right-1/2 translate-x-1/2 md:translate-0 md:right-4 lg:right-12 border">
-            <AvatarImage src={my.avatar} className="object-cover" />
+            <AvatarImage src={my?.avatar} className="object-cover" />
             <AvatarFallback>
               {my.first_name?.toUpperCase().slice(0, 2)}
             </AvatarFallback>
@@ -79,12 +79,11 @@ export default async function ProfileLayoutShell({
               </Button> */}
               <Button
                 variant="outline"
-                className={`!text-sm font-extrabold ${
-                  (my.role === 3 || my.role === 4 || my.role === 5) &&
-                  call.data.role === 4
+                className={`!text-sm font-extrabold ${(my.role === 3 || my.role === 4 || my.role === 5) &&
+                    call.data.role === 4
                     ? "block"
                     : "hidden"
-                }`}
+                  }`}
                 asChild
               >
                 <Link href={`/stores/store/${id}/btb`}>B2B</Link>

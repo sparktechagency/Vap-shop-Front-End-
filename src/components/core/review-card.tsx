@@ -104,14 +104,12 @@ export default function ProductReviewCard({
         <Link
           href={
             String(role) === "3"
-              ? `/brands/brand/product/${
-                  productData?.data?.id ?? productData.id
-                }`
+              ? `/brands/brand/product/${productData?.data?.id ?? productData.id
+              }`
               : String(role) === "5"
-              ? `/stores/store/product/${
-                  productData.data?.id ?? productData.id
+                ? `/stores/store/product/${productData.data?.id ?? productData.id
                 }`
-              : "#"
+                : "#"
           }
         >
           <div className="flex items-center gap-4">
@@ -180,15 +178,15 @@ export default function ProductReviewCard({
             <div>
               <Link
                 href={
-                  data?.user.role === 5
+                  data?.user?.role === 5
                     ? `/stores/store/${data?.user_id}`
-                    : data?.user.role === 4
-                    ? `/brands/brand/${data?.user_id}`
-                    : `/profile/${data?.user_id}`
+                    : data?.user?.role === 4
+                      ? `/brands/brand/${data?.user_id}`
+                      : `/profile/${data?.user_id}`
                 }
                 className="text-sm font-medium"
               >
-                {data?.user.full_name}
+                {data?.user?.full_name}
               </Link>
               <p className="text-xs text-muted-foreground">
                 {data?.updated_at
@@ -228,8 +226,7 @@ export default function ProductReviewCard({
                   toast.error("Failed to mark this review");
                 } else {
                   toast.success(
-                    `${nextHelpful ? "Marked" : "Unmarked"} ${
-                      data?.user?.full_name
+                    `${nextHelpful ? "Marked" : "Unmarked"} ${data?.user?.full_name
                     }'s review as helpful`
                   );
                 }
@@ -282,11 +279,11 @@ export default function ProductReviewCard({
                         </Avatar>
                         <Link
                           href={
-                            data?.user.role === 5
+                            data?.user?.role === 5
                               ? `/stores/store/${data?.user.id}`
-                              : data?.user.role === 4
-                              ? `/brands/brand/${data?.user.id}`
-                              : `/profile/${data?.user.id}`
+                              : data?.user?.role === 4
+                                ? `/brands/brand/${data?.user.id}`
+                                : `/profile/${data?.user.id}`
                           }
                         >
                           <Namer

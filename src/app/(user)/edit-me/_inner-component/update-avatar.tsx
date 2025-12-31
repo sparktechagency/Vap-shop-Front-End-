@@ -80,7 +80,7 @@ export default function UpdateAvatar({ my }: { my: UserData }) {
   return (
     <div className="size-[200px] relative">
       <Avatar className="h-full w-full">
-        <AvatarImage src={localAvatar ?? my.avatar} className="object-cover" />
+        <AvatarImage src={localAvatar ?? my?.avatar} className="object-cover" />
         <AvatarFallback>
           {my.first_name.slice(0, 2).toUpperCase()}
         </AvatarFallback>
