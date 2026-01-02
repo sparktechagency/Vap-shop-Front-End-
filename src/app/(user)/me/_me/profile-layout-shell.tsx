@@ -1,6 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { MessageSquareMoreIcon, SettingsIcon } from "lucide-react";
+import {
+  InboxIcon,
+  MessageSquareMoreIcon,
+  SettingsIcon,
+  UserRoundX,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import MobileProfileNavigation from "@/components/core/mobile-profile-nav";
@@ -46,6 +51,21 @@ export default async function ProfileLayoutShell({
   }
 
   // getNavs(parseInt(my?.role_label?.toLowerCase() ?? "association"));
+  if (!my) {
+    return (
+      <div className="h-[400px] w-full flex flex-col items-center justify-center gap-3 text-muted-foreground">
+        <UserRoundX className="h-10 w-10 opacity-60" />
+
+        <p className="text-sm font-medium text-foreground">
+          Profile is currently unavailable
+        </p>
+
+        <p className="text-xs text-muted-foreground text-center max-w-xs">
+          This user information is no longer available.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
