@@ -56,7 +56,9 @@ export default async function ProfileLayoutShell({
       <div className="h-[400px] w-full flex flex-col items-center justify-center gap-3 text-muted-foreground">
         <UserRoundX className="h-10 w-10 opacity-60" />
 
-        <p className="text-sm font-medium text-foreground">User not found</p>
+        <p className="text-sm font-medium text-foreground">
+          Profile is currently unavailable
+        </p>
 
         <p className="text-xs text-muted-foreground text-center max-w-xs">
           This user information is no longer available.
